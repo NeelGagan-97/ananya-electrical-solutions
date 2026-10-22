@@ -3,6 +3,7 @@ import { NavigationTab, EngineeringInquiry } from './types';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ConsultationModal } from './components/ConsultationModal';
+import { LeftSideSocialDock } from './components/LeftSideSocialDock';
 import { HomeScreen } from './screens/HomeScreen';
 import { ElectricalScreen } from './screens/ElectricalScreen';
 import { SolarScreen } from './screens/SolarScreen';
@@ -79,6 +80,9 @@ export default function App() {
         onOpenConsultation={handleOpenConsultation}
         inquiryCount={inquiries.length}
       />
+
+      {/* Floating Left Side Social Dock: WhatsApp & Instagram & Brand Video */}
+      <LeftSideSocialDock />
 
       {/* Main Screen Content with pt-20 to clear fixed header */}
       <main className="flex-1 w-full pt-20">

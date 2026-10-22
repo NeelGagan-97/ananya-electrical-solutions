@@ -135,6 +135,27 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab }) => {
                 </span>
                 <span className="font-semibold text-[#0B192C]">ISO 9001 / OHSAS Compliant</span>
               </div>
+              <div className="flex items-center gap-3 pt-1">
+                <a
+                  href="https://wa.me/918660121438?text=Hello%20Ananya%20Electrical%20Solutions%2C%20I%20would%20like%20to%20consult%20regarding%20an%20electrical%2Fsolar%20project."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#25D366] hover:underline"
+                >
+                  <span className="w-2 h-2 rounded-full bg-[#25D366]"></span>
+                  WhatsApp (+91 8660121438)
+                </a>
+                <span className="text-slate-300">•</span>
+                <a
+                  href="https://www.instagram.com/ananya.electrical.solutions"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#dc2743] hover:underline"
+                >
+                  <span className="w-2 h-2 rounded-full bg-[#dc2743]"></span>
+                  Instagram
+                </a>
+              </div>
             </div>
           </div>
         </div>

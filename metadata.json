@@ -2,5 +2,7 @@
   "name": "Ananya Electrical Solutions",
   "description": "Super Grade Electrical Contractor & Turnkey Solar EPC in Karnataka. High voltage substations, HT/LT panels, statutory CEIG approvals, and clean energy solutions.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

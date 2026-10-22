@@ -110,6 +110,27 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
                 </a>
               </div>
 
+              <div className="pt-4 border-t border-slate-700/80 grid grid-cols-2 gap-2">
+                <a
+                  href="https://wa.me/918660121438?text=Hello%20Ananya%20Electrical%20Solutions%2C%20I%20would%20like%20to%20consult%20regarding%20an%20electrical%2Fsolar%20project."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2.5 rounded-lg bg-[#25D366]/15 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-white flex items-center gap-2 transition-colors text-[13px] font-semibold"
+                >
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#25D366]"></span>
+                  <span>WhatsApp Chat</span>
+                </a>
+                <a
+                  href="https://www.instagram.com/ananya.electrical.solutions"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2.5 rounded-lg bg-[#dc2743]/15 hover:bg-[#dc2743]/30 border border-[#dc2743]/40 text-white flex items-center gap-2 transition-colors text-[13px] font-semibold"
+                >
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#dc2743]"></span>
+                  <span>Instagram</span>
+                </a>
+              </div>
+
               <div className="pt-4 border-t border-slate-700/80 flex flex-col gap-1">
                 <span className="text-[13px] text-slate-400">Corporate Headquarters</span>
                 <p className="text-[14px] text-slate-300 leading-relaxed">
