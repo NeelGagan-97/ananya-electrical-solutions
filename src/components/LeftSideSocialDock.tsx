@@ -6,8 +6,8 @@ export const LeftSideSocialDock: React.FC = () => {
 
   const phoneNumber = '918660121438';
   const displayPhone = '+91 8660121438';
-  const instagramHandle = 'ananya.electrical.solutions';
-  const instagramUrl = 'https://www.instagram.com/ananya.electrical.solutions';
+  const instagramHandle = 'ananyaelectricalsolutions';
+  const instagramUrl = 'https://www.instagram.com/ananyaelectricalsolutions';
 
   const quickMessages = [
     { label: 'Substation & HT Panel Quote', text: 'Hello Ananya Electrical, I would like to request an engineering proposal for an 11kV/33kV Substation.' },

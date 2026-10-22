@@ -66,7 +66,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <img
               alt="Ananya Electrical Solutions Logo"
-              className="h-8 w-auto object-contain transition-transform group-hover:scale-105"
+              style={{ aspectRatio: '0.8 / 0.8', objectFit: 'contain' }}
+              className="h-11 w-auto object-contain rounded-md transition-transform group-hover:scale-105"
               src={ASSETS.logo}
             />
             <div className="flex flex-col">
