@@ -17,9 +17,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navLinks: { tab: NavigationTab; label: string }[] = [
+  const navLinks: { tab: NavigationTab; label: string; sectionId?: string }[] = [
     { tab: 'home', label: 'Home' },
-    { tab: 'electrical', label: 'Electrical' },
+    { tab: 'home', label: 'Electrical Services', sectionId: 'electrical-services' },
+    { tab: 'electrical', label: 'HT Substation' },
     { tab: 'solar-solutions', label: 'Solar Solutions' },
     { tab: 'services', label: 'Services' },
     { tab: 'projects-gallery', label: 'Projects Gallery' },
@@ -27,7 +28,25 @@ export const Navbar: React.FC<NavbarProps> = ({
     { tab: 'contact-us', label: 'Contact Us' },
   ];
 
-  const handleNavClick = (tab: NavigationTab) => {
+  const handleNavClick = (tab: NavigationTab, sectionId?: string) => {
+    if (sectionId) {
+      if (currentTab !== 'home') {
+        onSelectTab('home');
+        setTimeout(() => {
+          const el = document.getElementById(sectionId);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 150);
+      } else {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+      setMobileMenuOpen(false);
+      return;
+    }
     onSelectTab(tab);
     setMobileMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -93,11 +112,11 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Desktop Navigation Links */}
         <nav className="hidden xl:flex items-center gap-1">
           {navLinks.map((item) => {
-            const isActive = currentTab === item.tab;
+            const isActive = !item.sectionId && currentTab === item.tab;
             return (
               <button
-                key={item.tab}
-                onClick={() => handleNavClick(item.tab)}
+                key={`${item.tab}-${item.label}`}
+                onClick={() => handleNavClick(item.tab, item.sectionId)}
                 className={`px-3 py-2 text-[14px] font-semibold transition-all rounded-lg whitespace-nowrap cursor-pointer ${
                   isActive
                     ? 'bg-[#dce9ff] text-[#0b1c30] font-bold shadow-sm'
@@ -166,11 +185,11 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="xl:hidden bg-white border-b border-[#E2E8F0] px-4 pt-2 pb-6 shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
           <nav className="flex flex-col gap-1.5 mb-4">
             {navLinks.map((item) => {
-              const isActive = currentTab === item.tab;
+              const isActive = !item.sectionId && currentTab === item.tab;
               return (
                 <button
-                  key={item.tab}
-                  onClick={() => handleNavClick(item.tab)}
+                  key={`${item.tab}-${item.label}`}
+                  onClick={() => handleNavClick(item.tab, item.sectionId)}
                   className={`flex items-center justify-between px-4 py-2.5 rounded-lg text-left text-[15px] font-semibold transition-colors cursor-pointer ${
                     isActive
                       ? 'bg-[#dce9ff] text-[#0B192C] font-bold'

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavigationTab, EngineeringInquiry, ProjectItem } from '../types';
 import { ASSETS, SERVICES, PROJECTS, ESCOMS } from '../data/constants';
+import { ElectricalServicesSection } from '../components/ElectricalServicesSection';
 
 interface HomeScreenProps {
   onSelectTab: (tab: NavigationTab) => void;
@@ -490,6 +491,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </section>
 
+      {/* ================= OUR ELECTRICAL SERVICES (NEW SECTION) ================= */}
+      <ElectricalServicesSection onEnquire={(service) => onOpenConsultation(service)} />
+
       {/* ================= ABOUT ANANYA & TECHNICAL METRICS ================= */}
       <section className="w-full bg-white py-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -919,12 +923,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                       value={formCategory}
                       onChange={(e) => setFormCategory(e.target.value)}
                     >
-                      <option value="substation">Substation / HT Distribution (11kV - 110kV)</option>
-                      <option value="solar">Turnkey Solar EPC (Rooftop / Ground)</option>
-                      <option value="panels">LT Switchboards &amp; Control Panels</option>
-                      <option value="audit">Energy Audit &amp; Power Factor Correction</option>
-                      <option value="statutory">CEIG / KPTCL Statutory Liaison</option>
-                      <option value="amc">Industrial AMC &amp; Preventive Maintenance</option>
+                      <optgroup label="Residential Electrical Services">
+                        <option value="home-wiring">Home Wiring &amp; Rewiring</option>
+                        <option value="earthing-grounding">Earthing and Grounding (Safety Systems)</option>
+                        <option value="home-automation">Smart Home Automation &amp; Controls</option>
+                        <option value="layout-electrification">New Layout Electrification (Turnkey Residential)</option>
+                      </optgroup>
+                      <optgroup label="Industrial &amp; Commercial High Voltage">
+                        <option value="substation">Substation / HT Distribution (11kV - 110kV)</option>
+                        <option value="solar">Turnkey Solar EPC (Rooftop / Ground)</option>
+                        <option value="panels">LT Switchboards &amp; Control Panels</option>
+                        <option value="audit">Energy Audit &amp; Power Factor Correction</option>
+                        <option value="statutory">CEIG / KPTCL Statutory Liaison</option>
+                        <option value="amc">Industrial AMC &amp; Preventive Maintenance</option>
+                      </optgroup>
                     </select>
                   </div>
                   <div className="flex flex-col gap-1.5">

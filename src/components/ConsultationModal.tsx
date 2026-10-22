@@ -26,7 +26,30 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
   useEffect(() => {
     if (initialService) {
-      setCategory(initialService);
+      const lower = initialService.toLowerCase();
+      if (lower.includes('wiring')) {
+        setCategory('home-wiring');
+      } else if (lower.includes('earth') || lower.includes('ground')) {
+        setCategory('earthing-grounding');
+      } else if (lower.includes('automat') || lower.includes('smart')) {
+        setCategory('home-automation');
+      } else if (lower.includes('layout') || lower.includes('electrification')) {
+        setCategory('layout-electrification');
+      } else if (lower.includes('solar')) {
+        setCategory('solar');
+      } else if (lower.includes('panel') || lower.includes('switchboard')) {
+        setCategory('panels');
+      } else if (lower.includes('audit')) {
+        setCategory('audit');
+      } else if (lower.includes('statutory') || lower.includes('ceig')) {
+        setCategory('statutory');
+      } else if (lower.includes('testing') || lower.includes('hipot')) {
+        setCategory('testing');
+      } else if (lower.includes('amc') || lower.includes('maintenance')) {
+        setCategory('amc');
+      } else {
+        setCategory(initialService);
+      }
     }
   }, [initialService]);
 
@@ -178,13 +201,21 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                     onChange={(e) => setCategory(e.target.value)}
                     className="h-11 px-3.5 rounded-lg bg-[#F8FAFC] border border-[#CBD5E1] text-[14px] text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:bg-white cursor-pointer"
                   >
-                    <option value="substation">Substation / HT Distribution (11kV - 110kV)</option>
-                    <option value="solar">Turnkey Solar EPC (Rooftop / Ground Mount)</option>
-                    <option value="panels">LT Switchboards &amp; Control Panels (PCC/MCC)</option>
-                    <option value="audit">Energy Audit &amp; Power Factor Correction (APFC)</option>
-                    <option value="statutory">CEIG / KPTCL Statutory Liaison &amp; Sanctions</option>
-                    <option value="testing">Pre-Commissioning Hi-Pot &amp; Relay Testing</option>
-                    <option value="amc">Industrial AMC &amp; Preventive Maintenance</option>
+                    <optgroup label="Residential Electrical Services">
+                      <option value="home-wiring">Home Wiring &amp; Rewiring</option>
+                      <option value="earthing-grounding">Earthing and Grounding (Safety Systems)</option>
+                      <option value="home-automation">Smart Home Automation &amp; Controls</option>
+                      <option value="layout-electrification">New Layout Electrification (Turnkey Residential)</option>
+                    </optgroup>
+                    <optgroup label="Commercial &amp; Industrial High Voltage">
+                      <option value="substation">Substation / HT Distribution (11kV - 110kV)</option>
+                      <option value="solar">Turnkey Solar EPC (Rooftop / Ground Mount)</option>
+                      <option value="panels">LT Switchboards &amp; Control Panels (PCC/MCC)</option>
+                      <option value="audit">Energy Audit &amp; Power Factor Correction (APFC)</option>
+                      <option value="statutory">CEIG / KPTCL Statutory Liaison &amp; Sanctions</option>
+                      <option value="testing">Pre-Commissioning Hi-Pot &amp; Relay Testing</option>
+                      <option value="amc">Industrial AMC &amp; Preventive Maintenance</option>
+                    </optgroup>
                   </select>
                 </div>
 
