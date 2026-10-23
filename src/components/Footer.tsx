@@ -147,7 +147,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab }) => {
                 </a>
                 <span className="text-slate-300">•</span>
                 <a
-                  href="https://www.instagram.com/ananya.electrical.solutions"
+                  href="https://www.instagram.com/ananyaelectricalsolutions"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#dc2743] hover:underline"
