@@ -16,6 +16,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   inquiryCount = 0
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
+  const [mobileModelOpen, setMobileModelOpen] = useState(false);
 
   const navLinks: { tab: NavigationTab; label: string; sectionId?: string }[] = [
     { tab: 'home', label: 'Home' },
@@ -112,7 +114,129 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Desktop Navigation Links */}
         <nav className="hidden xl:flex items-center gap-1">
-          {navLinks.map((item) => {
+          {/* Home Button */}
+          <button
+            onClick={() => handleNavClick('home')}
+            className={`px-3 py-2 text-[14px] font-semibold transition-all rounded-lg whitespace-nowrap cursor-pointer ${
+              currentTab === 'home'
+                ? 'bg-[#dce9ff] text-[#0b1c30] font-bold shadow-sm'
+                : 'text-[#44474c] hover:text-[#0b1c30] hover:bg-[#e5eeff]'
+            }`}
+          >
+            Home
+          </button>
+
+          {/* 3D Model Dropdown */}
+          <div
+            className="relative"
+            onMouseEnter={() => setModelDropdownOpen(true)}
+            onMouseLeave={() => setModelDropdownOpen(false)}
+          >
+            <button
+              onClick={() => setModelDropdownOpen(!modelDropdownOpen)}
+              className={`px-3 py-2 text-[14px] font-semibold transition-all rounded-lg whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+                currentTab === 'residential-layout-3d' || currentTab === 'residential-3d' || currentTab === 'twin-3d'
+                  ? 'bg-[#dce9ff] text-[#0b1c30] font-bold shadow-sm'
+                  : 'text-[#0284c7] hover:bg-[#e0f2fe] font-bold'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[16px] text-[#0284c7]">3d_rotation</span>
+              <span>3D Model</span>
+              <span className="material-symbols-outlined text-[16px] text-[#0284c7] transition-transform duration-200">
+                {modelDropdownOpen ? 'expand_less' : 'expand_more'}
+              </span>
+            </button>
+
+            {/* Dropdown Menu */}
+            {modelDropdownOpen && (
+              <div className="absolute top-full left-0 w-88 bg-white rounded-xl shadow-xl border border-[#CBD5E1] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+                {/* 1. Residential Layout & Infrastructure Twin */}
+                <button
+                  onClick={() => {
+                    handleNavClick('residential-layout-3d');
+                    setModelDropdownOpen(false);
+                  }}
+                  className={`w-full px-4 py-2.5 text-left flex items-start gap-3 hover:bg-[#f0f9ff] transition-colors cursor-pointer ${
+                    currentTab === 'residential-layout-3d' ? 'bg-[#e0f2fe]' : ''
+                  }`}
+                >
+                  <span className="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center shrink-0 mt-0.5 border border-sky-200">
+                    <span className="material-symbols-outlined text-[18px]">map</span>
+                  </span>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[13px] font-bold text-[#0B192C]">Residential Layout &amp; Infra Twin</span>
+                      <span className="px-1.5 py-0.2 rounded bg-sky-100 text-sky-700 text-[9px] font-mono font-bold">
+                        SITE CAD
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-[#64748b]">
+                      Site roads, plots, 11kV DTR, underground XLPE &amp; BOQ
+                    </span>
+                  </div>
+                </button>
+
+                <div className="my-1 border-t border-[#F1F5F9]" />
+
+                {/* 2. Residential Interior 2BHK Twin */}
+                <button
+                  onClick={() => {
+                    handleNavClick('residential-3d');
+                    setModelDropdownOpen(false);
+                  }}
+                  className={`w-full px-4 py-2.5 text-left flex items-start gap-3 hover:bg-[#f0f9ff] transition-colors cursor-pointer ${
+                    currentTab === 'residential-3d' ? 'bg-[#e0f2fe]' : ''
+                  }`}
+                >
+                  <span className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5 border border-emerald-200">
+                    <span className="material-symbols-outlined text-[18px]">home</span>
+                  </span>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[13px] font-bold text-[#0B192C]">Residential 2BHK Interior Twin</span>
+                      <span className="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-700 text-[9px] font-mono font-bold">
+                        IS:732 CAD
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-[#64748b]">
+                      Concealed PVC wiring, DB with RCCB, switches &amp; fan
+                    </span>
+                  </div>
+                </button>
+
+                <div className="my-1 border-t border-[#F1F5F9]" />
+
+                {/* 3. 33kV Substation & Solar Yard */}
+                <button
+                  onClick={() => {
+                    handleNavClick('twin-3d');
+                    setModelDropdownOpen(false);
+                  }}
+                  className={`w-full px-4 py-2.5 text-left flex items-start gap-3 hover:bg-[#f0f9ff] transition-colors cursor-pointer ${
+                    currentTab === 'twin-3d' ? 'bg-[#e0f2fe]' : ''
+                  }`}
+                >
+                  <span className="w-8 h-8 rounded-lg bg-amber-50 text-[#d97706] flex items-center justify-center shrink-0 mt-0.5 border border-amber-200">
+                    <span className="material-symbols-outlined text-[18px]">electric_meter</span>
+                  </span>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[13px] font-bold text-[#0B192C]">33kV Substation &amp; Solar Yard</span>
+                      <span className="px-1.5 py-0.2 rounded bg-amber-100 text-amber-700 text-[9px] font-mono font-bold">
+                        33kV EPC
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-[#64748b]">
+                      Power transformers, VCB switchgear &amp; solar tracker
+                    </span>
+                  </div>
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Remaining Navigation Links */}
+          {navLinks.slice(1).map((item) => {
             const isActive = !item.sectionId && currentTab === item.tab;
             return (
               <button
@@ -181,7 +305,92 @@ export const Navbar: React.FC<NavbarProps> = ({
       {mobileMenuOpen && (
         <div className="xl:hidden bg-white border-b border-[#E2E8F0] px-4 pt-2 pb-6 shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
           <nav className="flex flex-col gap-1.5 mb-4">
-            {navLinks.map((item) => {
+            {/* Home Link */}
+            <button
+              onClick={() => handleNavClick('home')}
+              className={`flex items-center justify-between px-4 py-2.5 rounded-lg text-left text-[15px] font-semibold transition-colors cursor-pointer ${
+                currentTab === 'home'
+                  ? 'bg-[#dce9ff] text-[#0B192C] font-bold'
+                  : 'text-[#44474c] hover:bg-[#f8f9ff]'
+              }`}
+            >
+              <span>Home</span>
+              {currentTab === 'home' && <span className="material-symbols-outlined text-[16px] text-[#0284C7]">check</span>}
+            </button>
+
+            {/* 3D Model Section */}
+            <div className="border border-[#CBD5E1] rounded-xl overflow-hidden bg-[#F8FAFC]">
+              <button
+                onClick={() => setMobileModelOpen(!mobileModelOpen)}
+                className="w-full flex items-center justify-between px-4 py-2.5 text-left text-[15px] font-bold text-[#0284c7] bg-[#f0f9ff] cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[18px]">3d_rotation</span>
+                  <span>3D Model</span>
+                </div>
+                <span className="material-symbols-outlined text-[18px]">
+                  {mobileModelOpen ? 'expand_less' : 'expand_more'}
+                </span>
+              </button>
+
+              {mobileModelOpen && (
+                <div className="flex flex-col bg-white divide-y divide-[#F1F5F9]">
+                  <button
+                    onClick={() => handleNavClick('residential-layout-3d')}
+                    className={`px-5 py-2.5 text-left text-[14px] flex items-center justify-between cursor-pointer ${
+                      currentTab === 'residential-layout-3d'
+                        ? 'bg-[#dce9ff] text-[#0B192C] font-bold'
+                        : 'text-[#334155] hover:bg-[#f8f9ff]'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[16px] text-sky-600">map</span>
+                      <span>Residential Layout &amp; Infra Twin</span>
+                    </div>
+                    {currentTab === 'residential-layout-3d' && (
+                      <span className="material-symbols-outlined text-[16px] text-[#0284C7]">check</span>
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => handleNavClick('residential-3d')}
+                    className={`px-5 py-2.5 text-left text-[14px] flex items-center justify-between cursor-pointer ${
+                      currentTab === 'residential-3d'
+                        ? 'bg-[#dce9ff] text-[#0B192C] font-bold'
+                        : 'text-[#334155] hover:bg-[#f8f9ff]'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[16px] text-emerald-600">home</span>
+                      <span>Residential 2BHK Interior Twin</span>
+                    </div>
+                    {currentTab === 'residential-3d' && (
+                      <span className="material-symbols-outlined text-[16px] text-[#0284C7]">check</span>
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => handleNavClick('twin-3d')}
+                    className={`px-5 py-2.5 text-left text-[14px] flex items-center justify-between cursor-pointer ${
+                      currentTab === 'twin-3d'
+                        ? 'bg-[#dce9ff] text-[#0B192C] font-bold'
+                        : 'text-[#334155] hover:bg-[#f8f9ff]'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[16px] text-[#0284c7]">electric_meter</span>
+                      <span>33kV Substation &amp; Solar Yard</span>
+                    </div>
+                    {currentTab === 'twin-3d' && (
+                      <span className="material-symbols-outlined text-[16px] text-[#0284c7]">check</span>
+                    )}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Remaining Nav Links */}
+            {navLinks.slice(1).map((item) => {
               const isActive = !item.sectionId && currentTab === item.tab;
               return (
                 <button

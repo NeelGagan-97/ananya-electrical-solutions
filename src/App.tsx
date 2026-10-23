@@ -12,6 +12,10 @@ import { ProjectsGalleryScreen } from './screens/ProjectsGalleryScreen';
 import { AboutScreen } from './screens/AboutScreen';
 import { ContactScreen } from './screens/ContactScreen';
 
+import { Substation3DScreen } from './screens/Substation3DScreen';
+import { Residential3DScreen } from './screens/Residential3DScreen';
+import { ResidentialLayoutScreen } from './screens/ResidentialLayoutScreen';
+
 const STORAGE_KEY = 'aes_engineering_inquiries_v1';
 
 export default function App() {
@@ -33,6 +37,9 @@ export default function App() {
       const hash = window.location.hash.replace('#', '') as NavigationTab;
       const validTabs: NavigationTab[] = [
         'home',
+        'twin-3d',
+        'residential-3d',
+        'residential-layout-3d',
         'electrical',
         'solar-solutions',
         'services',
@@ -94,20 +101,48 @@ export default function App() {
           />
         )}
 
+        {currentTab === 'twin-3d' && (
+          <Substation3DScreen
+            onSelectTab={handleSelectTab}
+            onOpenConsultation={handleOpenConsultation}
+            onSwitchToResidential={() => handleSelectTab('residential-3d')}
+          />
+        )}
+
+        {currentTab === 'residential-3d' && (
+          <Residential3DScreen
+            onSelectTab={handleSelectTab}
+            onOpenConsultation={handleOpenConsultation}
+            onSwitchToSubstation={() => handleSelectTab('twin-3d')}
+          />
+        )}
+
+        {currentTab === 'residential-layout-3d' && (
+          <ResidentialLayoutScreen
+            onSelectTab={handleSelectTab}
+            onOpenConsultation={handleOpenConsultation}
+            onSwitchToInterior={() => handleSelectTab('residential-3d')}
+            onSwitchToSubstation={() => handleSelectTab('twin-3d')}
+          />
+        )}
+
         {currentTab === 'electrical' && (
           <ElectricalScreen
+            onSelectTab={handleSelectTab}
             onOpenConsultation={handleOpenConsultation}
           />
         )}
 
         {currentTab === 'solar-solutions' && (
           <SolarScreen
+            onSelectTab={handleSelectTab}
             onOpenConsultation={handleOpenConsultation}
           />
         )}
 
         {currentTab === 'services' && (
           <ServicesScreen
+            onSelectTab={handleSelectTab}
             onOpenConsultation={handleOpenConsultation}
           />
         )}
@@ -132,8 +167,8 @@ export default function App() {
         )}
       </main>
 
-      {/* Institutional Footer */}
-      <Footer onSelectTab={handleSelectTab} />
+      {/* Institutional Footer (omitted on full-bleed 3D Digital Twins) */}
+      {currentTab !== 'twin-3d' && currentTab !== 'residential-3d' && <Footer onSelectTab={handleSelectTab} />}
 
       {/* Global Consultation / Proposal Modal */}
       <ConsultationModal

@@ -8,8 +8,11 @@ import {
   ServiceCategoryKey
 } from '../components/ServiceCategoryIcons';
 
+import { NavigationTab } from '../types';
+
 interface ServicesScreenProps {
   onOpenConsultation: (service?: string) => void;
+  onSelectTab?: (tab: NavigationTab) => void;
 }
 
 interface CategoryMeta {
@@ -19,7 +22,7 @@ interface CategoryMeta {
   voltageScope: string;
 }
 
-export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultation }) => {
+export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultation, onSelectTab }) => {
   const [activeCategory, setActiveCategory] = useState<ServiceCategoryKey>('all');
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
 
@@ -81,6 +84,24 @@ export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultati
           <p className="font-body-lg text-slate-300 max-w-3xl leading-relaxed">
             From initial Single Line Diagram (SLD) engineering and civil switchyard execution to pre-commissioning testing, CEIG safety clearances, and 24/7 preventative AMC.
           </p>
+          {onSelectTab && (
+            <div className="flex flex-wrap items-center gap-3 pt-3">
+              <button
+                onClick={() => onSelectTab('residential-3d')}
+                className="h-10 px-5 rounded-lg bg-[#10b981] hover:bg-[#059669] text-white text-xs font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[16px]">home</span>
+                <span>3D Residential Twin (2BHK)</span>
+              </button>
+              <button
+                onClick={() => onSelectTab('twin-3d')}
+                className="h-10 px-5 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white border border-[#38bdf8]/50 text-xs font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[16px] text-[#38bdf8]">3d_rotation</span>
+                <span>3D Industrial Substation Twin</span>
+              </button>
+            </div>
+          )}
         </div>
       </section>
 

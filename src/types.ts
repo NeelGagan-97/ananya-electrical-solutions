@@ -1,5 +1,8 @@
 export type NavigationTab = 
   | 'home' 
+  | 'twin-3d'
+  | 'residential-3d'
+  | 'residential-layout-3d'
   | 'electrical' 
   | 'solar-solutions' 
   | 'services' 

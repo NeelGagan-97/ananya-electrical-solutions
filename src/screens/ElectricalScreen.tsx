@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { ASSETS } from '../data/constants';
 
+import { NavigationTab } from '../types';
+
 interface ElectricalScreenProps {
   onOpenConsultation: (service?: string) => void;
+  onSelectTab?: (tab: NavigationTab) => void;
 }
 
-export const ElectricalScreen: React.FC<ElectricalScreenProps> = ({ onOpenConsultation }) => {
+export const ElectricalScreen: React.FC<ElectricalScreenProps> = ({ onOpenConsultation, onSelectTab }) => {
   // Calculator state
   const [loadKw, setLoadKw] = useState(800);
   const [powerFactor, setPowerFactor] = useState(0.85);
@@ -91,6 +94,15 @@ export const ElectricalScreen: React.FC<ElectricalScreenProps> = ({ onOpenConsul
               <span className="material-symbols-outlined text-[18px]">request_quote</span>
               Request Substation Feasibility Review
             </button>
+            {onSelectTab && (
+              <button
+                onClick={() => onSelectTab('twin-3d')}
+                className="h-11 px-6 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white border border-[#38bdf8]/50 text-[14px] font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[18px] text-[#38bdf8]">3d_rotation</span>
+                <span>Inspect in 3D Yard Twin</span>
+              </button>
+            )}
             <div className="flex items-center gap-2 text-slate-400 text-[13px]">
               <span className="material-symbols-outlined text-emerald-400 text-[16px]">verified</span>
               CEIG Sanctioned &amp; KPTCL Interconnection Compliant

@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { ASSETS } from '../data/constants';
 
+import { NavigationTab } from '../types';
+
 interface SolarScreenProps {
   onOpenConsultation: (service?: string) => void;
+  onSelectTab?: (tab: NavigationTab) => void;
 }
 
-export const SolarScreen: React.FC<SolarScreenProps> = ({ onOpenConsultation }) => {
+export const SolarScreen: React.FC<SolarScreenProps> = ({ onOpenConsultation, onSelectTab }) => {
   // Calculator inputs
   const [monthlyBill, setMonthlyBill] = useState(150000); // 1.5 Lakhs default
   const [roofAreaSqFt, setRoofAreaSqFt] = useState(12000); // 12,000 sq ft
@@ -51,6 +54,15 @@ export const SolarScreen: React.FC<SolarScreenProps> = ({ onOpenConsultation }) 
               <span className="material-symbols-outlined text-[18px]">solar_power</span>
               Request Solar Site Assessment
             </button>
+            {onSelectTab && (
+              <button
+                onClick={() => onSelectTab('twin-3d')}
+                className="h-11 px-6 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white border border-[#38bdf8]/50 text-[14px] font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[18px] text-[#38bdf8]">3d_rotation</span>
+                <span>View 3D Solar Array</span>
+              </button>
+            )}
             <div className="flex items-center gap-2 text-slate-400 text-[13px]">
               <span className="material-symbols-outlined text-emerald-400 text-[16px]">verified</span>
               KERC Net Metering &amp; Grid-Parallel Clearance Guaranteed
