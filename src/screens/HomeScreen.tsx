@@ -167,7 +167,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <div className="lg:col-span-5 flex flex-col items-center justify-center gap-4">
               <div className="w-full flex items-center justify-center overflow-hidden">
                 <video
-                  src="/assets/aistudio/Create_electrical_company_logo_1080p_20261023021333_40cc3616.mp4"
+                  src="/assets/aistudio/Animated_electrical_logo_reveal_1080p_20261023131504_cc86adb8.mp4"
                   autoPlay
                   loop
                   muted
