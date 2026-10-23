@@ -132,18 +132,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right CTA & Direct Call & Mobile Toggle */}
         <div className="flex items-center gap-3 shrink-0">
-          <div className="hidden md:flex flex-col text-right pr-2">
-            <span className="text-[12px] text-[#44474c] uppercase tracking-wider flex items-center justify-end gap-1 font-semibold">
-              <span className="material-symbols-outlined text-[14px] text-[#F59E0B]">phone_in_talk</span>
-              24/7 Grid Support
-            </span>
-            <a
-              href="tel:+918660121438"
-              className="text-[14px] text-[#0B192C] font-bold hover:text-[#0284C7] transition-colors whitespace-nowrap"
-            >
-              +91 8660121438
-            </a>
-          </div>
+          <a
+            href="tel:+918660121438"
+            className="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-amber-50/80 hover:bg-amber-100/90 border border-amber-200/80 text-[#0B192C] hover:text-[#0284C7] text-[13px] font-bold uppercase tracking-wider transition-all group cursor-pointer shadow-xs"
+            title="Call 24/7 Grid Support"
+          >
+            <span className="material-symbols-outlined text-[16px] text-[#D97706] group-hover:scale-110 transition-transform">phone_in_talk</span>
+            <span>24/7 Grid Support</span>
+          </a>
 
           <button
             onClick={() => onOpenConsultation()}
@@ -205,12 +201,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           <div className="pt-3 border-t border-[#E2E8F0] flex flex-col gap-3">
-            <div className="flex items-center justify-between px-2">
-              <span className="text-[12px] text-[#44474c] uppercase tracking-wider font-semibold">24/7 Grid Dispatch</span>
-              <a href="tel:+918660121438" className="text-[14px] text-[#0284C7] font-bold">
-                +91 8660121438
-              </a>
-            </div>
+            <a
+              href="tel:+918660121438"
+              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-amber-50 border border-amber-200 text-[#0B192C] font-bold text-[13px] uppercase tracking-wider hover:bg-amber-100 transition-colors"
+            >
+              <span className="material-symbols-outlined text-[18px] text-[#D97706]">phone_in_talk</span>
+              <span>24/7 Grid Support</span>
+            </a>
             <button
               onClick={() => {
                 setMobileMenuOpen(false);

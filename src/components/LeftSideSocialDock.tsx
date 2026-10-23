@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 export const LeftSideSocialDock: React.FC = () => {
   const [showWhatsAppMenu, setShowWhatsAppMenu] = useState(false);
-  const [showVideoModal, setShowVideoModal] = useState(false);
 
   const phoneNumber = '918660121438';
   const displayPhone = '+91 8660121438';
@@ -133,58 +132,7 @@ export const LeftSideSocialDock: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Brand Video Intro Button (Using User Uploaded Video) */}
-        <div className="relative group">
-          <button
-            onClick={() => setShowVideoModal(true)}
-            aria-label="Play Brand Video Reveal"
-            className="w-10 h-10 rounded-full bg-[#0B192C] hover:bg-[#006398] text-[#F59E0B] flex items-center justify-center shadow-md hover:scale-105 transition-all cursor-pointer border border-slate-700"
-          >
-            <span className="material-symbols-outlined text-[20px]">play_circle</span>
-          </button>
-
-          {/* Desktop Hover Tooltip */}
-          <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 hidden group-hover:flex items-center pointer-events-none transition-all duration-200">
-            <div className="bg-[#0B192C] text-white text-[12px] font-semibold px-3 py-1.5 rounded-lg whitespace-nowrap shadow-xl border border-slate-700 flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[14px] text-[#F59E0B]">movie</span>
-              <span>Watch Brand Logo Reveal</span>
-            </div>
-          </div>
-        </div>
       </aside>
-
-      {/* Brand Video Reveal Modal */}
-      {showVideoModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative w-full max-w-2xl bg-[#0B192C] rounded-2xl overflow-hidden shadow-2xl border border-slate-700 flex flex-col">
-            <div className="p-4 flex items-center justify-between border-b border-slate-800 text-white">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#F59E0B] text-[20px]">bolt</span>
-                <span className="font-bold text-[14px]">Ananya Electrical Solutions • Official Brand Reveal</span>
-              </div>
-              <button
-                onClick={() => setShowVideoModal(false)}
-                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="relative aspect-video w-full bg-black flex items-center justify-center">
-              <video
-                src="/assets/aistudio/Create_electrical_company_logo_1080p_20261023021333_40cc3616.mp4"
-                controls
-                autoPlay
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <div className="p-4 bg-[#1E293B] text-slate-300 text-[12px] flex items-center justify-between">
-              <span>Super Grade Electrical Contractor in Karnataka</span>
-              <span className="font-mono text-[#5bb8fe]">Class-1 PWD • CEIG Sanctioned</span>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };

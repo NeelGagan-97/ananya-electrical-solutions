@@ -103,10 +103,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <span className="material-symbols-outlined text-[16px] text-[#F59E0B]">verified</span>
               Karnataka Electrical Inspectorate • Super Grade Licensed Contractor
             </div>
-            <div className="hidden sm:flex items-center gap-3 text-[12px] text-slate-300">
-              <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>HT/LT Dispatch &amp; Solar EPC Active across Karnataka</span>
-            </div>
           </div>
 
           {/* Main Hero Split Content */}
@@ -167,33 +163,30 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </div>
             </div>
 
-            {/* Hero Visual Showcase */}
-            <div className="lg:col-span-5 flex flex-col gap-4">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-[#1E293B] border border-slate-700">
-                <img
-                  className="w-full h-80 object-cover"
-                  alt="High-voltage power transmission tower with electrical switchgear substation and solar panels"
-                  src={ASSETS.hero}
+            {/* Hero Visual Showcase: Only video, no background */}
+            <div className="lg:col-span-5 flex flex-col items-center justify-center gap-4">
+              <div className="w-full flex items-center justify-center overflow-hidden">
+                <video
+                  src="/assets/aistudio/Create_electrical_company_logo_1080p_20261023021333_40cc3616.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  style={{ aspectRatio: '1.5 / 1.5' }}
+                  className="w-full max-w-[420px] aspect-[1.5/1.5] object-cover object-center rounded-2xl overflow-hidden"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C] via-transparent to-transparent"></div>
-                <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-[#0B192C]/90 backdrop-blur-md flex items-center justify-between border border-slate-700/50">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-[#0284C7]/20 flex items-center justify-center text-[#5bb8fe]">
-                      <span className="material-symbols-outlined text-[22px]">electrical_services</span>
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-[14px] font-bold text-white">Utility &amp; Grid EPC</span>
-                      <span className="text-[13px] text-slate-400">Substations &amp; Rooftop PV</span>
-                    </div>
-                  </div>
-                  <span className="px-2.5 py-1 rounded bg-[#F59E0B]/20 text-[#F59E0B] text-[12px] font-semibold uppercase">
-                    Super Grade
-                  </span>
-                </div>
+              </div>
+
+              {/* Status Below Video with Exact Vertical Alignment */}
+              <div className="flex items-center justify-center gap-2 text-center px-2 py-1">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0 -translate-y-[1px]"></span>
+                <span className="text-[16px] sm:text-[18px] font-bold text-white tracking-wide leading-none">
+                  HT/LT Dispatch &amp; Solar EPC Active across Karnataka
+                </span>
               </div>
 
               {/* Quick Telemetry Ticker */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3 w-full">
                 <div className="p-4 rounded-xl bg-[#1E293B] text-white flex flex-col gap-1 border border-slate-800">
                   <div className="flex items-center justify-between">
                     <span className="text-[12px] text-slate-400 uppercase tracking-wider">Substations Delivered</span>
