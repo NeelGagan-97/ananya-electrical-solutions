@@ -125,66 +125,74 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 Welcome to Ananya Electrical Solutions. We specialize in delivering safe, efficient, and innovative electrical services tailored to meet the needs of homes, businesses, and industrial facilities. From design and installation to maintenance and troubleshooting, our expert team is committed to powering your world with precision, professionalism, and care. Whether you're upgrading your system, building from the ground up, or looking for energy-efficient alternatives — we bring the expertise and reliability you can trust.
               </p>
 
-              {/* CTAs */}
-              <div className="flex flex-wrap items-center gap-3 pt-2">
-                <button
-                  onClick={() => onSelectTab('residential-layout-3d')}
-                  className="inline-flex items-center justify-center h-12 px-5 rounded-lg bg-gradient-to-r from-[#0284c7] via-[#0369a1] to-[#0f172a] hover:from-[#0369a1] hover:to-[#0284c7] text-white text-[14px] font-bold shadow-lg shadow-sky-500/25 transition-all hover:-translate-y-0.5 cursor-pointer border border-[#38bdf8]/40"
-                >
-                  <span className="material-symbols-outlined text-[20px] mr-1.5 text-[#38bdf8]">map</span>
-                  3D Layout &amp; Infra
-                </button>
-                <button
-                  onClick={() => onSelectTab('residential-3d')}
-                  className="inline-flex items-center justify-center h-12 px-5 rounded-lg bg-gradient-to-r from-[#10b981] via-[#059669] to-[#047857] hover:from-[#059669] hover:to-[#10b981] text-white text-[14px] font-bold shadow-lg shadow-emerald-500/25 transition-all hover:-translate-y-0.5 cursor-pointer border border-[#34d399]/40"
-                >
-                  <span className="material-symbols-outlined text-[20px] mr-1.5 text-[#a7f3d0]">home</span>
-                  3D 2BHK Interior
-                </button>
-                <button
-                  onClick={() => onSelectTab('twin-3d')}
-                  className="inline-flex items-center justify-center h-12 px-5 rounded-lg bg-gradient-to-r from-[#f59e0b] via-[#d97706] to-[#b45309] hover:from-[#d97706] hover:to-[#f59e0b] text-slate-950 text-[14px] font-bold shadow-lg shadow-amber-500/25 transition-all hover:-translate-y-0.5 cursor-pointer border border-[#fde047]/40"
-                >
-                  <span className="material-symbols-outlined text-[20px] mr-1.5 text-slate-950">electric_meter</span>
-                  33kV Substation
-                </button>
-                <button
-                  onClick={() => onSelectTab('services')}
-                  className="inline-flex items-center justify-center h-12 px-5 rounded-lg bg-[#0284C7] hover:bg-[#2563EB] text-white text-[14px] font-bold shadow-md transition-all hover:-translate-y-0.5 cursor-pointer"
-                >
-                  <span className="material-symbols-outlined text-[18px] mr-1.5">precision_manufacturing</span>
-                  Services
-                </button>
-                <button
-                  onClick={() => {
-                    const el = document.getElementById('consultation');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                    else onOpenConsultation();
-                  }}
-                  className="inline-flex items-center justify-center h-12 px-5 rounded-lg bg-[#1E293B]/90 hover:bg-[#1E293B] text-white text-[14px] font-bold shadow-md transition-all hover:-translate-y-0.5 cursor-pointer"
-                >
-                  <span className="material-symbols-outlined text-[18px] mr-1.5 text-[#F59E0B]">request_quote</span>
-                  Request Quote
-                </button>
+              {/* CTAs: Structured 3D Twin Launchers + Primary Actions */}
+              <div className="flex flex-col gap-3 pt-2 max-w-2xl">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <button
+                    onClick={() => onSelectTab('residential-layout-3d')}
+                    className="inline-flex items-center justify-center h-11 px-4 rounded-lg bg-gradient-to-r from-[#0284c7] via-[#0369a1] to-[#0f172a] hover:from-[#0369a1] hover:to-[#0284c7] text-white text-[13px] font-bold shadow-lg shadow-sky-500/20 transition-all hover:-translate-y-0.5 cursor-pointer border border-[#38bdf8]/40 whitespace-nowrap"
+                  >
+                    <span className="material-symbols-outlined text-[18px] mr-1.5 text-[#38bdf8] leading-none shrink-0">map</span>
+                    <span>3D Layout &amp; Infra</span>
+                  </button>
+                  <button
+                    onClick={() => onSelectTab('residential-3d')}
+                    className="inline-flex items-center justify-center h-11 px-4 rounded-lg bg-gradient-to-r from-[#10b981] via-[#059669] to-[#047857] hover:from-[#059669] hover:to-[#10b981] text-white text-[13px] font-bold shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5 cursor-pointer border border-[#34d399]/40 whitespace-nowrap"
+                  >
+                    <span className="material-symbols-outlined text-[18px] mr-1.5 text-[#a7f3d0] leading-none shrink-0">home</span>
+                    <span>3D 2BHK Interior</span>
+                  </button>
+                  <button
+                    onClick={() => onSelectTab('twin-3d')}
+                    className="inline-flex items-center justify-center h-11 px-4 rounded-lg bg-gradient-to-r from-[#f59e0b] via-[#d97706] to-[#b45309] hover:from-[#d97706] hover:to-[#f59e0b] text-slate-950 text-[13px] font-bold shadow-lg shadow-amber-500/20 transition-all hover:-translate-y-0.5 cursor-pointer border border-[#fde047]/40 whitespace-nowrap"
+                  >
+                    <span className="material-symbols-outlined text-[18px] mr-1.5 text-slate-950 leading-none shrink-0">electric_meter</span>
+                    <span>33kV Substation</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <button
+                    onClick={() => onSelectTab('services')}
+                    className="inline-flex items-center justify-center h-11 px-5 rounded-lg bg-[#0284C7] hover:bg-[#2563EB] text-white text-[13.5px] font-bold shadow-md transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
+                  >
+                    <span className="material-symbols-outlined text-[18px] mr-1.5 leading-none shrink-0">precision_manufacturing</span>
+                    <span>Explore All Engineering Services</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      const el = document.getElementById('consultation');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                      else onOpenConsultation();
+                    }}
+                    className="inline-flex items-center justify-center h-11 px-5 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white text-[13.5px] font-bold shadow-md transition-all hover:-translate-y-0.5 cursor-pointer border border-slate-700 whitespace-nowrap"
+                  >
+                    <span className="material-symbols-outlined text-[18px] mr-1.5 text-[#F59E0B] leading-none shrink-0">request_quote</span>
+                    <span>Request Technical Quote</span>
+                  </button>
+                </div>
               </div>
 
               {/* Micro Spec Tags */}
-              <div className="flex flex-wrap items-center gap-3 pt-4 text-slate-400 text-[12px]">
-                <span className="flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[16px] text-[#0284C7]">offline_bolt</span> 11kV – 110kV Transmission
+              <div className="flex flex-wrap items-center gap-3 pt-2 text-slate-400 text-[12px]">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-[16px] text-[#0284C7] leading-none">offline_bolt</span>
+                  <span>11kV – 110kV Transmission</span>
                 </span>
                 <span className="text-slate-600">•</span>
-                <span className="flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[16px] text-[#F59E0B]">solar_power</span> Net-Metered Solar EPC
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-[16px] text-[#F59E0B] leading-none">solar_power</span>
+                  <span>Net-Metered Solar EPC</span>
                 </span>
                 <span className="text-slate-600">•</span>
-                <span className="flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[16px] text-emerald-400">gavel</span> KPTCL &amp; BESCOM Approved
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-[16px] text-emerald-400 leading-none">gavel</span>
+                  <span>KPTCL &amp; BESCOM Approved</span>
                 </span>
               </div>
             </div>
 
-            {/* Hero Visual Showcase: Only video, no background */}
+            {/* Hero Visual Showcase: Video + Telemetry */}
             <div className="lg:col-span-5 flex flex-col items-center justify-center gap-4">
               <div className="w-full flex items-center justify-center overflow-hidden">
                 <video
@@ -199,63 +207,63 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </div>
 
               {/* Status Below Video with Exact Vertical Alignment */}
-              <div className="flex items-center justify-center gap-2 text-center px-2 py-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0 -translate-y-[1px]"></span>
-                <span className="text-[16px] sm:text-[18px] font-bold text-white tracking-wide leading-none">
+              <div className="inline-flex items-center justify-center gap-2 text-center px-3 py-1.5 rounded-full bg-[#1E293B]/80 border border-slate-700/80">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+                <span className="text-[13px] sm:text-[14px] font-bold text-white tracking-wide leading-none">
                   HT/LT Dispatch &amp; Solar EPC Active across Karnataka
                 </span>
               </div>
 
               {/* Quick Telemetry Ticker */}
-              <div className="grid grid-cols-2 gap-3 w-full">
-                <div className="p-4 rounded-xl bg-[#1E293B] text-white flex flex-col gap-1 border border-slate-800">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[12px] text-slate-400 uppercase tracking-wider">Substations Delivered</span>
-                    <span className="material-symbols-outlined text-[#0284C7] text-[18px]">domain</span>
+              <div className="grid grid-cols-2 gap-3 w-full items-stretch">
+                <div className="p-4 rounded-xl bg-[#1E293B] text-white flex flex-col justify-between gap-1 border border-slate-800 h-full">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Substations Delivered</span>
+                    <span className="material-symbols-outlined text-[#0284C7] text-[18px] leading-none shrink-0">domain</span>
                   </div>
-                  <span className="font-stat-counter text-white">150+ MVA</span>
-                  <span className="text-[13px] text-slate-400">Aggregated Connected Load</span>
+                  <span className="font-stat-counter text-white text-[26px] sm:text-[30px]">150+ MVA</span>
+                  <span className="text-[12px] text-slate-400">Aggregated Connected Load</span>
                 </div>
-                <div className="p-4 rounded-xl bg-[#1E293B] text-white flex flex-col gap-1 border border-slate-800">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[12px] text-slate-400 uppercase tracking-wider">Solar Capacity</span>
-                    <span className="material-symbols-outlined text-[#F59E0B] text-[18px]">wb_sunny</span>
+                <div className="p-4 rounded-xl bg-[#1E293B] text-white flex flex-col justify-between gap-1 border border-slate-800 h-full">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Solar Capacity</span>
+                    <span className="material-symbols-outlined text-[#F59E0B] text-[18px] leading-none shrink-0">wb_sunny</span>
                   </div>
-                  <span className="font-stat-counter text-white">45+ MWp</span>
-                  <span className="text-[13px] text-slate-400">Clean Industrial Energy</span>
+                  <span className="font-stat-counter text-white text-[26px] sm:text-[30px]">45+ MWp</span>
+                  <span className="text-[12px] text-slate-400">Clean Industrial Energy</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Trust Badges & Stat Row */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-800">
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-[#1E293B]/40 border border-slate-800/60">
-              <span className="material-symbols-outlined text-[#F59E0B] text-[28px] shrink-0">verified_user</span>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-800 items-stretch">
+            <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#1E293B]/50 border border-slate-800/80 h-full">
+              <span className="material-symbols-outlined text-[#F59E0B] text-[28px] shrink-0 leading-none">verified_user</span>
               <div className="flex flex-col">
-                <span className="text-[14px] font-bold text-white">Super Grade License</span>
-                <span className="text-[13px] text-slate-400">Govt. of Karnataka</span>
+                <span className="text-[14px] font-bold text-white leading-snug">Super Grade License</span>
+                <span className="text-[12px] text-slate-400">Govt. of Karnataka</span>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-[#1E293B]/40 border border-slate-800/60">
-              <span className="material-symbols-outlined text-[#5bb8fe] text-[28px] shrink-0">calendar_month</span>
+            <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#1E293B]/50 border border-slate-800/80 h-full">
+              <span className="material-symbols-outlined text-[#5bb8fe] text-[28px] shrink-0 leading-none">calendar_month</span>
               <div className="flex flex-col">
-                <span className="text-[14px] font-bold text-white">5+ Years Excellence</span>
-                <span className="text-[13px] text-slate-400">Serving Since 2020</span>
+                <span className="text-[14px] font-bold text-white leading-snug">5+ Years Excellence</span>
+                <span className="text-[12px] text-slate-400">Serving Since 2020</span>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-[#1E293B]/40 border border-slate-800/60">
-              <span className="material-symbols-outlined text-emerald-400 text-[28px] shrink-0">security</span>
+            <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#1E293B]/50 border border-slate-800/80 h-full">
+              <span className="material-symbols-outlined text-emerald-400 text-[28px] shrink-0 leading-none">security</span>
               <div className="flex flex-col">
-                <span className="text-[14px] font-bold text-white">100% Safety Compliance</span>
-                <span className="text-[13px] text-slate-400">Zero Deviation Protocols</span>
+                <span className="text-[14px] font-bold text-white leading-snug">100% Safety Compliance</span>
+                <span className="text-[12px] text-slate-400">Zero Deviation Protocols</span>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-[#1E293B]/40 border border-slate-800/60">
-              <span className="material-symbols-outlined text-[#0284C7] text-[28px] shrink-0">map</span>
+            <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#1E293B]/50 border border-slate-800/80 h-full">
+              <span className="material-symbols-outlined text-[#0284C7] text-[28px] shrink-0 leading-none">map</span>
               <div className="flex flex-col">
-                <span className="text-[14px] font-bold text-white">Pan-Karnataka Reach</span>
-                <span className="text-[13px] text-slate-400">Rapid Response Mobilization</span>
+                <span className="text-[14px] font-bold text-white leading-snug">Pan-Karnataka Reach</span>
+                <span className="text-[12px] text-slate-400">Rapid Response Mobilization</span>
               </div>
             </div>
           </div>
@@ -545,101 +553,127 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <ElectricalServicesSection onEnquire={(service) => onOpenConsultation(service)} />
 
       {/* ================= ABOUT ANANYA & TECHNICAL METRICS ================= */}
-      <section className="w-full bg-white py-20">
+      <section className="w-full bg-white py-20" id="about-us">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch">
             {/* Visual Collage */}
-            <div className="lg:col-span-5 flex flex-col gap-4">
-              <div className="relative rounded-2xl overflow-hidden shadow-lg border border-[#CBD5E1]">
+            <div className="lg:col-span-5 flex flex-col justify-between gap-4">
+              <div className="relative flex-1 min-h-[320px] rounded-2xl overflow-hidden shadow-lg border border-[#CBD5E1] flex flex-col justify-end">
                 <img
-                  className="w-full h-80 object-cover"
+                  className="absolute inset-0 w-full h-full object-cover"
                   alt="Electrical engineers in reflective vests and hard hats inspecting high-power breaker equipment"
                   src={ASSETS.aboutExecution}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C]/80 via-transparent to-transparent"></div>
-                <div className="absolute bottom-4 left-4 right-4 text-white">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C]/90 via-[#0B192C]/25 to-transparent"></div>
+                <div className="relative z-10 p-5 text-white flex flex-col gap-0.5">
                   <span className="text-[12px] uppercase tracking-wider text-[#5bb8fe] font-semibold">
                     Field Execution
                   </span>
-                  <p className="font-headline-sm font-bold">Rigorous Safety &amp; Zero Deviation Protocols</p>
+                  <p className="font-headline-sm font-bold text-white">
+                    Rigorous Safety &amp; Zero Deviation Protocols
+                  </p>
                 </div>
               </div>
 
-              <div className="p-6 rounded-2xl bg-[#e5eeff] flex items-center justify-between gap-4 border border-[#CBD5E1]/60">
-                <div className="flex flex-col">
-                  <span className="text-[12px] text-[#44474c] uppercase font-semibold">Licensing Authority</span>
-                  <span className="font-headline-sm font-bold text-[#0B192C]">
+              <div className="p-5 rounded-2xl bg-[#e5eeff] flex items-center justify-between gap-4 border border-[#CBD5E1]/60 shrink-0">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-[#44474c] uppercase font-bold tracking-wider">
+                    Licensing Authority
+                  </span>
+                  <span className="font-headline-sm text-[17px] font-bold text-[#0B192C]">
                     Electrical Inspectorate, Karnataka
                   </span>
                 </div>
-                <span className="px-3 py-1.5 rounded-lg bg-[#FEF3C7] text-[#2a1700] text-[13px] font-bold">
+                <span className="px-3 py-1.5 rounded-lg bg-[#FEF3C7] text-[#2a1700] text-[12px] font-bold tracking-wider uppercase shrink-0">
                   SUPER GRADE
                 </span>
               </div>
             </div>
 
             {/* Copy & Metrics */}
-            <div className="lg:col-span-7 flex flex-col gap-6">
-              <div className="flex flex-col gap-2">
-                <span className="text-[14px] uppercase tracking-wider text-[#0284C7] font-bold">
+            <div className="lg:col-span-7 flex flex-col justify-between gap-6">
+              <div className="flex flex-col gap-3">
+                <span className="text-[13px] uppercase tracking-wider text-[#0284C7] font-bold">
                   About Our Enterprise
                 </span>
                 <h2 className="font-headline-lg text-[#0B192C] font-bold">
                   Precision Infrastructure Built on Trust and Rigor
                 </h2>
-              </div>
-              <p className="font-body-lg text-[#44474c] leading-relaxed">
-                Founded in 2020, Ananya Electrical Solutions has swiftly become one of Karnataka's most trusted Super Grade electrical engineering partners. We bridge the critical gap between complex utility requirements and reliable industrial power systems.
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div className="p-4 rounded-xl bg-[#f8f9ff] flex items-start gap-3 border border-[#E2E8F0]">
-                  <span className="material-symbols-outlined text-[#F59E0B] text-[24px] shrink-0">workspace_premium</span>
-                  <div className="flex flex-col">
-                    <span className="font-headline-sm text-[16px] text-[#0B192C] font-bold">Super Grade Certified</span>
-                    <span className="font-body-sm text-[#44474c]">Authorized for multi-megawatt high-voltage works throughout Karnataka state.</span>
-                  </div>
-                </div>
-
-                <div className="p-4 rounded-xl bg-[#f8f9ff] flex items-start gap-3 border border-[#E2E8F0]">
-                  <span className="material-symbols-outlined text-[#0284C7] text-[24px] shrink-0">engineering</span>
-                  <div className="flex flex-col">
-                    <span className="font-headline-sm text-[16px] text-[#0B192C] font-bold">Master In-House Engineers</span>
-                    <span className="font-body-sm text-[#44474c]">Qualified electrical supervisors and certified solar project technicians.</span>
-                  </div>
-                </div>
-
-                <div className="p-4 rounded-xl bg-[#f8f9ff] flex items-start gap-3 border border-[#E2E8F0]">
-                  <span className="material-symbols-outlined text-emerald-600 text-[24px] shrink-0">health_and_safety</span>
-                  <div className="flex flex-col">
-                    <span className="font-headline-sm text-[16px] text-[#0B192C] font-bold">100% Safety Compliance</span>
-                    <span className="font-body-sm text-[#44474c]">Strict compliance with Indian Electricity Rules (IER) and CEA safety standards.</span>
-                  </div>
-                </div>
-
-                <div className="p-4 rounded-xl bg-[#f8f9ff] flex items-start gap-3 border border-[#E2E8F0]">
-                  <span className="material-symbols-outlined text-[#006398] text-[24px] shrink-0">handshake</span>
-                  <div className="flex flex-col">
-                    <span className="font-headline-sm text-[16px] text-[#0B192C] font-bold">Single-Window Delivery</span>
-                    <span className="font-body-sm text-[#44474c]">Concept to commissioning, including complete board and ESCOM approvals.</span>
-                  </div>
-                </div>
+                <p className="font-body-lg text-[#44474c] leading-relaxed">
+                  Founded in 2020, Ananya Electrical Solutions has swiftly become one of Karnataka&apos;s most trusted Super Grade electrical engineering partners. We bridge the critical gap between complex utility requirements and reliable industrial power systems.
+                </p>
               </div>
 
-              <div className="pt-2 flex items-center gap-6">
-                <div className="flex flex-col">
-                  <span className="font-stat-counter text-[#0B192C]">5+</span>
-                  <span className="font-body-sm text-[#44474c]">Years Industry Leadership</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
+                <div className="p-4 rounded-xl bg-[#f8f9ff] flex items-start gap-3.5 border border-[#E2E8F0] h-full">
+                  <div className="w-10 h-10 rounded-lg bg-[#FEF3C7] text-[#D97706] flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="material-symbols-outlined text-[22px] leading-none">workspace_premium</span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="font-headline-sm text-[15px] text-[#0B192C] font-bold leading-snug">
+                      Super Grade Certified
+                    </span>
+                    <span className="font-body-sm text-[#44474c] leading-relaxed">
+                      Authorized for multi-megawatt high-voltage works throughout Karnataka state.
+                    </span>
+                  </div>
                 </div>
-                <div className="w-px h-12 bg-[#E2E8F0]"></div>
-                <div className="flex flex-col">
-                  <span className="font-stat-counter text-[#0284C7]">100%</span>
-                  <span className="font-body-sm text-[#44474c]">Client Safety Record</span>
+
+                <div className="p-4 rounded-xl bg-[#f8f9ff] flex items-start gap-3.5 border border-[#E2E8F0] h-full">
+                  <div className="w-10 h-10 rounded-lg bg-[#e5eeff] text-[#0284C7] flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="material-symbols-outlined text-[22px] leading-none">engineering</span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="font-headline-sm text-[15px] text-[#0B192C] font-bold leading-snug">
+                      Master In-House Engineers
+                    </span>
+                    <span className="font-body-sm text-[#44474c] leading-relaxed">
+                      Qualified electrical supervisors and certified solar project technicians.
+                    </span>
+                  </div>
                 </div>
-                <div className="w-px h-12 bg-[#E2E8F0]"></div>
+
+                <div className="p-4 rounded-xl bg-[#f8f9ff] flex items-start gap-3.5 border border-[#E2E8F0] h-full">
+                  <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="material-symbols-outlined text-[22px] leading-none">health_and_safety</span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="font-headline-sm text-[15px] text-[#0B192C] font-bold leading-snug">
+                      100% Safety Compliance
+                    </span>
+                    <span className="font-body-sm text-[#44474c] leading-relaxed">
+                      Strict compliance with Indian Electricity Rules (IER) and CEA safety standards.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-[#f8f9ff] flex items-start gap-3.5 border border-[#E2E8F0] h-full">
+                  <div className="w-10 h-10 rounded-lg bg-[#e5eeff] text-[#006398] flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="material-symbols-outlined text-[22px] leading-none">handshake</span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="font-headline-sm text-[15px] text-[#0B192C] font-bold leading-snug">
+                      Single-Window Delivery
+                    </span>
+                    <span className="font-body-sm text-[#44474c] leading-relaxed">
+                      Concept to commissioning, including complete board and ESCOM approvals.
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 pt-5 border-t border-[#E2E8F0]">
                 <div className="flex flex-col">
-                  <span className="font-stat-counter text-[#F59E0B]">24/7</span>
-                  <span className="font-body-sm text-[#44474c]">Emergency Grid Dispatch</span>
+                  <span className="font-stat-counter text-[#0B192C] text-[28px] sm:text-[34px]">5+</span>
+                  <span className="font-body-sm text-[#44474c] mt-0.5">Years Industry Leadership</span>
+                </div>
+                <div className="flex flex-col border-l border-[#E2E8F0] pl-4">
+                  <span className="font-stat-counter text-[#0284C7] text-[28px] sm:text-[34px]">100%</span>
+                  <span className="font-body-sm text-[#44474c] mt-0.5">Client Safety Record</span>
+                </div>
+                <div className="flex flex-col border-l border-[#E2E8F0] pl-4">
+                  <span className="font-stat-counter text-[#F59E0B] text-[28px] sm:text-[34px]">24/7</span>
+                  <span className="font-body-sm text-[#44474c] mt-0.5">Emergency Grid Dispatch</span>
                 </div>
               </div>
             </div>
@@ -1086,20 +1120,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div className="flex flex-col gap-1">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center items-stretch">
+            <div className="p-5 rounded-xl bg-[#f8f9ff] border border-[#E2E8F0] flex flex-col justify-center gap-1">
               <span className="font-headline-md text-[#0B192C] font-bold">100%</span>
               <span className="font-body-sm text-[#44474c]">Statutory Clearance Rate</span>
             </div>
-            <div className="flex flex-col gap-1">
+            <div className="p-5 rounded-xl bg-[#f8f9ff] border border-[#E2E8F0] flex flex-col justify-center gap-1">
               <span className="font-headline-md text-[#0284C7] font-bold">&lt; 48 Hrs</span>
               <span className="font-body-sm text-[#44474c]">Rapid Site Mobilization</span>
             </div>
-            <div className="flex flex-col gap-1">
+            <div className="p-5 rounded-xl bg-[#f8f9ff] border border-[#E2E8F0] flex flex-col justify-center gap-1">
               <span className="font-headline-md text-[#0B192C] font-bold">Class-1</span>
               <span className="font-body-sm text-[#44474c]">PWD Registered Contractor</span>
             </div>
-            <div className="flex flex-col gap-1">
+            <div className="p-5 rounded-xl bg-[#f8f9ff] border border-[#E2E8F0] flex flex-col justify-center gap-1">
               <span className="font-headline-md text-[#F59E0B] font-bold">Tier-1</span>
               <span className="font-body-sm text-[#44474c]">Certified Solar Components</span>
             </div>

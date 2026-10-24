@@ -72,36 +72,76 @@ export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultati
   return (
     <div className="w-full flex flex-col bg-[#F8FAFC]">
       {/* Header Banner */}
-      <section className="w-full bg-[#0B192C] text-white py-16 px-6 lg:px-12 border-b border-slate-800">
-        <div className="max-w-7xl mx-auto flex flex-col gap-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0284C7]/20 text-[#5bb8fe] text-[12px] font-semibold w-fit border border-[#0284C7]/30">
-            <span className="material-symbols-outlined text-[16px]">build_circle</span>
-            Turnkey Engineering Capabilities
-          </div>
-          <h1 className="font-display-xl text-white font-extrabold max-w-3xl">
-            Comprehensive Turnkey Engineering Services
-          </h1>
-          <p className="font-body-lg text-slate-300 max-w-3xl leading-relaxed">
-            From initial Single Line Diagram (SLD) engineering and civil switchyard execution to pre-commissioning testing, CEIG safety clearances, and 24/7 preventative AMC.
-          </p>
-          {onSelectTab && (
-            <div className="flex flex-wrap items-center gap-3 pt-3">
-              <button
-                onClick={() => onSelectTab('residential-3d')}
-                className="h-10 px-5 rounded-lg bg-[#10b981] hover:bg-[#059669] text-white text-xs font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[16px]">home</span>
-                <span>3D Residential Twin (2BHK)</span>
-              </button>
-              <button
-                onClick={() => onSelectTab('twin-3d')}
-                className="h-10 px-5 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white border border-[#38bdf8]/50 text-xs font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[16px] text-[#38bdf8]">3d_rotation</span>
-                <span>3D Industrial Substation Twin</span>
-              </button>
+      <section className="w-full bg-[#0B192C] text-white py-14 lg:py-16 px-6 lg:px-12 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="lg:col-span-8 flex flex-col gap-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0284C7]/20 text-[#5bb8fe] text-[12px] font-semibold w-fit border border-[#0284C7]/30 leading-none">
+              <span className="material-symbols-outlined text-[16px] leading-none">build_circle</span>
+              <span>Turnkey Engineering Capabilities</span>
             </div>
-          )}
+            <h1 className="font-display-xl text-white font-extrabold tracking-tight">
+              Comprehensive Turnkey Engineering Services
+            </h1>
+            <p className="font-body-lg text-slate-300 max-w-2xl leading-relaxed">
+              From initial Single Line Diagram (SLD) engineering and civil switchyard execution to pre-commissioning testing, CEIG safety clearances, and 24/7 preventative AMC.
+            </p>
+            {onSelectTab && (
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <button
+                  onClick={() => onSelectTab('residential-layout-3d')}
+                  className="h-10 px-4 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white text-xs font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[16px] leading-none">map</span>
+                  <span>3D Residential Layout Twin</span>
+                </button>
+                <button
+                  onClick={() => onSelectTab('residential-3d')}
+                  className="h-10 px-4 rounded-lg bg-[#10b981] hover:bg-[#059669] text-white text-xs font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[16px] leading-none">home</span>
+                  <span>3D 2BHK Interior Twin</span>
+                </button>
+                <button
+                  onClick={() => onSelectTab('twin-3d')}
+                  className="h-10 px-4 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white border border-[#38bdf8]/50 text-xs font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[16px] text-[#38bdf8] leading-none">3d_rotation</span>
+                  <span>3D Industrial Substation Twin</span>
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="lg:col-span-4 flex flex-col justify-center">
+            <div className="p-6 rounded-2xl bg-[#1E293B]/90 border border-slate-700/80 shadow-xl flex flex-col gap-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-700/80">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-[#5bb8fe] font-bold">
+                  Service Portfolio
+                </span>
+                <span className="px-2.5 py-1 rounded bg-[#FEF3C7] text-[#2a1700] text-[11px] font-bold uppercase tracking-wider leading-none">
+                  8 Turnkey Domains
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">HV Grid Scope</span>
+                  <span className="text-[15px] font-bold text-white">11kV – 110kV</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">LT Switchgear</span>
+                  <span className="text-[15px] font-bold text-white">Up to 6300A</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">Approvals</span>
+                  <span className="text-[15px] font-bold text-[#38bdf8]">CEIG &amp; ESCOM</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">Dispatch SLA</span>
+                  <span className="text-[15px] font-bold text-emerald-400">24/7 Support</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -110,7 +150,7 @@ export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultati
         {/* Dynamic Category Showcase Deck */}
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <div>
+            <div className="flex flex-col gap-1">
               <span className="text-[12px] uppercase font-bold text-[#0284C7] tracking-wider">
                 Domain Matrix
               </span>
@@ -123,7 +163,7 @@ export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultati
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 items-stretch">
             {categories.filter(c => c.id !== 'all').map((cat) => {
               const isSelected = activeCategory === cat.id;
               const config = CategoryColorConfig[cat.id];
@@ -133,14 +173,14 @@ export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultati
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`p-4 rounded-xl text-left border transition-all duration-200 flex flex-col justify-between gap-3 cursor-pointer group hover:-translate-y-0.5 ${
+                  className={`p-4 rounded-xl text-left border transition-all duration-200 flex flex-col justify-between gap-3 cursor-pointer group hover:-translate-y-0.5 h-full ${
                     isSelected
                       ? `bg-white ${config.border} ring-2 ring-[${config.accent}]/40 shadow-md`
                       : 'bg-white border-[#CBD5E1] hover:border-[#0284C7] shadow-sm'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <div className={`w-10 h-10 rounded-lg ${config.bgLight} ${config.text} flex items-center justify-center transition-transform group-hover:scale-110 shadow-sm`}>
+                    <div className={`w-10 h-10 rounded-lg ${config.bgLight} ${config.text} flex items-center justify-center transition-transform group-hover:scale-110 shadow-sm shrink-0`}>
                       <CategoryDynamicIcon category={cat.id} size={22} />
                     </div>
                     <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-[#F8FAFC] text-slate-500 border border-[#E2E8F0]">
@@ -157,7 +197,7 @@ export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultati
                     </span>
                   </div>
 
-                  <span className="text-[11px] font-mono text-[#0284C7] font-semibold pt-1 border-t border-[#E2E8F0]">
+                  <span className="text-[11px] font-mono text-[#0284C7] font-semibold pt-2 border-t border-[#E2E8F0] mt-auto">
                     {cat.voltageScope}
                   </span>
                 </button>

@@ -34,38 +34,67 @@ export const SolarScreen: React.FC<SolarScreenProps> = ({ onOpenConsultation, on
   return (
     <div className="w-full flex flex-col bg-[#F8FAFC]">
       {/* Header Banner */}
-      <section className="w-full bg-[#0B192C] text-white py-16 px-6 lg:px-12 border-b border-slate-800">
-        <div className="max-w-7xl mx-auto flex flex-col gap-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FEF3C7]/15 text-[#F59E0B] text-[12px] font-semibold w-fit border border-[#F59E0B]/30">
-            <span className="material-symbols-outlined text-[16px]">solar_power</span>
-            Turnkey Clean Energy EPC Division
-          </div>
-          <h1 className="font-display-xl text-white font-extrabold max-w-3xl">
-            Commercial &amp; Industrial Solar Power Plants
-          </h1>
-          <p className="font-body-lg text-slate-300 max-w-3xl leading-relaxed">
-            High-yield rooftop and ground-mounted solar power plants engineered with Tier-1 bifacial photovoltaic modules, smart grid synchronization, and full BESCOM / KERC Net Metering sanctions.
-          </p>
-          <div className="flex flex-wrap items-center gap-4 pt-4">
-            <button
-              onClick={() => onOpenConsultation('Solar EPC Project')}
-              className="h-11 px-6 rounded-lg bg-[#F59E0B] hover:bg-[#d97706] text-[#2a1700] text-[14px] font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-[18px]">solar_power</span>
-              Request Solar Site Assessment
-            </button>
-            {onSelectTab && (
+      <section className="w-full bg-[#0B192C] text-white py-14 lg:py-16 px-6 lg:px-12 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="lg:col-span-8 flex flex-col gap-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FEF3C7]/15 text-[#F59E0B] text-[12px] font-semibold w-fit border border-[#F59E0B]/30 leading-none">
+              <span className="material-symbols-outlined text-[16px] leading-none">solar_power</span>
+              <span>Turnkey Clean Energy EPC Division</span>
+            </div>
+            <h1 className="font-display-xl text-white font-extrabold tracking-tight">
+              Commercial &amp; Industrial Solar Power Plants
+            </h1>
+            <p className="font-body-lg text-slate-300 max-w-2xl leading-relaxed">
+              High-yield rooftop and ground-mounted solar power plants engineered with Tier-1 bifacial photovoltaic modules, smart grid synchronization, and full BESCOM / KERC Net Metering sanctions.
+            </p>
+            <div className="flex flex-wrap items-center gap-3 pt-2">
               <button
-                onClick={() => onSelectTab('twin-3d')}
-                className="h-11 px-6 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white border border-[#38bdf8]/50 text-[14px] font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer"
+                onClick={() => onOpenConsultation('Solar EPC Project')}
+                className="h-11 px-5 rounded-lg bg-[#F59E0B] hover:bg-[#d97706] text-[#2a1700] text-[13.5px] font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[18px] text-[#38bdf8]">3d_rotation</span>
-                <span>View 3D Solar Array</span>
+                <span className="material-symbols-outlined text-[18px] leading-none">solar_power</span>
+                <span>Request Solar Site Assessment</span>
               </button>
-            )}
-            <div className="flex items-center gap-2 text-slate-400 text-[13px]">
-              <span className="material-symbols-outlined text-emerald-400 text-[16px]">verified</span>
-              KERC Net Metering &amp; Grid-Parallel Clearance Guaranteed
+              {onSelectTab && (
+                <button
+                  onClick={() => onSelectTab('twin-3d')}
+                  className="h-11 px-5 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white border border-[#38bdf8]/50 text-[13.5px] font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[18px] text-[#38bdf8] leading-none">3d_rotation</span>
+                  <span>View 3D Solar Array</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="lg:col-span-4 flex flex-col justify-center">
+            <div className="p-6 rounded-2xl bg-[#1E293B]/90 border border-slate-700/80 shadow-xl flex flex-col gap-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-700/80">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-[#F59E0B] font-bold">
+                  Solar EPC Metrics
+                </span>
+                <span className="px-2.5 py-1 rounded bg-[#FEF3C7] text-[#2a1700] text-[11px] font-bold uppercase tracking-wider leading-none">
+                  45+ MWp Installed
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">PV Modules</span>
+                  <span className="text-[15px] font-bold text-white">Tier-1 Bifacial</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">Daily Yield</span>
+                  <span className="text-[15px] font-bold text-white">~4.2 kWh / kWp</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">ROI Payback</span>
+                  <span className="text-[15px] font-bold text-[#38bdf8]">3.2 – 3.8 Years</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">Grid Tie</span>
+                  <span className="text-[15px] font-bold text-emerald-400">KERC Net Metered</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -76,7 +105,7 @@ export const SolarScreen: React.FC<SolarScreenProps> = ({ onOpenConsultation, on
         {/* Interactive Solar ROI & Capacity Calculator */}
         <div className="rounded-2xl bg-white border border-[#CBD5E1] shadow-md overflow-hidden">
           <div className="bg-[#0B192C] p-6 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
+            <div className="flex flex-col gap-0.5">
               <span className="text-[12px] text-[#F59E0B] font-mono font-bold uppercase tracking-wider">
                 Karnataka Solar Yield Estimator
               </span>
@@ -84,12 +113,12 @@ export const SolarScreen: React.FC<SolarScreenProps> = ({ onOpenConsultation, on
                 Commercial &amp; Industrial Rooftop Solar ROI Calculator
               </h2>
             </div>
-            <span className="text-[12px] px-3 py-1 rounded bg-[#1E293B] text-slate-300 border border-slate-700">
+            <span className="text-[12px] px-3 py-1.5 rounded-lg bg-[#1E293B] text-slate-300 border border-slate-700 w-fit shrink-0">
               Assumes 4.2 kWh/kWp/day Solar Insolation (Bengaluru &amp; Industrial Karnataka)
             </span>
           </div>
 
-          <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             {/* Input Sliders */}
             <div className="lg:col-span-5 flex flex-col gap-5">
               <div className="flex flex-col gap-2">

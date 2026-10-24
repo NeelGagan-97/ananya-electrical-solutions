@@ -8,21 +8,24 @@ interface AboutScreenProps {
 export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) => {
   const leadership = [
     {
+      initials: 'RG',
       name: 'Er. R. S. Gowda, M.Tech (Power Systems)',
       role: 'Chief Technical Director & Super Grade Licensee',
-      experience: '22+ Years in High Voltage Substation Engineering & KPTCL Liaison',
+      experience: '22+ Years • High Voltage Substation & KPTCL Liaison',
       desc: 'Expertise in primary substation grid design up to 110kV, protection coordination, and statutory liaison with the Chief Electrical Inspector to Government (CEIG).'
     },
     {
+      initials: 'SV',
       name: 'Er. Sandeep V., B.E. (Electrical)',
       role: 'Head of Solar EPC & Clean Energy Solutions',
-      experience: '14+ Years in Multi-Megawatt Ground Mount & C&I Rooftop Solar EPC',
+      experience: '14+ Years • Ground Mount & C&I Rooftop Solar EPC',
       desc: 'Supervised over 45 MWp of cumulative solar PV capacity across Karnataka industrial belts, managing KERC net metering and bidirectional metering synchronization.'
     },
     {
+      initials: 'NK',
       name: 'Naveen Kumar, B.E., Certified Safety Auditor',
       role: 'Lead Testing & Commissioning Engineer',
-      experience: '12+ Years in Megger, Hi-Pot, and Protective Relay Injection Testing',
+      experience: '12+ Years • Megger, Hi-Pot & Relay Injection Testing',
       desc: 'Certified electrical safety supervisor ensuring zero deviation protocols and 100% first-pass clearance in statutory government electrical inspections.'
     }
   ];
@@ -32,30 +35,34 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
       title: 'Super Grade Electrical Contractor License',
       authority: 'Government of Karnataka • Electrical Inspectorate',
       validity: 'Authorized for all High Tension & Extra High Tension (HT/EHT) works statewide',
+      badge: 'HT / EHT',
       icon: 'bolt'
     },
     {
       title: 'Class-1 PWD Registered Contractor',
       authority: 'Public Works Department, Karnataka',
       validity: 'Eligible for large infrastructure public and private sector turnkey tenders',
+      badge: 'CLASS-1',
       icon: 'engineering'
     },
     {
       title: 'ISO 9001:2015 Quality Management',
       authority: 'International Organization for Standardization',
       validity: 'Standardized procurement, fabrication, and testing documentation',
+      badge: 'ISO 9001',
       icon: 'verified'
     },
     {
       title: 'ISO 45001 / OHSAS Occupational Safety',
       authority: 'Occupational Health & Safety Standards',
       validity: 'Zero-tolerance protocols, PPE enforcement, and live-circuit isolation drills',
+      badge: 'ISO 45001',
       icon: 'health_and_safety'
     }
   ];
 
   const districts = [
-    { region: 'Bengaluru Urban & Rural', hubs: 'Peenya, Bommasandra, Electronic City, Whitefield, Hosakote, Dabaspet' },
+    { region: 'Bengaluru Urban & Rural', hubs: 'Peenya, Bommasandra, Electronic City, Whitefield, Hoskote, Dabaspet' },
     { region: 'Mysuru & Mandya Corridor', hubs: 'Hebbal Industrial Area, Nanjangud, Kadakola, Thandya' },
     { region: 'Hubballi-Dharwad & Belagavi', hubs: 'Belur Industrial Area, Tarihal, Rayapur, Kakati' },
     { region: 'Coastal Mangaluru & Udupi', hubs: 'Baikampady, Karnad, Manipal Industrial Estate' },
@@ -66,69 +73,107 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
   return (
     <div className="w-full flex flex-col bg-[#F8FAFC]">
       {/* Header Banner */}
-      <section className="w-full bg-[#0B192C] text-white py-16 px-6 lg:px-12 border-b border-slate-800">
-        <div className="max-w-7xl mx-auto flex flex-col gap-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FEF3C7]/15 text-[#F59E0B] text-[12px] font-semibold w-fit border border-[#F59E0B]/30">
-            <span className="material-symbols-outlined text-[16px]">verified_user</span>
-            About Ananya Electrical Solutions
+      <section className="w-full bg-[#0B192C] text-white py-14 lg:py-16 px-6 lg:px-12 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="lg:col-span-8 flex flex-col gap-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FEF3C7]/15 text-[#F59E0B] text-[12px] font-semibold w-fit border border-[#F59E0B]/30 leading-none">
+              <span className="material-symbols-outlined text-[16px] leading-none">verified_user</span>
+              <span>About Ananya Electrical Solutions</span>
+            </div>
+            <h1 className="font-display-xl text-white font-extrabold tracking-tight">
+              Precision Infrastructure Built on Trust and Rigor
+            </h1>
+            <p className="font-body-lg text-slate-300 max-w-2xl leading-relaxed">
+              Ananya Electrical Solutions is a Super Grade Electrical Contractor with over 5 years of verified field excellence, dedicated to maximizing customer satisfaction through disciplined engineering and clean energy leadership.
+            </p>
           </div>
-          <h1 className="font-display-xl text-white font-extrabold max-w-3xl">
-            Precision Infrastructure Built on Trust and Rigor
-          </h1>
-          <p className="font-body-lg text-slate-300 max-w-3xl leading-relaxed">
-            Ananya Electrical Solutions is a Super Grade Electrical Contractor with over 5 years of verified field excellence, aimed at maximizing customer satisfaction through disciplined engineering and clean energy leadership.
-          </p>
+
+          <div className="lg:col-span-4 flex flex-col justify-center">
+            <div className="p-6 rounded-2xl bg-[#1E293B]/90 border border-slate-700/80 shadow-xl flex flex-col gap-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-700/80">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-[#5bb8fe] font-bold">
+                  Statutory Profile
+                </span>
+                <span className="px-2.5 py-1 rounded bg-[#FEF3C7] text-[#2a1700] text-[11px] font-bold uppercase tracking-wider leading-none">
+                  Est. 2020
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">License Grade</span>
+                  <span className="text-[15px] font-bold text-white">Super Grade (HT/EHT)</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">PWD Standing</span>
+                  <span className="text-[15px] font-bold text-white">Class-1 Registered</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">Voltage Scope</span>
+                  <span className="text-[15px] font-bold text-[#38bdf8]">11kV – 110kV</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">State Coverage</span>
+                  <span className="text-[15px] font-bold text-emerald-400">All 31 Districts</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Main Narrative & Execution Photo */}
       <section className="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full flex flex-col gap-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-6 flex flex-col gap-5">
-            <span className="text-[14px] uppercase font-bold text-[#0284C7] tracking-wider">
-              Our Journey Since 2020
-            </span>
-            <h2 className="font-headline-lg text-[#0B192C] font-bold">
-              Engineering Reliability for Karnataka's Industrial Growth
-            </h2>
-            <p className="text-[15px] text-[#44474c] leading-relaxed">
-              Founded in 2020, Ananya Electrical Solutions was established to address a persistent challenge in industrial infrastructure: the friction between intricate statutory government compliance and rapid plant construction.
-            </p>
-            <p className="text-[15px] text-[#44474c] leading-relaxed">
-              As a licensed <strong className="text-[#0B192C]">Super Grade Electrical Contractor</strong> under the Karnataka Electrical Inspectorate, we take single-window ownership from the initial Single Line Diagram (SLD) approval to the live closing of circuit breakers and ongoing 24/7 grid dispatch support.
-            </p>
-            <div className="flex flex-wrap items-center gap-6 pt-2">
-              <div className="flex flex-col">
-                <span className="font-stat-counter text-[#0B192C]">150+ MVA</span>
-                <span className="text-[13px] text-slate-500">Connected Power Commissioned</span>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch">
+          <div className="lg:col-span-6 flex flex-col justify-between gap-6">
+            <div className="flex flex-col gap-4">
+              <span className="text-[13px] uppercase font-bold text-[#0284C7] tracking-wider">
+                Our Journey Since 2020
+              </span>
+              <h2 className="font-headline-lg text-[#0B192C] font-bold">
+                Engineering Reliability for Karnataka&apos;s Industrial Growth
+              </h2>
+              <p className="text-[15px] text-[#44474c] leading-relaxed">
+                Founded in 2020, Ananya Electrical Solutions was established to address a persistent challenge in industrial infrastructure: the friction between intricate statutory government compliance and rapid plant construction.
+              </p>
+              <p className="text-[15px] text-[#44474c] leading-relaxed">
+                As a licensed <strong className="text-[#0B192C]">Super Grade Electrical Contractor</strong> under the Karnataka Electrical Inspectorate, we take single-window ownership from the initial Single Line Diagram (SLD) approval to the live closing of circuit breakers and ongoing 24/7 grid dispatch support.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-[#E2E8F0]">
+              <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-center">
+                <span className="font-stat-counter text-[#0B192C] text-[28px] lg:text-[32px]">150+ MVA</span>
+                <span className="text-[12px] text-slate-500 font-medium mt-1">Connected Power Commissioned</span>
               </div>
-              <div className="w-px h-12 bg-[#CBD5E1]"></div>
-              <div className="flex flex-col">
-                <span className="font-stat-counter text-[#0284C7]">45+ MWp</span>
-                <span className="text-[13px] text-slate-500">Clean Solar Capacity</span>
+              <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-center">
+                <span className="font-stat-counter text-[#0284C7] text-[28px] lg:text-[32px]">45+ MWp</span>
+                <span className="text-[12px] text-slate-500 font-medium mt-1">Clean Solar Capacity</span>
               </div>
-              <div className="w-px h-12 bg-[#CBD5E1]"></div>
-              <div className="flex flex-col">
-                <span className="font-stat-counter text-[#F59E0B]">0</span>
-                <span className="text-[13px] text-slate-500">Safety Protocol Deviations</span>
+              <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-center">
+                <span className="font-stat-counter text-[#F59E0B] text-[28px] lg:text-[32px]">100%</span>
+                <span className="text-[12px] text-slate-500 font-medium mt-1">Zero Safety Deviations</span>
               </div>
             </div>
           </div>
 
-          <div className="lg:col-span-6">
-            <div className="relative rounded-2xl overflow-hidden shadow-xl border border-[#CBD5E1]">
+          <div className="lg:col-span-6 flex">
+            <div className="relative w-full min-h-[360px] lg:min-h-full rounded-2xl overflow-hidden shadow-xl border border-[#CBD5E1] flex flex-col justify-end">
               <img
                 src={ASSETS.aboutExecution}
                 alt="Engineers executing electrical safety protocol"
-                className="w-full h-96 object-cover"
+                className="absolute inset-0 w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C]/80 via-transparent to-transparent"></div>
-              <div className="absolute bottom-6 left-6 right-6 text-white flex justify-between items-end">
-                <div>
-                  <span className="text-[12px] uppercase font-bold text-[#5bb8fe]">Zero-Deviation Field Protocol</span>
-                  <h4 className="font-headline-sm font-bold">100% In-House Master Engineers</h4>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C]/90 via-[#0B192C]/30 to-transparent"></div>
+              <div className="relative z-10 p-6 sm:p-8 text-white flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[12px] uppercase tracking-wider font-bold text-[#5bb8fe]">
+                    Zero-Deviation Field Protocol
+                  </span>
+                  <h4 className="font-headline-sm font-bold text-white">
+                    100% In-House Master Engineers
+                  </h4>
                 </div>
-                <span className="px-3 py-1 rounded bg-[#FEF3C7] text-[#2a1700] text-[12px] font-bold">
+                <span className="px-3.5 py-1.5 rounded-lg bg-[#FEF3C7] text-[#2a1700] text-[12px] font-bold tracking-wider uppercase w-fit shrink-0">
                   SUPER GRADE
                 </span>
               </div>
@@ -138,7 +183,7 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
 
         {/* Official Statutory Accreditations */}
         <div className="flex flex-col gap-8">
-          <div>
+          <div className="flex flex-col gap-1.5">
             <span className="text-[12px] uppercase font-bold text-[#006398] tracking-wider">
               Statutory Standing
             </span>
@@ -147,19 +192,26 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
             {credentials.map((cred, idx) => (
               <div
                 key={idx}
-                className="p-6 rounded-2xl bg-white border border-[#CBD5E1] shadow-sm flex items-start gap-4"
+                className="p-6 rounded-2xl bg-white border border-[#CBD5E1] shadow-sm hover:shadow-md transition-shadow flex items-start gap-4 h-full"
               >
-                <div className="w-12 h-12 rounded-xl bg-[#e5eeff] text-[#0284C7] flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[28px]">{cred.icon}</span>
+                <div className="w-12 h-12 rounded-xl bg-[#e5eeff] text-[#0284C7] flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="material-symbols-outlined text-[26px] leading-none">{cred.icon}</span>
                 </div>
-                <div className="flex flex-col gap-1">
-                  <h4 className="font-headline-sm text-[17px] text-[#0B192C] font-bold">{cred.title}</h4>
-                  <span className="text-[12px] font-bold text-[#006398]">{cred.authority}</span>
-                  <p className="text-[13px] text-[#44474c] mt-1">{cred.validity}</p>
+                <div className="flex flex-col flex-1 gap-1.5">
+                  <div className="flex items-start justify-between gap-3">
+                    <h4 className="font-headline-sm text-[17px] text-[#0B192C] font-bold leading-snug">
+                      {cred.title}
+                    </h4>
+                    <span className="px-2.5 py-0.5 rounded bg-[#f8f9ff] border border-[#CBD5E1] text-[#006398] text-[10px] font-mono font-bold uppercase shrink-0 mt-0.5">
+                      {cred.badge}
+                    </span>
+                  </div>
+                  <span className="text-[12px] font-bold text-[#0284C7]">{cred.authority}</span>
+                  <p className="text-[13px] text-[#44474c] leading-relaxed pt-1">{cred.validity}</p>
                 </div>
               </div>
             ))}
@@ -168,7 +220,7 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
 
         {/* Master Engineering Leadership */}
         <div className="flex flex-col gap-8">
-          <div>
+          <div className="flex flex-col gap-1.5">
             <span className="text-[12px] uppercase font-bold text-[#006398] tracking-wider">
               Technical Governance
             </span>
@@ -177,32 +229,44 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
             {leadership.map((leader, i) => (
               <div
                 key={i}
-                className="p-6 rounded-2xl bg-white border border-[#CBD5E1] shadow-sm flex flex-col justify-between gap-4"
+                className="p-6 rounded-2xl bg-white border border-[#CBD5E1] shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-5 h-full"
               >
-                <div className="flex flex-col gap-2">
-                  <div className="w-12 h-12 rounded-xl bg-[#0B192C] text-white flex items-center justify-center font-bold font-display text-[16px]">
-                    {leader.name.slice(0, 2)}
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-12 h-12 rounded-xl bg-[#0B192C] text-white flex items-center justify-center font-bold font-display text-[15px] shrink-0 shadow-xs">
+                      {leader.initials}
+                    </div>
+                    <div className="flex flex-col">
+                      <h4 className="font-headline-sm text-[16px] text-[#0B192C] font-bold leading-snug">
+                        {leader.name}
+                      </h4>
+                      <span className="text-[12px] text-[#0284C7] font-semibold leading-snug mt-0.5">
+                        {leader.role}
+                      </span>
+                    </div>
                   </div>
-                  <h4 className="font-headline-sm text-[16px] text-[#0B192C] font-bold">{leader.name}</h4>
-                  <span className="text-[12px] text-[#0284C7] font-semibold">{leader.role}</span>
-                  <span className="text-[11px] font-mono text-slate-500 uppercase">{leader.experience}</span>
-                  <p className="text-[13px] text-[#44474c] leading-relaxed pt-2 border-t border-[#E2E8F0]">
-                    {leader.desc}
-                  </p>
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#f8f9ff] border border-[#E2E8F0] text-[11px] font-mono text-slate-600 uppercase w-fit">
+                    <span className="material-symbols-outlined text-[14px] text-[#0284C7] leading-none">workspace_premium</span>
+                    <span>{leader.experience}</span>
+                  </div>
                 </div>
+
+                <p className="text-[13px] text-[#44474c] leading-relaxed pt-4 border-t border-[#E2E8F0] mt-auto">
+                  {leader.desc}
+                </p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Pan-Karnataka Geographic Coverage Map */}
-        <div className="rounded-2xl bg-white border border-[#CBD5E1] p-8 shadow-sm flex flex-col gap-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
+        <div className="rounded-2xl bg-white border border-[#CBD5E1] p-6 sm:p-8 shadow-sm flex flex-col gap-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-[#E2E8F0]">
+            <div className="flex flex-col gap-1">
               <span className="text-[12px] uppercase font-bold text-[#0284C7] tracking-wider">
                 Statewide Footprint
               </span>
@@ -210,30 +274,43 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
                 Rapid Mobilization Across Karnataka Industrial Corridors
               </h3>
             </div>
-            <div className="flex items-center gap-2 text-[12px] text-slate-500">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-[12px] text-emerald-900 font-medium w-fit shrink-0">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
               <span>All 31 Districts Supported • &lt; 48 Hour Site Mobilization</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
             {districts.map((d, dIdx) => (
-              <div key={dIdx} className="p-4 rounded-xl bg-[#f8f9ff] border border-[#E2E8F0] flex flex-col gap-1.5">
-                <span className="font-semibold text-[#0B192C] text-[14px] flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[16px] text-[#0284C7]">location_on</span>
-                  {d.region}
-                </span>
-                <span className="text-[12px] text-[#44474c]">Hubs: {d.hubs}</span>
+              <div
+                key={dIdx}
+                className="p-4 rounded-xl bg-[#f8f9ff] border border-[#E2E8F0] flex flex-col justify-between gap-2 h-full"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[18px] text-[#0284C7] shrink-0 leading-none">
+                    location_on
+                  </span>
+                  <span className="font-bold text-[#0B192C] text-[14px] leading-snug">
+                    {d.region}
+                  </span>
+                </div>
+                <p className="text-[12px] text-[#44474c] leading-relaxed pl-[26px]">
+                  <span className="font-semibold text-slate-700">Key Hubs:</span> {d.hubs}
+                </p>
               </div>
             ))}
           </div>
 
-          <div className="pt-4 border-t border-[#E2E8F0] flex justify-end">
+          <div className="pt-4 border-t border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <span className="text-[13px] text-[#44474c]">
+              Need on-site load survey or statutory liaison in your industrial area?
+            </span>
             <button
               onClick={() => onOpenConsultation('Karnataka State Contract')}
-              className="px-6 py-2.5 rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[13px] font-semibold transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[13px] font-semibold transition-colors cursor-pointer shrink-0"
             >
-              Consult with a Regional Engineer
+              <span className="material-symbols-outlined text-[17px] leading-none">engineering</span>
+              <span>Consult with a Regional Engineer</span>
             </button>
           </div>
         </div>

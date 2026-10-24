@@ -17,18 +17,51 @@ export const ProjectsGalleryScreen: React.FC<ProjectsGalleryScreenProps> = ({ on
   return (
     <div className="w-full flex flex-col bg-[#F8FAFC]">
       {/* Header Banner */}
-      <section className="w-full bg-[#0B192C] text-white py-16 px-6 lg:px-12 border-b border-slate-800">
-        <div className="max-w-7xl mx-auto flex flex-col gap-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0284C7]/20 text-[#5bb8fe] text-[12px] font-semibold w-fit border border-[#0284C7]/30">
-            <span className="material-symbols-outlined text-[16px]">verified</span>
-            Karnataka Commissioning Track Record
+      <section className="w-full bg-[#0B192C] text-white py-14 lg:py-16 px-6 lg:px-12 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="lg:col-span-8 flex flex-col gap-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0284C7]/20 text-[#5bb8fe] text-[12px] font-semibold w-fit border border-[#0284C7]/30 leading-none">
+              <span className="material-symbols-outlined text-[16px] leading-none">verified</span>
+              <span>Karnataka Commissioning Track Record</span>
+            </div>
+            <h1 className="font-display-xl text-white font-extrabold tracking-tight">
+              Major Project Installations &amp; Commissioning Portfolio
+            </h1>
+            <p className="font-body-lg text-slate-300 max-w-2xl leading-relaxed">
+              Explore turnkey 11kV/33kV/66kV step-down substations, multi-megawatt captive solar power plants, and industrial automation assemblies delivered across Karnataka with zero safety deviations.
+            </p>
           </div>
-          <h1 className="font-display-xl text-white font-extrabold max-w-3xl">
-            Major Project Installations &amp; Commissioning Portfolio
-          </h1>
-          <p className="font-body-lg text-slate-300 max-w-3xl leading-relaxed">
-            Explore turnkey 11kV/33kV/66kV step-down substations, multi-megawatt captive solar power plants, and industrial automation assemblies delivered across Karnataka with zero safety deviations.
-          </p>
+
+          <div className="lg:col-span-4 flex flex-col justify-center">
+            <div className="p-6 rounded-2xl bg-[#1E293B]/90 border border-slate-700/80 shadow-xl flex flex-col gap-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-700/80">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-[#5bb8fe] font-bold">
+                  Commissioned Assets
+                </span>
+                <span className="px-2.5 py-1 rounded bg-[#FEF3C7] text-[#2a1700] text-[11px] font-bold uppercase tracking-wider leading-none">
+                  100% CEIG Pass
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">Substations</span>
+                  <span className="text-[15px] font-bold text-white">150+ MVA</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">Solar EPC</span>
+                  <span className="text-[15px] font-bold text-white">45+ MWp</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">Safety Record</span>
+                  <span className="text-[15px] font-bold text-emerald-400">Zero Deviations</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">Jurisdiction</span>
+                  <span className="text-[15px] font-bold text-[#38bdf8]">Pan-Karnataka</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -58,7 +91,7 @@ export const ProjectsGalleryScreen: React.FC<ProjectsGalleryScreenProps> = ({ on
         </div>
 
         {/* Project Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
           {filteredProjects.map((project) => (
             <div
               key={project.id}

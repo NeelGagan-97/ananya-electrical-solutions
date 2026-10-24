@@ -64,26 +64,60 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
   return (
     <div className="w-full flex flex-col bg-[#F8FAFC]">
       {/* Header Banner */}
-      <section className="w-full bg-[#0B192C] text-white py-16 px-6 lg:px-12 border-b border-slate-800">
-        <div className="max-w-7xl mx-auto flex flex-col gap-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FEF3C7]/15 text-[#F59E0B] text-[12px] font-semibold w-fit border border-[#F59E0B]/30">
-            <span className="material-symbols-outlined text-[16px]">contact_support</span>
-            Technical Helpdesk &amp; Dispatch
+      <section className="w-full bg-[#0B192C] text-white py-14 lg:py-16 px-6 lg:px-12 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="lg:col-span-8 flex flex-col gap-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FEF3C7]/15 text-[#F59E0B] text-[12px] font-semibold w-fit border border-[#F59E0B]/30 leading-none">
+              <span className="material-symbols-outlined text-[16px] leading-none">contact_support</span>
+              <span>Technical Helpdesk &amp; Dispatch</span>
+            </div>
+            <h1 className="font-display-xl text-white font-extrabold tracking-tight">
+              Contact Ananya Electrical Solutions
+            </h1>
+            <p className="font-body-lg text-slate-300 max-w-2xl leading-relaxed">
+              Reach our master electrical engineers for high-voltage tenders, rooftop solar feasibility studies, statutory CEIG drawing approvals, and 24/7 industrial emergency breakdown response.
+            </p>
           </div>
-          <h1 className="font-display-xl text-white font-extrabold max-w-3xl">
-            Contact Ananya Electrical Solutions
-          </h1>
-          <p className="font-body-lg text-slate-300 max-w-3xl leading-relaxed">
-            Reach our master electrical engineers for high-voltage tenders, rooftop solar feasibility studies, statutory CEIG drawing approvals, and 24/7 industrial emergency breakdown response.
-          </p>
+
+          <div className="lg:col-span-4 flex flex-col justify-center">
+            <div className="p-6 rounded-2xl bg-[#1E293B]/90 border border-slate-700/80 shadow-xl flex flex-col gap-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-700/80">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-[#5bb8fe] font-bold">
+                  Response SLA
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 text-[11px] font-bold uppercase tracking-wider leading-none border border-emerald-500/30">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  Online 24/7
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">Proposal Turnaround</span>
+                  <span className="text-[15px] font-bold text-white">&lt; 4 Business Hrs</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">Site Survey</span>
+                  <span className="text-[15px] font-bold text-white">&lt; 48 Hours</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">Direct Hotline</span>
+                  <span className="text-[15px] font-bold text-[#F59E0B]">+91 8660121438</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">HQ Base</span>
+                  <span className="text-[15px] font-bold text-[#38bdf8]">Peenya, BLR</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Main Grid: Contact info & Form */}
       <section className="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full flex flex-col gap-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch">
           {/* Contact Details & Operational Hubs */}
-          <div className="lg:col-span-5 flex flex-col gap-8">
+          <div className="lg:col-span-5 flex flex-col justify-between gap-6">
             <div className="bg-[#0B192C] text-white p-8 rounded-2xl flex flex-col gap-6 shadow-md border border-slate-700">
               <span className="text-[12px] uppercase font-bold text-[#F59E0B] tracking-wider">
                 Emergency Hotline &amp; Dispatch

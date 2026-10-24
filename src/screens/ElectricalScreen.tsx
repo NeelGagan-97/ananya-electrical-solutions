@@ -74,38 +74,67 @@ export const ElectricalScreen: React.FC<ElectricalScreenProps> = ({ onOpenConsul
   return (
     <div className="w-full flex flex-col bg-[#F8FAFC]">
       {/* Header Banner */}
-      <section className="w-full bg-[#0B192C] text-white py-16 px-6 lg:px-12 border-b border-slate-800">
-        <div className="max-w-7xl mx-auto flex flex-col gap-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0284C7]/20 text-[#5bb8fe] text-[12px] font-semibold w-fit border border-[#0284C7]/30">
-            <span className="material-symbols-outlined text-[16px]">power</span>
-            Super Grade Engineering Division
-          </div>
-          <h1 className="font-display-xl text-white font-extrabold max-w-3xl">
-            High Voltage Substations &amp; Industrial Electrical Systems
-          </h1>
-          <p className="font-body-lg text-slate-300 max-w-3xl leading-relaxed">
-            Turnkey execution for 11kV, 33kV, 66kV, and 110kV grid step-down substations, custom HT &amp; LT distribution panels, industrial transformer setups, and heavy plant cabling across Karnataka.
-          </p>
-          <div className="flex flex-wrap items-center gap-4 pt-4">
-            <button
-              onClick={() => onOpenConsultation('High Voltage Substation')}
-              className="h-11 px-6 rounded-lg bg-[#0284C7] hover:bg-[#2563EB] text-white text-[14px] font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-[18px]">request_quote</span>
-              Request Substation Feasibility Review
-            </button>
-            {onSelectTab && (
+      <section className="w-full bg-[#0B192C] text-white py-14 lg:py-16 px-6 lg:px-12 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="lg:col-span-8 flex flex-col gap-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0284C7]/20 text-[#5bb8fe] text-[12px] font-semibold w-fit border border-[#0284C7]/30 leading-none">
+              <span className="material-symbols-outlined text-[16px] leading-none">power</span>
+              <span>Super Grade Engineering Division</span>
+            </div>
+            <h1 className="font-display-xl text-white font-extrabold tracking-tight">
+              High Voltage Substations &amp; Industrial Electrical Systems
+            </h1>
+            <p className="font-body-lg text-slate-300 max-w-2xl leading-relaxed">
+              Turnkey execution for 11kV, 33kV, 66kV, and 110kV grid step-down substations, custom HT &amp; LT distribution panels, industrial transformer setups, and heavy plant cabling across Karnataka.
+            </p>
+            <div className="flex flex-wrap items-center gap-3 pt-2">
               <button
-                onClick={() => onSelectTab('twin-3d')}
-                className="h-11 px-6 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white border border-[#38bdf8]/50 text-[14px] font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer"
+                onClick={() => onOpenConsultation('High Voltage Substation')}
+                className="h-11 px-5 rounded-lg bg-[#0284C7] hover:bg-[#2563EB] text-white text-[13.5px] font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[18px] text-[#38bdf8]">3d_rotation</span>
-                <span>Inspect in 3D Yard Twin</span>
+                <span className="material-symbols-outlined text-[18px] leading-none">request_quote</span>
+                <span>Request Substation Feasibility Review</span>
               </button>
-            )}
-            <div className="flex items-center gap-2 text-slate-400 text-[13px]">
-              <span className="material-symbols-outlined text-emerald-400 text-[16px]">verified</span>
-              CEIG Sanctioned &amp; KPTCL Interconnection Compliant
+              {onSelectTab && (
+                <button
+                  onClick={() => onSelectTab('twin-3d')}
+                  className="h-11 px-5 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white border border-[#38bdf8]/50 text-[13.5px] font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[18px] text-[#38bdf8] leading-none">3d_rotation</span>
+                  <span>Inspect in 3D Yard Twin</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="lg:col-span-4 flex flex-col justify-center">
+            <div className="p-6 rounded-2xl bg-[#1E293B]/90 border border-slate-700/80 shadow-xl flex flex-col gap-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-700/80">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-[#5bb8fe] font-bold">
+                  HV Grid Specifications
+                </span>
+                <span className="px-2.5 py-1 rounded bg-[#FEF3C7] text-[#2a1700] text-[11px] font-bold uppercase tracking-wider leading-none">
+                  IEC 62271
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">Primary Grid</span>
+                  <span className="text-[15px] font-bold text-white">11kV – 110kV</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">Fault Rating</span>
+                  <span className="text-[15px] font-bold text-white">Up to 31.5 kA</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">LT Busduct</span>
+                  <span className="text-[15px] font-bold text-[#38bdf8]">Up to 6300A</span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-slate-400 uppercase">Compliance</span>
+                  <span className="text-[15px] font-bold text-emerald-400">CEIG &amp; KPTCL</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -113,42 +142,48 @@ export const ElectricalScreen: React.FC<ElectricalScreenProps> = ({ onOpenConsul
 
       {/* Engineering Pillars Overview */}
       <section className="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full flex flex-col gap-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-2xl bg-white border border-[#CBD5E1] shadow-sm flex flex-col gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#e5eeff] text-[#0B192C] flex items-center justify-center">
-              <span className="material-symbols-outlined text-[28px]">domain</span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+          <div className="p-6 rounded-2xl bg-white border border-[#CBD5E1] shadow-sm flex flex-col justify-between gap-4 h-full">
+            <div className="flex flex-col gap-3">
+              <div className="w-12 h-12 rounded-xl bg-[#e5eeff] text-[#0B192C] flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[26px] leading-none">domain</span>
+              </div>
+              <h3 className="font-headline-sm text-[#0B192C] font-bold">Grid Substations (11kV to 110kV)</h3>
+              <p className="font-body-sm text-[#44474c] leading-relaxed">
+                Complete civil, structural, and electrical turnkey delivery: plinth foundation, DP yard fabrication, earth-mat design, transformer positioning, and express line tapping.
+              </p>
             </div>
-            <h3 className="font-headline-sm text-[#0B192C] font-bold">Grid Substations (11kV to 110kV)</h3>
-            <p className="font-body-sm text-[#44474c] leading-relaxed">
-              Complete civil, structural, and electrical turnkey delivery: plinth foundation, DP yard fabrication, earth-mat design, transformer positioning, and express line tapping.
-            </p>
-            <div className="text-[12px] text-[#006398] font-semibold pt-2 border-t border-[#E2E8F0]">
+            <div className="text-[12px] text-[#006398] font-semibold pt-3 border-t border-[#E2E8F0] mt-auto">
               Full KPTCL &amp; BESCOM Sanctions
             </div>
           </div>
 
-          <div className="p-6 rounded-2xl bg-white border border-[#CBD5E1] shadow-sm flex flex-col gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#FEF3C7] text-[#2a1700] flex items-center justify-center">
-              <span className="material-symbols-outlined text-[28px] text-[#F59E0B]">electrical_services</span>
+          <div className="p-6 rounded-2xl bg-white border border-[#CBD5E1] shadow-sm flex flex-col justify-between gap-4 h-full">
+            <div className="flex flex-col gap-3">
+              <div className="w-12 h-12 rounded-xl bg-[#FEF3C7] text-[#2a1700] flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[26px] text-[#F59E0B] leading-none">electrical_services</span>
+              </div>
+              <h3 className="font-headline-sm text-[#0B192C] font-bold">HT Switchgear &amp; VCB Panels</h3>
+              <p className="font-body-sm text-[#44474c] leading-relaxed">
+                Air-insulated and gas-insulated HT switchgear with vacuum circuit breakers, high-speed relay protection, CT/PT metering units, and interlocks conforming to IEC 62271.
+              </p>
             </div>
-            <h3 className="font-headline-sm text-[#0B192C] font-bold">HT Switchgear &amp; VCB Panels</h3>
-            <p className="font-body-sm text-[#44474c] leading-relaxed">
-              Air-insulated and gas-insulated HT switchgear with vacuum circuit breakers, high-speed relay protection, CT/PT metering units, and interlocks conforming to IEC 62271.
-            </p>
-            <div className="text-[12px] text-[#006398] font-semibold pt-2 border-t border-[#E2E8F0]">
+            <div className="text-[12px] text-[#006398] font-semibold pt-3 border-t border-[#E2E8F0] mt-auto">
               Numerical Protection Relays
             </div>
           </div>
 
-          <div className="p-6 rounded-2xl bg-white border border-[#CBD5E1] shadow-sm flex flex-col gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#e5eeff] text-[#0284C7] flex items-center justify-center">
-              <span className="material-symbols-outlined text-[28px]">linear_scale</span>
+          <div className="p-6 rounded-2xl bg-white border border-[#CBD5E1] shadow-sm flex flex-col justify-between gap-4 h-full">
+            <div className="flex flex-col gap-3">
+              <div className="w-12 h-12 rounded-xl bg-[#e5eeff] text-[#0284C7] flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[26px] leading-none">linear_scale</span>
+              </div>
+              <h3 className="font-headline-sm text-[#0B192C] font-bold">Heavy Cabling &amp; Busduct Systems</h3>
+              <p className="font-body-sm text-[#44474c] leading-relaxed">
+                Underground trench cabling, HDPE pipe laying, heat shrink terminations, and sandwich busduct trunking up to 6300A linking substation transformers to plant distribution.
+              </p>
             </div>
-            <h3 className="font-headline-sm text-[#0B192C] font-bold">Heavy Cabling &amp; Busduct Systems</h3>
-            <p className="font-body-sm text-[#44474c] leading-relaxed">
-              Underground trench cabling, HDPE pipe laying, heat shrink terminations, and sandwich busduct trunking up to 6300A linking substation transformers to plant distribution.
-            </p>
-            <div className="text-[12px] text-[#006398] font-semibold pt-2 border-t border-[#E2E8F0]">
+            <div className="text-[12px] text-[#006398] font-semibold pt-3 border-t border-[#E2E8F0] mt-auto">
               Hi-Pot Insulation Verified
             </div>
           </div>
@@ -157,7 +192,7 @@ export const ElectricalScreen: React.FC<ElectricalScreenProps> = ({ onOpenConsul
         {/* Interactive Electrical Load & Substation Sizing Tool */}
         <div className="rounded-2xl bg-white border border-[#CBD5E1] shadow-md overflow-hidden">
           <div className="bg-[#0B192C] p-6 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
+            <div className="flex flex-col gap-0.5">
               <span className="text-[12px] text-[#F59E0B] font-mono font-bold uppercase tracking-wider">
                 Engineering Calculation Utility
               </span>
@@ -165,12 +200,12 @@ export const ElectricalScreen: React.FC<ElectricalScreenProps> = ({ onOpenConsul
                 Industrial Transformer &amp; Breaker Sizing Calculator
               </h2>
             </div>
-            <span className="text-[12px] px-3 py-1 rounded bg-[#1E293B] text-slate-300 border border-slate-700">
+            <span className="text-[12px] px-3 py-1.5 rounded-lg bg-[#1E293B] text-slate-300 border border-slate-700 w-fit shrink-0">
               Formula: S = P / (cos φ) · CEA Norms
             </span>
           </div>
 
-          <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             {/* Input parameters */}
             <div className="lg:col-span-5 flex flex-col gap-5">
               <div className="flex flex-col gap-2">
