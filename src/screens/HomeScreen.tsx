@@ -79,49 +79,62 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   return (
     <div className="flex flex-col w-full">
       {/* ================= HERO SECTION ================= */}
-      <section className="relative w-full bg-[#0B192C] text-white overflow-hidden py-16 lg:py-24">
+      <section className="relative w-full bg-[#071120] text-white overflow-hidden py-16 lg:py-24">
+        {/* Background Image & Cinematic Atmospheric Layers */}
+        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
+          <img
+            src="/assets/aistudio/Electrical_transmission_lines_on__2K_20261025145912_944acc49.jpg"
+            alt="High-voltage electrical transmission lines across golden-hour hills"
+            className="w-full h-full object-cover object-center scale-[1.03] brightness-95 contrast-110 saturate-110"
+          />
+          {/* Directional Readability Gradient: Rich Navy on Left, Clearer Tower Showcase on Right */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#060f1e]/92 via-[#0B192C]/75 to-[#0B192C]/40" />
+          {/* Top & Bottom Vignette for Seamless Section Framing */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#060f1e]/65 via-transparent to-[#071120]/90" />
+          {/* Golden-Hour Sunburst & High-Voltage Sky Glow */}
+          <div className="absolute -top-24 left-1/4 w-[32rem] h-[32rem] bg-[#F59E0B]/15 rounded-full blur-3xl mix-blend-screen" />
+          <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#0284C7]/25 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-10 w-96 h-96 bg-[#38BDF8]/15 rounded-full blur-3xl" />
+        </div>
+
         {/* Ambient Technical Grid Pattern */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <div className="absolute inset-0 opacity-[0.08] mix-blend-screen pointer-events-none">
           <svg className="w-full h-full" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <pattern height="48" id="hero-grid" patternUnits="userSpaceOnUse" width="48">
-                <path className="text-[#0284C7]" d="M 48 0 L 0 0 0 48" fill="none" stroke="currentColor" strokeWidth="1" />
+                <path className="text-[#38BDF8]" d="M 48 0 L 0 0 0 48" fill="none" stroke="currentColor" strokeWidth="1" />
               </pattern>
             </defs>
             <rect fill="url(#hero-grid)" height="100%" width="100%" />
           </svg>
         </div>
 
-        {/* Soft Glow Accents */}
-        <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#0284C7]/20 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute top-1/2 right-0 w-80 h-80 bg-[#F59E0B]/10 rounded-full blur-3xl pointer-events-none"></div>
-
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-12">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-12">
           {/* Top Monospace Bar */}
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FEF3C7] text-[#2a1700] text-[12px] uppercase tracking-wider font-semibold shadow-sm">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FEF3C7]/95 backdrop-blur-md text-[#2a1700] text-[12px] uppercase tracking-wider font-semibold shadow-lg shadow-black/25 border border-[#F59E0B]/40">
               <span className="material-symbols-outlined text-[16px] text-[#F59E0B]">verified</span>
               Karnataka Electrical Inspectorate • Super Grade Licensed Contractor
             </div>
           </div>
 
           {/* Main Hero Split Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             <div className="lg:col-span-7 flex flex-col gap-6">
               <div className="flex flex-col gap-3">
-                <span className="text-[14px] uppercase tracking-widest text-[#0284C7] font-bold">
+                <span className="text-[14px] uppercase tracking-widest text-[#38BDF8] font-bold drop-shadow-sm">
                   Engineering Infrastructure • Est. 2020
                 </span>
-                <h1 className="font-display-xl text-white tracking-tight font-extrabold leading-tight">
+                <h1 className="font-display-xl text-white tracking-tight font-extrabold leading-tight drop-shadow-md">
                   Powering Progress with{' '}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#5bb8fe] via-[#0284C7] to-sky-300">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7dd3fc] via-[#38bdf8] to-[#fcd34d]">
                     Precision Engineering
                   </span>{' '}
                   &amp; Clean Energy
                 </h1>
               </div>
 
-              <p className="font-body-lg text-slate-300 leading-relaxed max-w-2xl">
+              <p className="font-body-lg text-slate-200 leading-relaxed max-w-2xl drop-shadow-sm">
                 Welcome to Ananya Electrical Solutions. We specialize in delivering safe, efficient, and innovative electrical services tailored to meet the needs of homes, businesses, and industrial facilities. From design and installation to maintenance and troubleshooting, our expert team is committed to powering your world with precision, professionalism, and care. Whether you're upgrading your system, building from the ground up, or looking for energy-efficient alternatives — we bring the expertise and reliability you can trust.
               </p>
 
@@ -130,21 +143,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                   <button
                     onClick={() => onSelectTab('residential-layout-3d')}
-                    className="inline-flex items-center justify-center h-11 px-4 rounded-lg bg-gradient-to-r from-[#0284c7] via-[#0369a1] to-[#0f172a] hover:from-[#0369a1] hover:to-[#0284c7] text-white text-[13px] font-bold shadow-lg shadow-sky-500/20 transition-all hover:-translate-y-0.5 cursor-pointer border border-[#38bdf8]/40 whitespace-nowrap"
+                    className="inline-flex items-center justify-center h-11 px-4 rounded-lg bg-gradient-to-r from-[#0284c7] via-[#0369a1] to-[#0f172a] hover:from-[#0369a1] hover:to-[#0284c7] text-white text-[13px] font-bold shadow-lg shadow-sky-500/25 transition-all hover:-translate-y-0.5 cursor-pointer border border-[#38bdf8]/40 whitespace-nowrap backdrop-blur-sm"
                   >
                     <span className="material-symbols-outlined text-[18px] mr-1.5 text-[#38bdf8] leading-none shrink-0">map</span>
                     <span>3D Layout &amp; Infra</span>
                   </button>
                   <button
                     onClick={() => onSelectTab('residential-3d')}
-                    className="inline-flex items-center justify-center h-11 px-4 rounded-lg bg-gradient-to-r from-[#10b981] via-[#059669] to-[#047857] hover:from-[#059669] hover:to-[#10b981] text-white text-[13px] font-bold shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5 cursor-pointer border border-[#34d399]/40 whitespace-nowrap"
+                    className="inline-flex items-center justify-center h-11 px-4 rounded-lg bg-gradient-to-r from-[#10b981] via-[#059669] to-[#047857] hover:from-[#059669] hover:to-[#10b981] text-white text-[13px] font-bold shadow-lg shadow-emerald-500/25 transition-all hover:-translate-y-0.5 cursor-pointer border border-[#34d399]/40 whitespace-nowrap backdrop-blur-sm"
                   >
                     <span className="material-symbols-outlined text-[18px] mr-1.5 text-[#a7f3d0] leading-none shrink-0">home</span>
                     <span>3D 2BHK Interior</span>
                   </button>
                   <button
                     onClick={() => onSelectTab('twin-3d')}
-                    className="inline-flex items-center justify-center h-11 px-4 rounded-lg bg-gradient-to-r from-[#f59e0b] via-[#d97706] to-[#b45309] hover:from-[#d97706] hover:to-[#f59e0b] text-slate-950 text-[13px] font-bold shadow-lg shadow-amber-500/20 transition-all hover:-translate-y-0.5 cursor-pointer border border-[#fde047]/40 whitespace-nowrap"
+                    className="inline-flex items-center justify-center h-11 px-4 rounded-lg bg-gradient-to-r from-[#f59e0b] via-[#d97706] to-[#b45309] hover:from-[#d97706] hover:to-[#f59e0b] text-slate-950 text-[13px] font-bold shadow-lg shadow-amber-500/25 transition-all hover:-translate-y-0.5 cursor-pointer border border-[#fde047]/40 whitespace-nowrap backdrop-blur-sm"
                   >
                     <span className="material-symbols-outlined text-[18px] mr-1.5 text-slate-950 leading-none shrink-0">electric_meter</span>
                     <span>33kV Substation</span>
@@ -154,7 +167,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <button
                     onClick={() => onSelectTab('services')}
-                    className="inline-flex items-center justify-center h-11 px-5 rounded-lg bg-[#0284C7] hover:bg-[#2563EB] text-white text-[13.5px] font-bold shadow-md transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
+                    className="inline-flex items-center justify-center h-11 px-5 rounded-lg bg-[#0284C7] hover:bg-[#2563EB] text-white text-[13.5px] font-bold shadow-lg shadow-black/25 transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
                   >
                     <span className="material-symbols-outlined text-[18px] mr-1.5 leading-none shrink-0">precision_manufacturing</span>
                     <span>Explore All Engineering Services</span>
@@ -165,7 +178,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                       if (el) el.scrollIntoView({ behavior: 'smooth' });
                       else onOpenConsultation();
                     }}
-                    className="inline-flex items-center justify-center h-11 px-5 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white text-[13.5px] font-bold shadow-md transition-all hover:-translate-y-0.5 cursor-pointer border border-slate-700 whitespace-nowrap"
+                    className="inline-flex items-center justify-center h-11 px-5 rounded-lg bg-[#0f1f36]/85 hover:bg-[#1E293B] text-white text-[13.5px] font-bold shadow-lg shadow-black/25 transition-all hover:-translate-y-0.5 cursor-pointer border border-white/15 backdrop-blur-md whitespace-nowrap"
                   >
                     <span className="material-symbols-outlined text-[18px] mr-1.5 text-[#F59E0B] leading-none shrink-0">request_quote</span>
                     <span>Request Technical Quote</span>
@@ -174,17 +187,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </div>
 
               {/* Micro Spec Tags */}
-              <div className="flex flex-wrap items-center gap-3 pt-2 text-slate-400 text-[12px]">
+              <div className="flex flex-wrap items-center gap-3 pt-2 text-slate-200 text-[12px] font-medium drop-shadow-sm">
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[16px] text-[#0284C7] leading-none">offline_bolt</span>
+                  <span className="material-symbols-outlined text-[16px] text-[#38BDF8] leading-none">offline_bolt</span>
                   <span>11kV – 110kV Transmission</span>
                 </span>
-                <span className="text-slate-600">•</span>
+                <span className="text-slate-400">•</span>
                 <span className="inline-flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-[16px] text-[#F59E0B] leading-none">solar_power</span>
                   <span>Net-Metered Solar EPC</span>
                 </span>
-                <span className="text-slate-600">•</span>
+                <span className="text-slate-400">•</span>
                 <span className="inline-flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-[16px] text-emerald-400 leading-none">gavel</span>
                   <span>KPTCL &amp; BESCOM Approved</span>
@@ -193,21 +206,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
 
             {/* Hero Visual Showcase: Video + Telemetry */}
-            <div className="lg:col-span-5 flex flex-col items-center justify-center gap-4">
-              <div className="w-full flex items-center justify-center overflow-hidden">
+            <div className="lg:col-span-5 flex flex-col items-center lg:items-end justify-start gap-5 lg:-mt-12">
+              <div className="w-full flex items-start justify-center lg:justify-end lg:pr-4 bg-transparent">
                 <video
-                  src="/assets/aistudio/Animated_electrical_logo_reveal_1080p_20261023131504_cc86adb8.mp4"
+                  src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm"
                   autoPlay
                   loop
                   muted
                   playsInline
                   style={{ aspectRatio: '1.5 / 1.5' }}
-                  className="w-full max-w-[420px] aspect-[1.5/1.5] object-cover object-center rounded-2xl overflow-hidden"
+                  className="w-full max-w-[260px] sm:max-w-[300px] aspect-[1.5/1.5] object-cover object-center bg-transparent drop-shadow-[0_2px_12px_rgba(255,255,255,0.5)]"
                 />
               </div>
 
               {/* Status Below Video with Exact Vertical Alignment */}
-              <div className="inline-flex items-center justify-center gap-2 text-center px-3 py-1.5 rounded-full bg-[#1E293B]/80 border border-slate-700/80">
+              <div className="inline-flex items-center justify-center gap-2 text-center px-3.5 py-1.5 rounded-full bg-[#0B192C]/85 backdrop-blur-md border border-white/15 shadow-lg">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
                 <span className="text-[13px] sm:text-[14px] font-bold text-white tracking-wide leading-none">
                   HT/LT Dispatch &amp; Solar EPC Active across Karnataka
@@ -216,54 +229,54 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
               {/* Quick Telemetry Ticker */}
               <div className="grid grid-cols-2 gap-3 w-full items-stretch">
-                <div className="p-4 rounded-xl bg-[#1E293B] text-white flex flex-col justify-between gap-1 border border-slate-800 h-full">
+                <div className="p-4 rounded-xl bg-[#0B192C]/80 backdrop-blur-md text-white flex flex-col justify-between gap-1 border border-white/15 shadow-xl h-full">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Substations Delivered</span>
-                    <span className="material-symbols-outlined text-[#0284C7] text-[18px] leading-none shrink-0">domain</span>
+                    <span className="text-[11px] text-slate-300 uppercase tracking-wider font-semibold">Substations Delivered</span>
+                    <span className="material-symbols-outlined text-[#38BDF8] text-[18px] leading-none shrink-0">domain</span>
                   </div>
                   <span className="font-stat-counter text-white text-[26px] sm:text-[30px]">150+ MVA</span>
-                  <span className="text-[12px] text-slate-400">Aggregated Connected Load</span>
+                  <span className="text-[12px] text-slate-300">Aggregated Connected Load</span>
                 </div>
-                <div className="p-4 rounded-xl bg-[#1E293B] text-white flex flex-col justify-between gap-1 border border-slate-800 h-full">
+                <div className="p-4 rounded-xl bg-[#0B192C]/80 backdrop-blur-md text-white flex flex-col justify-between gap-1 border border-white/15 shadow-xl h-full">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Solar Capacity</span>
+                    <span className="text-[11px] text-slate-300 uppercase tracking-wider font-semibold">Solar Capacity</span>
                     <span className="material-symbols-outlined text-[#F59E0B] text-[18px] leading-none shrink-0">wb_sunny</span>
                   </div>
                   <span className="font-stat-counter text-white text-[26px] sm:text-[30px]">45+ MWp</span>
-                  <span className="text-[12px] text-slate-400">Clean Industrial Energy</span>
+                  <span className="text-[12px] text-slate-300">Clean Industrial Energy</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Trust Badges & Stat Row */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-800 items-stretch">
-            <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#1E293B]/50 border border-slate-800/80 h-full">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-white/15 items-stretch">
+            <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#0B192C]/75 backdrop-blur-md border border-white/15 shadow-lg h-full">
               <span className="material-symbols-outlined text-[#F59E0B] text-[28px] shrink-0 leading-none">verified_user</span>
               <div className="flex flex-col">
                 <span className="text-[14px] font-bold text-white leading-snug">Super Grade License</span>
-                <span className="text-[12px] text-slate-400">Govt. of Karnataka</span>
+                <span className="text-[12px] text-slate-300">Govt. of Karnataka</span>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#1E293B]/50 border border-slate-800/80 h-full">
+            <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#0B192C]/75 backdrop-blur-md border border-white/15 shadow-lg h-full">
               <span className="material-symbols-outlined text-[#5bb8fe] text-[28px] shrink-0 leading-none">calendar_month</span>
               <div className="flex flex-col">
                 <span className="text-[14px] font-bold text-white leading-snug">5+ Years Excellence</span>
-                <span className="text-[12px] text-slate-400">Serving Since 2020</span>
+                <span className="text-[12px] text-slate-300">Serving Since 2020</span>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#1E293B]/50 border border-slate-800/80 h-full">
+            <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#0B192C]/75 backdrop-blur-md border border-white/15 shadow-lg h-full">
               <span className="material-symbols-outlined text-emerald-400 text-[28px] shrink-0 leading-none">security</span>
               <div className="flex flex-col">
                 <span className="text-[14px] font-bold text-white leading-snug">100% Safety Compliance</span>
-                <span className="text-[12px] text-slate-400">Zero Deviation Protocols</span>
+                <span className="text-[12px] text-slate-300">Zero Deviation Protocols</span>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#1E293B]/50 border border-slate-800/80 h-full">
-              <span className="material-symbols-outlined text-[#0284C7] text-[28px] shrink-0 leading-none">map</span>
+            <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#0B192C]/75 backdrop-blur-md border border-white/15 shadow-lg h-full">
+              <span className="material-symbols-outlined text-[#38BDF8] text-[28px] shrink-0 leading-none">map</span>
               <div className="flex flex-col">
                 <span className="text-[14px] font-bold text-white leading-snug">Pan-Karnataka Reach</span>
-                <span className="text-[12px] text-slate-400">Rapid Response Mobilization</span>
+                <span className="text-[12px] text-slate-300">Rapid Response Mobilization</span>
               </div>
             </div>
           </div>
