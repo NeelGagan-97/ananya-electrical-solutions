@@ -1,6 +1,5 @@
 import React from 'react';
 import { NavigationTab } from '../types';
-import { ASSETS } from '../data/constants';
 
 interface FooterProps {
   onSelectTab: (tab: NavigationTab) => void;
@@ -21,8 +20,8 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab }) => {
             <div className="flex items-center gap-3">
               <img
                 alt="Ananya Electrical Solutions Logo"
-                className="h-8 w-auto object-contain"
-                src={ASSETS.logo}
+                className="h-10 w-10 sm:h-11 sm:w-11 object-contain rounded-md shrink-0"
+                src="/assets/aistudio/Screenshot_2026-10-24_213203_08863194.png"
               />
               <span className="font-display text-[20px] text-[#0B192C] font-bold">
                 Ananya Electrical Solutions

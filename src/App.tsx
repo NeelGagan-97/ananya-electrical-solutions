@@ -15,6 +15,7 @@ import { ContactScreen } from './screens/ContactScreen';
 import { Substation3DScreen } from './screens/Substation3DScreen';
 import { Residential3DScreen } from './screens/Residential3DScreen';
 import { ResidentialLayoutScreen } from './screens/ResidentialLayoutScreen';
+import { SmartHome3DScreen } from './screens/SmartHome3DScreen';
 
 const STORAGE_KEY = 'aes_engineering_inquiries_v1';
 
@@ -40,6 +41,7 @@ export default function App() {
         'twin-3d',
         'residential-3d',
         'residential-layout-3d',
+        'smart-home-3d',
         'electrical',
         'solar-solutions',
         'services',
@@ -126,6 +128,14 @@ export default function App() {
           />
         )}
 
+        {currentTab === 'smart-home-3d' && (
+          <SmartHome3DScreen
+            onSelectTab={handleSelectTab}
+            onOpenConsultation={handleOpenConsultation}
+            onSaveInquiry={handleSaveInquiry}
+          />
+        )}
+
         {currentTab === 'electrical' && (
           <ElectricalScreen
             onSelectTab={handleSelectTab}
@@ -168,7 +178,9 @@ export default function App() {
       </main>
 
       {/* Institutional Footer (omitted on full-bleed 3D Digital Twins) */}
-      {currentTab !== 'twin-3d' && currentTab !== 'residential-3d' && <Footer onSelectTab={handleSelectTab} />}
+      {currentTab !== 'twin-3d' && currentTab !== 'residential-3d' && currentTab !== 'smart-home-3d' && (
+        <Footer onSelectTab={handleSelectTab} />
+      )}
 
       {/* Global Consultation / Proposal Modal */}
       <ConsultationModal

@@ -268,14 +268,14 @@ export const ElectricalServicesSection: React.FC<ElectricalServicesSectionProps>
         </div>
 
         {/* 8 Responsive Service & Equipment Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
           {services.map((service) => (
             <article
               key={service.id}
-              className="bg-white/95 backdrop-blur-md rounded-2xl border border-[#CBD5E1] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 h-full"
+              className="bg-white/95 backdrop-blur-md rounded-xl border border-[#CBD5E1] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between group hover:-translate-y-0.5 h-full"
             >
               {/* Equipment & Service Image Header */}
-              <div className="relative h-40 w-full overflow-hidden bg-[#0B192C]">
+              <div className="relative h-32 w-full overflow-hidden bg-[#0B192C]">
                 <img
                   src={service.image}
                   alt={service.title}
@@ -283,22 +283,22 @@ export const ElectricalServicesSection: React.FC<ElectricalServicesSectionProps>
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C]/85 via-[#0B192C]/25 to-transparent"></div>
-                <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
+                <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2">
                   <div
-                    className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 bg-white/95 shadow-md"
+                    className="w-7 h-7 rounded-md flex items-center justify-center shrink-0 bg-white/95 shadow-sm"
                     style={{ color: service.accentColor }}
                   >
-                    <span className="material-symbols-outlined text-[20px] leading-none">{service.iconName}</span>
+                    <span className="material-symbols-outlined text-[17px] leading-none">{service.iconName}</span>
                   </div>
-                  <span className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border leading-none shadow-xs ${service.badgeColor}`}>
+                  <span className={`px-2 py-0.5 rounded text-[9.5px] font-bold uppercase tracking-wider border leading-none shadow-xs ${service.badgeColor}`}>
                     {service.categoryTag}
                   </span>
                 </div>
-                <div className="absolute bottom-2.5 left-3 right-3 flex flex-wrap gap-1">
+                <div className="absolute bottom-2 left-2.5 right-2.5 flex flex-wrap gap-1">
                   {service.equipmentUsed.map((eq, i) => (
                     <span
                       key={i}
-                      className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#0B192C]/85 text-[#38bdf8] border border-sky-400/30 backdrop-blur-xs"
+                      className="text-[9.5px] font-mono font-semibold px-1.5 py-0.5 rounded bg-[#0B192C]/85 text-[#38bdf8] border border-sky-400/30 backdrop-blur-xs"
                     >
                       {eq}
                     </span>
@@ -306,30 +306,30 @@ export const ElectricalServicesSection: React.FC<ElectricalServicesSectionProps>
                 </div>
               </div>
 
-              <div className="p-5 flex flex-col flex-1 justify-between gap-4">
-                <div className="flex flex-col flex-1 gap-3">
+              <div className="p-3.5 flex flex-col flex-1 justify-between gap-2.5">
+                <div className="flex flex-col flex-1 gap-2">
                   {/* Service Heading & Description */}
-                  <div className="flex flex-col gap-1.5">
-                    <h3 className="font-headline-sm text-[17px] text-[#0B192C] font-bold tracking-tight group-hover:text-[#0284C7] transition-colors leading-snug">
+                  <div className="flex flex-col gap-1">
+                    <h3 className="text-[15px] text-[#0B192C] font-bold tracking-tight group-hover:text-[#0284C7] transition-colors leading-tight line-clamp-1">
                       {service.title}
                     </h3>
-                    <p className="font-body-sm text-[#44474c] leading-relaxed text-[12.5px]">
+                    <p className="text-[#44474c] leading-snug text-[11.5px] line-clamp-2">
                       {service.description}
                     </p>
                   </div>
 
                   {/* Scope Highlights Checklist */}
-                  <div className="pt-3 border-t border-[#E2E8F0] flex flex-col gap-2 flex-1">
-                    <span className="text-[10.5px] uppercase tracking-wider text-slate-500 font-bold">
+                  <div className="pt-2 border-t border-[#E2E8F0] flex flex-col gap-1 flex-1">
+                    <span className="text-[9.5px] uppercase tracking-wider text-slate-500 font-bold">
                       Included Scope &amp; Equipment:
                     </span>
-                    <ul className="flex flex-col gap-1.5 text-[12px] text-[#44474c]">
-                      {service.features.map((item, fIdx) => (
-                        <li key={fIdx} className="flex items-start gap-2">
-                          <span className="material-symbols-outlined text-[15px] shrink-0 mt-0.5 text-[#0284C7] leading-none">
+                    <ul className="flex flex-col gap-1 text-[11px] text-[#44474c]">
+                      {service.features.slice(0, 3).map((item, fIdx) => (
+                        <li key={fIdx} className="flex items-start gap-1.5">
+                          <span className="material-symbols-outlined text-[13px] shrink-0 mt-0.5 text-[#0284C7] leading-none">
                             check_circle
                           </span>
-                          <span className="leading-snug">{item}</span>
+                          <span className="leading-tight line-clamp-1">{item}</span>
                         </li>
                       ))}
                     </ul>
@@ -337,21 +337,21 @@ export const ElectricalServicesSection: React.FC<ElectricalServicesSectionProps>
 
                   {/* Optional Standards Note */}
                   {service.disclaimer && (
-                    <p className="text-[11px] text-slate-500 italic bg-[#F8FAFC] p-2 rounded-lg border border-[#E2E8F0] mt-auto">
+                    <p className="text-[10px] text-slate-500 italic bg-[#F8FAFC] px-2 py-1 rounded border border-[#E2E8F0] mt-auto line-clamp-1">
                       {service.disclaimer}
                     </p>
                   )}
                 </div>
 
                 {/* Action Button */}
-                <div className="pt-3 border-t border-[#E2E8F0]">
+                <div className="pt-2 border-t border-[#E2E8F0]">
                   <button
                     type="button"
                     onClick={() => onEnquire(service.serviceKey)}
-                    className="w-full h-10 px-3 rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[12.5px] font-semibold shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer group-hover:shadow-md whitespace-nowrap"
+                    className="w-full h-8 px-2.5 rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[11.5px] font-semibold shadow-sm transition-all flex items-center justify-center gap-1 cursor-pointer group-hover:shadow-md whitespace-nowrap"
                   >
                     <span>{service.ctaLabel}</span>
-                    <span className="material-symbols-outlined text-[16px] leading-none transition-transform group-hover:translate-x-0.5">
+                    <span className="material-symbols-outlined text-[14px] leading-none transition-transform group-hover:translate-x-0.5">
                       arrow_forward
                     </span>
                   </button>

@@ -652,14 +652,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
 
           {/* 9 Turnkey Engineering Services Grid with Equipment Photos */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {SERVICES.slice(0, 9).map((service) => (
               <div
                 key={service.id}
-                className="rounded-2xl bg-white/95 backdrop-blur-md shadow-sm hover:shadow-xl transition-all flex flex-col justify-between overflow-hidden group hover:-translate-y-1 border border-[#CBD5E1]"
+                className="rounded-xl bg-white/95 backdrop-blur-md shadow-sm hover:shadow-lg transition-all flex flex-col justify-between overflow-hidden group hover:-translate-y-0.5 border border-[#CBD5E1]"
               >
                 {/* Visual Equipment Banner */}
-                <div className="relative h-44 w-full overflow-hidden bg-[#0B192C]">
+                <div className="relative h-32 w-full overflow-hidden bg-[#0B192C]">
                   <img
                     src={service.image || ASSETS.pillarHighVoltage}
                     alt={service.title}
@@ -667,50 +667,50 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C]/90 via-[#0B192C]/30 to-transparent"></div>
-                  <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
-                    <span className="px-2.5 py-1 rounded bg-[#0B192C]/85 text-[#38bdf8] text-[11px] font-mono font-bold border border-sky-400/30 backdrop-blur-xs">
+                  <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2">
+                    <span className="px-2 py-0.5 rounded bg-[#0B192C]/85 text-[#38bdf8] text-[10px] font-mono font-bold border border-sky-400/30 backdrop-blur-xs">
                       {service.voltageClass || '11kV / 415V'}
                     </span>
-                    <span className="px-2.5 py-1 rounded bg-[#FEF3C7] text-[#2a1700] text-[10.5px] uppercase font-bold">
+                    <span className="px-2 py-0.5 rounded bg-[#FEF3C7] text-[#2a1700] text-[10px] uppercase font-bold">
                       {service.badge}
                     </span>
                   </div>
-                  <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2.5">
-                    <div className="w-10 h-10 rounded-lg bg-white text-[#0B192C] flex items-center justify-center shrink-0 shadow-md group-hover:bg-[#0284C7] group-hover:text-white transition-colors">
-                      <span className="material-symbols-outlined text-[22px]">{service.icon}</span>
+                  <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-white text-[#0B192C] flex items-center justify-center shrink-0 shadow-md group-hover:bg-[#0284C7] group-hover:text-white transition-colors">
+                      <span className="material-symbols-outlined text-[18px]">{service.icon}</span>
                     </div>
-                    <h3 className="font-headline-sm text-[17px] text-white font-bold leading-snug">
+                    <h3 className="text-[15px] text-white font-bold leading-tight line-clamp-1">
                       {service.title}
                     </h3>
                   </div>
                 </div>
 
-                <div className="p-6 flex flex-col flex-1 justify-between gap-5">
-                  <div className="flex flex-col gap-3">
-                    <p className="font-body-sm text-[#44474c] leading-relaxed">
+                <div className="p-3.5 flex flex-col flex-1 justify-between gap-2.5">
+                  <div className="flex flex-col gap-1.5">
+                    <p className="text-[12px] text-[#44474c] leading-snug line-clamp-2">
                       {service.description}
                     </p>
-                    <div className="flex flex-wrap gap-1.5 pt-1">
+                    <div className="flex flex-wrap gap-1 pt-0.5">
                       {service.specs.slice(0, 3).map((spec, sIdx) => (
                         <span
                           key={sIdx}
-                          className="text-[11px] px-2.5 py-0.5 rounded-md bg-[#f8f9ff] text-[#00476e] border border-[#CBD5E1] font-medium"
+                          className="text-[10px] px-2 py-0.5 rounded bg-[#f8f9ff] text-[#00476e] border border-[#CBD5E1] font-medium"
                         >
                           {spec}
                         </span>
                       ))}
                     </div>
                   </div>
-                  <div className="flex items-center justify-between pt-3 border-t border-[#E2E8F0]">
-                    <span className="text-[11px] text-slate-500 uppercase font-semibold flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px] text-emerald-600">verified</span>
+                  <div className="flex items-center justify-between pt-2 border-t border-[#E2E8F0]">
+                    <span className="text-[10.5px] text-slate-500 uppercase font-semibold flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[13px] text-emerald-600">verified</span>
                       CEIG &amp; IS Compliant
                     </span>
                     <button
                       onClick={() => onOpenConsultation(service.title)}
-                      className="text-[13.5px] text-[#006398] hover:text-[#0B192C] font-bold flex items-center gap-1 cursor-pointer"
+                      className="text-[12px] text-[#006398] hover:text-[#0B192C] font-bold flex items-center gap-1 cursor-pointer"
                     >
-                      Inquire <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                      Inquire <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                     </button>
                   </div>
                 </div>
@@ -754,13 +754,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
                 {ELECTRICAL_EQUIPMENT.map((item) => (
                   <div
                     key={item.id}
                     className="rounded-xl bg-[#1E293B]/90 backdrop-blur-md border border-slate-700 hover:border-[#38bdf8] overflow-hidden flex flex-col justify-between group transition-all"
                   >
-                    <div className="relative h-36 w-full overflow-hidden">
+                    <div className="relative h-28 w-full overflow-hidden">
                       <img
                         src={item.image}
                         alt={item.name}
@@ -768,26 +768,26 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C] via-[#0B192C]/25 to-transparent"></div>
-                      <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded bg-[#0B192C]/90 text-[#F59E0B] text-[10px] font-mono font-bold uppercase border border-amber-400/30">
+                      <span className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-[#0B192C]/90 text-[#F59E0B] text-[9.5px] font-mono font-bold uppercase border border-amber-400/30">
                         {item.category}
                       </span>
-                      <span className="absolute bottom-2 left-2.5 right-2.5 text-[11px] font-mono text-[#38bdf8] font-bold">
+                      <span className="absolute bottom-1.5 left-2 right-2 text-[10px] font-mono text-[#38bdf8] font-bold truncate">
                         {item.voltageRating} • {item.capacityRange}
                       </span>
                     </div>
 
-                    <div className="p-4 flex flex-col flex-1 justify-between gap-3">
-                      <div className="flex flex-col gap-1.5">
-                        <h4 className="text-[14.5px] font-bold text-white leading-snug group-hover:text-[#5bb8fe] transition-colors">
+                    <div className="p-3 flex flex-col flex-1 justify-between gap-2">
+                      <div className="flex flex-col gap-1">
+                        <h4 className="text-[13px] font-bold text-white leading-tight group-hover:text-[#5bb8fe] transition-colors line-clamp-1">
                           {item.name}
                         </h4>
-                        <p className="text-[12px] text-slate-300 leading-relaxed line-clamp-2">
+                        <p className="text-[11px] text-slate-300 leading-snug line-clamp-2">
                           {item.description}
                         </p>
-                        <ul className="flex flex-col gap-1 pt-1.5">
+                        <ul className="flex flex-col gap-0.5 pt-0.5">
                           {item.features.slice(0, 2).map((feat, fIdx) => (
-                            <li key={fIdx} className="text-[11px] text-slate-300 flex items-start gap-1.5">
-                              <span className="material-symbols-outlined text-[13px] text-emerald-400 shrink-0 mt-0.5">
+                            <li key={fIdx} className="text-[10.5px] text-slate-300 flex items-start gap-1">
+                              <span className="material-symbols-outlined text-[12px] text-emerald-400 shrink-0 mt-0.5">
                                 check_circle
                               </span>
                               <span className="line-clamp-1">{feat}</span>
@@ -796,13 +796,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                         </ul>
                       </div>
 
-                      <div className="pt-2.5 border-t border-slate-700/80 flex items-center justify-between">
-                        <span className="text-[10px] font-mono text-slate-400">{item.standard}</span>
+                      <div className="pt-2 border-t border-slate-700/80 flex items-center justify-between">
+                        <span className="text-[9.5px] font-mono text-slate-400">{item.standard}</span>
                         <button
                           onClick={() => onOpenConsultation(item.name)}
-                          className="text-[12px] font-bold text-[#38bdf8] hover:text-white flex items-center gap-1 cursor-pointer"
+                          className="text-[11px] font-bold text-[#38bdf8] hover:text-white flex items-center gap-0.5 cursor-pointer"
                         >
-                          Quote <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                          Quote <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
                         </button>
                       </div>
                     </div>
@@ -998,19 +998,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {stages.map((stage, idx) => (
               <div
                 key={stage.num}
                 onClick={() => setActiveStage(activeStage === idx ? null : idx)}
-                className={`rounded-2xl bg-[#1E293B]/90 backdrop-blur-md text-white flex flex-col overflow-hidden relative border transition-all cursor-pointer group ${
+                className={`rounded-xl bg-[#1E293B]/90 backdrop-blur-md text-white flex flex-col overflow-hidden relative border transition-all cursor-pointer group ${
                   activeStage === idx
                     ? 'border-[#38bdf8] ring-2 ring-[#0284C7]/40 shadow-xl'
                     : 'border-slate-700/90 hover:border-[#38bdf8]/70'
                 }`}
               >
                 {/* Stage Equipment & Service Image Header */}
-                <div className="relative h-36 w-full overflow-hidden bg-[#0B192C]">
+                <div className="relative h-28 w-full overflow-hidden bg-[#0B192C]">
                   <img
                     src={stage.image}
                     alt={stage.title}
@@ -1018,39 +1018,39 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1E293B] via-[#0B192C]/40 to-transparent"></div>
-                  <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
-                    <span className="px-2.5 py-1 rounded bg-[#0B192C]/90 text-[#F59E0B] text-[11px] font-mono font-bold border border-amber-400/30">
+                  <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between">
+                    <span className="px-2 py-0.5 rounded bg-[#0B192C]/90 text-[#F59E0B] text-[10px] font-mono font-bold border border-amber-400/30">
                       {stage.num}
                     </span>
-                    <div className="w-8 h-8 rounded-lg bg-[#0B192C]/85 border border-slate-600 flex items-center justify-center text-[#38bdf8]">
-                      <span className="material-symbols-outlined text-[18px]">{stage.icon}</span>
+                    <div className="w-7 h-7 rounded-md bg-[#0B192C]/85 border border-slate-600 flex items-center justify-center text-[#38bdf8]">
+                      <span className="material-symbols-outlined text-[16px]">{stage.icon}</span>
                     </div>
                   </div>
-                  <div className="absolute bottom-2 left-3 right-3">
-                    <span className="text-[10.5px] font-mono text-[#38bdf8] font-semibold line-clamp-1">
+                  <div className="absolute bottom-1.5 left-2.5 right-2.5">
+                    <span className="text-[10px] font-mono text-[#38bdf8] font-semibold line-clamp-1">
                       {stage.equipmentTag}
                     </span>
                   </div>
                 </div>
 
-                <div className="p-6 flex flex-col gap-4 flex-1">
-                  <h3 className="font-headline-sm font-bold text-white group-hover:text-[#5bb8fe] transition-colors">
+                <div className="p-3.5 flex flex-col gap-2 flex-1">
+                  <h3 className="text-[15px] font-bold text-white group-hover:text-[#5bb8fe] transition-colors leading-snug">
                     {stage.title}
                   </h3>
-                  <p className="font-body-sm text-slate-300 leading-relaxed">
+                  <p className="text-[11.5px] text-slate-300 leading-snug line-clamp-2">
                     {stage.desc}
                   </p>
 
                   {/* Expanded deliverables breakdown */}
-                  <div className="pt-3 border-t border-slate-700/80 mt-auto">
-                    <span className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold block mb-2">
+                  <div className="pt-2 border-t border-slate-700/80 mt-auto">
+                    <span className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold block mb-1">
                       Key Deliverables &amp; Hardware:
                     </span>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-1">
                       {stage.deliverables.map((item, dIdx) => (
                         <span
                           key={dIdx}
-                          className="text-[11px] px-2 py-0.5 rounded bg-slate-800/90 text-slate-200 border border-slate-600/80"
+                          className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800/90 text-slate-200 border border-slate-600/80"
                         >
                           {item}
                         </span>

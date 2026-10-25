@@ -89,7 +89,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={() => setModelDropdownOpen(!modelDropdownOpen)}
               className={`h-9 px-3 text-[13px] font-semibold transition-all rounded-lg whitespace-nowrap cursor-pointer inline-flex items-center justify-center gap-1 leading-none ${
-                currentTab === 'residential-layout-3d' || currentTab === 'residential-3d' || currentTab === 'twin-3d'
+                currentTab === 'residential-layout-3d' ||
+                currentTab === 'residential-3d' ||
+                currentTab === 'twin-3d' ||
+                currentTab === 'smart-home-3d'
                   ? 'bg-[#dce9ff] text-[#0b1c30] font-bold shadow-xs'
                   : 'text-[#0284c7] hover:bg-[#e0f2fe] font-bold'
               }`}
@@ -103,7 +106,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* Dropdown Menu */}
             {modelDropdownOpen && (
-              <div className="absolute top-full left-0 w-88 bg-white rounded-xl shadow-xl border border-[#CBD5E1] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+              <div className="absolute top-full left-0 w-88 max-w-[calc(100vw-2rem)] max-h-[calc(100vh-5.5rem)] overflow-y-auto bg-white rounded-xl shadow-xl border border-[#CBD5E1] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
                 {/* 1. Residential Layout & Infrastructure Twin */}
                 <button
                   onClick={() => {
@@ -182,6 +185,49 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </div>
                     <span className="text-[11px] text-[#64748b]">
                       Power transformers, VCB switchgear &amp; solar tracker
+                    </span>
+                  </div>
+                </button>
+
+                <div className="my-1 border-t border-[#F1F5F9]" />
+
+                {/* 4. Smart Home Automation Twin */}
+                <button
+                  onClick={() => {
+                    handleNavClick('smart-home-3d');
+                    setModelDropdownOpen(false);
+                  }}
+                  className={`w-full px-4 py-2.5 text-left flex items-start gap-3 hover:bg-[#f0f9ff] transition-colors cursor-pointer ${
+                    currentTab === 'smart-home-3d' ? 'bg-[#e0f2fe]' : ''
+                  }`}
+                >
+                  <span className="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center shrink-0 mt-0.5 border border-teal-200">
+                    <svg
+                      className="w-[18px] h-[18px]"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M3 10.5L12 3l9 7.5" />
+                      <path d="M5 9.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9.5" />
+                      <path d="M9.5 14.5a3.5 3.5 0 0 1 5 0" />
+                      <path d="M11 16.5a1.5 1.5 0 0 1 2 0" />
+                      <circle cx="12" cy="18" r="0.6" fill="currentColor" />
+                    </svg>
+                  </span>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[13px] font-bold text-[#0B192C]">Smart Home Automation Twin</span>
+                      <span className="px-1.5 py-0.2 rounded bg-teal-100 text-teal-700 text-[9px] font-mono font-bold">
+                        SMART HOME
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-[#64748b]">
+                      3D smart home visualization, automated lighting, smart switches, curtains, HVAC and integrated security systems.
                     </span>
                   </div>
                 </button>
@@ -473,6 +519,47 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </div>
                     {currentTab === 'twin-3d' && (
                       <span className="material-symbols-outlined text-[16px] text-[#0284c7]">check</span>
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => handleNavClick('smart-home-3d')}
+                    className={`px-5 py-2.5 text-left text-[14px] flex items-center justify-between cursor-pointer ${
+                      currentTab === 'smart-home-3d'
+                        ? 'bg-[#dce9ff] text-[#0B192C] font-bold'
+                        : 'text-[#334155] hover:bg-[#f8f9ff]'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4 text-teal-600 shrink-0"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M3 10.5L12 3l9 7.5" />
+                        <path d="M5 9.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9.5" />
+                        <path d="M9.5 14.5a3.5 3.5 0 0 1 5 0" />
+                        <circle cx="12" cy="17.5" r="0.8" fill="currentColor" />
+                      </svg>
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-1.5">
+                          <span>Smart Home Automation Twin</span>
+                          <span className="px-1.5 py-0.2 rounded bg-teal-100 text-teal-700 text-[9px] font-mono font-bold">
+                            SMART HOME
+                          </span>
+                        </div>
+                        <span className="text-[11px] text-[#64748b] font-normal">
+                          3D smart home visualization, automated lighting, smart switches, curtains, HVAC and integrated security systems.
+                        </span>
+                      </div>
+                    </div>
+                    {currentTab === 'smart-home-3d' && (
+                      <span className="material-symbols-outlined text-[16px] text-[#0284c7] shrink-0">check</span>
                     )}
                   </button>
                 </div>

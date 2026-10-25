@@ -3,6 +3,7 @@ export type NavigationTab =
   | 'twin-3d'
   | 'residential-3d'
   | 'residential-layout-3d'
+  | 'smart-home-3d'
   | 'electrical' 
   | 'solar-solutions' 
   | 'services' 
