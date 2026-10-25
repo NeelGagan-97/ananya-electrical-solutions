@@ -22,6 +22,19 @@ export interface ServiceItem {
   image?: string;
 }
 
+export interface ElectricalEquipmentItem {
+  id: string;
+  name: string;
+  category: string;
+  voltageRating: string;
+  capacityRange: string;
+  standard: string;
+  description: string;
+  image: string;
+  icon: string;
+  features: string[];
+}
+
 export interface ProjectItem {
   id: string;
   title: string;

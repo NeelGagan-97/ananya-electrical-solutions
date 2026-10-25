@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavigationTab, EngineeringInquiry, ProjectItem } from '../types';
-import { ASSETS, SERVICES, PROJECTS, ESCOMS } from '../data/constants';
+import { ASSETS, SERVICES, PROJECTS, ESCOMS, ELECTRICAL_EQUIPMENT } from '../data/constants';
 import { ElectricalServicesSection } from '../components/ElectricalServicesSection';
 
 interface HomeScreenProps {
@@ -50,6 +50,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       num: 'STAGE 01',
       title: 'Site Survey & Load Audit',
       icon: 'troubleshoot',
+      image: ASSETS.pillarTesting,
+      equipmentTag: 'Class-A Power Analyzers & Soil Resistivity Meters',
       desc: 'On-site engineering inspection, connected load calculations, short-circuit levels assessment, and feasibility studies for grid interconnection or rooftop solar.',
       deliverables: ['Load profiling log', 'Fault level study', 'Soil resistivity report', 'Site layout CAD']
     },
@@ -57,20 +59,26 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       num: 'STAGE 02',
       title: 'CAD Design & Sanctions',
       icon: 'design_services',
+      image: ASSETS.hero,
+      equipmentTag: 'SLD Blueprints, CT/PT Sizing & Protection Relay Curves',
       desc: 'Drafting precision Single Line Diagrams (SLD), equipment layouts, and statutory drawings for CEIG approval and BESCOM load sanctioning.',
       deliverables: ['Single Line Diagram (SLD)', 'CEIG Drawing Sanction File', 'Substation Earth Grid CAD', 'Cable Schedule']
     },
     {
       num: 'STAGE 03',
-      title: 'Precision Installation',
+      title: 'Equipment Erection & Cabling',
       icon: 'construction',
-      desc: 'Deployment of transformers, cabling, HT/LT panels, solar arrays, and high-integrity earth pits adhering strictly to CPWD and CEA installation standards.',
+      image: ASSETS.pillarHighVoltage,
+      equipmentTag: 'Power Transformers, 11kV/33kV VCBs, PCC/MCC & XLPE Trays',
+      desc: 'Deployment of transformers, heavy XLPE cabling, HT/LT switchgear panels, solar arrays, and chemical earth pits adhering strictly to CPWD and CEA standards.',
       deliverables: ['Transformer positioning', 'Busduct joint torquing', 'Cable termination & glanding', 'Solar array tilt alignment']
     },
     {
       num: 'STAGE 04',
-      title: 'Commissioning & AMC',
+      title: 'Testing, Commissioning & AMC',
       icon: 'verified',
+      image: ASSETS.aboutExecution,
+      equipmentTag: '10kV Megger, Primary Injection, VLF Hi-Pot & Thermal Cameras',
       desc: 'Rigorous pre-commissioning Megger/Hi-Pot tests, government safety inspection pass, plant energization, followed by 24/7 preventative maintenance support.',
       deliverables: ['Hi-Pot breakdown test', 'CEIG Safety Certificate', 'Discom Energization Letter', '24/7 Emergency Dispatch']
     }
@@ -319,44 +327,148 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       </section>
 
       {/* ================= 3D DIGITAL TWIN SPOTLIGHT BANNER ================= */}
-      <section className="w-full bg-[#0B192C] text-white py-12 relative overflow-hidden border-y border-[#334155]/60">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
-          <div className="flex flex-col gap-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0284c7]/20 border border-[#0284c7]/40 w-fit">
-              <span className="material-symbols-outlined text-[16px] text-[#38bdf8]">3d_rotation</span>
-              <span className="text-[12px] font-mono uppercase tracking-wider text-[#38bdf8] font-bold">
-                Interactive Engineering Digital Twins (WebGL 3D)
-              </span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-              Explore Our Interactive 3D Twins: Residential &amp; Industrial Systems
-            </h2>
-            <p className="text-slate-300 text-sm sm:text-base max-w-2xl leading-relaxed">
-              Step into real-time 3D simulation. Inspect modern Indian 2BHK residential concealed conduits, distribution boards with RCCBs, wire tracing, and chemical earthing, or explore 33kV substations with vacuum circuit breakers and solar arrays.
-            </p>
+      <section className="w-full bg-[#071120] text-white py-14 lg:py-16 relative overflow-hidden border-y border-[#334155]/80">
+        {/* Multi-Panel Electrical Services & Equipment Background Collage */}
+        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-3 w-full h-full opacity-45">
+            <img
+              src={ASSETS.pillarHighVoltage}
+              alt="33kV Electrical Substation & Power Transformer Equipment"
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover object-center scale-105 brightness-95 contrast-110"
+            />
+            <img
+              src={ASSETS.project1}
+              alt="HT/LT Switchgear Panels & Busbar Trunking Equipment"
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover object-center scale-105 brightness-95 contrast-110 hidden md:block"
+            />
+            <img
+              src={ASSETS.transmissionBg}
+              alt="High-Voltage Transmission Lines & Grid Infrastructure"
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover object-center scale-105 brightness-95 contrast-110 hidden md:block"
+            />
           </div>
-          <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0 w-full sm:w-auto">
-            <button
-              onClick={() => onSelectTab('residential-3d')}
-              className="w-full sm:w-auto h-12 px-6 rounded-xl bg-gradient-to-r from-[#10b981] to-[#047857] hover:from-[#059669] hover:to-[#10b981] text-white font-bold text-[14px] flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 transition-transform hover:scale-105 cursor-pointer border border-[#34d399]/50"
-            >
-              <span className="material-symbols-outlined text-[20px]">home</span>
-              <span>Launch 3D Home Wiring</span>
-            </button>
-            <button
-              onClick={() => onSelectTab('twin-3d')}
-              className="w-full sm:w-auto h-12 px-6 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#006398] hover:from-[#006398] hover:to-[#0284C7] text-white font-bold text-[14px] flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25 transition-transform hover:scale-105 cursor-pointer border border-[#38bdf8]/50"
-            >
-              <span className="material-symbols-outlined text-[20px]">explore</span>
-              <span>Launch 3D Substation</span>
-            </button>
+          {/* Layered Readability Overlays so Background Images Shine Through Clearly */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#060f1e]/92 via-[#0B192C]/80 to-[#060f1e]/88"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#060f1e]/60 via-transparent to-[#060f1e]/80"></div>
+          <div className="absolute -top-24 left-1/3 w-96 h-96 bg-[#0284C7]/20 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-24 right-1/4 w-96 h-96 bg-[#10b981]/15 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10 flex flex-col gap-8">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+            <div className="flex flex-col gap-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0284c7]/25 border border-[#38bdf8]/40 w-fit backdrop-blur-md">
+                <span className="material-symbols-outlined text-[16px] text-[#38bdf8]">3d_rotation</span>
+                <span className="text-[12px] font-mono uppercase tracking-wider text-[#38bdf8] font-bold">
+                  Interactive Engineering Digital Twins &amp; Equipment Simulators (WebGL 3D)
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+                Explore Our Interactive 3D Twins: Residential, Layout &amp; Substation Equipment
+              </h2>
+              <p className="text-slate-200 text-sm sm:text-base max-w-2xl leading-relaxed">
+                Step into real-time 3D engineering simulations. Inspect modern Indian 2BHK concealed conduit wiring, TPN distribution boards with RCCBs, township layout transformers, or 33kV substations with vacuum circuit breakers and solar arrays.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-3 shrink-0 w-full lg:w-auto">
+              <button
+                onClick={() => onSelectTab('residential-3d')}
+                className="w-full sm:w-auto h-12 px-5 rounded-xl bg-gradient-to-r from-[#10b981] to-[#047857] hover:from-[#059669] hover:to-[#10b981] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 transition-transform hover:scale-105 cursor-pointer border border-[#34d399]/50"
+              >
+                <span className="material-symbols-outlined text-[20px]">home</span>
+                <span>3D Home Wiring</span>
+              </button>
+              <button
+                onClick={() => onSelectTab('residential-layout-3d')}
+                className="w-full sm:w-auto h-12 px-5 rounded-xl bg-gradient-to-r from-[#F59E0B] to-[#D97706] hover:from-[#D97706] hover:to-[#F59E0B] text-[#2a1700] font-bold text-[13.5px] flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 transition-transform hover:scale-105 cursor-pointer border border-[#fbbf24]/60"
+              >
+                <span className="material-symbols-outlined text-[20px]">apartment</span>
+                <span>3D Layout Electrification</span>
+              </button>
+              <button
+                onClick={() => onSelectTab('twin-3d')}
+                className="w-full sm:w-auto h-12 px-5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#006398] hover:from-[#006398] hover:to-[#0284C7] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25 transition-transform hover:scale-105 cursor-pointer border border-[#38bdf8]/50"
+              >
+                <span className="material-symbols-outlined text-[20px]">explore</span>
+                <span>3D 33kV Substation</span>
+              </button>
+            </div>
+          </div>
+
+          {/* 4 Visual Equipment & Service Highlights Inside the Banner */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-slate-700/70">
+            {[
+              {
+                title: '33kV / 11kV VCB & Transformers',
+                spec: 'ONAN Step-Down & Outdoor Switchyard',
+                image: ASSETS.pillarHighVoltage,
+                badge: 'Substation Equipment',
+                tab: 'twin-3d' as NavigationTab
+              },
+              {
+                title: 'PCC / MCC & APFC Switchboards',
+                spec: 'Form-4b ACB Panels & Busduct Trunking',
+                image: ASSETS.project1,
+                badge: 'Industrial Panels',
+                tab: 'electrical' as NavigationTab
+              },
+              {
+                title: 'Concealed Conduits & MCB/RCCB DB',
+                spec: 'FRLS Wiring, Smart Switches & Earth Pit',
+                image: ASSETS.project3,
+                badge: 'Residential Equipment',
+                tab: 'residential-3d' as NavigationTab
+              },
+              {
+                title: 'Township DTC & Feeder Pillars',
+                spec: '11kV Pole-Mounted DTC & UG XLPE Cables',
+                image: ASSETS.transmissionBg,
+                badge: 'Layout Infrastructure',
+                tab: 'residential-layout-3d' as NavigationTab
+              }
+            ].map((item, idx) => (
+              <div
+                key={idx}
+                onClick={() => onSelectTab(item.tab)}
+                className="group relative rounded-xl overflow-hidden border border-slate-600/70 bg-[#0B192C]/80 backdrop-blur-md p-3 flex items-center gap-3.5 cursor-pointer hover:border-[#38bdf8] transition-all"
+              >
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  referrerPolicy="no-referrer"
+                  className="w-16 h-16 rounded-lg object-cover shrink-0 border border-slate-600 group-hover:scale-105 transition-transform"
+                />
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#38bdf8] font-bold">
+                    {item.badge}
+                  </span>
+                  <span className="text-[13px] font-bold text-white truncate group-hover:text-[#5bb8fe] transition-colors">
+                    {item.title}
+                  </span>
+                  <span className="text-[11px] text-slate-300 truncate">{item.spec}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ================= 3 CORE CAPABILITY PILLARS ================= */}
-      <section className="w-full bg-[#f8f9ff] py-20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-12">
+      <section className="w-full bg-[#f8f9ff] py-20 relative overflow-hidden">
+        {/* Subtle Electrical Infrastructure Background Layer */}
+        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
+          <img
+            src={ASSETS.transmissionBg}
+            alt="Electrical transmission background"
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover object-center opacity-12"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#f8f9ff]/94 via-[#f8f9ff]/88 to-[#f8f9ff]/95"></div>
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-12">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="flex flex-col gap-2">
               <span className="text-[14px] uppercase tracking-wider text-[#0284C7] font-bold">
@@ -505,59 +617,199 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </section>
 
-      {/* ================= FEATURED SERVICES GRID (6 CARDS) ================= */}
-      <section className="w-full bg-[#F8FAFC] py-20" id="services">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-12">
+      {/* ================= FEATURED SERVICES & ELECTRICAL EQUIPMENT GRID ================= */}
+      <section className="w-full bg-[#F8FAFC] py-20 relative overflow-hidden" id="services">
+        {/* Background Electrical Services & Equipment Collage */}
+        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 w-full h-full opacity-20">
+            <img
+              src={ASSETS.project1}
+              alt="Industrial HT/LT switchboard room background"
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover object-center"
+            />
+            <img
+              src={ASSETS.pillarHighVoltage}
+              alt="High voltage substation transformer yard background"
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover object-center hidden md:block"
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#F8FAFC]/94 via-[#eff4ff]/90 to-[#F8FAFC]/95"></div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-14">
           <div className="text-center max-w-3xl mx-auto flex flex-col gap-3">
             <span className="text-[14px] uppercase tracking-wider text-[#006398] font-bold">
-              Turnkey Capabilities
+              Turnkey Capabilities &amp; Certified Hardware
             </span>
             <h2 className="font-headline-lg text-[#0B192C] font-bold">
-              Comprehensive Engineering Services
+              Comprehensive Electrical Services &amp; Equipment
             </h2>
             <p className="font-body-md text-[#44474c]">
-              Serving industrial manufacturing corridors, IT tech parks, pharmaceutical plants, commercial high-rises, and greenfield solar installations throughout Karnataka.
+              Serving industrial manufacturing corridors, IT tech parks, pharmaceutical plants, commercial high-rises, and greenfield solar installations throughout Karnataka with Class-1 turnkey services and type-tested electrical equipment.
             </p>
           </div>
 
+          {/* 9 Turnkey Engineering Services Grid with Equipment Photos */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {SERVICES.slice(0, 6).map((service) => (
+            {SERVICES.slice(0, 9).map((service) => (
               <div
                 key={service.id}
-                className="p-8 rounded-xl bg-white shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-6 group hover:-translate-y-1 border border-[#E2E8F0]"
+                className="rounded-2xl bg-white/95 backdrop-blur-md shadow-sm hover:shadow-xl transition-all flex flex-col justify-between overflow-hidden group hover:-translate-y-1 border border-[#CBD5E1]"
               >
-                <div className="flex flex-col gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-[#dce9ff] flex items-center justify-center text-[#0B192C] group-hover:bg-[#0B192C] group-hover:text-white transition-colors">
-                    <span className="material-symbols-outlined text-[26px]">{service.icon}</span>
+                {/* Visual Equipment Banner */}
+                <div className="relative h-44 w-full overflow-hidden bg-[#0B192C]">
+                  <img
+                    src={service.image || ASSETS.pillarHighVoltage}
+                    alt={service.title}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C]/90 via-[#0B192C]/30 to-transparent"></div>
+                  <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
+                    <span className="px-2.5 py-1 rounded bg-[#0B192C]/85 text-[#38bdf8] text-[11px] font-mono font-bold border border-sky-400/30 backdrop-blur-xs">
+                      {service.voltageClass || '11kV / 415V'}
+                    </span>
+                    <span className="px-2.5 py-1 rounded bg-[#FEF3C7] text-[#2a1700] text-[10.5px] uppercase font-bold">
+                      {service.badge}
+                    </span>
                   </div>
-                  <h3 className="font-headline-sm text-[#0B192C] font-bold">{service.title}</h3>
-                  <p className="font-body-sm text-[#44474c] leading-relaxed">
-                    {service.description}
-                  </p>
+                  <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-lg bg-white text-[#0B192C] flex items-center justify-center shrink-0 shadow-md group-hover:bg-[#0284C7] group-hover:text-white transition-colors">
+                      <span className="material-symbols-outlined text-[22px]">{service.icon}</span>
+                    </div>
+                    <h3 className="font-headline-sm text-[17px] text-white font-bold leading-snug">
+                      {service.title}
+                    </h3>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between pt-4 border-t border-[#E2E8F0]">
-                  <span className="text-[12px] text-slate-500 uppercase font-semibold">
-                    {service.badge}
-                  </span>
-                  <button
-                    onClick={() => onOpenConsultation(service.title)}
-                    className="text-[14px] text-[#006398] hover:text-[#0B192C] font-semibold flex items-center gap-1 cursor-pointer"
-                  >
-                    Inquire <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-                  </button>
+
+                <div className="p-6 flex flex-col flex-1 justify-between gap-5">
+                  <div className="flex flex-col gap-3">
+                    <p className="font-body-sm text-[#44474c] leading-relaxed">
+                      {service.description}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {service.specs.slice(0, 3).map((spec, sIdx) => (
+                        <span
+                          key={sIdx}
+                          className="text-[11px] px-2.5 py-0.5 rounded-md bg-[#f8f9ff] text-[#00476e] border border-[#CBD5E1] font-medium"
+                        >
+                          {spec}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between pt-3 border-t border-[#E2E8F0]">
+                    <span className="text-[11px] text-slate-500 uppercase font-semibold flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[14px] text-emerald-600">verified</span>
+                      CEIG &amp; IS Compliant
+                    </span>
+                    <button
+                      onClick={() => onOpenConsultation(service.title)}
+                      className="text-[13.5px] text-[#006398] hover:text-[#0B192C] font-bold flex items-center gap-1 cursor-pointer"
+                    >
+                      Inquire <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="text-center pt-2">
-            <button
-              onClick={() => onSelectTab('services')}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-[#0B192C] text-[#0B192C] hover:bg-[#0B192C] hover:text-white font-semibold text-[14px] transition-colors cursor-pointer"
-            >
-              <span>Explore All 8 Detailed Engineering Services &amp; Testing Capabilities</span>
-              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-            </button>
+          {/* Dedicated Heavy Electrical Equipment & Hardware Supply Showcase */}
+          <div className="rounded-3xl bg-[#0B192C] text-white p-8 lg:p-10 relative overflow-hidden border border-slate-700 shadow-xl">
+            {/* Background Equipment Image Layer inside the Catalog Box */}
+            <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
+              <img
+                src={ASSETS.transmissionBg}
+                alt="Electrical substation equipment background"
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover object-center opacity-25"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#060f1e]/95 via-[#0B192C]/88 to-[#060f1e]/92"></div>
+            </div>
+
+            <div className="relative z-10 flex flex-col gap-8">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-700/80 pb-6">
+                <div className="flex flex-col gap-2">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FEF3C7]/15 border border-[#F59E0B]/40 text-[#F59E0B] text-[11px] font-mono uppercase tracking-wider font-bold w-fit">
+                    <span className="material-symbols-outlined text-[15px]">precision_manufacturing</span>
+                    Heavy Electrical Equipment &amp; Switchgear Supply
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-white">
+                    Certified Industrial Electrical Equipment Portfolio
+                  </h3>
+                  <p className="text-slate-300 text-sm max-w-2xl">
+                    Type-tested high-voltage and low-voltage electrical equipment supplied, erected, tested, and commissioned with full manufacturer warranty and CEIG statutory clearances.
+                  </p>
+                </div>
+                <button
+                  onClick={() => onSelectTab('services')}
+                  className="shrink-0 h-11 px-5 rounded-xl bg-[#0284C7] hover:bg-[#0369a1] text-white text-[13px] font-bold flex items-center gap-2 cursor-pointer shadow-md transition-colors w-fit"
+                >
+                  <span>View All 12 Services &amp; Specs</span>
+                  <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                {ELECTRICAL_EQUIPMENT.map((item) => (
+                  <div
+                    key={item.id}
+                    className="rounded-xl bg-[#1E293B]/90 backdrop-blur-md border border-slate-700 hover:border-[#38bdf8] overflow-hidden flex flex-col justify-between group transition-all"
+                  >
+                    <div className="relative h-36 w-full overflow-hidden">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C] via-[#0B192C]/25 to-transparent"></div>
+                      <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded bg-[#0B192C]/90 text-[#F59E0B] text-[10px] font-mono font-bold uppercase border border-amber-400/30">
+                        {item.category}
+                      </span>
+                      <span className="absolute bottom-2 left-2.5 right-2.5 text-[11px] font-mono text-[#38bdf8] font-bold">
+                        {item.voltageRating} • {item.capacityRange}
+                      </span>
+                    </div>
+
+                    <div className="p-4 flex flex-col flex-1 justify-between gap-3">
+                      <div className="flex flex-col gap-1.5">
+                        <h4 className="text-[14.5px] font-bold text-white leading-snug group-hover:text-[#5bb8fe] transition-colors">
+                          {item.name}
+                        </h4>
+                        <p className="text-[12px] text-slate-300 leading-relaxed line-clamp-2">
+                          {item.description}
+                        </p>
+                        <ul className="flex flex-col gap-1 pt-1.5">
+                          {item.features.slice(0, 2).map((feat, fIdx) => (
+                            <li key={fIdx} className="text-[11px] text-slate-300 flex items-start gap-1.5">
+                              <span className="material-symbols-outlined text-[13px] text-emerald-400 shrink-0 mt-0.5">
+                                check_circle
+                              </span>
+                              <span className="line-clamp-1">{feat}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="pt-2.5 border-t border-slate-700/80 flex items-center justify-between">
+                        <span className="text-[10px] font-mono text-slate-400">{item.standard}</span>
+                        <button
+                          onClick={() => onOpenConsultation(item.name)}
+                          className="text-[12px] font-bold text-[#38bdf8] hover:text-white flex items-center gap-1 cursor-pointer"
+                        >
+                          Quote <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -694,16 +946,55 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </section>
 
-      {/* ================= 4-STEP PRECISION PROCESS ================= */}
-      <section className="w-full bg-[#0B192C] text-white py-20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-14">
-          <div className="flex flex-col items-center text-center max-w-2xl mx-auto gap-3">
-            <span className="text-[14px] uppercase tracking-wider text-[#5bb8fe] font-bold">
-              Execution Methodology
+      {/* ================= 4-STEP PRECISION PROCESS & FIELD EQUIPMENT ================= */}
+      <section className="w-full bg-[#071120] text-white py-20 relative overflow-hidden border-y border-slate-800">
+        {/* Full-Bleed Multi-Panel Electrical Services & Equipment Background Images */}
+        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full h-full opacity-40">
+            <img
+              src={ASSETS.pillarHighVoltage}
+              alt="33kV substation switchyard background"
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover object-center scale-105"
+            />
+            <img
+              src={ASSETS.project1}
+              alt="HT/LT PCC and MCC switchgear panels background"
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover object-center scale-105 hidden md:block"
+            />
+            <img
+              src={ASSETS.project3}
+              alt="Industrial heavy cable trays and XLPE feeders background"
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover object-center scale-105 hidden lg:block"
+            />
+            <img
+              src={ASSETS.aboutExecution}
+              alt="Electrical testing and commissioning engineers background"
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover object-center scale-105 hidden lg:block"
+            />
+          </div>
+          {/* Atmospheric Dark Navy Readability Gradient Overlays */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#060f1e]/90 via-[#0B192C]/80 to-[#060f1e]/92"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-[#060f1e]/85 via-transparent to-[#060f1e]/85"></div>
+          {/* Ambient Glows */}
+          <div className="absolute top-10 left-1/4 w-96 h-96 bg-[#0284C7]/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-[#F59E0B]/15 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-14">
+          <div className="flex flex-col items-center text-center max-w-3xl mx-auto gap-3">
+            <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#0284C7]/25 border border-[#38bdf8]/40 text-[12px] uppercase tracking-wider text-[#5bb8fe] font-bold backdrop-blur-md">
+              <span className="material-symbols-outlined text-[16px]">electrical_services</span>
+              Execution Methodology &amp; Field Equipment
             </span>
-            <h2 className="font-headline-lg text-white font-bold">How We Power Your Facilities</h2>
-            <p className="font-body-md text-slate-300">
-              A disciplined, zero-shortcut process tested over half a decade across Karnataka's industrial and clean energy landscapes.
+            <h2 className="font-headline-lg text-white font-bold">
+              How We Power Your Facilities: Turnkey Services &amp; Equipment
+            </h2>
+            <p className="font-body-md text-slate-200">
+              A disciplined, zero-shortcut engineering workflow backed by NABL-calibrated diagnostic instruments, heavy substation machinery, and type-tested switchgear across Karnataka.
             </p>
           </div>
 
@@ -712,34 +1003,122 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <div
                 key={stage.num}
                 onClick={() => setActiveStage(activeStage === idx ? null : idx)}
-                className={`p-6 rounded-xl bg-[#1E293B] text-white flex flex-col gap-4 relative border transition-all cursor-pointer ${
-                  activeStage === idx ? 'border-[#0284C7] ring-2 ring-[#0284C7]/30 shadow-lg' : 'border-slate-800 hover:border-slate-700'
+                className={`rounded-2xl bg-[#1E293B]/90 backdrop-blur-md text-white flex flex-col overflow-hidden relative border transition-all cursor-pointer group ${
+                  activeStage === idx
+                    ? 'border-[#38bdf8] ring-2 ring-[#0284C7]/40 shadow-xl'
+                    : 'border-slate-700/90 hover:border-[#38bdf8]/70'
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-[12px] text-[#F59E0B] font-mono font-bold">{stage.num}</span>
-                  <span className="material-symbols-outlined text-slate-400 text-[24px]">{stage.icon}</span>
+                {/* Stage Equipment & Service Image Header */}
+                <div className="relative h-36 w-full overflow-hidden bg-[#0B192C]">
+                  <img
+                    src={stage.image}
+                    alt={stage.title}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1E293B] via-[#0B192C]/40 to-transparent"></div>
+                  <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
+                    <span className="px-2.5 py-1 rounded bg-[#0B192C]/90 text-[#F59E0B] text-[11px] font-mono font-bold border border-amber-400/30">
+                      {stage.num}
+                    </span>
+                    <div className="w-8 h-8 rounded-lg bg-[#0B192C]/85 border border-slate-600 flex items-center justify-center text-[#38bdf8]">
+                      <span className="material-symbols-outlined text-[18px]">{stage.icon}</span>
+                    </div>
+                  </div>
+                  <div className="absolute bottom-2 left-3 right-3">
+                    <span className="text-[10.5px] font-mono text-[#38bdf8] font-semibold line-clamp-1">
+                      {stage.equipmentTag}
+                    </span>
+                  </div>
                 </div>
-                <h3 className="font-headline-sm font-bold">{stage.title}</h3>
-                <p className="font-body-sm text-slate-300 leading-relaxed">
-                  {stage.desc}
-                </p>
 
-                {/* Expanded deliverables breakdown */}
-                <div className="pt-3 border-t border-slate-700/80 mt-auto">
-                  <span className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold block mb-1.5">
-                    Key Deliverables:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {stage.deliverables.map((item, dIdx) => (
-                      <span key={dIdx} className="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
-                        {item}
-                      </span>
-                    ))}
+                <div className="p-6 flex flex-col gap-4 flex-1">
+                  <h3 className="font-headline-sm font-bold text-white group-hover:text-[#5bb8fe] transition-colors">
+                    {stage.title}
+                  </h3>
+                  <p className="font-body-sm text-slate-300 leading-relaxed">
+                    {stage.desc}
+                  </p>
+
+                  {/* Expanded deliverables breakdown */}
+                  <div className="pt-3 border-t border-slate-700/80 mt-auto">
+                    <span className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold block mb-2">
+                      Key Deliverables &amp; Hardware:
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {stage.deliverables.map((item, dIdx) => (
+                        <span
+                          key={dIdx}
+                          className="text-[11px] px-2 py-0.5 rounded bg-slate-800/90 text-slate-200 border border-slate-600/80"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Field Service & Testing Equipment Showcase Bar Inside Section 8 */}
+          <div className="p-6 rounded-2xl bg-[#0B192C]/85 backdrop-blur-md border border-slate-700/90 flex flex-col gap-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#FEF3C7]/15 border border-[#F59E0B]/40 flex items-center justify-center text-[#F59E0B] shrink-0">
+                  <span className="material-symbols-outlined text-[22px]">handyman</span>
+                </div>
+                <div>
+                  <h3 className="text-[16px] font-bold text-white">
+                    Specialized Electrical Equipment &amp; Testing Fleet Deployed On-Site
+                  </h3>
+                  <p className="text-[12.5px] text-slate-300">
+                    Every installation is executed with calibrated primary/secondary testing kits and BIS/IEC certified switchgear components.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => onOpenConsultation('Turnkey Electrical Equipment & Testing')}
+                className="shrink-0 h-10 px-4 rounded-lg bg-[#F59E0B] hover:bg-[#d97706] text-[#2a1700] font-bold text-[12.5px] flex items-center gap-1.5 cursor-pointer transition-colors w-fit"
+              >
+                <span className="material-symbols-outlined text-[17px]">request_quote</span>
+                <span>Book Equipment &amp; Service Audit</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              {[
+                { name: '11kV–110kV Transformers', spec: 'ONAN & Dry Cast Resin', img: ASSETS.pillarHighVoltage },
+                { name: 'HT VCB & GIS RMU Panels', spec: '25kA / 31.5kA Draw-out', img: ASSETS.transmissionBg },
+                { name: 'Form-4b PCC & MCC Panels', spec: 'ACB / MCCB up to 6300A', img: ASSETS.project1 },
+                { name: 'Armored XLPE & Busducts', spec: 'HDG Trays & Sandwich Bus', img: ASSETS.project3 },
+                { name: 'Tier-1 Solar PV & Inverters', spec: 'Bifacial Modules & String', img: ASSETS.pillarSolar },
+                { name: 'Hi-Pot, Megger & Relay Kits', spec: '10kV IR & Thermal Scan', img: ASSETS.aboutExecution }
+              ].map((eq, i) => (
+                <div
+                  key={i}
+                  onClick={() => onOpenConsultation(eq.name)}
+                  className="rounded-xl overflow-hidden border border-slate-700 bg-[#1E293B]/90 hover:border-[#38bdf8] transition-all cursor-pointer group flex flex-col"
+                >
+                  <div className="h-20 w-full overflow-hidden relative">
+                    <img
+                      src={eq.img}
+                      alt={eq.name}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1E293B] via-transparent to-transparent"></div>
+                  </div>
+                  <div className="p-2.5 flex flex-col gap-0.5">
+                    <span className="text-[11.5px] font-bold text-white leading-tight group-hover:text-[#38bdf8] transition-colors">
+                      {eq.name}
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400">{eq.spec}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
