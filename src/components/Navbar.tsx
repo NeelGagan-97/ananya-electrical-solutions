@@ -52,7 +52,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-[#FFFFFF]/95 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.06)] border-b border-[#E2E8F0]">
-      <div className="w-full max-w-7xl h-20 mx-auto px-6 lg:px-12 flex items-center justify-between gap-4">
+      <div className="w-full h-20 px-4 sm:px-6 lg:px-8 flex items-center justify-start gap-4 lg:gap-6">
         {/* Brand Zone */}
         <div className="flex items-center shrink-0">
           <button
@@ -79,7 +79,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden xl:flex items-center justify-center gap-1">
+        <nav className="hidden xl:flex items-center justify-start gap-1">
           {/* 3D Model Dropdown */}
           <div
             className="relative"
