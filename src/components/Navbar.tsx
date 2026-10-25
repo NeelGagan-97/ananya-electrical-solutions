@@ -80,18 +80,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Desktop Navigation Links */}
         <nav className="hidden xl:flex items-center justify-center gap-1">
-          {/* Home Button */}
-          <button
-            onClick={() => handleNavClick('home')}
-            className={`h-9 px-3 text-[13px] font-semibold transition-all rounded-lg whitespace-nowrap cursor-pointer inline-flex items-center justify-center leading-none ${
-              currentTab === 'home'
-                ? 'bg-[#dce9ff] text-[#0b1c30] font-bold shadow-xs'
-                : 'text-[#44474c] hover:text-[#0b1c30] hover:bg-[#e5eeff]'
-            }`}
-          >
-            Home
-          </button>
-
           {/* 3D Model Dropdown */}
           <div
             className="relative"
