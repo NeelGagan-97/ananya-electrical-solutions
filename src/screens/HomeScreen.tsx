@@ -206,8 +206,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
 
             {/* Hero Visual Showcase: Video + Telemetry */}
-            <div className="lg:col-span-5 flex flex-col items-center lg:items-end justify-start gap-5 lg:-mt-12">
-              <div className="w-full flex items-start justify-center lg:justify-end lg:pr-4 bg-transparent">
+            <div className="lg:col-span-5 flex flex-col items-center lg:items-end justify-start gap-5 lg:-mt-20">
+              <div className="w-full flex items-start justify-center lg:justify-end lg:-mr-12 xl:-mr-16 bg-transparent">
                 <video
                   src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm"
                   autoPlay
@@ -215,7 +215,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   muted
                   playsInline
                   style={{ aspectRatio: '1.5 / 1.5' }}
-                  className="w-full max-w-[260px] sm:max-w-[300px] aspect-[1.5/1.5] object-cover object-center bg-transparent drop-shadow-[0_2px_12px_rgba(255,255,255,0.5)]"
+                  className="w-full max-w-[260px] sm:max-w-[300px] aspect-[1.5/1.5] object-cover object-center bg-transparent lg:translate-x-12 xl:translate-x-16 lg:-translate-y-4 drop-shadow-[0_2px_12px_rgba(255,255,255,0.5)]"
                 />
               </div>
 

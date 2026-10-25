@@ -1,0 +1,6 @@
+{
+  "summary":  "Implementation plan to shift the animated hero logo video further right so it aligns flush with the right container edge while keeping the status badge and telemetry cards anchored in their current column positions.",
+  "updatedAt":  "2026-10-25T10:01:09.270985263Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}
