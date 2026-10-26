@@ -9,15 +9,34 @@ import {
 } from './residentialModelGenerators';
 
 import { ResidentialProject } from '../types/residentialDesigner';
-import { generateParametricTwin, GeneratedTwin } from './ParametricHouseGenerator';
+import {
+  generateParametricTwin,
+  GeneratedTwin,
+  ResidentialLayerVisibility
+} from './ParametricHouseGenerator';
 
-export type ResidentialCameraPreset = 'overview' | 'db' | 'living' | 'bedroom' | 'kitchen' | 'earth_pit';
+export type ResidentialCameraPreset =
+  | 'overview'
+  | 'isometric'
+  | 'top_plan'
+  | 'db'
+  | 'living'
+  | 'bedroom'
+  | 'guest_bed'
+  | 'kitchen'
+  | 'bathroom'
+  | 'earth_pit';
 
 export interface ResidentialCanvasProps {
   project?: ResidentialProject;
   viewMode: ResidentialViewMode;
   ceilingVisible: boolean;
   dbDoorOpen: boolean;
+  dbExploded?: boolean;
+  isPovMode?: boolean;
+  layers?: ResidentialLayerVisibility;
+  wallOpacity?: number;
+  breakerStates?: Record<string, boolean>;
   activeCircuit: string;
   livingLightOn: boolean;
   fanSpeed: number; // 0, 1, 2, 3
@@ -25,27 +44,34 @@ export interface ResidentialCanvasProps {
   isAutoRotate: boolean;
   onSelectComponent: (componentId: string) => void;
   onToggleLight: () => void;
+  onSceneReady?: (rootObject: THREE.Object3D | null) => void;
 }
 
-// Pre-allocated scratch vectors to prevent GC in animation loop
-const _vec3A = new THREE.Vector3();
 const _targetPos = new THREE.Vector3();
 const _targetLook = new THREE.Vector3();
 const _raycaster = new THREE.Raycaster();
 const _pointer = new THREE.Vector2();
+const _forward = new THREE.Vector3();
+const _right = new THREE.Vector3();
 
 export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
   project,
   viewMode,
   ceilingVisible,
   dbDoorOpen,
+  dbExploded = false,
+  isPovMode = false,
+  layers,
+  wallOpacity = 0.28,
+  breakerStates,
   activeCircuit,
   livingLightOn,
   fanSpeed,
   cameraPreset,
   isAutoRotate,
   onSelectComponent,
-  onToggleLight
+  onToggleLight,
+  onSceneReady
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef({
@@ -53,42 +79,59 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
     viewMode,
     ceilingVisible,
     dbDoorOpen,
+    dbExploded,
+    isPovMode,
+    layers,
+    wallOpacity,
+    breakerStates,
     activeCircuit,
     livingLightOn,
     fanSpeed,
     cameraPreset,
     isAutoRotate,
     onSelectComponent,
-    onToggleLight
+    onToggleLight,
+    onSceneReady
   });
 
-  // Keep stateRef in sync without remounting WebGL
   useEffect(() => {
     stateRef.current = {
       project,
       viewMode,
       ceilingVisible,
       dbDoorOpen,
+      dbExploded,
+      isPovMode,
+      layers,
+      wallOpacity,
+      breakerStates,
       activeCircuit,
       livingLightOn,
       fanSpeed,
       cameraPreset,
       isAutoRotate,
       onSelectComponent,
-      onToggleLight
+      onToggleLight,
+      onSceneReady
     };
   }, [
     project,
     viewMode,
     ceilingVisible,
     dbDoorOpen,
+    dbExploded,
+    isPovMode,
+    layers,
+    wallOpacity,
+    breakerStates,
     activeCircuit,
     livingLightOn,
     fanSpeed,
     cameraPreset,
     isAutoRotate,
     onSelectComponent,
-    onToggleLight
+    onToggleLight,
+    onSceneReady
   ]);
 
   useEffect(() => {
@@ -111,15 +154,16 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
     const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a); // Slate Navy
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.025);
+    scene.background = new THREE.Color(0x0b1329);
+    scene.fog = new THREE.FogExp2(0x0b1329, 0.02);
 
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.2, 80);
-    camera.position.set(-6, 9, 11);
+    const camera = new THREE.PerspectiveCamera(50, width / height, 0.15, 90);
+    camera.position.set(-7, 9.5, 11.5);
 
     const renderer = new THREE.WebGLRenderer({
       antialias: !isSoftwareGl,
-      powerPreference: 'high-performance'
+      powerPreference: 'high-performance',
+      preserveDrawingBuffer: true
     });
     renderer.setSize(width, height);
     renderer.setPixelRatio(isSoftwareGl ? 1 : Math.min(window.devicePixelRatio, 2));
@@ -131,13 +175,13 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
 
     container.appendChild(renderer.domElement);
 
-    // 3. Studio PBR Environment Map via RoomEnvironment
+    // 3. Studio PBR Environment Map
     const pmremGenerator = new THREE.PMREMGenerator(renderer);
     scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
     pmremGenerator.dispose();
 
     // 4. Studio Lighting
-    const sunLight = new THREE.DirectionalLight(0xfffaed, 1.8);
+    const sunLight = new THREE.DirectionalLight(0xfffaed, 1.85);
     sunLight.position.set(10, 18, 12);
     if (!isSoftwareGl) {
       sunLight.castShadow = true;
@@ -153,29 +197,50 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
     }
     scene.add(sunLight);
 
-    const hemiLight = new THREE.HemisphereLight(0xe0f2fe, 0x1e293b, 0.8);
+    const hemiLight = new THREE.HemisphereLight(0xe0f2fe, 0x1e293b, 0.85);
     hemiLight.position.set(0, 20, 0);
     scene.add(hemiLight);
 
     // 5. OrbitControls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = !isSoftwareGl;
-    controls.dampingFactor = 0.05;
+    controls.dampingFactor = 0.06;
     controls.maxPolarAngle = Math.PI / 2 - 0.02;
-    controls.minDistance = 1.2;
-    controls.maxDistance = 28;
+    controls.minDistance = 0.6;
+    controls.maxDistance = 32;
     controls.target.set(0, 1.4, 0);
 
     let isUserInteracting = false;
-    controls.addEventListener('start', () => { isUserInteracting = true; });
-    controls.addEventListener('end', () => { isUserInteracting = false; });
+    controls.addEventListener('start', () => {
+      isUserInteracting = true;
+    });
+    controls.addEventListener('end', () => {
+      isUserInteracting = false;
+    });
 
-    // 6. Build Residential 3D Model (Parametric or Default)
+    // First-Person POV WASD & Mouse-Look State
+    const keysPressed: Record<string, boolean> = {};
+    let povYaw = 0;
+    let povPitch = 0;
+    let isPovDragging = false;
+    let lastPointerX = 0;
+    let lastPointerY = 0;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement)?.tagName)) return;
+      keysPressed[e.code] = true;
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      keysPressed[e.code] = false;
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    // 6. Build Residential 3D Model
     let currentParametricTwin: GeneratedTwin | null = null;
     let currentStaticTwin: ResidentialMeshNodes | null = null;
 
     const buildModel = () => {
-      // Cleanup previous
       if (currentParametricTwin) {
         scene.remove(currentParametricTwin.rootGroup);
         currentParametricTwin.dispose();
@@ -191,33 +256,131 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
         currentParametricTwin = generateParametricTwin(
           curProj,
           stateRef.current.viewMode,
-          stateRef.current.ceilingVisible,
+          stateRef.current.ceilingVisible || Boolean(stateRef.current.isPovMode),
           stateRef.current.dbDoorOpen,
           stateRef.current.activeCircuit
         );
         scene.add(currentParametricTwin.rootGroup);
+        stateRef.current.onSceneReady?.(currentParametricTwin.rootGroup);
       } else {
         currentStaticTwin = createResidentialTwin(
           renderer.capabilities.getMaxAnisotropy()
         );
         scene.add(currentStaticTwin.group);
+        stateRef.current.onSceneReady?.(currentStaticTwin.group);
       }
     };
 
     buildModel();
 
-    // Camera Presets Map
-    const cameraPresetsMap: Record<ResidentialCameraPreset, { pos: THREE.Vector3; lookAt: THREE.Vector3 }> = {
-      overview: { pos: new THREE.Vector3(-6, 9, 11), lookAt: new THREE.Vector3(0, 1.4, 0) },
-      db: { pos: new THREE.Vector3(-0.9, 1.6, 0.4), lookAt: new THREE.Vector3(-0.11, 1.5, 0.4) },
-      living: { pos: new THREE.Vector3(-4.5, 2.2, -0.2), lookAt: new THREE.Vector3(-2.5, 1.6, -1.8) },
-      bedroom: { pos: new THREE.Vector3(-4.5, 2.2, 1.8), lookAt: new THREE.Vector3(-2.5, 1.6, 2.5) },
-      kitchen: { pos: new THREE.Vector3(4.2, 2.2, -0.8), lookAt: new THREE.Vector3(2.5, 1.4, -2.0) },
-      earth_pit: { pos: new THREE.Vector3(-6.8, 1.8, -1.8), lookAt: new THREE.Vector3(-5.8, 0.2, -2.5) }
+    // Compute room-aware Camera Presets (both Orbit and Eye-Level POV at Y=1.65m)
+    const getCameraPresetTarget = (
+      preset: ResidentialCameraPreset,
+      povMode: boolean
+    ): { pos: THREE.Vector3; lookAt: THREE.Vector3 } => {
+      const cx = currentParametricTwin?.houseCenter.x ?? 4.35;
+      const cz = currentParametricTwin?.houseCenter.z ?? 3.5;
+
+      // Helper to convert project coordinates (x, z) to centered world coordinates
+      const toW = (px: number, py: number, pz: number) => new THREE.Vector3(px - cx, py, pz - cz);
+
+      if (povMode) {
+        const eyeY = 1.65;
+        switch (preset) {
+          case 'db':
+            return { pos: toW(1.45, eyeY, -0.9), lookAt: toW(0.25, 1.55, -0.9) };
+          case 'living':
+            return { pos: toW(1.2, eyeY, 1.2), lookAt: toW(3.2, 1.5, 2.8) };
+          case 'kitchen':
+            return { pos: toW(6.2, eyeY, 1.5), lookAt: toW(8.2, 1.4, 1.4) };
+          case 'bedroom':
+            return { pos: toW(2.1, eyeY, 4.8), lookAt: toW(2.1, 1.4, 7.5) };
+          case 'guest_bed':
+            return { pos: toW(5.2, eyeY, 5.9), lookAt: toW(6.2, 1.4, 8.2) };
+          case 'bathroom':
+            return { pos: toW(5.9, eyeY, 3.8), lookAt: toW(7.3, 1.5, 4.2) };
+          case 'earth_pit':
+            return { pos: toW(-0.2, eyeY, -1.3), lookAt: toW(-1.4, 0.4, -1.3) };
+          default:
+            return { pos: toW(1.5, eyeY, 0.8), lookAt: toW(3.0, 1.55, 2.4) };
+        }
+      }
+
+      switch (preset) {
+        case 'top_plan':
+          return { pos: new THREE.Vector3(0, 16.5, 0.01), lookAt: new THREE.Vector3(0, 0, 0) };
+        case 'isometric':
+          return { pos: new THREE.Vector3(-9.5, 10.5, 10.5), lookAt: new THREE.Vector3(0, 1.2, 0) };
+        case 'db':
+          return { pos: toW(1.9, 1.75, -0.7), lookAt: toW(0.25, 1.55, -0.9) };
+        case 'living':
+          return { pos: toW(0.6, 3.2, -0.8), lookAt: toW(2.7, 1.2, 2.2) };
+        case 'kitchen':
+          return { pos: toW(4.8, 3.2, -0.6), lookAt: toW(7.2, 1.2, 1.5) };
+        case 'bedroom':
+          return { pos: toW(-0.8, 3.3, 3.8), lookAt: toW(2.1, 1.2, 6.2) };
+        case 'guest_bed':
+          return { pos: toW(3.5, 3.3, 4.8), lookAt: toW(5.9, 1.2, 7.1) };
+        case 'bathroom':
+          return { pos: toW(4.8, 3.1, 2.8), lookAt: toW(6.6, 1.2, 4.2) };
+        case 'earth_pit':
+          return { pos: toW(-2.8, 2.0, -0.2), lookAt: toW(-1.4, 0.2, -1.3) };
+        case 'overview':
+        default:
+          return { pos: new THREE.Vector3(-6.5, 9.2, 11.2), lookAt: new THREE.Vector3(0, 1.2, 0) };
+      }
     };
 
-    // 7. Raycasting Click Interactions
-    const handlePointerDown = (event: MouseEvent) => {
+    // Sync POV yaw/pitch from current camera & controls target
+    const syncPovAnglesFromCamera = () => {
+      const dir = new THREE.Vector3().subVectors(controls.target, camera.position).normalize();
+      povYaw = Math.atan2(dir.x, dir.z);
+      povPitch = Math.asin( THREE.MathUtils.clamp(dir.y, -0.85, 0.85) );
+    };
+
+    // 7. Pointer Down / Drag / Raycasting Click Interactions
+    let pointerDownTime = 0;
+    let pointerDownPos = { x: 0, y: 0 };
+
+    const handlePointerDown = (event: PointerEvent) => {
+      pointerDownTime = performance.now();
+      pointerDownPos = { x: event.clientX, y: event.clientY };
+
+      if (stateRef.current.isPovMode) {
+        isPovDragging = true;
+        lastPointerX = event.clientX;
+        lastPointerY = event.clientY;
+        syncPovAnglesFromCamera();
+      }
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      if (!stateRef.current.isPovMode || !isPovDragging) return;
+      const dx = event.clientX - lastPointerX;
+      const dy = event.clientY - lastPointerY;
+      lastPointerX = event.clientX;
+      lastPointerY = event.clientY;
+
+      const sensitivity = 0.0032;
+      povYaw -= dx * sensitivity;
+      povPitch = THREE.MathUtils.clamp(povPitch - dy * sensitivity, -1.1, 1.1);
+
+      const lookDist = 2.5;
+      controls.target.set(
+        camera.position.x + Math.sin(povYaw) * Math.cos(povPitch) * lookDist,
+        camera.position.y + Math.sin(povPitch) * lookDist,
+        camera.position.z + Math.cos(povYaw) * Math.cos(povPitch) * lookDist
+      );
+    };
+
+    const handlePointerUp = (event: PointerEvent) => {
+      isPovDragging = false;
+      const elapsedMs = performance.now() - pointerDownTime;
+      const moveDist = Math.hypot(event.clientX - pointerDownPos.x, event.clientY - pointerDownPos.y);
+
+      // Only trigger raycast selection on clean click (not camera orbit/drag)
+      if (elapsedMs > 300 || moveDist > 6) return;
+
       const rect = renderer.domElement.getBoundingClientRect();
       _pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       _pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -240,39 +403,12 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
             hit = hit.parent;
           }
         }
-        return;
-      }
-
-      if (currentStaticTwin) {
-        const intersects = _raycaster.intersectObjects([
-          currentStaticTwin.dbEnclosureGroup,
-          currentStaticTwin.switchboardsGroup,
-          currentStaticTwin.earthPitGroup
-        ], true);
-
-        if (intersects.length > 0) {
-          let hit: THREE.Object3D | null = intersects[0].object;
-          while (hit && hit.parent && hit !== scene) {
-            if (hit === currentStaticTwin.dbEnclosureGroup) {
-              stateRef.current.onSelectComponent('db');
-              return;
-            }
-            if (hit === currentStaticTwin.earthPitGroup) {
-              stateRef.current.onSelectComponent('earth_pit');
-              return;
-            }
-            if (hit === currentStaticTwin.switchboardsGroup) {
-              stateRef.current.onSelectComponent('switchboard');
-              stateRef.current.onToggleLight();
-              return;
-            }
-            hit = hit.parent;
-          }
-        }
       }
     };
 
     renderer.domElement.addEventListener('pointerdown', handlePointerDown);
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
 
     // 8. Resize Handler
     const handleResize = () => {
@@ -285,17 +421,19 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
     };
     window.addEventListener('resize', handleResize);
 
-    // Track state changes that require rebuild
+    // Track state changes
     let lastViewMode = stateRef.current.viewMode;
-    let lastCeilVisible = stateRef.current.ceilingVisible;
+    let lastCeilVisible = stateRef.current.ceilingVisible || Boolean(stateRef.current.isPovMode);
     let lastProject = stateRef.current.project;
+    let lastActiveCircuit = stateRef.current.activeCircuit;
+    let lastCamPreset = stateRef.current.cameraPreset;
+    let lastPovMode = Boolean(stateRef.current.isPovMode);
+    let isPresetTransitioning = true;
 
     // 9. Animation Loop
     const clock = new THREE.Clock();
     let frameId = 0;
-    let doorAngle = Math.PI * 0.45; // starts open
-    let fanAngleLiving = 0;
-    let fanAngleBed = 0;
+    let doorAngle = -Math.PI * 0.55;
 
     function afterDraw(cb: () => void) {
       const gl = renderer.getContext() as WebGL2RenderingContext;
@@ -320,79 +458,131 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
         viewMode: curViewMode,
         ceilingVisible: curCeilVisible,
         dbDoorOpen: curDbDoorOpen,
+        dbExploded: curDbExploded,
+        isPovMode: curPovMode,
+        layers: curLayers,
+        wallOpacity: curWallOpacity,
+        breakerStates: curBreakerStates,
         activeCircuit: curActiveCircuit,
-        livingLightOn: curLightOn,
         fanSpeed: curFanSpeed,
         cameraPreset: curCamPreset,
         isAutoRotate: curAutoRotate
       } = stateRef.current;
 
-      // Check if project or viewMode or ceiling toggled
-      if (curProject !== lastProject || curViewMode !== lastViewMode || curCeilVisible !== lastCeilVisible) {
+      const effectiveCeil = curCeilVisible || Boolean(curPovMode);
+
+      if (
+        curProject !== lastProject ||
+        curViewMode !== lastViewMode ||
+        effectiveCeil !== lastCeilVisible ||
+        curActiveCircuit !== lastActiveCircuit
+      ) {
         lastProject = curProject;
         lastViewMode = curViewMode;
-        lastCeilVisible = curCeilVisible;
+        lastCeilVisible = effectiveCeil;
+        lastActiveCircuit = curActiveCircuit;
         buildModel();
       }
 
+      if (curCamPreset !== lastCamPreset || Boolean(curPovMode) !== lastPovMode) {
+        lastCamPreset = curCamPreset;
+        lastPovMode = Boolean(curPovMode);
+        isPresetTransitioning = true;
+      }
+
       if (currentParametricTwin) {
-        currentParametricTwin.update(delta, curFanSpeed, curActiveCircuit);
+        currentParametricTwin.update(delta, curFanSpeed, curActiveCircuit, {
+          layers: curLayers,
+          wallOpacity: curViewMode === 'cutaway' ? curWallOpacity : 1.0,
+          dbExploded: curDbExploded,
+          breakerStates: curBreakerStates
+        });
         if (currentParametricTwin.dbDoorPivot) {
-          const targetDoorAngle = curDbDoorOpen ? -Math.PI * 0.55 : 0;
+          const targetDoorAngle = curDbDoorOpen || curDbExploded ? -Math.PI * 0.58 : 0;
           doorAngle += (targetDoorAngle - doorAngle) * (1 - Math.exp(-10 * delta));
           currentParametricTwin.dbDoorPivot.rotation.y = doorAngle;
         }
-      } else if (currentStaticTwin) {
-        // Static twin logic
-        if (curViewMode === 'construction') {
-          currentStaticTwin.wallsFinishedGroup.visible = false;
-          currentStaticTwin.wallsConstructionGroup.visible = true;
-          currentStaticTwin.ceilingSlabGroup.visible = false;
-          currentStaticTwin.conduitGroup.visible = true;
-          currentStaticTwin.wiresGroup.visible = true;
-        } else if (curViewMode === 'cutaway') {
-          currentStaticTwin.wallsFinishedGroup.visible = true;
-          currentStaticTwin.wallsConstructionGroup.visible = false;
-          currentStaticTwin.ceilingSlabGroup.visible = curCeilVisible;
-          currentStaticTwin.conduitGroup.visible = true;
-          currentStaticTwin.wiresGroup.visible = true;
-        } else {
-          currentStaticTwin.wallsFinishedGroup.visible = true;
-          currentStaticTwin.wallsConstructionGroup.visible = false;
-          currentStaticTwin.ceilingSlabGroup.visible = curCeilVisible;
-          currentStaticTwin.conduitGroup.visible = false;
-          currentStaticTwin.wiresGroup.visible = false;
+      }
+
+      // First-Person POV WASD Free Movement
+      const isMovingWasd =
+        keysPressed['KeyW'] ||
+        keysPressed['KeyS'] ||
+        keysPressed['KeyA'] ||
+        keysPressed['KeyD'] ||
+        keysPressed['ArrowUp'] ||
+        keysPressed['ArrowDown'] ||
+        keysPressed['ArrowLeft'] ||
+        keysPressed['ArrowRight'];
+
+      if (curPovMode) {
+        controls.enabled = false;
+        if (isMovingWasd || isPovDragging) {
+          isPresetTransitioning = false;
         }
 
-        const targetDoorAngle = curDbDoorOpen ? Math.PI * 0.45 : 0;
-        doorAngle += (targetDoorAngle - doorAngle) * (1 - Math.exp(-10 * delta));
-        currentStaticTwin.dbDoorMesh.rotation.y = doorAngle;
+        if (isMovingWasd) {
+          syncPovAnglesFromCamera();
+          const walkSpeed = 3.2 * delta;
+          _forward.set(Math.sin(povYaw), 0, Math.cos(povYaw)).normalize();
+          _right.set(_forward.z, 0, -_forward.x).normalize();
 
-        const rpmTable = [0, 12, 22, 34];
-        const fanAngularSpeed = (rpmTable[curFanSpeed] || 0) * (curLightOn ? 1 : 0);
-        fanAngleLiving += fanAngularSpeed * delta;
-        fanAngleBed += fanAngularSpeed * delta;
-        currentStaticTwin.fanLivingRotor.rotation.y = fanAngleLiving;
-        currentStaticTwin.fanBedRotor.rotation.y = fanAngleBed;
+          const moveVec = new THREE.Vector3();
+          if (keysPressed['KeyW'] || keysPressed['ArrowUp']) moveVec.add(_forward);
+          if (keysPressed['KeyS'] || keysPressed['ArrowDown']) moveVec.sub(_forward);
+          if (keysPressed['KeyD'] || keysPressed['ArrowRight']) moveVec.sub(_right);
+          if (keysPressed['KeyA'] || keysPressed['ArrowLeft']) moveVec.add(_right);
 
-        currentStaticTwin.lightsGroup.visible = curLightOn;
+          if (moveVec.lengthSq() > 0) {
+            moveVec.normalize().multiplyScalar(walkSpeed);
+            camera.position.add(moveVec);
+            camera.position.y = 1.65;
+
+            // Clamp within apartment footprint + foyer margin
+            if (currentParametricTwin) {
+              const b = currentParametricTwin.buildingBounds;
+              camera.position.x = THREE.MathUtils.clamp(camera.position.x, b.minX - 1.5, b.maxX + 0.5);
+              camera.position.z = THREE.MathUtils.clamp(camera.position.z, b.minZ - 1.5, b.maxZ + 0.5);
+            }
+
+            const lookDist = 2.5;
+            controls.target.set(
+              camera.position.x + Math.sin(povYaw) * Math.cos(povPitch) * lookDist,
+              camera.position.y + Math.sin(povPitch) * lookDist,
+              camera.position.z + Math.cos(povYaw) * Math.cos(povPitch) * lookDist
+            );
+          }
+        }
+      } else {
+        controls.enabled = true;
+        if (isUserInteracting) {
+          isPresetTransitioning = false;
+        }
       }
 
-      // Camera Preset Lerping
-      const preset = cameraPresetsMap[curCamPreset] || cameraPresetsMap.overview;
-      _targetPos.copy(preset.pos);
-      _targetLook.copy(preset.lookAt);
+      // Smooth Camera Preset / Waypoint Interpolation
+      if (isPresetTransitioning) {
+        const presetTarget = getCameraPresetTarget(curCamPreset, Boolean(curPovMode));
+        _targetPos.copy(presetTarget.pos);
+        _targetLook.copy(presetTarget.lookAt);
 
-      if (!isUserInteracting) {
-        camera.position.lerp(_targetPos, 1 - Math.exp(-4 * delta));
-        controls.target.lerp(_targetLook, 1 - Math.exp(-4 * delta));
+        camera.position.lerp(_targetPos, 1 - Math.exp(-5 * delta));
+        controls.target.lerp(_targetLook, 1 - Math.exp(-5 * delta));
+
+        if (camera.position.distanceTo(_targetPos) < 0.05 && controls.target.distanceTo(_targetLook) < 0.05) {
+          isPresetTransitioning = false;
+          syncPovAnglesFromCamera();
+        }
       }
 
-      controls.autoRotate = curAutoRotate;
-      controls.autoRotateSpeed = 1.0;
-      controls.update();
+      if (curPovMode) {
+        camera.lookAt(controls.target);
+      } else {
+        controls.autoRotate = curAutoRotate;
+        controls.autoRotateSpeed = 1.0;
+        controls.update();
+      }
 
-      // Render
       renderer.render(scene, camera);
 
       if (isSoftwareGl) {
@@ -406,12 +596,17 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
 
     // 10. Cleanup
     return () => {
+      stateRef.current.onSceneReady?.(null);
       if (currentParametricTwin) {
         currentParametricTwin.dispose();
       }
       cancelAnimationFrame(frameId);
       clearTimeout(frameId);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
       renderer.domElement.removeEventListener('pointerdown', handlePointerDown);
       controls.dispose();
       renderer.dispose();
@@ -424,7 +619,9 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
   return (
     <div
       ref={mountRef}
-      className="w-full h-full relative cursor-grab active:cursor-grabbing select-none overflow-hidden"
+      className={`w-full h-full relative select-none overflow-hidden ${
+        isPovMode ? 'cursor-crosshair' : 'cursor-grab active:cursor-grabbing'
+      }`}
     />
   );
 };
