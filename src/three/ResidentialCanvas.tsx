@@ -1,627 +1,964 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 import {
-  createResidentialTwin,
-  ResidentialViewMode,
-  ResidentialMeshNodes
-} from './residentialModelGenerators';
-
-import { ResidentialProject } from '../types/residentialDesigner';
+  ResidentialProject,
+  InteractiveTarget,
+  PlayerPose
+} from '../types/residentialDesigner';
 import {
   generateParametricTwin,
   GeneratedTwin,
-  ResidentialLayerVisibility
+  ViewMode3D,
+  ResidentialLayerVisibility,
+  CircuitSubLayerFilter
 } from './ParametricHouseGenerator';
 
-export type ResidentialCameraPreset =
+export type CameraMode = 'orbit' | 'fpp';
+export type CameraPreset =
   | 'overview'
-  | 'isometric'
-  | 'top_plan'
-  | 'db'
+  | 'top'
+  | 'exterior_entry'
+  | 'foyer'
   | 'living'
-  | 'bedroom'
-  | 'guest_bed'
+  | 'master_bed'
+  | 'bed2'
   | 'kitchen'
-  | 'bathroom'
-  | 'earth_pit';
+  | 'bath1'
+  | 'db';
 
-export interface ResidentialCanvasProps {
-  project?: ResidentialProject;
-  viewMode: ResidentialViewMode;
-  ceilingVisible: boolean;
-  dbDoorOpen: boolean;
-  dbExploded?: boolean;
-  isPovMode?: boolean;
-  layers?: ResidentialLayerVisibility;
-  wallOpacity?: number;
-  breakerStates?: Record<string, boolean>;
-  activeCircuit: string;
-  livingLightOn: boolean;
-  fanSpeed: number; // 0, 1, 2, 3
-  cameraPreset: ResidentialCameraPreset;
-  isAutoRotate: boolean;
-  onSelectComponent: (componentId: string) => void;
-  onToggleLight: () => void;
-  onSceneReady?: (rootObject: THREE.Object3D | null) => void;
+export interface MobileWalkInput {
+  moveX: number; // -1 (left) to +1 (right)
+  moveY: number; // -1 (back) to +1 (forward)
+  lookX: number; // -1 to +1 yaw rate
+  lookY: number; // -1 to +1 pitch rate
 }
 
-const _targetPos = new THREE.Vector3();
-const _targetLook = new THREE.Vector3();
-const _raycaster = new THREE.Raycaster();
-const _pointer = new THREE.Vector2();
-const _forward = new THREE.Vector3();
-const _right = new THREE.Vector3();
+interface ResidentialCanvasProps {
+  project: ResidentialProject;
+  viewMode: ViewMode3D;
+  cameraMode: CameraMode;
+  cameraPreset: CameraPreset;
+  ceilingVisible: boolean;
+  dbDoorOpen: boolean;
+  dbExploded: boolean;
+  wallOpacity: number;
+  layers: ResidentialLayerVisibility;
+  circuitFilter?: CircuitSubLayerFilter;
+  breakerStates: Record<string, boolean>;
+  doorStates: Record<string, boolean>;
+  fanSpeed: number;
+  activeCircuit: string;
+  selectedComponentId: string | null;
+  onSelectComponent: (id: string) => void;
+  onToggleBreaker?: (circuitId: string) => void;
+  onToggleDoor?: (doorId: string) => void;
+  onInteractTarget?: (target: InteractiveTarget) => void;
+  onHoverTargetChange?: (target: InteractiveTarget | null) => void;
+  onPlayerPoseChange?: (pose: PlayerPose) => void;
+  onPointerLockChange?: (locked: boolean) => void;
+  isWalkthroughStarted?: boolean;
+  isWalkthroughPaused?: boolean;
+  pointerLockTrigger?: number;
+  teleportTarget?: { x: number; z: number; yaw?: number; seq: number } | null;
+  mobileInput?: MobileWalkInput;
+  exportTrigger?: { format: 'glb' | 'gltf'; seq: number } | null;
+}
 
 export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
   project,
   viewMode,
+  cameraMode,
+  cameraPreset,
   ceilingVisible,
   dbDoorOpen,
-  dbExploded = false,
-  isPovMode = false,
+  dbExploded,
+  wallOpacity,
   layers,
-  wallOpacity = 0.28,
+  circuitFilter,
   breakerStates,
-  activeCircuit,
-  livingLightOn,
+  doorStates,
   fanSpeed,
-  cameraPreset,
-  isAutoRotate,
+  activeCircuit,
+  selectedComponentId,
   onSelectComponent,
-  onToggleLight,
-  onSceneReady
+  onToggleBreaker,
+  onToggleDoor,
+  onInteractTarget,
+  onHoverTargetChange,
+  onPlayerPoseChange,
+  onPointerLockChange,
+  isWalkthroughStarted = false,
+  isWalkthroughPaused = false,
+  pointerLockTrigger = 0,
+  teleportTarget = null,
+  mobileInput,
+  exportTrigger
 }) => {
-  const mountRef = useRef<HTMLDivElement>(null);
-  const stateRef = useRef({
-    project,
-    viewMode,
-    ceilingVisible,
-    dbDoorOpen,
-    dbExploded,
-    isPovMode,
-    layers,
-    wallOpacity,
-    breakerStates,
-    activeCircuit,
-    livingLightOn,
-    fanSpeed,
-    cameraPreset,
-    isAutoRotate,
-    onSelectComponent,
-    onToggleLight,
-    onSceneReady
+  const mountRef = useRef<HTMLDivElement | null>(null);
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const controlsRef = useRef<OrbitControls | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const twinRef = useRef<GeneratedTwin | null>(null);
+
+  // Live refs for animation loop access without re-binding listeners
+  const projectRef = useRef(project);
+  projectRef.current = project;
+
+  const fanSpeedRef = useRef(fanSpeed);
+  fanSpeedRef.current = fanSpeed;
+
+  const activeCircuitRef = useRef(activeCircuit);
+  activeCircuitRef.current = activeCircuit;
+
+  const cameraModeRef = useRef(cameraMode);
+  cameraModeRef.current = cameraMode;
+
+  const layersRef = useRef(layers);
+  layersRef.current = layers;
+
+  const circuitFilterRef = useRef(circuitFilter);
+  circuitFilterRef.current = circuitFilter;
+
+  const wallOpacityRef = useRef(wallOpacity);
+  wallOpacityRef.current = wallOpacity;
+
+  const dbExplodedRef = useRef(dbExploded);
+  dbExplodedRef.current = dbExploded;
+
+  const dbDoorOpenRef = useRef(dbDoorOpen);
+  dbDoorOpenRef.current = dbDoorOpen;
+
+  const breakerStatesRef = useRef(breakerStates);
+  breakerStatesRef.current = breakerStates;
+
+  const doorStatesRef = useRef(doorStates);
+  doorStatesRef.current = doorStates;
+
+  const isStartedRef = useRef(isWalkthroughStarted);
+  isStartedRef.current = isWalkthroughStarted;
+
+  const isPausedRef = useRef(isWalkthroughPaused);
+  isPausedRef.current = isWalkthroughPaused;
+
+  const mobileInputRef = useRef<MobileWalkInput>(
+    mobileInput || { moveX: 0, moveY: 0, lookX: 0, lookY: 0 }
+  );
+  if (mobileInput) {
+    mobileInputRef.current = mobileInput;
+  }
+
+  // Callbacks refs
+  const onSelectCompRef = useRef(onSelectComponent);
+  onSelectCompRef.current = onSelectComponent;
+  const onToggleBreakerRef = useRef(onToggleBreaker);
+  onToggleBreakerRef.current = onToggleBreaker;
+  const onToggleDoorRef = useRef(onToggleDoor);
+  onToggleDoorRef.current = onToggleDoor;
+  const onInteractTargetRef = useRef(onInteractTarget);
+  onInteractTargetRef.current = onInteractTarget;
+  const onHoverTargetChangeRef = useRef(onHoverTargetChange);
+  onHoverTargetChangeRef.current = onHoverTargetChange;
+  const onPlayerPoseChangeRef = useRef(onPlayerPoseChange);
+  onPlayerPoseChangeRef.current = onPlayerPoseChange;
+  const onPointerLockChangeRef = useRef(onPointerLockChange);
+  onPointerLockChangeRef.current = onPointerLockChange;
+
+  // FPP state
+  const keysPressed = useRef<{ [key: string]: boolean }>({});
+  const fppYaw = useRef<number>(Math.PI); // Facing South (+Z) toward Main Entrance Door
+  const fppPitch = useRef<number>(-0.02);
+  const isDraggingLook = useRef<boolean>(false);
+  const prevMouse = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const walkCycleRef = useRef<number>(0);
+  const currentHoverRef = useRef<InteractiveTarget | null>(null);
+  const lastPoseEmitRef = useRef<number>(0);
+
+  // Smooth camera transition ref
+  const cameraTransitionRef = useRef<{
+    active: boolean;
+    targetPos: THREE.Vector3;
+    targetLook: THREE.Vector3;
+  }>({
+    active: false,
+    targetPos: new THREE.Vector3(),
+    targetLook: new THREE.Vector3()
   });
 
-  useEffect(() => {
-    stateRef.current = {
-      project,
-      viewMode,
-      ceilingVisible,
-      dbDoorOpen,
-      dbExploded,
-      isPovMode,
-      layers,
-      wallOpacity,
-      breakerStates,
-      activeCircuit,
-      livingLightOn,
-      fanSpeed,
-      cameraPreset,
-      isAutoRotate,
-      onSelectComponent,
-      onToggleLight,
-      onSceneReady
-    };
-  }, [
-    project,
-    viewMode,
-    ceilingVisible,
-    dbDoorOpen,
-    dbExploded,
-    isPovMode,
-    layers,
-    wallOpacity,
-    breakerStates,
-    activeCircuit,
-    livingLightOn,
-    fanSpeed,
-    cameraPreset,
-    isAutoRotate,
-    onSelectComponent,
-    onToggleLight,
-    onSceneReady
-  ]);
-
+  // 1. Initialize Three.js WebGL Scene
   useEffect(() => {
     const container = mountRef.current;
     if (!container) return;
 
-    // 1. Software WebGL Detection
-    const isSoftwareGl = (() => {
-      const gl = document.createElement('canvas').getContext('webgl2');
-      if (!gl) return true;
-      const ext = gl.getExtension('WEBGL_debug_renderer_info');
-      const param = ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER;
-      const gpu = String(gl.getParameter(param));
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
-      return /SwiftShader|llvmpipe|softpipe|Software|Basic Render/i.test(gpu);
-    })();
-
-    // 2. Setup Scene, Camera & WebGLRenderer
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+    const width = container.clientWidth || 900;
+    const height = container.clientHeight || 600;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0b1329);
-    scene.fog = new THREE.FogExp2(0x0b1329, 0.02);
+    scene.background = new THREE.Color(0x0b132b);
+    scene.fog = new THREE.FogExp2(0x0b132b, 0.008);
+    sceneRef.current = scene;
 
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.15, 90);
-    camera.position.set(-7, 9.5, 11.5);
+    const camera = new THREE.PerspectiveCamera(62, width / height, 0.1, 220);
+    camera.position.set(18, 16, 21);
+    cameraRef.current = camera;
 
     const renderer = new THREE.WebGLRenderer({
-      antialias: !isSoftwareGl,
-      powerPreference: 'high-performance',
-      preserveDrawingBuffer: true
+      antialias: true,
+      powerPreference: 'high-performance'
     });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(isSoftwareGl ? 1 : Math.min(window.devicePixelRatio, 2));
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
-    renderer.shadowMap.enabled = !isSoftwareGl;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.18;
+    container.innerHTML = '';
     container.appendChild(renderer.domElement);
+    rendererRef.current = renderer;
 
-    // 3. Studio PBR Environment Map
-    const pmremGenerator = new THREE.PMREMGenerator(renderer);
-    scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
-    pmremGenerator.dispose();
-
-    // 4. Studio Lighting
-    const sunLight = new THREE.DirectionalLight(0xfffaed, 1.85);
-    sunLight.position.set(10, 18, 12);
-    if (!isSoftwareGl) {
-      sunLight.castShadow = true;
-      sunLight.shadow.mapSize.width = 2048;
-      sunLight.shadow.mapSize.height = 2048;
-      const d = 12;
-      sunLight.shadow.camera.left = -d;
-      sunLight.shadow.camera.right = d;
-      sunLight.shadow.camera.top = d;
-      sunLight.shadow.camera.bottom = -d;
-      sunLight.shadow.bias = -0.0003;
-      sunLight.shadow.normalBias = 0.02;
-    }
-    scene.add(sunLight);
-
-    const hemiLight = new THREE.HemisphereLight(0xe0f2fe, 0x1e293b, 0.85);
-    hemiLight.position.set(0, 20, 0);
-    scene.add(hemiLight);
-
-    // 5. OrbitControls
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = !isSoftwareGl;
+    controls.enableDamping = true;
     controls.dampingFactor = 0.06;
     controls.maxPolarAngle = Math.PI / 2 - 0.02;
-    controls.minDistance = 0.6;
-    controls.maxDistance = 32;
-    controls.target.set(0, 1.4, 0);
+    controls.minDistance = 1.2;
+    controls.maxDistance = 65;
+    controls.target.set(0, 1.5, 0);
+    controlsRef.current = controls;
 
-    let isUserInteracting = false;
-    controls.addEventListener('start', () => {
-      isUserInteracting = true;
-    });
-    controls.addEventListener('end', () => {
-      isUserInteracting = false;
-    });
+    // Studio & Architectural Lighting
+    const hemiLight = new THREE.HemisphereLight(0xf8fafc, 0x1e293b, 0.96);
+    hemiLight.position.set(0, 26, 0);
+    scene.add(hemiLight);
 
-    // First-Person POV WASD & Mouse-Look State
-    const keysPressed: Record<string, boolean> = {};
-    let povYaw = 0;
-    let povPitch = 0;
-    let isPovDragging = false;
-    let lastPointerX = 0;
-    let lastPointerY = 0;
+    const sunLight = new THREE.DirectionalLight(0xfffbeb, 1.45);
+    sunLight.position.set(20, 34, 24);
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.width = 2048;
+    sunLight.shadow.mapSize.height = 2048;
+    sunLight.shadow.camera.near = 1;
+    sunLight.shadow.camera.far = 85;
+    const d = 24;
+    sunLight.shadow.camera.left = -d;
+    sunLight.shadow.camera.right = d;
+    sunLight.shadow.camera.top = d;
+    sunLight.shadow.camera.bottom = -d;
+    sunLight.shadow.bias = -0.0005;
+    scene.add(sunLight);
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement)?.tagName)) return;
-      keysPressed[e.code] = true;
-    };
-    const handleKeyUp = (e: KeyboardEvent) => {
-      keysPressed[e.code] = false;
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
+    const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.45);
+    fillLight.position.set(-20, 16, -18);
+    scene.add(fillLight);
 
-    // 6. Build Residential 3D Model
-    let currentParametricTwin: GeneratedTwin | null = null;
-    let currentStaticTwin: ResidentialMeshNodes | null = null;
+    // Helper: Resolve Circle-vs-AABB Sliding Collision in World Space
+    const resolvePlayerCollisions = (nextX: number, nextZ: number): { x: number; z: number } => {
+      const twin = twinRef.current;
+      if (!twin) return { x: nextX, z: nextZ };
 
-    const buildModel = () => {
-      if (currentParametricTwin) {
-        scene.remove(currentParametricTwin.rootGroup);
-        currentParametricTwin.dispose();
-        currentParametricTwin = null;
-      }
-      if (currentStaticTwin) {
-        scene.remove(currentStaticTwin.group);
-        currentStaticTwin = null;
-      }
+      const radius = 0.21; // Slim player collision radius for smooth free walking
+      let resolvedX = nextX;
+      let resolvedZ = nextZ;
 
-      const curProj = stateRef.current.project;
-      if (curProj) {
-        currentParametricTwin = generateParametricTwin(
-          curProj,
-          stateRef.current.viewMode,
-          stateRef.current.ceilingVisible || Boolean(stateRef.current.isPovMode),
-          stateRef.current.dbDoorOpen,
-          stateRef.current.activeCircuit
-        );
-        scene.add(currentParametricTwin.rootGroup);
-        stateRef.current.onSceneReady?.(currentParametricTwin.rootGroup);
-      } else {
-        currentStaticTwin = createResidentialTwin(
-          renderer.capabilities.getMaxAnisotropy()
-        );
-        scene.add(currentStaticTwin.group);
-        stateRef.current.onSceneReady?.(currentStaticTwin.group);
-      }
-    };
+      // Bound within outdoor plinth perimeter
+      const b = twin.buildingBounds;
+      resolvedX = Math.max(b.minX, Math.min(b.maxX, resolvedX));
+      resolvedZ = Math.max(b.minZ, Math.min(b.maxZ, resolvedZ));
 
-    buildModel();
+      // Iterative circle-vs-AABB resolution for smooth wall sliding
+      for (let pass = 0; pass < 2; pass++) {
+        for (let i = 0; i < twin.colliders.length; i++) {
+          const col = twin.colliders[i];
+          // Skip open doors so player can walk right through open doorways!
+          if (col.category === 'door' && col.doorId && doorStatesRef.current[col.doorId]) {
+            continue;
+          }
 
-    // Compute room-aware Camera Presets (both Orbit and Eye-Level POV at Y=1.65m)
-    const getCameraPresetTarget = (
-      preset: ResidentialCameraPreset,
-      povMode: boolean
-    ): { pos: THREE.Vector3; lookAt: THREE.Vector3 } => {
-      const cx = currentParametricTwin?.houseCenter.x ?? 4.35;
-      const cz = currentParametricTwin?.houseCenter.z ?? 3.5;
+          const closestX = Math.max(col.minX, Math.min(resolvedX, col.maxX));
+          const closestZ = Math.max(col.minZ, Math.min(resolvedZ, col.maxZ));
+          const dx = resolvedX - closestX;
+          const dz = resolvedZ - closestZ;
+          const distSq = dx * dx + dz * dz;
 
-      // Helper to convert project coordinates (x, z) to centered world coordinates
-      const toW = (px: number, py: number, pz: number) => new THREE.Vector3(px - cx, py, pz - cz);
-
-      if (povMode) {
-        const eyeY = 1.65;
-        switch (preset) {
-          case 'db':
-            return { pos: toW(1.45, eyeY, -0.9), lookAt: toW(0.25, 1.55, -0.9) };
-          case 'living':
-            return { pos: toW(1.2, eyeY, 1.2), lookAt: toW(3.2, 1.5, 2.8) };
-          case 'kitchen':
-            return { pos: toW(6.2, eyeY, 1.5), lookAt: toW(8.2, 1.4, 1.4) };
-          case 'bedroom':
-            return { pos: toW(2.1, eyeY, 4.8), lookAt: toW(2.1, 1.4, 7.5) };
-          case 'guest_bed':
-            return { pos: toW(5.2, eyeY, 5.9), lookAt: toW(6.2, 1.4, 8.2) };
-          case 'bathroom':
-            return { pos: toW(5.9, eyeY, 3.8), lookAt: toW(7.3, 1.5, 4.2) };
-          case 'earth_pit':
-            return { pos: toW(-0.2, eyeY, -1.3), lookAt: toW(-1.4, 0.4, -1.3) };
-          default:
-            return { pos: toW(1.5, eyeY, 0.8), lookAt: toW(3.0, 1.55, 2.4) };
-        }
-      }
-
-      switch (preset) {
-        case 'top_plan':
-          return { pos: new THREE.Vector3(0, 16.5, 0.01), lookAt: new THREE.Vector3(0, 0, 0) };
-        case 'isometric':
-          return { pos: new THREE.Vector3(-9.5, 10.5, 10.5), lookAt: new THREE.Vector3(0, 1.2, 0) };
-        case 'db':
-          return { pos: toW(1.9, 1.75, -0.7), lookAt: toW(0.25, 1.55, -0.9) };
-        case 'living':
-          return { pos: toW(0.6, 3.2, -0.8), lookAt: toW(2.7, 1.2, 2.2) };
-        case 'kitchen':
-          return { pos: toW(4.8, 3.2, -0.6), lookAt: toW(7.2, 1.2, 1.5) };
-        case 'bedroom':
-          return { pos: toW(-0.8, 3.3, 3.8), lookAt: toW(2.1, 1.2, 6.2) };
-        case 'guest_bed':
-          return { pos: toW(3.5, 3.3, 4.8), lookAt: toW(5.9, 1.2, 7.1) };
-        case 'bathroom':
-          return { pos: toW(4.8, 3.1, 2.8), lookAt: toW(6.6, 1.2, 4.2) };
-        case 'earth_pit':
-          return { pos: toW(-2.8, 2.0, -0.2), lookAt: toW(-1.4, 0.2, -1.3) };
-        case 'overview':
-        default:
-          return { pos: new THREE.Vector3(-6.5, 9.2, 11.2), lookAt: new THREE.Vector3(0, 1.2, 0) };
-      }
-    };
-
-    // Sync POV yaw/pitch from current camera & controls target
-    const syncPovAnglesFromCamera = () => {
-      const dir = new THREE.Vector3().subVectors(controls.target, camera.position).normalize();
-      povYaw = Math.atan2(dir.x, dir.z);
-      povPitch = Math.asin( THREE.MathUtils.clamp(dir.y, -0.85, 0.85) );
-    };
-
-    // 7. Pointer Down / Drag / Raycasting Click Interactions
-    let pointerDownTime = 0;
-    let pointerDownPos = { x: 0, y: 0 };
-
-    const handlePointerDown = (event: PointerEvent) => {
-      pointerDownTime = performance.now();
-      pointerDownPos = { x: event.clientX, y: event.clientY };
-
-      if (stateRef.current.isPovMode) {
-        isPovDragging = true;
-        lastPointerX = event.clientX;
-        lastPointerY = event.clientY;
-        syncPovAnglesFromCamera();
-      }
-    };
-
-    const handlePointerMove = (event: PointerEvent) => {
-      if (!stateRef.current.isPovMode || !isPovDragging) return;
-      const dx = event.clientX - lastPointerX;
-      const dy = event.clientY - lastPointerY;
-      lastPointerX = event.clientX;
-      lastPointerY = event.clientY;
-
-      const sensitivity = 0.0032;
-      povYaw -= dx * sensitivity;
-      povPitch = THREE.MathUtils.clamp(povPitch - dy * sensitivity, -1.1, 1.1);
-
-      const lookDist = 2.5;
-      controls.target.set(
-        camera.position.x + Math.sin(povYaw) * Math.cos(povPitch) * lookDist,
-        camera.position.y + Math.sin(povPitch) * lookDist,
-        camera.position.z + Math.cos(povYaw) * Math.cos(povPitch) * lookDist
-      );
-    };
-
-    const handlePointerUp = (event: PointerEvent) => {
-      isPovDragging = false;
-      const elapsedMs = performance.now() - pointerDownTime;
-      const moveDist = Math.hypot(event.clientX - pointerDownPos.x, event.clientY - pointerDownPos.y);
-
-      // Only trigger raycast selection on clean click (not camera orbit/drag)
-      if (elapsedMs > 300 || moveDist > 6) return;
-
-      const rect = renderer.domElement.getBoundingClientRect();
-      _pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      _pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-      _raycaster.setFromCamera(_pointer, camera);
-
-      if (currentParametricTwin) {
-        const objects: THREE.Object3D[] = [];
-        currentParametricTwin.interactiveMeshes.forEach((mesh) => objects.push(mesh));
-        const intersects = _raycaster.intersectObjects(objects, true);
-        if (intersects.length > 0) {
-          let hit: THREE.Object3D | null = intersects[0].object;
-          while (hit && hit.parent && hit !== scene) {
-            for (const [id, grp] of currentParametricTwin.interactiveMeshes.entries()) {
-              if (hit === grp) {
-                stateRef.current.onSelectComponent(id);
-                return;
-              }
+          if (distSq < radius * radius) {
+            const dist = Math.sqrt(distSq);
+            if (dist > 0.0001) {
+              const overlap = radius - dist;
+              resolvedX += (dx / dist) * overlap;
+              resolvedZ += (dz / dist) * overlap;
+            } else {
+              // Center is inside box; push out along minimum penetration axis
+              const penLeft = Math.abs(resolvedX - col.minX);
+              const penRight = Math.abs(col.maxX - resolvedX);
+              const penTop = Math.abs(resolvedZ - col.minZ);
+              const penBot = Math.abs(col.maxZ - resolvedZ);
+              const minPen = Math.min(penLeft, penRight, penTop, penBot);
+              if (minPen === penLeft) resolvedX = col.minX - radius;
+              else if (minPen === penRight) resolvedX = col.maxX + radius;
+              else if (minPen === penTop) resolvedZ = col.minZ - radius;
+              else resolvedZ = col.maxZ + radius;
             }
-            hit = hit.parent;
           }
         }
       }
+
+      return { x: resolvedX, z: resolvedZ };
     };
 
-    renderer.domElement.addEventListener('pointerdown', handlePointerDown);
-    window.addEventListener('pointermove', handlePointerMove);
-    window.addEventListener('pointerup', handlePointerUp);
+    // Helper: Proximity & Crosshair Target Detection in FPP Mode
+    const detectProximityTarget = (): InteractiveTarget | null => {
+      const twin = twinRef.current;
+      if (!twin) return null;
 
-    // 8. Resize Handler
-    const handleResize = () => {
-      if (!container) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
+      const camPos = camera.position;
+      const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion).normalize();
+      const maxReach = 4.6;
+
+      let bestTarget: InteractiveTarget | null = null;
+      let bestScore = Infinity;
+
+      // 1. Check interactive doors within reach and view cone
+      twin.doorPivots.forEach((doorEntry, doorId) => {
+        const doorPos = new THREE.Vector3(doorEntry.worldX, 1.35, doorEntry.worldZ);
+        const toDoor = doorPos.clone().sub(camPos);
+        const dist = toDoor.length();
+        if (dist > maxReach) return;
+
+        const dir = toDoor.normalize();
+        const dot = forward.dot(dir);
+        if (dot > 0.55) {
+          const score = dist * (1.25 - dot);
+          if (score < bestScore) {
+            bestScore = score;
+            const isOpen = !!doorStatesRef.current[doorId];
+            bestTarget = {
+              type: 'door',
+              id: doorId,
+              label: doorEntry.label,
+              sublabel: isOpen ? 'Press [E] or Click to Close Door' : 'Press [E] or Click to Open Door',
+              roomId: doorEntry.roomId,
+              isOpen,
+              distance: dist
+            };
+          }
+        }
+      });
+
+      // 2. Check electrical points (Switchboards, Main DB, Sockets, Geyser, AC, Fans)
+      const centerX = twin.houseCenter.x;
+      const centerZ = twin.houseCenter.z;
+      projectRef.current.electricalPoints.forEach((pt) => {
+        if (pt.type === 'downlight_led' || pt.type === 'earth_pit') return;
+        const ptWorldPos = new THREE.Vector3(pt.x - centerX, pt.y, pt.z - centerZ);
+        const toPt = ptWorldPos.clone().sub(camPos);
+        const dist = toPt.length();
+        const reachLimit = pt.type === 'ceiling_fan' ? 5.6 : maxReach;
+        if (dist > reachLimit) return;
+
+        const dir = toPt.normalize();
+        const dot = forward.dot(dir);
+        if (dot > 0.62) {
+          const score = dist * (1.22 - dot);
+          if (score < bestScore) {
+            bestScore = score;
+            const isDb = pt.type === 'db';
+            bestTarget = {
+              type: isDb ? 'db' : 'electrical',
+              id: pt.id,
+              label: pt.name,
+              sublabel: isDb
+                ? 'Press [E] or Click to Inspect 8-Way TPN Distribution Board'
+                : pt.type === 'switch_board_6a'
+                ? 'Press [E] or Click to Toggle Room Lights & Ceiling Fan'
+                : `Press [E] or Click to Toggle Power (${pt.powerWatts}W @ 230V)`,
+              roomId: pt.roomId,
+              circuitId: pt.circuitId,
+              isOn: pt.isOn,
+              powerWatts: pt.powerWatts,
+              distance: dist
+            };
+          }
+        }
+      });
+
+      return bestTarget;
     };
-    window.addEventListener('resize', handleResize);
 
-    // Track state changes
-    let lastViewMode = stateRef.current.viewMode;
-    let lastCeilVisible = stateRef.current.ceilingVisible || Boolean(stateRef.current.isPovMode);
-    let lastProject = stateRef.current.project;
-    let lastActiveCircuit = stateRef.current.activeCircuit;
-    let lastCamPreset = stateRef.current.cameraPreset;
-    let lastPovMode = Boolean(stateRef.current.isPovMode);
-    let isPresetTransitioning = true;
+    // Keyboard & Pointer Lock Listeners for FPP
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (
+        document.activeElement?.tagName === 'INPUT' ||
+        document.activeElement?.tagName === 'SELECT' ||
+        document.activeElement?.tagName === 'TEXTAREA'
+      ) {
+        return;
+      }
+      const code = e.code;
+      keysPressed.current[code] = true;
 
-    // 9. Animation Loop
+      // [E] Key: Interact with hovered door, switchboard, DB, or appliance
+      if (code === 'KeyE' && cameraModeRef.current === 'fpp' && !isPausedRef.current) {
+        const target = currentHoverRef.current;
+        if (target && onInteractTargetRef.current) {
+          e.preventDefault();
+          onInteractTargetRef.current(target);
+        }
+      }
+    };
+
+    const onKeyUp = (e: KeyboardEvent) => {
+      keysPressed.current[e.code] = false;
+    };
+
+    const onPointerLockChangeEvent = () => {
+      const locked = document.pointerLockElement === renderer.domElement;
+      if (onPointerLockChangeRef.current) {
+        onPointerLockChangeRef.current(locked);
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+    document.addEventListener('pointerlockchange', onPointerLockChangeEvent);
+
+    // Mouse Look & Click Interaction
+    let downX = 0;
+    let downY = 0;
+
+    const onMouseDown = (ev: MouseEvent) => {
+      downX = ev.clientX;
+      downY = ev.clientY;
+      if (cameraModeRef.current === 'fpp' && document.pointerLockElement !== renderer.domElement) {
+        isDraggingLook.current = true;
+        prevMouse.current = { x: ev.clientX, y: ev.clientY };
+      }
+    };
+
+    const onMouseMove = (ev: MouseEvent) => {
+      if (cameraModeRef.current !== 'fpp' || isPausedRef.current) return;
+
+      // 1. Immersive Pointer Lock Free Look
+      if (document.pointerLockElement === renderer.domElement) {
+        const sensitivity = 0.0022;
+        fppYaw.current -= ev.movementX * sensitivity;
+        fppPitch.current = Math.max(
+          -Math.PI / 2.25,
+          Math.min(Math.PI / 2.25, fppPitch.current - ev.movementY * sensitivity)
+        );
+        cameraTransitionRef.current.active = false;
+        return;
+      }
+
+      // 2. Fallback Drag Look when Pointer Lock is not active
+      if (isDraggingLook.current) {
+        const dx = ev.clientX - prevMouse.current.x;
+        const dy = ev.clientY - prevMouse.current.y;
+        prevMouse.current = { x: ev.clientX, y: ev.clientY };
+        fppYaw.current -= dx * 0.004;
+        fppPitch.current = Math.max(-Math.PI / 2.3, Math.min(Math.PI / 2.3, fppPitch.current - dy * 0.0035));
+        cameraTransitionRef.current.active = false;
+      }
+    };
+
+    const onMouseUp = (ev: MouseEvent) => {
+      isDraggingLook.current = false;
+      const moveDist = Math.hypot(ev.clientX - downX, ev.clientY - downY);
+      if (moveDist > 6 || !twinRef.current) return;
+
+      // If in FPP Mode:
+      if (cameraModeRef.current === 'fpp' && isStartedRef.current && !isPausedRef.current) {
+        // Lock pointer on canvas click if not already locked
+        if (document.pointerLockElement !== renderer.domElement) {
+          try {
+            renderer.domElement.requestPointerLock?.();
+          } catch {
+            // Ignore sandbox pointer lock restriction
+          }
+        }
+        // Trigger interaction if crosshair is aiming at a target
+        if (currentHoverRef.current && onInteractTargetRef.current) {
+          onInteractTargetRef.current(currentHoverRef.current);
+          return;
+        }
+      }
+
+      // Direct Raycast Click (Works in both Orbit Mode and FPP Mode)
+      const rect = renderer.domElement.getBoundingClientRect();
+      const mouse = new THREE.Vector2(
+        ((ev.clientX - rect.left) / rect.width) * 2 - 1,
+        -((ev.clientY - rect.top) / rect.height) * 2 + 1
+      );
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, camera);
+
+      const candidates: THREE.Object3D[] = [];
+      twinRef.current.interactiveMeshes.forEach((obj) => candidates.push(obj));
+
+      const hits = raycaster.intersectObjects(candidates, true);
+      if (hits.length > 0) {
+        let hitObj: THREE.Object3D | null = hits[0].object;
+        while (hitObj) {
+          for (const [id, meshGroup] of twinRef.current.interactiveMeshes.entries()) {
+            if (meshGroup === hitObj) {
+              if (id.startsWith('door_')) {
+                const doorId = id.replace('door_', '');
+                if (onToggleDoorRef.current) {
+                  onToggleDoorRef.current(doorId);
+                }
+              } else if (id.startsWith('breaker_')) {
+                const circId = id.replace('breaker_', '');
+                if (onToggleBreakerRef.current) {
+                  onToggleBreakerRef.current(circId);
+                }
+              } else {
+                onSelectCompRef.current(id);
+              }
+              return;
+            }
+          }
+          hitObj = hitObj.parent;
+        }
+      }
+    };
+
+    renderer.domElement.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+
+    // Animation Loop
     const clock = new THREE.Clock();
     let frameId = 0;
-    let doorAngle = -Math.PI * 0.55;
 
-    function afterDraw(cb: () => void) {
-      const gl = renderer.getContext() as WebGL2RenderingContext;
-      const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
-      gl.flush();
-      const poll = () => {
-        const state = sync && gl.getSyncParameter(sync, gl.SYNC_STATUS);
-        if (state === gl.UNSIGNALED) {
-          frameId = window.setTimeout(poll, 5);
-        } else {
-          if (sync) gl.deleteSync(sync);
-          frameId = window.setTimeout(cb, 80);
-        }
-      };
-      frameId = window.setTimeout(poll, 5);
-    }
-
-    function tick() {
+    const animate = () => {
+      frameId = requestAnimationFrame(animate);
       const delta = Math.min(clock.getDelta(), 0.1);
-      const {
-        project: curProject,
-        viewMode: curViewMode,
-        ceilingVisible: curCeilVisible,
-        dbDoorOpen: curDbDoorOpen,
-        dbExploded: curDbExploded,
-        isPovMode: curPovMode,
-        layers: curLayers,
-        wallOpacity: curWallOpacity,
-        breakerStates: curBreakerStates,
-        activeCircuit: curActiveCircuit,
-        fanSpeed: curFanSpeed,
-        cameraPreset: curCamPreset,
-        isAutoRotate: curAutoRotate
-      } = stateRef.current;
 
-      const effectiveCeil = curCeilVisible || Boolean(curPovMode);
+      // Smooth Camera Preset Transition
+      if (cameraTransitionRef.current.active) {
+        const alpha = 1 - Math.exp(-7 * delta);
+        camera.position.lerp(cameraTransitionRef.current.targetPos, alpha);
 
-      if (
-        curProject !== lastProject ||
-        curViewMode !== lastViewMode ||
-        effectiveCeil !== lastCeilVisible ||
-        curActiveCircuit !== lastActiveCircuit
-      ) {
-        lastProject = curProject;
-        lastViewMode = curViewMode;
-        lastCeilVisible = effectiveCeil;
-        lastActiveCircuit = curActiveCircuit;
-        buildModel();
-      }
-
-      if (curCamPreset !== lastCamPreset || Boolean(curPovMode) !== lastPovMode) {
-        lastCamPreset = curCamPreset;
-        lastPovMode = Boolean(curPovMode);
-        isPresetTransitioning = true;
-      }
-
-      if (currentParametricTwin) {
-        currentParametricTwin.update(delta, curFanSpeed, curActiveCircuit, {
-          layers: curLayers,
-          wallOpacity: curViewMode === 'cutaway' ? curWallOpacity : 1.0,
-          dbExploded: curDbExploded,
-          breakerStates: curBreakerStates
-        });
-        if (currentParametricTwin.dbDoorPivot) {
-          const targetDoorAngle = curDbDoorOpen || curDbExploded ? -Math.PI * 0.58 : 0;
-          doorAngle += (targetDoorAngle - doorAngle) * (1 - Math.exp(-10 * delta));
-          currentParametricTwin.dbDoorPivot.rotation.y = doorAngle;
-        }
-      }
-
-      // First-Person POV WASD Free Movement
-      const isMovingWasd =
-        keysPressed['KeyW'] ||
-        keysPressed['KeyS'] ||
-        keysPressed['KeyA'] ||
-        keysPressed['KeyD'] ||
-        keysPressed['ArrowUp'] ||
-        keysPressed['ArrowDown'] ||
-        keysPressed['ArrowLeft'] ||
-        keysPressed['ArrowRight'];
-
-      if (curPovMode) {
-        controls.enabled = false;
-        if (isMovingWasd || isPovDragging) {
-          isPresetTransitioning = false;
+        if (cameraModeRef.current === 'orbit') {
+          controls.target.lerp(cameraTransitionRef.current.targetLook, alpha);
+        } else {
+          camera.lookAt(cameraTransitionRef.current.targetLook);
         }
 
-        if (isMovingWasd) {
-          syncPovAnglesFromCamera();
-          const walkSpeed = 3.2 * delta;
-          _forward.set(Math.sin(povYaw), 0, Math.cos(povYaw)).normalize();
-          _right.set(_forward.z, 0, -_forward.x).normalize();
-
-          const moveVec = new THREE.Vector3();
-          if (keysPressed['KeyW'] || keysPressed['ArrowUp']) moveVec.add(_forward);
-          if (keysPressed['KeyS'] || keysPressed['ArrowDown']) moveVec.sub(_forward);
-          if (keysPressed['KeyD'] || keysPressed['ArrowRight']) moveVec.sub(_right);
-          if (keysPressed['KeyA'] || keysPressed['ArrowLeft']) moveVec.add(_right);
-
-          if (moveVec.lengthSq() > 0) {
-            moveVec.normalize().multiplyScalar(walkSpeed);
-            camera.position.add(moveVec);
-            camera.position.y = 1.65;
-
-            // Clamp within apartment footprint + foyer margin
-            if (currentParametricTwin) {
-              const b = currentParametricTwin.buildingBounds;
-              camera.position.x = THREE.MathUtils.clamp(camera.position.x, b.minX - 1.5, b.maxX + 0.5);
-              camera.position.z = THREE.MathUtils.clamp(camera.position.z, b.minZ - 1.5, b.maxZ + 0.5);
-            }
-
-            const lookDist = 2.5;
-            controls.target.set(
-              camera.position.x + Math.sin(povYaw) * Math.cos(povPitch) * lookDist,
-              camera.position.y + Math.sin(povPitch) * lookDist,
-              camera.position.z + Math.cos(povYaw) * Math.cos(povPitch) * lookDist
-            );
+        if (camera.position.distanceTo(cameraTransitionRef.current.targetPos) < 0.05) {
+          cameraTransitionRef.current.active = false;
+          if (cameraModeRef.current === 'fpp') {
+            const dir = new THREE.Vector3()
+              .subVectors(cameraTransitionRef.current.targetLook, camera.position)
+              .normalize();
+            fppPitch.current = Math.asin(Math.max(-0.98, Math.min(0.98, dir.y)));
+            fppYaw.current = Math.atan2(-dir.x, -dir.z);
           }
         }
-      } else {
-        controls.enabled = true;
-        if (isUserInteracting) {
-          isPresetTransitioning = false;
-        }
       }
 
-      // Smooth Camera Preset / Waypoint Interpolation
-      if (isPresetTransitioning) {
-        const presetTarget = getCameraPresetTarget(curCamPreset, Boolean(curPovMode));
-        _targetPos.copy(presetTarget.pos);
-        _targetLook.copy(presetTarget.lookAt);
-
-        camera.position.lerp(_targetPos, 1 - Math.exp(-5 * delta));
-        controls.target.lerp(_targetLook, 1 - Math.exp(-5 * delta));
-
-        if (camera.position.distanceTo(_targetPos) < 0.05 && controls.target.distanceTo(_targetLook) < 0.05) {
-          isPresetTransitioning = false;
-          syncPovAnglesFromCamera();
+      if (cameraModeRef.current === 'fpp' && !cameraTransitionRef.current.active) {
+        // Apply Mobile Virtual Look Joystick if active
+        const mob = mobileInputRef.current;
+        if (Math.abs(mob.lookX) > 0.01 || Math.abs(mob.lookY) > 0.01) {
+          fppYaw.current -= mob.lookX * 1.9 * delta;
+          fppPitch.current = Math.max(
+            -Math.PI / 2.3,
+            Math.min(Math.PI / 2.3, fppPitch.current - mob.lookY * 1.5 * delta)
+          );
         }
-      }
 
-      if (curPovMode) {
-        camera.lookAt(controls.target);
-      } else {
-        controls.autoRotate = curAutoRotate;
-        controls.autoRotateSpeed = 1.0;
+        if (isStartedRef.current && !isPausedRef.current) {
+          const isSprint =
+            keysPressed.current['ShiftLeft'] || keysPressed.current['ShiftRight'];
+          const walkSpeed = (isSprint ? 8.8 : 5.2) * delta;
+
+          const forward = new THREE.Vector3(
+            -Math.sin(fppYaw.current),
+            0,
+            -Math.cos(fppYaw.current)
+          ).normalize();
+          const right = new THREE.Vector3(
+            Math.cos(fppYaw.current),
+            0,
+            -Math.sin(fppYaw.current)
+          ).normalize();
+
+          let moveForward = 0;
+          let moveRight = 0;
+
+          if (keysPressed.current['KeyW'] || keysPressed.current['ArrowUp']) moveForward += 1;
+          if (keysPressed.current['KeyS'] || keysPressed.current['ArrowDown']) moveForward -= 1;
+          if (keysPressed.current['KeyD'] || keysPressed.current['ArrowRight']) moveRight += 1;
+          if (keysPressed.current['KeyA'] || keysPressed.current['ArrowLeft']) moveRight -= 1;
+
+          // Combine with Mobile Virtual Walk Joystick
+          moveForward += mob.moveY;
+          moveRight += mob.moveX;
+
+          const moveVec = new THREE.Vector3();
+          moveVec.addScaledVector(forward, moveForward);
+          moveVec.addScaledVector(right, moveRight);
+
+          if (moveVec.lengthSq() > 0.001) {
+            if (moveVec.length() > 1) moveVec.normalize();
+            const desiredX = camera.position.x + moveVec.x * walkSpeed;
+            const desiredZ = camera.position.z + moveVec.z * walkSpeed;
+
+            const resolved = resolvePlayerCollisions(desiredX, desiredZ);
+            camera.position.x = resolved.x;
+            camera.position.z = resolved.z;
+
+            walkCycleRef.current += delta * (isSprint ? 13 : 9.5);
+            camera.position.y = 1.75 + Math.sin(walkCycleRef.current) * 0.024;
+          } else {
+            // Smoothly settle eye height back to 1.75m when standing still
+            camera.position.y += (1.75 - camera.position.y) * (1 - Math.exp(-10 * delta));
+          }
+        } else {
+          camera.position.y = 1.75;
+        }
+
+        const euler = new THREE.Euler(fppPitch.current, fppYaw.current, 0, 'YXZ');
+        camera.quaternion.setFromEuler(euler);
+
+        // Proximity Raycasting for [E] / Reticle HUD
+        const detected = detectProximityTarget();
+        const prev = currentHoverRef.current;
+        if (
+          detected?.id !== prev?.id ||
+          detected?.isOpen !== prev?.isOpen ||
+          detected?.isOn !== prev?.isOn
+        ) {
+          currentHoverRef.current = detected;
+          if (onHoverTargetChangeRef.current) {
+            onHoverTargetChangeRef.current(detected);
+          }
+        }
+      } else if (cameraModeRef.current === 'orbit') {
+        if (currentHoverRef.current !== null) {
+          currentHoverRef.current = null;
+          if (onHoverTargetChangeRef.current) {
+            onHoverTargetChangeRef.current(null);
+          }
+        }
         controls.update();
       }
 
+      // Emit Player Pose for Live 2D Radar Mini-Map & Dynamic Room Banner (~15Hz)
+      const now = performance.now();
+      if (twinRef.current && now - lastPoseEmitRef.current > 65) {
+        lastPoseEmitRef.current = now;
+        const projX = camera.position.x + twinRef.current.houseCenter.x;
+        const projZ = camera.position.z + twinRef.current.houseCenter.z;
+
+        const currentRoom = projectRef.current.rooms.find(
+          (r) =>
+            projX >= r.x - 0.08 &&
+            projX <= r.x + r.width + 0.08 &&
+            projZ >= r.z - 0.08 &&
+            projZ <= r.z + r.length + 0.08
+        );
+
+        if (onPlayerPoseChangeRef.current) {
+          onPlayerPoseChangeRef.current({
+            projectX: projX,
+            projectZ: projZ,
+            yaw: fppYaw.current,
+            roomId: currentRoom?.id || null,
+            roomName: currentRoom?.name || 'Exterior Entrance Corridor'
+          });
+        }
+      }
+
+      // Update Twin Animations, Doors, Lights, Fans & Conduits
+      if (twinRef.current) {
+        twinRef.current.update(delta, fanSpeedRef.current, activeCircuitRef.current, {
+          layers: layersRef.current,
+          circuitFilter: circuitFilterRef.current,
+          wallOpacity: wallOpacityRef.current,
+          dbExploded: dbExplodedRef.current,
+          dbDoorOpen: dbDoorOpenRef.current,
+          breakerStates: breakerStatesRef.current,
+          doorStates: doorStatesRef.current,
+          electricalPoints: projectRef.current.electricalPoints
+        });
+      }
+
       renderer.render(scene, camera);
+    };
 
-      if (isSoftwareGl) {
-        afterDraw(tick);
-      } else {
-        frameId = requestAnimationFrame(tick);
-      }
-    }
+    animate();
 
-    tick();
+    const handleResize = () => {
+      if (!mountRef.current || !rendererRef.current || !cameraRef.current) return;
+      const w = mountRef.current.clientWidth;
+      const h = mountRef.current.clientHeight;
+      cameraRef.current.aspect = w / h;
+      cameraRef.current.updateProjectionMatrix();
+      rendererRef.current.setSize(w, h);
+    };
+    window.addEventListener('resize', handleResize);
 
-    // 10. Cleanup
     return () => {
-      stateRef.current.onSceneReady?.(null);
-      if (currentParametricTwin) {
-        currentParametricTwin.dispose();
-      }
       cancelAnimationFrame(frameId);
-      clearTimeout(frameId);
       window.removeEventListener('resize', handleResize);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('pointermove', handlePointerMove);
-      window.removeEventListener('pointerup', handlePointerUp);
-      renderer.domElement.removeEventListener('pointerdown', handlePointerDown);
-      controls.dispose();
-      renderer.dispose();
-      if (renderer.domElement.parentElement) {
-        renderer.domElement.parentElement.removeChild(renderer.domElement);
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
+      document.removeEventListener('pointerlockchange', onPointerLockChangeEvent);
+      renderer.domElement.removeEventListener('mousedown', onMouseDown);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      if (twinRef.current) {
+        twinRef.current.dispose();
       }
+      renderer.dispose();
     };
   }, []);
 
+  // 2. Request or Exit Pointer Lock when triggered by parent UI ("Enter Apartment" / "Resume" / "Pause")
+  useEffect(() => {
+    const renderer = rendererRef.current;
+    if (!renderer) return;
+
+    if (cameraMode === 'fpp' && isWalkthroughStarted && !isWalkthroughPaused && pointerLockTrigger > 0) {
+      try {
+        renderer.domElement.requestPointerLock?.();
+      } catch {
+        // Ignore iframe pointer lock error
+      }
+    } else if (isWalkthroughPaused || cameraMode === 'orbit') {
+      if (document.pointerLockElement === renderer.domElement) {
+        try {
+          document.exitPointerLock?.();
+        } catch {
+          // Ignore
+        }
+      }
+    }
+  }, [pointerLockTrigger, isWalkthroughStarted, isWalkthroughPaused, cameraMode]);
+
+  // 3. Rebuild 3D Parametric Twin ONLY when structural geometry or viewMode changes
+  // (Electrical point toggles, door swings, breaker trips, and activeCircuit are updated live at 60fps in animate!)
+  const structuralKey = `${project.id}_${project.rooms.length}_${project.openings.length}_${viewMode}_${ceilingVisible}`;
+
+  useEffect(() => {
+    const scene = sceneRef.current;
+    if (!scene) return;
+
+    if (twinRef.current) {
+      scene.remove(twinRef.current.rootGroup);
+      twinRef.current.dispose();
+    }
+
+    const newTwin = generateParametricTwin(
+      project,
+      viewMode,
+      ceilingVisible,
+      dbDoorOpenRef.current,
+      activeCircuitRef.current
+    );
+    scene.add(newTwin.rootGroup);
+    twinRef.current = newTwin;
+  }, [structuralKey]);
+
+  // 4. Handle Camera Mode & Room POV Presets
+  useEffect(() => {
+    const camera = cameraRef.current;
+    const controls = controlsRef.current;
+    const twin = twinRef.current;
+    if (!camera || !controls || !twin) return;
+
+    controls.enabled = cameraMode === 'orbit';
+
+    const cx = twin.houseCenter.x;
+    const cz = twin.houseCenter.z;
+
+    const findRoomCenter = (type: string, fallbackX: number, fallbackZ: number) => {
+      const rm = project.rooms.find((r) => r.type === type);
+      if (!rm) return { x: fallbackX - cx, z: fallbackZ - cz, w: 3.5, l: 3.5 };
+      return {
+        x: rm.x + rm.width / 2 - cx,
+        z: rm.z + rm.length / 2 - cz,
+        w: rm.width,
+        l: rm.length
+      };
+    };
+
+    const foyer = findRoomCenter('foyer', 2.5, -1.8);
+    const living = findRoomCenter('living', 5.5, 4.2);
+    const master = findRoomCenter('master_bedroom', 4.2, 12.2);
+    const bed2 = findRoomCenter('bedroom_2', 12.0, 12.2);
+    const kitchen = findRoomCenter('kitchen', 14.2, 2.7);
+    const bath1 = findRoomCenter('bathroom', 13.4, 6.9);
+
+    const dbPt = project.electricalPoints.find((p) => p.type === 'db');
+    const dbX = dbPt ? dbPt.x - cx : foyer.x - 1.2;
+    const dbY = dbPt ? dbPt.y : 1.65;
+    const dbZ = dbPt ? dbPt.z - cz : foyer.z;
+
+    const eyeH = 1.75;
+    let targetPos = new THREE.Vector3();
+    let targetLook = new THREE.Vector3();
+
+    if (cameraMode === 'fpp') {
+      switch (cameraPreset) {
+        case 'exterior_entry':
+        case 'overview':
+        case 'top': {
+          // Spawn outside the Main Apartment Entrance Door facing South toward the Foyer Door
+          const foyerRm = project.rooms.find((r) => r.type === 'foyer');
+          const spawnX = (foyerRm ? foyerRm.x + foyerRm.width / 2 : 2.5) - cx;
+          const spawnZ = (foyerRm ? foyerRm.z - 1.5 : -5.1) - cz;
+          targetPos.set(spawnX, eyeH, spawnZ);
+          targetLook.set(spawnX, eyeH - 0.04, spawnZ + 4.0);
+          break;
+        }
+        case 'foyer':
+          targetPos.set(foyer.x, eyeH, foyer.z - 0.5);
+          targetLook.set(foyer.x, eyeH - 0.05, living.z);
+          break;
+        case 'db':
+          targetPos.set(dbX + 1.6, eyeH - 0.08, dbZ + 0.8);
+          targetLook.set(dbX, dbY, dbZ);
+          break;
+        case 'living':
+          targetPos.set(living.x - 2.0, eyeH, living.z - 1.4);
+          targetLook.set(living.x + 1.4, eyeH - 0.1, living.z + 1.5);
+          break;
+        case 'master_bed':
+          targetPos.set(master.x + 1.2, eyeH, master.z - 1.8);
+          targetLook.set(master.x - 0.4, eyeH - 0.15, master.z + 1.6);
+          break;
+        case 'bed2':
+          targetPos.set(bed2.x - 1.0, eyeH, bed2.z - 1.8);
+          targetLook.set(bed2.x + 0.4, eyeH - 0.15, bed2.z + 1.6);
+          break;
+        case 'kitchen':
+          targetPos.set(kitchen.x - 1.5, eyeH, kitchen.z + 0.2);
+          targetLook.set(kitchen.x + 1.5, eyeH - 0.15, kitchen.z);
+          break;
+        case 'bath1':
+          targetPos.set(bath1.x - 1.1, eyeH, bath1.z);
+          targetLook.set(bath1.x + 1.1, eyeH - 0.15, bath1.z);
+          break;
+      }
+    } else {
+      switch (cameraPreset) {
+        case 'overview':
+        case 'exterior_entry':
+          targetPos.set(17.5, 16.5, 20.5);
+          targetLook.set(0, 1.4, 0.5);
+          break;
+        case 'top':
+          targetPos.set(0, 28.0, 0.01);
+          targetLook.set(0, 0, 0);
+          break;
+        case 'foyer':
+          targetPos.set(foyer.x + 3.2, 5.2, foyer.z - 3.8);
+          targetLook.set(foyer.x, 1.6, foyer.z);
+          break;
+        case 'db':
+          targetPos.set(dbX + 1.8, dbY + 0.35, dbZ + 1.5);
+          targetLook.set(dbX + 0.1, dbY, dbZ + 0.15);
+          break;
+        case 'living':
+          targetPos.set(living.x - 3.8, 5.8, living.z + 4.4);
+          targetLook.set(living.x + 0.6, 1.4, living.z);
+          break;
+        case 'master_bed':
+          targetPos.set(master.x + 3.6, 5.5, master.z - 3.6);
+          targetLook.set(master.x, 1.2, master.z + 0.5);
+          break;
+        case 'bed2':
+          targetPos.set(bed2.x - 3.4, 5.5, bed2.z - 3.4);
+          targetLook.set(bed2.x, 1.2, bed2.z + 0.4);
+          break;
+        case 'kitchen':
+          targetPos.set(kitchen.x - 3.6, 5.4, kitchen.z + 3.0);
+          targetLook.set(kitchen.x + 0.6, 1.3, kitchen.z);
+          break;
+        case 'bath1':
+          targetPos.set(bath1.x - 2.8, 5.0, bath1.z + 2.4);
+          targetLook.set(bath1.x + 0.4, 1.2, bath1.z);
+          break;
+      }
+    }
+
+    cameraTransitionRef.current = {
+      active: true,
+      targetPos,
+      targetLook
+    };
+  }, [cameraMode, cameraPreset, structuralKey]);
+
+  // 5. Handle Direct Teleport from 2D Mini-Map or Reset Spawn Button
+  useEffect(() => {
+    if (!teleportTarget || !cameraRef.current || !twinRef.current) return;
+    const cx = twinRef.current.houseCenter.x;
+    const cz = twinRef.current.houseCenter.z;
+    const wx = teleportTarget.x - cx;
+    const wz = teleportTarget.z - cz;
+
+    cameraTransitionRef.current.active = false;
+    cameraRef.current.position.set(wx, 1.75, wz);
+    if (teleportTarget.yaw !== undefined) {
+      fppYaw.current = teleportTarget.yaw;
+      fppPitch.current = -0.02;
+    }
+  }, [teleportTarget]);
+
+  // 6. Focus Camera when a specific Electrical Component is selected in Orbit Mode
+  useEffect(() => {
+    if (!selectedComponentId || !twinRef.current || cameraMode !== 'orbit') return;
+    const pt = project.electricalPoints.find((p) => p.id === selectedComponentId);
+    if (!pt) return;
+
+    const cx = twinRef.current.houseCenter.x;
+    const cz = twinRef.current.houseCenter.z;
+    const wx = pt.x - cx;
+    const wy = pt.y;
+    const wz = pt.z - cz;
+
+    cameraTransitionRef.current = {
+      active: true,
+      targetPos: new THREE.Vector3(wx + 1.8, Math.max(wy + 0.8, 2.2), wz + 1.8),
+      targetLook: new THREE.Vector3(wx, wy, wz)
+    };
+  }, [selectedComponentId]);
+
+  // 7. Handle 3D GLB / glTF Export
+  useEffect(() => {
+    if (!exportTrigger || !twinRef.current) return;
+    const exporter = new GLTFExporter();
+    const isBinary = exportTrigger.format === 'glb';
+
+    exporter.parse(
+      twinRef.current.rootGroup,
+      (result) => {
+        const blob =
+          result instanceof ArrayBuffer
+            ? new Blob([result], { type: 'application/octet-stream' })
+            : new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        const safeName = project.meta.projectName.replace(/[^a-zA-Z0-9_-]/g, '_');
+        link.download = `${safeName}_2BHK_CAD.${exportTrigger.format}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      },
+      (err) => {
+        console.error('GLTF export error:', err);
+      },
+      { binary: isBinary }
+    );
+  }, [exportTrigger, project.meta.projectName]);
+
   return (
-    <div
-      ref={mountRef}
-      className={`w-full h-full relative select-none overflow-hidden ${
-        isPovMode ? 'cursor-crosshair' : 'cursor-grab active:cursor-grabbing'
-      }`}
-    />
+    <div className="relative w-full h-full select-none overflow-hidden bg-[#0b132b]">
+      <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+    </div>
   );
 };

@@ -35,6 +35,45 @@ export interface OpeningData {
   height: number; // in meters
   sillHeight: number; // in meters (0 for doors, ~0.9m for windows)
   swing?: OpeningSwing;
+  label?: string;
+}
+
+export interface DoorState {
+  id: string;
+  roomId: string;
+  label: string;
+  isOpen: boolean;
+}
+
+export interface ColliderBox {
+  id: string;
+  minX: number;
+  maxX: number;
+  minZ: number;
+  maxZ: number;
+  category: 'wall' | 'furniture' | 'door';
+  doorId?: string;
+}
+
+export interface InteractiveTarget {
+  type: 'door' | 'electrical' | 'db' | 'breaker';
+  id: string;
+  label: string;
+  sublabel?: string;
+  roomId?: string;
+  circuitId?: string;
+  isOpen?: boolean;
+  isOn?: boolean;
+  powerWatts?: number;
+  distance: number;
+}
+
+export interface PlayerPose {
+  projectX: number;
+  projectZ: number;
+  yaw: number;
+  roomId: string | null;
+  roomName: string;
 }
 
 export type ElectricalPointType =

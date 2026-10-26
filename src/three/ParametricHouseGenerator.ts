@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 import {
   ResidentialProject,
-  OpeningData
+  OpeningData,
+  ColliderBox,
+  ElectricalPoint
 } from '../types/residentialDesigner';
 import {
   createFloorTilesTexture,
@@ -23,11 +25,32 @@ export interface ResidentialLayerVisibility {
   distribution: boolean;
 }
 
+export interface CircuitSubLayerFilter {
+  lighting: boolean;
+  power: boolean;
+  heavy: boolean;
+  earthing: boolean;
+}
+
+export interface DoorPivotEntry {
+  id: string;
+  roomId: string;
+  label: string;
+  pivot: THREE.Group;
+  closedAngle: number;
+  openAngle: number;
+  currentAngle: number;
+  worldX: number;
+  worldZ: number;
+}
+
 export interface GeneratedTwin {
   rootGroup: THREE.Group;
   houseCenter: THREE.Vector3;
   buildingBounds: { minX: number; maxX: number; minZ: number; maxZ: number };
-  fanRotators: { group: THREE.Group; speedMultiplier: number }[];
+  colliders: ColliderBox[];
+  doorPivots: Map<string, DoorPivotEntry>;
+  fanRotators: { group: THREE.Group; speedMultiplier: number; pointId: string; circuitId: string }[];
   dbDoorPivot: THREE.Group | null;
   interactiveMeshes: Map<string, THREE.Object3D>;
   activeConduitMaterials: THREE.MeshStandardMaterial[];
@@ -37,9 +60,13 @@ export interface GeneratedTwin {
     activeCircuitId: string,
     options?: {
       layers?: ResidentialLayerVisibility;
+      circuitFilter?: CircuitSubLayerFilter;
       wallOpacity?: number;
       dbExploded?: boolean;
+      dbDoorOpen?: boolean;
       breakerStates?: Record<string, boolean>;
+      doorStates?: Record<string, boolean>;
+      electricalPoints?: ElectricalPoint[];
     }
   ) => void;
   dispose: () => void;
@@ -56,10 +83,34 @@ export function generateParametricTwin(
   rootGroup.name = 'ParametricHouseTwin';
 
   const interactiveMeshes = new Map<string, THREE.Object3D>();
-  const fanRotators: { group: THREE.Group; speedMultiplier: number }[] = [];
+  const doorPivots = new Map<string, DoorPivotEntry>();
+  const colliders: ColliderBox[] = [];
+  const fanRotators: { group: THREE.Group; speedMultiplier: number; pointId: string; circuitId: string }[] = [];
   let dbDoorPivot: THREE.Group | null = null;
   const activeConduitMaterials: THREE.MeshStandardMaterial[] = [];
   const disposables: (THREE.BufferGeometry | THREE.Material | THREE.Texture)[] = [];
+
+  // Dynamic point light & indicator registries for real-time switching without scene rebuild
+  const pointLightRegistry = new Map<
+    string,
+    { light: THREE.PointLight; diffuserMat: THREE.MeshBasicMaterial; circuitId: string }
+  >();
+  const indicatorRegistry = new Map<
+    string,
+    { mat: THREE.MeshBasicMaterial | THREE.MeshStandardMaterial; onHex: number; offHex: number; circuitId: string }
+  >();
+  const circuitMeshGroups = new Map<
+    string,
+    {
+      category: 'lighting' | 'power' | 'heavy' | 'earthing';
+      conduitMat: THREE.MeshStandardMaterial;
+      phaseMat: THREE.MeshStandardMaterial;
+      jboxMat: THREE.MeshStandardMaterial;
+      baseColor: THREE.Color;
+      meshes: THREE.Object3D[];
+    }
+  >();
+  const earthConductorMeshes: THREE.Object3D[] = [];
 
   // Layer sub-groups
   const architectureGroup = new THREE.Group();
@@ -99,7 +150,7 @@ export function generateParametricTwin(
 
   const wallPlasterMaterial = new THREE.MeshStandardMaterial({
     color: 0xf1f5f9,
-    roughness: 0.8,
+    roughness: 0.78,
     metalness: 0.02,
     transparent: true,
     opacity: 1.0
@@ -110,7 +161,7 @@ export function generateParametricTwin(
     roughness: 0.25,
     metalness: 0.1,
     transparent: true,
-    opacity: 0.26,
+    opacity: 0.22,
     depthWrite: false
   });
 
@@ -128,15 +179,27 @@ export function generateParametricTwin(
     roughness: 0.8,
     metalness: 0.05,
     transparent: viewMode === 'cutaway',
-    opacity: viewMode === 'cutaway' ? 0.22 : 1.0,
+    opacity: viewMode === 'cutaway' ? 0.18 : 1.0,
     depthWrite: viewMode !== 'cutaway',
     side: THREE.DoubleSide
   });
 
   const woodDoorMaterial = new THREE.MeshStandardMaterial({
     color: 0x6b4226,
+    roughness: 0.48,
+    metalness: 0.06
+  });
+
+  const doorFrameMaterial = new THREE.MeshStandardMaterial({
+    color: 0x451a03,
     roughness: 0.55,
-    metalness: 0.05
+    metalness: 0.08
+  });
+
+  const doorHandleMaterial = new THREE.MeshStandardMaterial({
+    color: 0xe2e8f0,
+    roughness: 0.2,
+    metalness: 0.9
   });
 
   const glassWindowMaterial = new THREE.MeshStandardMaterial({
@@ -144,7 +207,7 @@ export function generateParametricTwin(
     roughness: 0.1,
     metalness: 0.2,
     transparent: true,
-    opacity: 0.4
+    opacity: 0.38
   });
 
   const aluminumFrameMaterial = new THREE.MeshStandardMaterial({
@@ -160,12 +223,17 @@ export function generateParametricTwin(
     wallBrickMaterial,
     concreteCeilingMaterial,
     woodDoorMaterial,
+    doorFrameMaterial,
+    doorHandleMaterial,
     glassWindowMaterial,
     aluminumFrameMaterial
   );
 
   // 1. Calculate overall building bounding box
-  let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+  let minX = Infinity,
+    maxX = -Infinity,
+    minZ = Infinity,
+    maxZ = -Infinity;
   project.rooms.forEach((r) => {
     minX = Math.min(minX, r.x);
     maxX = Math.max(maxX, r.x + r.width);
@@ -183,7 +251,30 @@ export function generateParametricTwin(
   houseGroup.add(architectureGroup, furnitureGroup, lightingGroup, conduitsGroup, wiringGroup, distributionGroup);
   rootGroup.add(houseGroup);
 
-  // Helper to create a simple box mesh quickly
+  // Helper to register an AABB collider in world space (shifted by -centerX, -centerZ)
+  const addCollider = (
+    id: string,
+    projCenterX: number,
+    projCenterZ: number,
+    widthX: number,
+    depthZ: number,
+    category: 'wall' | 'furniture' | 'door',
+    doorId?: string
+  ) => {
+    const wx = projCenterX - centerX;
+    const wz = projCenterZ - centerZ;
+    colliders.push({
+      id,
+      minX: wx - widthX / 2,
+      maxX: wx + widthX / 2,
+      minZ: wz - depthZ / 2,
+      maxZ: wz + depthZ / 2,
+      category,
+      doorId
+    });
+  };
+
+  // Helper to create a box mesh with optional furniture collision
   const addBox = (
     parent: THREE.Object3D,
     w: number,
@@ -195,7 +286,8 @@ export function generateParametricTwin(
     z: number,
     roughness = 0.5,
     metalness = 0.1,
-    opacity = 1.0
+    opacity = 1.0,
+    registerCollision = false
   ) => {
     const geo = new THREE.BoxGeometry(w, h, d);
     const mat = new THREE.MeshStandardMaterial({
@@ -211,11 +303,15 @@ export function generateParametricTwin(
     mesh.castShadow = opacity === 1.0;
     mesh.receiveShadow = true;
     parent.add(mesh);
+
+    if (registerCollision) {
+      addCollider(`furn_${x.toFixed(1)}_${z.toFixed(1)}`, x, z, w * 0.85, d * 0.85, 'furniture');
+    }
     return mesh;
   };
 
-  // 2. Outdoor Plinth / Earth Base Slab
-  const plinthMargin = 2.2;
+  // 2. Outdoor Plinth / Earth Base Slab + Exterior Entrance Landing
+  const plinthMargin = 4.5;
   const plinthGeo = new THREE.BoxGeometry(buildingW + plinthMargin * 2, 0.2, buildingL + plinthMargin * 2);
   const plinthMat = new THREE.MeshStandardMaterial({
     color: 0x1e293b,
@@ -227,16 +323,32 @@ export function generateParametricTwin(
   plinthMesh.receiveShadow = true;
   architectureGroup.add(plinthMesh);
 
+  // Exterior Entrance Corridor Landing outside Foyer
+  const foyerRoom = project.rooms.find((r) => r.type === 'foyer');
+  if (foyerRoom) {
+    const landingW = foyerRoom.width + 1.4;
+    const landingL = 3.0;
+    const landingX = foyerRoom.x + foyerRoom.width / 2;
+    const landingZ = foyerRoom.z - landingL / 2;
+    addBox(architectureGroup, landingW, 0.04, landingL, 0xcbd5e1, landingX, 0.02, landingZ, 0.4, 0.05);
+    // Grand Coir Welcome Mat outside Main Entrance Door
+    addBox(architectureGroup, 1.6, 0.015, 0.9, 0x92400e, foyerRoom.x + foyerRoom.width / 2, 0.045, foyerRoom.z - 0.65, 0.9, 0.0);
+    // Warm Exterior Entrance Wall Sconce Light
+    const sconceLight = new THREE.PointLight(0xffedd5, 1.6, 9.0, 1.4);
+    sconceLight.position.set(foyerRoom.x + foyerRoom.width - 0.6, 2.5, foyerRoom.z - 0.35);
+    architectureGroup.add(sconceLight);
+    addBox(architectureGroup, 0.18, 0.32, 0.1, 0xfef08a, foyerRoom.x + foyerRoom.width - 0.6, 2.5, foyerRoom.z - 0.1, 0.2, 0.1);
+  }
+
   // Subtle CAD reference grid on plinth
-  const gridHelper = new THREE.GridHelper(Math.max(buildingW, buildingL) + 4, 24, 0x38bdf8, 0x334155);
+  const gridHelper = new THREE.GridHelper(Math.max(buildingW, buildingL) + 9, 32, 0x38bdf8, 0x334155);
   gridHelper.position.set(centerX, 0.005, centerZ);
   (gridHelper.material as THREE.Material).transparent = true;
   (gridHelper.material as THREE.Material).opacity = 0.25;
   architectureGroup.add(gridHelper);
 
-  // 3. Room Floors, Skirting, Ceilings & Detailed 3D Furniture
+  // 3. Room Floors, Skirting, Ceilings & Detailed 3D Furniture with Collision Boxes
   project.rooms.forEach((room) => {
-    // Room specific floor tint
     const roomFloorMat = floorMaterial.clone();
     if (room.type === 'bathroom') roomFloorMat.color.setHex(0xe0f2fe);
     else if (room.type === 'kitchen') roomFloorMat.color.setHex(0xfef3c7);
@@ -250,7 +362,6 @@ export function generateParametricTwin(
     floorMesh.receiveShadow = true;
     architectureGroup.add(floorMesh);
 
-    // Ceiling Slab
     if (ceilingVisible) {
       const ceilGeo = new THREE.BoxGeometry(room.width, 0.12, room.length);
       disposables.push(ceilGeo);
@@ -260,7 +371,7 @@ export function generateParametricTwin(
       architectureGroup.add(ceilMesh);
     }
 
-    // 3B. Detailed 3D Room Furnishings & Appliances
+    // 3B. Detailed 3D Room Furnishings & Appliances (with solid colliders for large furniture)
     const rx = room.x;
     const rz = room.z;
     const rw = room.width;
@@ -269,100 +380,98 @@ export function generateParametricTwin(
     rmGroup.name = `Furniture_${room.id}`;
 
     if (room.type === 'living') {
-      // L-Shaped Fabric Sofa in Living Zone
-      addBox(rmGroup, 2.2, 0.42, 0.85, 0x334155, rx + 1.8, 0.21, rz + 3.3, 0.8, 0.05); // Main seat
-      addBox(rmGroup, 2.2, 0.45, 0.18, 0x1e293b, rx + 1.8, 0.62, rz + 3.64, 0.85, 0.05); // Backrest
-      addBox(rmGroup, 0.85, 0.42, 1.5, 0x334155, rx + 0.95, 0.21, rz + 2.55, 0.8, 0.05); // Chaise lounge
+      // Grand L-Shaped Fabric Lounge Sofa in West-South Living Zone (leaves huge 5m+ central walking floor)
+      const sofaX = rx + 2.5;
+      const sofaZ = rz + rl - 1.55;
+      addBox(rmGroup, 3.2, 0.45, 1.05, 0x334155, sofaX, 0.225, sofaZ, 0.8, 0.05, 1, true);
+      addBox(rmGroup, 3.2, 0.52, 0.22, 0x1e293b, sofaX, 0.68, sofaZ + 0.42, 0.85, 0.05);
+      addBox(rmGroup, 1.05, 0.45, 2.2, 0x334155, rx + 1.42, 0.225, sofaZ - 0.95, 0.8, 0.05, 1, true);
       // Accent Cushions
-      addBox(rmGroup, 0.35, 0.3, 0.12, 0x0284c7, rx + 1.1, 0.56, rz + 3.48, 0.7, 0.0);
-      addBox(rmGroup, 0.35, 0.3, 0.12, 0xf59e0b, rx + 2.4, 0.56, rz + 3.48, 0.7, 0.0);
-      // Area Rug & Coffee Table
-      addBox(rmGroup, 2.0, 0.015, 1.4, 0xcbd5e1, rx + 2.0, 0.055, rz + 2.1, 0.95, 0.0);
-      addBox(rmGroup, 1.0, 0.38, 0.55, 0x78350f, rx + 2.0, 0.2, rz + 2.1, 0.4, 0.1);
-      // TV Entertainment Console + 55" Wall-Mounted Smart TV on North Wall
-      addBox(rmGroup, 1.8, 0.45, 0.4, 0x5c3a21, rx + 2.2, 0.25, rz + 0.3, 0.5, 0.1);
-      addBox(rmGroup, 1.35, 0.78, 0.04, 0x090d16, rx + 2.2, 1.35, rz + 0.14, 0.15, 0.6); // 55" OLED Screen
-      // 4-Seater Dining Table & Chairs in East half of Living/Dining
-      const dx = rx + rw - 1.25;
-      const dz = rz + rl / 2 + 0.2;
-      addBox(rmGroup, 1.3, 0.05, 0.85, 0x78350f, dx, 0.75, dz, 0.35, 0.1); // Tabletop
-      addBox(rmGroup, 0.08, 0.74, 0.08, 0x1e293b, dx - 0.52, 0.37, dz - 0.32, 0.4, 0.6);
-      addBox(rmGroup, 0.08, 0.74, 0.08, 0x1e293b, dx + 0.52, 0.37, dz - 0.32, 0.4, 0.6);
-      addBox(rmGroup, 0.08, 0.74, 0.08, 0x1e293b, dx - 0.52, 0.37, dz + 0.32, 0.4, 0.6);
-      addBox(rmGroup, 0.08, 0.74, 0.08, 0x1e293b, dx + 0.52, 0.37, dz + 0.32, 0.4, 0.6);
-      // 4 Dining Chairs
-      addBox(rmGroup, 0.42, 0.45, 0.42, 0x475569, dx - 0.32, 0.23, dz - 0.58, 0.7, 0.1);
-      addBox(rmGroup, 0.42, 0.45, 0.42, 0x475569, dx + 0.32, 0.23, dz - 0.58, 0.7, 0.1);
-      addBox(rmGroup, 0.42, 0.45, 0.42, 0x475569, dx - 0.32, 0.23, dz + 0.58, 0.7, 0.1);
-      addBox(rmGroup, 0.42, 0.45, 0.42, 0x475569, dx + 0.32, 0.23, dz + 0.58, 0.7, 0.1);
+      addBox(rmGroup, 0.48, 0.36, 0.16, 0x0284c7, sofaX - 0.85, 0.62, sofaZ + 0.22, 0.7, 0.0);
+      addBox(rmGroup, 0.48, 0.36, 0.16, 0xf59e0b, sofaX + 0.85, 0.62, sofaZ + 0.22, 0.7, 0.0);
+      // Area Rug & Center Coffee Table (no blocking collision on coffee table so walking feels completely free)
+      addBox(rmGroup, 3.4, 0.015, 2.4, 0xcbd5e1, sofaX + 0.35, 0.055, sofaZ - 1.85, 0.95, 0.0);
+      addBox(rmGroup, 1.45, 0.4, 0.75, 0x78350f, sofaX + 0.35, 0.21, sofaZ - 1.85, 0.4, 0.1, 1, false);
+      // TV Entertainment Console + 75" Wall-Mounted Smart TV on North Wall (clear of foyer doorway)
+      const tvX = rx + rw * 0.56;
+      addBox(rmGroup, 2.6, 0.52, 0.48, 0x5c3a21, tvX, 0.26, rz + 0.34, 0.5, 0.1, 1, true);
+      addBox(rmGroup, 2.1, 1.15, 0.05, 0x090d16, tvX, 1.65, rz + 0.15, 0.15, 0.6);
+      // 6-Seater Grand Dining Table & Chairs in East Dining Zone (clear of Kitchen & Bath doorways)
+      const dx = rx + rw - 2.4;
+      const dz = rz + rl * 0.52;
+      addBox(rmGroup, 2.1, 0.06, 1.15, 0x78350f, dx, 0.78, dz, 0.35, 0.1, 1, false);
+      addBox(rmGroup, 0.1, 0.76, 0.1, 0x1e293b, dx - 0.85, 0.38, dz - 0.42, 0.4, 0.6);
+      addBox(rmGroup, 0.1, 0.76, 0.1, 0x1e293b, dx + 0.85, 0.38, dz - 0.42, 0.4, 0.6);
+      addBox(rmGroup, 0.1, 0.76, 0.1, 0x1e293b, dx - 0.85, 0.38, dz + 0.42, 0.4, 0.6);
+      addBox(rmGroup, 0.1, 0.76, 0.1, 0x1e293b, dx + 0.85, 0.38, dz + 0.42, 0.4, 0.6);
+      addBox(rmGroup, 0.48, 0.46, 0.48, 0x475569, dx - 0.5, 0.23, dz - 0.75, 0.7, 0.1);
+      addBox(rmGroup, 0.48, 0.46, 0.48, 0x475569, dx + 0.5, 0.23, dz - 0.75, 0.7, 0.1);
+      addBox(rmGroup, 0.48, 0.46, 0.48, 0x475569, dx - 0.5, 0.23, dz + 0.75, 0.7, 0.1);
+      addBox(rmGroup, 0.48, 0.46, 0.48, 0x475569, dx + 0.5, 0.23, dz + 0.75, 0.7, 0.1);
     } else if (room.type === 'kitchen') {
-      // L-Shaped Modular Kitchen Base Cabinets & Black Granite Countertop
-      addBox(rmGroup, 0.62, 0.85, rl - 0.3, 0x0f766e, rx + rw - 0.35, 0.425, rz + rl / 2, 0.5, 0.1);
-      addBox(rmGroup, 0.65, 0.04, rl - 0.28, 0x111827, rx + rw - 0.35, 0.87, rz + rl / 2, 0.2, 0.3); // Granite
-      addBox(rmGroup, rw - 0.8, 0.85, 0.6, 0x0f766e, rx + (rw - 0.8) / 2 + 0.15, 0.425, rz + 0.35, 0.5, 0.1);
-      addBox(rmGroup, rw - 0.78, 0.04, 0.64, 0x111827, rx + (rw - 0.8) / 2 + 0.15, 0.87, rz + 0.35, 0.2, 0.3);
+      // L-Shaped Modular Kitchen Base Cabinets & Black Granite Countertop along East and North Walls
+      addBox(rmGroup, 0.72, 0.88, rl - 0.4, 0x0f766e, rx + rw - 0.42, 0.44, rz + rl / 2, 0.5, 0.1, 1, true);
+      addBox(rmGroup, 0.76, 0.04, rl - 0.36, 0x111827, rx + rw - 0.42, 0.9, rz + rl / 2, 0.2, 0.3);
+      addBox(rmGroup, rw - 1.4, 0.88, 0.68, 0x0f766e, rx + (rw - 1.4) / 2 + 0.35, 0.44, rz + 0.42, 0.5, 0.1, 1, true);
+      addBox(rmGroup, rw - 1.36, 0.04, 0.72, 0x111827, rx + (rw - 1.4) / 2 + 0.35, 0.9, rz + 0.42, 0.2, 0.3);
       // 4-Burner Induction / Glass Hob & Auto-Clean Chimney
-      addBox(rmGroup, 0.48, 0.03, 0.72, 0x030712, rx + rw - 0.35, 0.9, rz + 1.2, 0.15, 0.5);
-      addBox(rmGroup, 0.45, 0.22, 0.75, 0x94a3b8, rx + rw - 0.35, 1.85, rz + 1.2, 0.25, 0.85); // Chimney hood
-      addBox(rmGroup, 0.22, 0.85, 0.22, 0x94a3b8, rx + rw - 0.25, 2.35, rz + 1.2, 0.25, 0.85); // Chimney duct
-      // Stainless Steel Sink
-      addBox(rmGroup, 0.45, 0.02, 0.55, 0xcbd5e1, rx + rw - 0.35, 0.895, rz + 2.2, 0.2, 0.9);
-      // Double-Door Refrigerator & Microwave Oven
-      addBox(rmGroup, 0.68, 1.78, 0.68, 0x64748b, rx + 0.55, 0.89, rz + 0.45, 0.25, 0.8); // Fridge
-      addBox(rmGroup, 0.48, 0.3, 0.38, 0x1e293b, rx + 1.5, 1.05, rz + 0.35, 0.3, 0.6); // Microwave
+      addBox(rmGroup, 0.54, 0.03, 0.92, 0x030712, rx + rw - 0.42, 0.93, rz + rl * 0.42, 0.15, 0.5);
+      addBox(rmGroup, 0.52, 0.25, 0.95, 0x94a3b8, rx + rw - 0.42, 2.05, rz + rl * 0.42, 0.25, 0.85);
+      addBox(rmGroup, 0.26, 1.15, 0.26, 0x94a3b8, rx + rw - 0.3, 2.7, rz + rl * 0.42, 0.25, 0.85);
+      // Stainless Steel Double Sink
+      addBox(rmGroup, 0.52, 0.02, 0.82, 0xcbd5e1, rx + rw - 0.42, 0.925, rz + rl * 0.75, 0.2, 0.9);
+      // Side-by-Side Double-Door Refrigerator & Microwave Oven on North Wall
+      addBox(rmGroup, 0.92, 1.95, 0.78, 0x64748b, rx + 0.95, 0.975, rz + 0.52, 0.25, 0.8, 1, true);
+      addBox(rmGroup, 0.58, 0.35, 0.44, 0x1e293b, rx + 2.35, 1.1, rz + 0.42, 0.3, 0.6);
     } else if (room.type === 'master_bedroom') {
-      // Queen Size Bed along South Wall
-      const bx = rx + rw / 2;
-      const bz = rz + rl - 1.15;
-      addBox(rmGroup, 1.65, 0.35, 2.05, 0x5c3a21, bx, 0.175, bz, 0.6, 0.05); // Bed frame
-      addBox(rmGroup, 1.55, 0.22, 1.92, 0xf8fafc, bx, 0.42, bz + 0.02, 0.85, 0.0); // Mattress
-      addBox(rmGroup, 1.56, 0.06, 1.1, 0x1e3a8a, bx, 0.54, bz + 0.4, 0.85, 0.0); // Duvet
-      addBox(rmGroup, 1.68, 1.05, 0.12, 0x451a03, bx, 0.525, rz + rl - 0.12, 0.55, 0.05); // Headboard
+      // Grand King-Size Bed along South Wall (leaves huge open bedroom floor)
+      const bx = rx + rw / 2 - 0.2;
+      const bz = rz + rl - 1.35;
+      addBox(rmGroup, 2.25, 0.38, 2.35, 0x5c3a21, bx, 0.19, bz, 0.6, 0.05, 1, true);
+      addBox(rmGroup, 2.14, 0.24, 2.22, 0xf8fafc, bx, 0.45, bz + 0.02, 0.85, 0.0);
+      addBox(rmGroup, 2.15, 0.06, 1.25, 0x1e3a8a, bx, 0.58, bz + 0.42, 0.85, 0.0);
+      addBox(rmGroup, 2.32, 1.25, 0.14, 0x451a03, bx, 0.625, rz + rl - 0.14, 0.55, 0.05);
       // 2 Pillows
-      addBox(rmGroup, 0.55, 0.1, 0.35, 0xe2e8f0, bx - 0.4, 0.56, rz + rl - 0.4, 0.8, 0.0);
-      addBox(rmGroup, 0.55, 0.1, 0.35, 0xe2e8f0, bx + 0.4, 0.56, rz + rl - 0.4, 0.8, 0.0);
+      addBox(rmGroup, 0.72, 0.12, 0.42, 0xe2e8f0, bx - 0.52, 0.61, rz + rl - 0.45, 0.8, 0.0);
+      addBox(rmGroup, 0.72, 0.12, 0.42, 0xe2e8f0, bx + 0.52, 0.61, rz + rl - 0.45, 0.8, 0.0);
       // Bedside Tables
-      addBox(rmGroup, 0.45, 0.48, 0.42, 0x5c3a21, bx - 1.12, 0.24, rz + rl - 0.35, 0.5, 0.05);
-      addBox(rmGroup, 0.45, 0.48, 0.42, 0x5c3a21, bx + 1.12, 0.24, rz + rl - 0.35, 0.5, 0.05);
+      addBox(rmGroup, 0.58, 0.52, 0.48, 0x5c3a21, bx - 1.52, 0.26, rz + rl - 0.42, 0.5, 0.05, 1, false);
+      addBox(rmGroup, 0.58, 0.52, 0.48, 0x5c3a21, bx + 1.52, 0.26, rz + rl - 0.42, 0.5, 0.05, 1, false);
       // Full-Height Sliding Door Wardrobe along West Wall
-      addBox(rmGroup, 0.58, 2.2, 1.85, 0x78350f, rx + 0.34, 1.1, rz + 1.35, 0.45, 0.1);
+      addBox(rmGroup, 0.65, 2.55, 2.8, 0x78350f, rx + 0.38, 1.275, rz + 2.6, 0.45, 0.1, 1, true);
       // Wall-Mounted 1.5T Split AC Indoor Unit above Bed
-      addBox(rmGroup, 0.95, 0.28, 0.22, 0xf8fafc, bx, 2.55, rz + rl - 0.16, 0.2, 0.1);
+      addBox(rmGroup, 1.15, 0.32, 0.24, 0xf8fafc, bx, 2.95, rz + rl - 0.18, 0.2, 0.1);
     } else if (room.type === 'bedroom_2') {
-      // Guest / Kids Bed along South Wall
-      const bx = rx + rw / 2;
-      const bz = rz + rl - 1.05;
-      addBox(rmGroup, 1.35, 0.34, 1.95, 0x78350f, bx, 0.17, bz, 0.6, 0.05);
-      addBox(rmGroup, 1.26, 0.2, 1.85, 0xf8fafc, bx, 0.4, bz, 0.85, 0.0);
-      addBox(rmGroup, 1.28, 0.05, 1.0, 0x047857, bx, 0.51, bz + 0.35, 0.85, 0.0);
-      addBox(rmGroup, 1.38, 0.95, 0.1, 0x5c3a21, bx, 0.48, rz + rl - 0.12, 0.55, 0.05);
-      // Wardrobe & Study Desk
-      addBox(rmGroup, 0.55, 2.1, 1.4, 0x78350f, rx + 0.32, 1.05, rz + 1.9, 0.5, 0.1);
-      addBox(rmGroup, 0.55, 0.75, 1.1, 0x92400e, rx + rw - 0.35, 0.375, rz + 1.8, 0.5, 0.1);
+      // Spacious Queen Bed along South Wall
+      const bx = rx + rw / 2 + 0.15;
+      const bz = rz + rl - 1.3;
+      addBox(rmGroup, 1.85, 0.36, 2.25, 0x78350f, bx, 0.18, bz, 0.6, 0.05, 1, true);
+      addBox(rmGroup, 1.74, 0.22, 2.12, 0xf8fafc, bx, 0.42, bz, 0.85, 0.0);
+      addBox(rmGroup, 1.76, 0.05, 1.15, 0x047857, bx, 0.54, bz + 0.38, 0.85, 0.0);
+      addBox(rmGroup, 1.92, 1.15, 0.12, 0x5c3a21, bx, 0.56, rz + rl - 0.14, 0.55, 0.05);
+      // Wardrobe along West Wall & Study Desk along East Wall
+      addBox(rmGroup, 0.6, 2.45, 2.2, 0x78350f, rx + 0.36, 1.225, rz + 3.6, 0.5, 0.1, 1, true);
+      addBox(rmGroup, 0.65, 0.78, 1.65, 0x92400e, rx + rw - 0.38, 0.39, rz + 3.6, 0.5, 0.1, 1, true);
       // Split AC Indoor Unit
-      addBox(rmGroup, 0.88, 0.26, 0.2, 0xf8fafc, bx, 2.55, rz + rl - 0.16, 0.2, 0.1);
+      addBox(rmGroup, 1.05, 0.3, 0.22, 0xf8fafc, bx, 2.95, rz + rl - 0.18, 0.2, 0.1);
     } else if (room.type === 'bathroom') {
-      // Tempered Glass Shower Partition
-      addBox(rmGroup, rw - 0.8, 2.0, 0.03, 0x7dd3fc, rx + (rw - 0.8) / 2 + 0.1, 1.0, rz + rl - 0.9, 0.1, 0.1, 0.35);
-      // Vanity Counter + Basin + Mirror
-      addBox(rmGroup, 0.75, 0.8, 0.48, 0x334155, rx + rw - 0.45, 0.4, rz + 0.45, 0.4, 0.2);
-      addBox(rmGroup, 0.5, 0.12, 0.36, 0xffffff, rx + rw - 0.45, 0.86, rz + 0.45, 0.15, 0.1);
-      // Ceramic WC
-      addBox(rmGroup, 0.42, 0.42, 0.55, 0xffffff, rx + rw - 0.38, 0.21, rz + 1.35, 0.15, 0.1);
-      addBox(rmGroup, 0.4, 0.4, 0.18, 0xffffff, rx + rw - 0.2, 0.58, rz + 1.35, 0.15, 0.1);
+      // Vanity Counter + Basin + Ceramic WC along East Wall (wide open central bathroom floor)
+      addBox(rmGroup, 0.65, 0.84, 0.95, 0x334155, rx + rw - 0.38, 0.42, rz + 0.75, 0.4, 0.2, 1, true);
+      addBox(rmGroup, 0.48, 0.14, 0.55, 0xffffff, rx + rw - 0.38, 0.9, rz + 0.75, 0.15, 0.1);
+      addBox(rmGroup, 0.48, 0.44, 0.62, 0xffffff, rx + rw - 0.42, 0.22, rz + rl - 0.65, 0.15, 0.1, 1, true);
+      addBox(rmGroup, 0.42, 0.44, 0.22, 0xffffff, rx + rw - 0.22, 0.62, rz + rl - 0.65, 0.15, 0.1);
     } else if (room.type === 'foyer') {
-      // Incoming Digital Energy Meter (kWh) & Utility Cutout beside Main DB
-      addBox(rmGroup, 0.22, 0.28, 0.12, 0x1e293b, rx + 0.14, 1.55, rz + rl - 0.45, 0.3, 0.7);
-      // LCD Display on Energy Meter
-      addBox(rmGroup, 0.02, 0.08, 0.14, 0x38bdf8, rx + 0.26, 1.6, rz + rl - 0.45, 0.2, 0.1);
-      // Shoe Rack Console
-      addBox(rmGroup, 0.38, 0.65, 0.85, 0x5c3a21, rx + rw - 0.25, 0.325, rz + rl / 2, 0.6, 0.05);
+      // Incoming Digital Energy Meter (kWh) & Main Isolator Enclosure beside DB on West Wall
+      addBox(rmGroup, 0.26, 0.34, 0.14, 0x1e293b, rx + 0.16, 1.65, rz + rl - 0.75, 0.3, 0.7);
+      addBox(rmGroup, 0.02, 0.1, 0.16, 0x38bdf8, rx + 0.3, 1.7, rz + rl - 0.75, 0.2, 0.1);
+      // Sleek Shoe Rack Console on East Wall of Foyer (leaves 4.2m wide clear foyer corridor)
+      addBox(rmGroup, 0.42, 0.72, 1.35, 0x5c3a21, rx + rw - 0.28, 0.36, rz + rl / 2, 0.6, 0.05, 1, true);
     }
 
     furnitureGroup.add(rmGroup);
   });
 
-  // 4. Parametric Walls with Openings
+  // 4. Parametric Walls with Synchronized Shared-Wall Openings & Hinged Interactive Doors
   const currentWallMat =
     viewMode === 'cutaway'
       ? wallCutawayMaterial
@@ -370,139 +479,286 @@ export function generateParametricTwin(
       ? wallBrickMaterial
       : wallPlasterMaterial;
 
-  const wallHeight = viewMode === 'cutaway' ? 2.85 : 3.0;
-  const intThickness = project.meta.interiorWallThickness || 0.115;
+  const baseCeilH = project.meta.floorHeight || 3.8;
+  const wallHeight = viewMode === 'cutaway' ? baseCeilH - 0.15 : baseCeilH;
+  const intThickness = project.meta.interiorWallThickness || 0.12;
+
+  // Precompute world segment of every opening so shared walls between adjacent rooms cut out cleanly
+  interface WorldOpeningSegment {
+    opening: OpeningData;
+    isHorizontal: boolean;
+    lineCoord: number; // Z for horizontal walls, X for vertical walls
+    startCoord: number; // X start for horizontal, Z start for vertical
+    endCoord: number;
+  }
+
+  const worldOpenings: WorldOpeningSegment[] = [];
+  project.openings.forEach((op) => {
+    const r = project.rooms.find((rm) => rm.id === op.roomId);
+    if (!r) return;
+    if (op.wallDirection === 'north' || op.wallDirection === 'south') {
+      const lineZ = op.wallDirection === 'north' ? r.z : r.z + r.length;
+      worldOpenings.push({
+        opening: op,
+        isHorizontal: true,
+        lineCoord: lineZ,
+        startCoord: r.x + op.offset,
+        endCoord: r.x + op.offset + op.width
+      });
+    } else {
+      const lineX = op.wallDirection === 'west' ? r.x : r.x + r.width;
+      worldOpenings.push({
+        opening: op,
+        isHorizontal: false,
+        lineCoord: lineX,
+        startCoord: r.z + op.offset,
+        endCoord: r.z + op.offset + op.width
+      });
+    }
+  });
+
+  const spawnedOpeningIds = new Set<string>();
+  const builtWallSegments: { isHorizontal: boolean; lineCoord: number; start: number; end: number }[] = [];
 
   function buildWallSegment(
     startX: number,
     startZ: number,
     length: number,
     thickness: number,
-    isHorizontal: boolean,
-    openingsForWall: OpeningData[]
+    isHorizontal: boolean
   ) {
-    if (openingsForWall.length === 0) {
-      const geo = new THREE.BoxGeometry(
-        isHorizontal ? length : thickness,
-        wallHeight,
-        isHorizontal ? thickness : length
+    const lineCoord = isHorizontal ? startZ : startX;
+    const segStart = isHorizontal ? startX : startZ;
+    const segEnd = segStart + length;
+
+    // Collect all openings (from ANY room) that lie on this wall line and overlap this wall segment
+    const matchingOpenings: OpeningData[] = [];
+    worldOpenings.forEach((wo) => {
+      if (wo.isHorizontal !== isHorizontal) return;
+      if (Math.abs(wo.lineCoord - lineCoord) > 0.14) return;
+      const overlapStart = Math.max(segStart, wo.startCoord);
+      const overlapEnd = Math.min(segEnd, wo.endCoord);
+      if (overlapEnd - overlapStart > 0.15) {
+        matchingOpenings.push({
+          ...wo.opening,
+          offset: Math.max(0, wo.startCoord - segStart),
+          width: Math.min(wo.opening.width, segEnd - Math.max(segStart, wo.startCoord))
+        });
+      }
+    });
+
+    // Helper to add a solid wall chunk and register its collision box
+    const addSolidWallChunk = (chunkOffset: number, chunkLen: number) => {
+      if (chunkLen <= 0.04) return;
+      const cStart = segStart + chunkOffset;
+      const cEnd = cStart + chunkLen;
+
+      // Avoid duplicate overlapping wall chunks on shared interior walls
+      const alreadyBuilt = builtWallSegments.some(
+        (b) =>
+          b.isHorizontal === isHorizontal &&
+          Math.abs(b.lineCoord - lineCoord) < 0.08 &&
+          Math.min(b.end, cEnd) - Math.max(b.start, cStart) > chunkLen * 0.85
       );
-      disposables.push(geo);
-      const mesh = new THREE.Mesh(geo, currentWallMat);
-      mesh.position.set(
-        startX + (isHorizontal ? length / 2 : 0),
-        wallHeight / 2,
-        startZ + (isHorizontal ? 0 : length / 2)
+      if (alreadyBuilt) return;
+      builtWallSegments.push({ isHorizontal, lineCoord, start: cStart, end: cEnd });
+
+      const wX = isHorizontal ? chunkLen : thickness;
+      const dZ = isHorizontal ? thickness : chunkLen;
+      const mid = chunkOffset + chunkLen / 2;
+      const posX = startX + (isHorizontal ? mid : 0);
+      const posZ = startZ + (isHorizontal ? 0 : mid);
+
+      const chunkGeo = new THREE.BoxGeometry(wX, wallHeight, dZ);
+      disposables.push(chunkGeo);
+      const chunkMesh = new THREE.Mesh(chunkGeo, currentWallMat);
+      chunkMesh.position.set(posX, wallHeight / 2, posZ);
+      chunkMesh.castShadow = viewMode !== 'cutaway';
+      chunkMesh.receiveShadow = true;
+      architectureGroup.add(chunkMesh);
+
+      addCollider(
+        `wall_${posX.toFixed(2)}_${posZ.toFixed(2)}`,
+        posX,
+        posZ,
+        wX + 0.04,
+        dZ + 0.04,
+        'wall'
       );
-      mesh.castShadow = viewMode !== 'cutaway';
-      mesh.receiveShadow = true;
-      architectureGroup.add(mesh);
+    };
+
+    if (matchingOpenings.length === 0) {
+      addSolidWallChunk(0, length);
       return;
     }
 
-    const sorted = [...openingsForWall].sort((a, b) => a.offset - b.offset);
+    const sorted = [...matchingOpenings].sort((a, b) => a.offset - b.offset);
     let curOffset = 0;
 
     sorted.forEach((op) => {
       const chunkLen = op.offset - curOffset;
-      if (chunkLen > 0.05) {
-        const chunkGeo = new THREE.BoxGeometry(
-          isHorizontal ? chunkLen : thickness,
-          wallHeight,
-          isHorizontal ? thickness : chunkLen
-        );
-        disposables.push(chunkGeo);
-        const chunkMesh = new THREE.Mesh(chunkGeo, currentWallMat);
-        const mid = curOffset + chunkLen / 2;
-        chunkMesh.position.set(
-          startX + (isHorizontal ? mid : 0),
-          wallHeight / 2,
-          startZ + (isHorizontal ? 0 : mid)
-        );
-        chunkMesh.castShadow = viewMode !== 'cutaway';
-        chunkMesh.receiveShadow = true;
-        architectureGroup.add(chunkMesh);
+      if (chunkLen > 0.04) {
+        addSolidWallChunk(curOffset, chunkLen);
       }
 
-      const opTop = op.sillHeight + op.height;
-      if (wallHeight > opTop) {
-        const lintelH = wallHeight - opTop;
-        const lintelGeo = new THREE.BoxGeometry(
-          isHorizontal ? op.width : thickness,
-          lintelH,
-          isHorizontal ? thickness : op.width
-        );
-        disposables.push(lintelGeo);
-        const lintelMesh = new THREE.Mesh(lintelGeo, currentWallMat);
+      // Only spawn lintel, sill, and door/window 3D assembly once per unique opening ID
+      if (!spawnedOpeningIds.has(op.id)) {
+        spawnedOpeningIds.add(op.id);
+
+        const opTop = op.sillHeight + op.height;
         const mid = op.offset + op.width / 2;
-        lintelMesh.position.set(
-          startX + (isHorizontal ? mid : 0),
-          opTop + lintelH / 2,
-          startZ + (isHorizontal ? 0 : mid)
-        );
-        architectureGroup.add(lintelMesh);
-      }
+        const opCenterX = startX + (isHorizontal ? mid : 0);
+        const opCenterZ = startZ + (isHorizontal ? 0 : mid);
 
-      if (op.sillHeight > 0) {
-        const sillGeo = new THREE.BoxGeometry(
-          isHorizontal ? op.width : thickness,
-          op.sillHeight,
-          isHorizontal ? thickness : op.width
-        );
-        disposables.push(sillGeo);
-        const sillMesh = new THREE.Mesh(sillGeo, currentWallMat);
-        const mid = op.offset + op.width / 2;
-        sillMesh.position.set(
-          startX + (isHorizontal ? mid : 0),
-          op.sillHeight / 2,
-          startZ + (isHorizontal ? 0 : mid)
-        );
-        architectureGroup.add(sillMesh);
-      }
+        if (wallHeight > opTop) {
+          const lintelH = wallHeight - opTop;
+          const lintelGeo = new THREE.BoxGeometry(
+            isHorizontal ? op.width : thickness,
+            lintelH,
+            isHorizontal ? thickness : op.width
+          );
+          disposables.push(lintelGeo);
+          const lintelMesh = new THREE.Mesh(lintelGeo, currentWallMat);
+          lintelMesh.position.set(opCenterX, opTop + lintelH / 2, opCenterZ);
+          architectureGroup.add(lintelMesh);
+        }
 
-      const opCenterX = startX + (isHorizontal ? op.offset + op.width / 2 : 0);
-      const opCenterZ = startZ + (isHorizontal ? 0 : op.offset + op.width / 2);
+        if (op.sillHeight > 0) {
+          const sillGeo = new THREE.BoxGeometry(
+            isHorizontal ? op.width : thickness,
+            op.sillHeight,
+            isHorizontal ? thickness : op.width
+          );
+          disposables.push(sillGeo);
+          const sillMesh = new THREE.Mesh(sillGeo, currentWallMat);
+          sillMesh.position.set(opCenterX, op.sillHeight / 2, opCenterZ);
+          architectureGroup.add(sillMesh);
 
-      if (op.type === 'door') {
-        const doorLeafGeo = new THREE.BoxGeometry(op.width - 0.08, op.height - 0.04, 0.04);
-        disposables.push(doorLeafGeo);
-        const doorLeaf = new THREE.Mesh(doorLeafGeo, woodDoorMaterial);
-        doorLeaf.position.set(opCenterX, op.height / 2, opCenterZ);
-        doorLeaf.rotation.y = isHorizontal ? Math.PI / 5 : Math.PI / 3;
-        architectureGroup.add(doorLeaf);
-      } else {
-        const glassGeo = new THREE.BoxGeometry(
-          isHorizontal ? op.width - 0.06 : 0.02,
-          op.height - 0.06,
-          isHorizontal ? 0.02 : op.width - 0.06
-        );
-        disposables.push(glassGeo);
-        const glass = new THREE.Mesh(glassGeo, glassWindowMaterial);
-        glass.position.set(opCenterX, op.sillHeight + op.height / 2, opCenterZ);
-        architectureGroup.add(glass);
+          // Window wall sill blocks walking through windows
+          addCollider(
+            `sill_${op.id}`,
+            opCenterX,
+            opCenterZ,
+            isHorizontal ? op.width : thickness + 0.06,
+            isHorizontal ? thickness + 0.06 : op.width,
+            'wall'
+          );
+        }
+
+        if (op.type === 'door') {
+          // Timber Door Frame Architraves (Left Jamb, Right Jamb, Top Header)
+          const jambThick = 0.045;
+          const frameDepth = thickness + 0.03;
+          const leftX = startX + (isHorizontal ? op.offset + jambThick / 2 : 0);
+          const leftZ = startZ + (isHorizontal ? 0 : op.offset + jambThick / 2);
+          const rightX = startX + (isHorizontal ? op.offset + op.width - jambThick / 2 : 0);
+          const rightZ = startZ + (isHorizontal ? 0 : op.offset + op.width - jambThick / 2);
+
+          const jambGeo = new THREE.BoxGeometry(
+            isHorizontal ? jambThick : frameDepth,
+            op.height,
+            isHorizontal ? frameDepth : jambThick
+          );
+          disposables.push(jambGeo);
+          const leftJamb = new THREE.Mesh(jambGeo, doorFrameMaterial);
+          leftJamb.position.set(leftX, op.height / 2, leftZ);
+          const rightJamb = new THREE.Mesh(jambGeo, doorFrameMaterial);
+          rightJamb.position.set(rightX, op.height / 2, rightZ);
+          architectureGroup.add(leftJamb, rightJamb);
+
+          // Hinged Door Pivot Group at the start edge of the doorway
+          const hingeX = startX + (isHorizontal ? op.offset + 0.03 : 0);
+          const hingeZ = startZ + (isHorizontal ? 0 : op.offset + 0.03);
+          const doorPivot = new THREE.Group();
+          doorPivot.name = `door_${op.id}`;
+          doorPivot.position.set(hingeX, 0, hingeZ);
+
+          const leafW = op.width - 0.06;
+          const leafH = op.height - 0.03;
+          const leafGeo = new THREE.BoxGeometry(leafW, leafH, 0.042);
+          disposables.push(leafGeo);
+          const doorLeaf = new THREE.Mesh(leafGeo, woodDoorMaterial);
+          doorLeaf.position.set(leafW / 2, leafH / 2, 0);
+          doorLeaf.castShadow = true;
+          doorLeaf.receiveShadow = true;
+          doorPivot.add(doorLeaf);
+
+          // Dual-sided metallic lever handles
+          const handlePlateGeo = new THREE.BoxGeometry(0.035, 0.14, 0.058);
+          const leverGeo = new THREE.BoxGeometry(0.11, 0.02, 0.09);
+          disposables.push(handlePlateGeo, leverGeo);
+          const handlePlate = new THREE.Mesh(handlePlateGeo, doorHandleMaterial);
+          handlePlate.position.set(leafW - 0.09, 1.02, 0);
+          const lever = new THREE.Mesh(leverGeo, doorHandleMaterial);
+          lever.position.set(leafW - 0.12, 1.02, 0);
+          doorPivot.add(handlePlate, lever);
+
+          // Closed vs Open rotation angles
+          const closedAngle = isHorizontal ? 0 : -Math.PI / 2;
+          const openAngle = isHorizontal ? -Math.PI * 0.48 : -0.05;
+          doorPivot.rotation.y = closedAngle;
+
+          // Tag door for raycasting
+          const doorLabel = op.label || 'Room Door';
+          doorPivot.userData = {
+            interactiveType: 'door',
+            doorId: op.id,
+            roomId: op.roomId,
+            label: doorLabel
+          };
+          doorPivot.traverse((child) => {
+            child.userData = {
+              interactiveType: 'door',
+              doorId: op.id,
+              roomId: op.roomId,
+              label: doorLabel
+            };
+          });
+
+          architectureGroup.add(doorPivot);
+          interactiveMeshes.set(`door_${op.id}`, doorPivot);
+
+          doorPivots.set(op.id, {
+            id: op.id,
+            roomId: op.roomId,
+            label: doorLabel,
+            pivot: doorPivot,
+            closedAngle,
+            openAngle,
+            currentAngle: closedAngle,
+            worldX: opCenterX - centerX,
+            worldZ: opCenterZ - centerZ
+          });
+
+          // Register dynamic Door Collider (disabled automatically when door is open)
+          addCollider(
+            `door_col_${op.id}`,
+            opCenterX,
+            opCenterZ,
+            isHorizontal ? op.width : thickness + 0.12,
+            isHorizontal ? thickness + 0.12 : op.width,
+            'door',
+            op.id
+          );
+        } else {
+          // Aluminum-Framed Glazed Window
+          const glassGeo = new THREE.BoxGeometry(
+            isHorizontal ? op.width - 0.06 : 0.025,
+            op.height - 0.06,
+            isHorizontal ? 0.025 : op.width - 0.06
+          );
+          disposables.push(glassGeo);
+          const glass = new THREE.Mesh(glassGeo, glassWindowMaterial);
+          glass.position.set(opCenterX, op.sillHeight + op.height / 2, opCenterZ);
+          architectureGroup.add(glass);
+        }
       }
 
       curOffset = op.offset + op.width;
     });
 
-    if (curOffset < length - 0.05) {
-      const remainingLen = length - curOffset;
-      const endGeo = new THREE.BoxGeometry(
-        isHorizontal ? remainingLen : thickness,
-        wallHeight,
-        isHorizontal ? thickness : remainingLen
-      );
-      disposables.push(endGeo);
-      const endMesh = new THREE.Mesh(endGeo, currentWallMat);
-      const mid = curOffset + remainingLen / 2;
-      endMesh.position.set(
-        startX + (isHorizontal ? mid : 0),
-        wallHeight / 2,
-        startZ + (isHorizontal ? 0 : mid)
-      );
-      endMesh.castShadow = viewMode !== 'cutaway';
-      endMesh.receiveShadow = true;
-      architectureGroup.add(endMesh);
+    if (curOffset < length - 0.04) {
+      addSolidWallChunk(curOffset, length - curOffset);
     }
   }
 
@@ -512,16 +768,10 @@ export function generateParametricTwin(
     const rw = room.width;
     const rl = room.length;
 
-    const roomOpenings = project.openings.filter((o) => o.roomId === room.id);
-    const northOps = roomOpenings.filter((o) => o.wallDirection === 'north');
-    const southOps = roomOpenings.filter((o) => o.wallDirection === 'south');
-    const westOps = roomOpenings.filter((o) => o.wallDirection === 'west');
-    const eastOps = roomOpenings.filter((o) => o.wallDirection === 'east');
-
-    buildWallSegment(rx, rz, rw, intThickness, true, northOps);
-    buildWallSegment(rx, rz + rl, rw, intThickness, true, southOps);
-    buildWallSegment(rx, rz, rl, intThickness, false, westOps);
-    buildWallSegment(rx + rw, rz, rl, intThickness, false, eastOps);
+    buildWallSegment(rx, rz, rw, intThickness, true);
+    buildWallSegment(rx, rz + rl, rw, intThickness, true);
+    buildWallSegment(rx, rz, rl, intThickness, false);
+    buildWallSegment(rx + rw, rz, rl, intThickness, false);
   });
 
   // 5. Build High-Detail Electrical Equipment & Interactive Exploded DB
@@ -529,12 +779,21 @@ export function generateParametricTwin(
     const ptGroup = new THREE.Group();
     ptGroup.position.set(point.x, point.y, point.z);
     ptGroup.name = `point_${point.id}`;
+    ptGroup.userData = {
+      interactiveType: point.type === 'db' ? 'db' : 'electrical',
+      pointId: point.id,
+      roomId: point.roomId,
+      circuitId: point.circuitId,
+      label: point.name
+    };
 
     if (point.type === 'db') {
       // ====================================================================
       // INTERACTIVE 4-LAYER EXPLODED 8-WAY TPN DISTRIBUTION BOARD
       // ====================================================================
-      const dbW = 0.52, dbH = 0.62, dbD = 0.16;
+      const dbW = 0.52,
+        dbH = 0.62,
+        dbD = 0.16;
 
       // Layer 0: Sheet Steel Back Box & Dual 35mm DIN Rails
       const layer0 = new THREE.Group();
@@ -562,19 +821,18 @@ export function generateParametricTwin(
       ptGroup.add(layer0);
       dbExplodeLayers.push({ group: layer0, targetOffsetZ: 0, targetOffsetX: 0 });
 
-      // Layer 1: Clickable DIN-Rail Protection Devices (63A Isolator + 40A 30mA RCCB + 7 Circuit MCBs)
+      // Layer 1: Clickable DIN-Rail Protection Devices (63A Isolator + 40A 30mA RCCB + Circuit MCBs)
       const layer1 = new THREE.Group();
       layer1.name = 'DB_Layer1_Breakers';
 
       const mcbBodyMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.35 });
-      const isolatorToggleMat = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.25 });
-      const rccbToggleMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.25 });
-      disposables.push(mcbBodyMat, isolatorToggleMat, rccbToggleMat);
+      disposables.push(mcbBodyMat);
 
-      // Build clickable MCBs mapped directly to project.circuits
       const circuitsList = project.circuits;
-      const totalModules = circuitsList.length + 2; // Isolator + RCCB + Circuits
-      const mcbW = 0.036, mcbH = 0.088, mcbD = 0.065;
+      const totalModules = circuitsList.length + 2;
+      const mcbW = 0.036,
+        mcbH = 0.088,
+        mcbD = 0.065;
       const mcbGeo = new THREE.BoxGeometry(mcbW, mcbH, mcbD);
       disposables.push(mcbGeo);
 
@@ -586,7 +844,6 @@ export function generateParametricTwin(
         const bodyMesh = new THREE.Mesh(mcbGeo, mcbBodyMat);
         mcbGroup.add(bodyMesh);
 
-        // Phase color stripe at top of breaker
         const circuit = i >= 2 ? circuitsList[i - 2] : null;
         const stripeColor = i === 0 ? '#EF4444' : i === 1 ? '#0284C7' : circuit?.phaseColor || '#38BDF8';
         const stripeGeo = new THREE.BoxGeometry(mcbW - 0.004, 0.012, 0.004);
@@ -596,7 +853,6 @@ export function generateParametricTwin(
         stripe.position.set(0, 0.03, mcbD / 2 + 0.002);
         mcbGroup.add(stripe);
 
-        // Toggle lever
         const toggleGeo = new THREE.BoxGeometry(0.018, 0.026, 0.024);
         const toggleMat = new THREE.MeshStandardMaterial({
           color: i === 0 ? 0xef4444 : i === 1 ? 0x0284c7 : 0x10b981,
@@ -625,11 +881,11 @@ export function generateParametricTwin(
       const layer2 = new THREE.Group();
       layer2.name = 'DB_Layer2_Busbars';
       const busbarColors = [
-        { y: 0.21, color: 0xef4444 }, // R Phase
-        { y: 0.17, color: 0xf59e0b }, // Y Phase
-        { y: 0.13, color: 0x3b82f6 }, // B Phase
-        { y: -0.18, color: 0x1e293b }, // Neutral Bar
-        { y: -0.23, color: 0x10b981 }  // Protective Earth Bar
+        { y: 0.21, color: 0xef4444 },
+        { y: 0.17, color: 0xf59e0b },
+        { y: 0.13, color: 0x3b82f6 },
+        { y: -0.18, color: 0x1e293b },
+        { y: -0.23, color: 0x10b981 }
       ];
       const barGeo = new THREE.BoxGeometry(0.42, 0.016, 0.018);
       disposables.push(barGeo);
@@ -686,7 +942,6 @@ export function generateParametricTwin(
     }
 
     if (point.type === 'earth_pit') {
-      // IS:3043 CHEMICAL EARTH ELECTRODE PIT
       const pitGeo = new THREE.CylinderGeometry(0.24, 0.24, 0.05, 24);
       const pitMat = new THREE.MeshStandardMaterial({
         map: earthPitTex,
@@ -705,7 +960,6 @@ export function generateParametricTwin(
       earthRod.position.set(0, 0.18, 0);
       ptGroup.add(earthRod);
 
-      // Green Protective Earth Conductor Strip to Main DB
       const dbPoint = project.electricalPoints.find((p) => p.type === 'db');
       if (dbPoint) {
         const earthLineCurve = new THREE.CatmullRomCurve3([
@@ -724,6 +978,7 @@ export function generateParametricTwin(
         disposables.push(earthTubeGeo, earthTapeMat);
         const earthTube = new THREE.Mesh(earthTubeGeo, earthTapeMat);
         wiringGroup.add(earthTube);
+        earthConductorMeshes.push(earthTube);
       }
 
       interactiveMeshes.set(point.id, ptGroup);
@@ -732,7 +987,8 @@ export function generateParametricTwin(
     }
 
     if (point.type === 'switch_board_6a') {
-      const plateGeo = new THREE.BoxGeometry(0.22, 0.12, 0.025);
+      const isEastWest = point.wallPlacement === 'east' || point.wallPlacement === 'west';
+      const plateGeo = new THREE.BoxGeometry(isEastWest ? 0.03 : 0.24, 0.14, isEastWest ? 0.24 : 0.03);
       const plateMat = new THREE.MeshStandardMaterial({
         map: switchPlateTex,
         roughness: 0.2,
@@ -742,17 +998,25 @@ export function generateParametricTwin(
       const plateMesh = new THREE.Mesh(plateGeo, plateMat);
       ptGroup.add(plateMesh);
 
-      const neonGeo = new THREE.SphereGeometry(0.008, 8, 8);
+      const neonGeo = new THREE.SphereGeometry(0.011, 8, 8);
       const neonMat = new THREE.MeshBasicMaterial({ color: point.isOn ? 0x10b981 : 0xef4444 });
       disposables.push(neonGeo, neonMat);
       const neon = new THREE.Mesh(neonGeo, neonMat);
-      neon.position.set(0.08, 0.03, 0.015);
+      neon.position.set(isEastWest ? 0.018 : 0.08, 0.04, isEastWest ? 0.08 : 0.018);
       ptGroup.add(neon);
+
+      indicatorRegistry.set(point.id, {
+        mat: neonMat,
+        onHex: 0x10b981,
+        offHex: 0xef4444,
+        circuitId: point.circuitId
+      });
 
       interactiveMeshes.set(point.id, ptGroup);
       lightingGroup.add(ptGroup);
     } else if (point.type === 'power_socket_16a' || point.type === 'combined_socket_6_16a') {
-      const sockGeo = new THREE.BoxGeometry(0.14, 0.14, 0.025);
+      const isEastWest = point.wallPlacement === 'east' || point.wallPlacement === 'west';
+      const sockGeo = new THREE.BoxGeometry(isEastWest ? 0.03 : 0.15, 0.15, isEastWest ? 0.15 : 0.03);
       const sockMat = new THREE.MeshStandardMaterial({
         map: socketTex,
         roughness: 0.25,
@@ -765,7 +1029,6 @@ export function generateParametricTwin(
       interactiveMeshes.set(point.id, ptGroup);
       distributionGroup.add(ptGroup);
     } else if (point.type === 'geyser_point') {
-      // 25L Storage Water Heater Tank + 20A DP Indicator Switch
       const tankGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.48, 24);
       const tankMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.25, metalness: 0.2 });
       disposables.push(tankGeo, tankMat);
@@ -773,13 +1036,19 @@ export function generateParametricTwin(
       tankMesh.position.set(-0.22, 0.15, 0);
       ptGroup.add(tankMesh);
 
-      // Heating thermostat LED
-      const ledGeo = new THREE.SphereGeometry(0.014, 10, 10);
+      const ledGeo = new THREE.SphereGeometry(0.015, 10, 10);
       const ledMat = new THREE.MeshBasicMaterial({ color: point.isOn ? 0xef4444 : 0x475569 });
       disposables.push(ledGeo, ledMat);
       const led = new THREE.Mesh(ledGeo, ledMat);
       led.position.set(-0.41, 0.08, 0);
       ptGroup.add(led);
+
+      indicatorRegistry.set(point.id, {
+        mat: ledMat,
+        onHex: 0xef4444,
+        offHex: 0x475569,
+        circuitId: point.circuitId
+      });
 
       interactiveMeshes.set(point.id, ptGroup);
       distributionGroup.add(ptGroup);
@@ -793,38 +1062,42 @@ export function generateParametricTwin(
 
       const diffuserGeo = new THREE.CylinderGeometry(0.09, 0.09, 0.008, 24);
       const diffuserMat = new THREE.MeshBasicMaterial({
-        color: point.isOn ? 0xfef08a : 0x64748b
+        color: point.isOn ? 0xfef08a : 0x475569
       });
       disposables.push(diffuserGeo, diffuserMat);
       const diffuser = new THREE.Mesh(diffuserGeo, diffuserMat);
       diffuser.position.y = -0.012;
       ptGroup.add(diffuser);
 
-      if (point.isOn) {
-        const pointLight = new THREE.PointLight(0xffedd5, 1.4, 5.5, 1.6);
-        pointLight.position.set(0, -0.18, 0);
-        ptGroup.add(pointLight);
-      }
+      const pointLight = new THREE.PointLight(0xffedd5, point.isOn ? 1.85 : 0.0, 12.0, 1.35);
+      pointLight.position.set(0, -0.18, 0);
+      ptGroup.add(pointLight);
+
+      pointLightRegistry.set(point.id, {
+        light: pointLight,
+        diffuserMat,
+        circuitId: point.circuitId
+      });
 
       interactiveMeshes.set(point.id, ptGroup);
       lightingGroup.add(ptGroup);
     } else if (point.type === 'ceiling_fan') {
       const fanBaseGroup = new THREE.Group();
-      const canopyGeo = new THREE.ConeGeometry(0.08, 0.06, 16);
+      const canopyGeo = new THREE.ConeGeometry(0.09, 0.07, 16);
       const canopyMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.8, roughness: 0.3 });
       disposables.push(canopyGeo, canopyMat);
       const canopy = new THREE.Mesh(canopyGeo, canopyMat);
-      canopy.position.y = 0.22;
+      canopy.position.y = 0.28;
       fanBaseGroup.add(canopy);
 
-      const rodGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.25, 12);
+      const rodGeo = new THREE.CylinderGeometry(0.016, 0.016, 0.32, 12);
       disposables.push(rodGeo);
       const rod = new THREE.Mesh(rodGeo, canopyMat);
-      rod.position.y = 0.1;
+      rod.position.y = 0.14;
       fanBaseGroup.add(rod);
 
       const bladeRotator = new THREE.Group();
-      const motorHubGeo = new THREE.CylinderGeometry(0.12, 0.1, 0.06, 24);
+      const motorHubGeo = new THREE.CylinderGeometry(0.14, 0.12, 0.065, 24);
       disposables.push(motorHubGeo);
       const motorHub = new THREE.Mesh(motorHubGeo, canopyMat);
       bladeRotator.add(motorHub);
@@ -834,7 +1107,7 @@ export function generateParametricTwin(
         const bladeArm = new THREE.Group();
         bladeArm.rotation.y = angle;
 
-        const bladeGeo = new THREE.BoxGeometry(0.52, 0.008, 0.12);
+        const bladeGeo = new THREE.BoxGeometry(0.72, 0.009, 0.15);
         const bladeMat = new THREE.MeshStandardMaterial({
           color: 0x0f172a,
           metalness: 0.5,
@@ -842,7 +1115,7 @@ export function generateParametricTwin(
         });
         disposables.push(bladeGeo, bladeMat);
         const blade = new THREE.Mesh(bladeGeo, bladeMat);
-        blade.position.set(0.31, 0, 0);
+        blade.position.set(0.42, 0, 0);
         blade.rotation.x = 0.08;
         bladeArm.add(blade);
         bladeRotator.add(bladeArm);
@@ -851,12 +1124,12 @@ export function generateParametricTwin(
       fanBaseGroup.add(bladeRotator);
       ptGroup.add(fanBaseGroup);
 
-      if (point.isOn) {
-        fanRotators.push({
-          group: bladeRotator,
-          speedMultiplier: point.stateValue ?? 2
-        });
-      }
+      fanRotators.push({
+        group: bladeRotator,
+        speedMultiplier: point.stateValue ?? 2,
+        pointId: point.id,
+        circuitId: point.circuitId
+      });
 
       interactiveMeshes.set(point.id, ptGroup);
       lightingGroup.add(ptGroup);
@@ -879,6 +1152,13 @@ export function generateParametricTwin(
       knob.position.z = 0.05;
       ptGroup.add(knob);
 
+      indicatorRegistry.set(point.id, {
+        mat: knobMat,
+        onHex: 0x10b981,
+        offHex: 0xdc2626,
+        circuitId: point.circuitId
+      });
+
       interactiveMeshes.set(point.id, ptGroup);
       distributionGroup.add(ptGroup);
     }
@@ -886,14 +1166,22 @@ export function generateParametricTwin(
 
   // 6. Concealed PVC Conduits (`conduitsGroup`) & Color-Coded Internal Wiring (`wiringGroup`)
   const dbPoint = project.electricalPoints.find((p) => p.type === 'db');
-  const ceilingY = 2.85;
+  const ceilingY = baseCeilH - 0.15;
 
   if (dbPoint) {
     project.circuits.forEach((circuit, cIdx) => {
       const isSelectedCircuit = circuit.id === activeCircuitId;
       const circuitColor = new THREE.Color(circuit.phaseColor || '#38bdf8');
 
-      // Outer PVC Conduit Material (semi-translucent so internal wires are visible)
+      const category: 'lighting' | 'power' | 'heavy' | 'earthing' =
+        circuit.id.includes('lighting') || circuit.id.includes('fan')
+          ? 'lighting'
+          : circuit.id.includes('socket') || circuit.id.includes('kitchen')
+          ? 'power'
+          : circuit.id.includes('earth')
+          ? 'earthing'
+          : 'heavy';
+
       const conduitMat = new THREE.MeshStandardMaterial({
         color: isSelectedCircuit ? circuitColor : new THREE.Color(0x94a3b8),
         emissive: isSelectedCircuit ? circuitColor : new THREE.Color(0x000000),
@@ -908,7 +1196,6 @@ export function generateParametricTwin(
         activeConduitMaterials.push(conduitMat);
       }
 
-      // Inner FRLS Copper Phase + Earth Conductor Material
       const phaseWireMat = new THREE.MeshStandardMaterial({
         color: circuitColor,
         emissive: circuitColor,
@@ -921,8 +1208,14 @@ export function generateParametricTwin(
         roughness: 0.3,
         metalness: 0.3
       });
-      disposables.push(phaseWireMat, earthWireMat);
+      const jboxMat = new THREE.MeshStandardMaterial({
+        color: isSelectedCircuit ? circuitColor : new THREE.Color(0x475569),
+        metalness: 0.3,
+        roughness: 0.5
+      });
+      disposables.push(phaseWireMat, earthWireMat, jboxMat);
 
+      const circuitMeshes: THREE.Object3D[] = [];
       const heightOffset = (cIdx % 3) * 0.025;
 
       circuit.connectedPointIds.forEach((ptId) => {
@@ -936,44 +1229,48 @@ export function generateParametricTwin(
           new THREE.Vector3(targetPt.x, ceilingY + heightOffset, targetPt.z)
         ];
 
-        if (targetPt.y < 2.5) {
+        if (targetPt.y < baseCeilH - 0.5) {
           points.push(new THREE.Vector3(targetPt.x, targetPt.y + 0.06, targetPt.z));
         }
 
         const curve = new THREE.CatmullRomCurve3(points, false, 'catmullrom', 0.08);
         const outerRadius = circuit.conduitSize === '25mm' ? 0.02 : 0.015;
 
-        // 1) PVC Conduit Pipe
         const conduitGeo = new THREE.TubeGeometry(curve, 32, outerRadius, 8, false);
         disposables.push(conduitGeo);
         const conduitMesh = new THREE.Mesh(conduitGeo, conduitMat);
         conduitsGroup.add(conduitMesh);
+        circuitMeshes.push(conduitMesh);
 
-        // Circular PVC Junction Box at ceiling drop
         const jboxGeo = new THREE.CylinderGeometry(0.042, 0.042, 0.03, 12);
-        const jboxMat = new THREE.MeshStandardMaterial({
-          color: isSelectedCircuit ? circuitColor : new THREE.Color(0x475569),
-          metalness: 0.3,
-          roughness: 0.5
-        });
-        disposables.push(jboxGeo, jboxMat);
+        disposables.push(jboxGeo);
         const jbox = new THREE.Mesh(jboxGeo, jboxMat);
         jbox.position.set(targetPt.x, ceilingY + heightOffset, targetPt.z);
         conduitsGroup.add(jbox);
+        circuitMeshes.push(jbox);
 
-        // 2) Internal Color-Coded FRLS Phase & Earth Copper Conductors
         const phaseWireGeo = new THREE.TubeGeometry(curve, 32, 0.0065, 6, false);
         disposables.push(phaseWireGeo);
         const phaseWireMesh = new THREE.Mesh(phaseWireGeo, phaseWireMat);
         wiringGroup.add(phaseWireMesh);
+        circuitMeshes.push(phaseWireMesh);
 
-        // Slightly offset Protective Earth green wire alongside phase conductor
         const earthPoints = points.map((p) => new THREE.Vector3(p.x + 0.012, p.y - 0.008, p.z + 0.012));
         const earthCurve = new THREE.CatmullRomCurve3(earthPoints, false, 'catmullrom', 0.08);
         const earthWireGeo = new THREE.TubeGeometry(earthCurve, 28, 0.0045, 6, false);
         disposables.push(earthWireGeo);
         const earthWireMesh = new THREE.Mesh(earthWireGeo, earthWireMat);
         wiringGroup.add(earthWireMesh);
+        earthConductorMeshes.push(earthWireMesh);
+      });
+
+      circuitMeshGroups.set(circuit.id, {
+        category,
+        conduitMat,
+        phaseMat: phaseWireMat,
+        jboxMat,
+        baseColor: circuitColor,
+        meshes: circuitMeshes
       });
     });
   }
@@ -985,12 +1282,16 @@ export function generateParametricTwin(
   const update = (
     delta: number,
     fanSpeedLevel: number,
-    _currentActiveCircuitId: string,
+    currentActiveCircuitId: string,
     options?: {
       layers?: ResidentialLayerVisibility;
+      circuitFilter?: CircuitSubLayerFilter;
       wallOpacity?: number;
       dbExploded?: boolean;
+      dbDoorOpen?: boolean;
       breakerStates?: Record<string, boolean>;
+      doorStates?: Record<string, boolean>;
+      electricalPoints?: ElectricalPoint[];
     }
   ) => {
     elapsed += delta;
@@ -1005,14 +1306,42 @@ export function generateParametricTwin(
       distributionGroup.visible = options.layers.distribution;
     }
 
-    // 2. Update Wall Opacity dynamically
+    // 1B. Update Granular Circuit Sub-Layer Filters & Active Circuit Highlight
+    const pulse = 0.6 + Math.sin(elapsed * 4.5) * 0.3;
+    circuitMeshGroups.forEach((entry, circId) => {
+      const isSelected = circId === currentActiveCircuitId;
+      entry.conduitMat.color.copy(isSelected ? entry.baseColor : new THREE.Color(0x94a3b8));
+      entry.conduitMat.emissive.copy(isSelected ? entry.baseColor : new THREE.Color(0x000000));
+      entry.conduitMat.emissiveIntensity = isSelected ? pulse : 0.0;
+      entry.conduitMat.opacity = isSelected ? 0.68 : 0.36;
+      entry.phaseMat.emissiveIntensity = isSelected ? 0.85 : 0.35;
+      entry.jboxMat.color.copy(isSelected ? entry.baseColor : new THREE.Color(0x475569));
+
+      if (options?.circuitFilter) {
+        const vis = options.circuitFilter[entry.category];
+        entry.meshes.forEach((m) => {
+          m.visible = vis;
+        });
+      }
+    });
+
+    if (options?.circuitFilter) {
+      earthConductorMeshes.forEach((m) => {
+        m.visible = options.circuitFilter!.earthing;
+      });
+    }
+
+    // 2. Update Wall & Ceiling Opacity dynamically
     if (options?.wallOpacity !== undefined) {
       currentWallMat.opacity = options.wallOpacity;
       currentWallMat.transparent = options.wallOpacity < 0.99;
       currentWallMat.depthWrite = options.wallOpacity > 0.75;
+      concreteCeilingMaterial.opacity = options.wallOpacity < 0.85 ? options.wallOpacity * 0.85 : 1.0;
+      concreteCeilingMaterial.transparent = options.wallOpacity < 0.85;
+      concreteCeilingMaterial.depthWrite = options.wallOpacity >= 0.85;
     }
 
-    // 3. Animate Exploded Distribution Board Layers
+    // 3. Animate Exploded Distribution Board Layers & DB Door
     const targetExplode = options?.dbExploded ? 1.0 : 0.0;
     currentExplodeFactor += (targetExplode - currentExplodeFactor) * (1 - Math.exp(-8 * delta));
     dbExplodeLayers.forEach((item) => {
@@ -1020,7 +1349,22 @@ export function generateParametricTwin(
       item.group.position.x = item.targetOffsetX * currentExplodeFactor;
     });
 
-    // 4. Update Breaker Lever Positions & Color for ON vs OFF/TRIPPED
+    if (dbDoorPivot && options?.dbDoorOpen !== undefined) {
+      const targetRot = options.dbDoorOpen ? -Math.PI * 0.58 : 0;
+      dbDoorPivot.rotation.y += (targetRot - dbDoorPivot.rotation.y) * (1 - Math.exp(-10 * delta));
+    }
+
+    // 4. Smoothly Animate Interactive Room Doors (0° Closed <-> 90° Open)
+    if (options?.doorStates) {
+      doorPivots.forEach((doorEntry, doorId) => {
+        const isOpen = !!options.doorStates?.[doorId];
+        const targetAngle = isOpen ? doorEntry.openAngle : doorEntry.closedAngle;
+        doorEntry.currentAngle += (targetAngle - doorEntry.currentAngle) * (1 - Math.exp(-10 * delta));
+        doorEntry.pivot.rotation.y = doorEntry.currentAngle;
+      });
+    }
+
+    // 5. Update Breaker Lever Positions & Color for ON vs OFF/TRIPPED
     if (options?.breakerStates) {
       breakerToggleMeshes.forEach((mesh, circId) => {
         const isClosed = options.breakerStates?.[circId] !== false;
@@ -1029,19 +1373,37 @@ export function generateParametricTwin(
       });
     }
 
-    // 5. Rotate ceiling fans
-    const speedRadPerSec = fanSpeedLevel === 0 ? 0 : fanSpeedLevel === 1 ? 6.0 : fanSpeedLevel === 2 ? 14.0 : 26.0;
-    fanRotators.forEach((rot) => {
-      rot.group.rotation.y += speedRadPerSec * delta;
+    // 6. Sync Live Electrical Point States (Downlights, Switch Indicators, Geyser, AC, Fans)
+    const ptMap = new Map<string, ElectricalPoint>();
+    if (options?.electricalPoints) {
+      options.electricalPoints.forEach((p) => ptMap.set(p.id, p));
+    }
+
+    pointLightRegistry.forEach((entry, ptId) => {
+      const pt = ptMap.get(ptId);
+      const isBreakerOn = options?.breakerStates?.[entry.circuitId] !== false;
+      const isActive = (pt ? pt.isOn : true) && isBreakerOn;
+      entry.light.intensity = isActive ? 1.85 : 0.0;
+      entry.diffuserMat.color.setHex(isActive ? 0xfef08a : 0x475569);
     });
 
-    // 6. Pulse active circuit conduits
-    if (activeConduitMaterials.length > 0) {
-      const pulse = 0.65 + Math.sin(elapsed * 4.5) * 0.3;
-      activeConduitMaterials.forEach((mat) => {
-        mat.emissiveIntensity = pulse;
-      });
-    }
+    indicatorRegistry.forEach((entry, ptId) => {
+      const pt = ptMap.get(ptId);
+      const isBreakerOn = options?.breakerStates?.[entry.circuitId] !== false;
+      const isActive = (pt ? pt.isOn : true) && isBreakerOn;
+      entry.mat.color.setHex(isActive ? entry.onHex : entry.offHex);
+    });
+
+    // 7. Rotate ceiling fans only if powered ON and circuit breaker is ON
+    const speedRadPerSec = fanSpeedLevel === 0 ? 0 : fanSpeedLevel === 1 ? 6.0 : fanSpeedLevel === 2 ? 14.0 : 26.0;
+    fanRotators.forEach((rot) => {
+      const pt = ptMap.get(rot.pointId);
+      const isBreakerOn = options?.breakerStates?.[rot.circuitId] !== false;
+      const isActive = (pt ? pt.isOn : true) && isBreakerOn;
+      if (isActive) {
+        rot.group.rotation.y += speedRadPerSec * delta;
+      }
+    });
   };
 
   const dispose = () => {
@@ -1056,11 +1418,13 @@ export function generateParametricTwin(
     rootGroup,
     houseCenter: new THREE.Vector3(centerX, 0, centerZ),
     buildingBounds: {
-      minX: minX - centerX + 0.35,
-      maxX: maxX - centerX - 0.35,
-      minZ: minZ - centerZ + 0.35,
-      maxZ: maxZ - centerZ - 0.35
+      minX: minX - centerX - 3.2,
+      maxX: maxX - centerX + 2.5,
+      minZ: minZ - centerZ - 3.6,
+      maxZ: maxZ - centerZ + 2.5
     },
+    colliders,
+    doorPivots,
     fanRotators,
     dbDoorPivot,
     interactiveMeshes,

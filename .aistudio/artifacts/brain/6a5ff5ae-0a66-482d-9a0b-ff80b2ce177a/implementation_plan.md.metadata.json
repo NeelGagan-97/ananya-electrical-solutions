@@ -1,6 +1,6 @@
 {
-  "summary":  "Implementation plan for upgrading the Residential 2BHK Interior Twin — 3D CAD Model with First-Person POV Walkthrough (WASD + Room Waypoints), Interactive 3D Exploded Distribution Board (TPN DB with clickable MCBs, RCCBs, and Copper Busbars), Multi-Layer Visibility Toggles, and real GLB/glTF 3D & DXF 2D CAD exports.",
-  "updatedAt":  "2026-10-26T08:52:06.266448210Z",
+  "summary":  "Implementation plan for the Interactive 3D Residential 2BHK Interior Twin FPP Walkthrough, covering true first-person game controls with Pointer Lock, AABB wall/furniture/door collision, interactive doors and electrical switchboards via [E] key or crosshair click, live 2D radar mini-map, room entry banner, on-screen mobile joysticks, real-time active load HUD meter, and IS 732 electrical inspection X-ray layers.",
+  "updatedAt":  "2026-10-26T10:15:35.901793480Z",
   "requestFeedback":  true,
   "userFacing":  true
 }
