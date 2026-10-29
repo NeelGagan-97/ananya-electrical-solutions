@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { NavigationTab } from '../types';
+import { BUSINESS_NAP, trackConversionEvent } from '../utils/seo';
 
 interface NavbarProps {
   currentTab: NavigationTab;
@@ -400,12 +401,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Right CTA & Direct Call & Mobile Toggle */}
         <div className="flex items-center gap-2 shrink-0">
           <a
-            href="tel:+918660121438"
-            className="hidden lg:inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-amber-50/80 hover:bg-amber-100/90 border border-amber-200/80 text-[#0B192C] hover:text-[#0284C7] text-[12px] font-bold uppercase tracking-wider transition-all group cursor-pointer shadow-xs leading-none shrink-0"
-            title="Call 24/7 Grid Support"
+            href={`tel:${BUSINESS_NAP.primaryPhoneTel}`}
+            onClick={() => trackConversionEvent('phone_click', BUSINESS_NAP.primaryPhone, 'Navbar Header Call')}
+            className="hidden lg:inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-amber-50/80 hover:bg-amber-100/90 border border-amber-200/80 text-[#0B192C] hover:text-[#0284C7] text-[12px] font-bold tracking-wide transition-all group cursor-pointer shadow-xs leading-none shrink-0"
+            title={`Call ${BUSINESS_NAP.primaryPhone} or 24/7 Hotline ${BUSINESS_NAP.secondaryPhone}`}
           >
             <span className="material-symbols-outlined text-[15px] text-[#D97706] group-hover:scale-110 transition-transform leading-none shrink-0">phone_in_talk</span>
-            <span className="leading-none whitespace-nowrap">24/7 Grid Support</span>
+            <span className="leading-none whitespace-nowrap">{BUSINESS_NAP.primaryPhone}</span>
           </a>
 
           <button
@@ -676,11 +678,12 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <div className="pt-3 border-t border-[#E2E8F0] flex flex-col gap-3">
             <a
-              href="tel:+918660121438"
-              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-amber-50 border border-amber-200 text-[#0B192C] font-bold text-[13px] uppercase tracking-wider hover:bg-amber-100 transition-colors"
+              href={`tel:${BUSINESS_NAP.primaryPhoneTel}`}
+              onClick={() => trackConversionEvent('phone_click', BUSINESS_NAP.primaryPhone, 'Navbar Mobile Call')}
+              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-amber-50 border border-amber-200 text-[#0B192C] font-bold text-[13px] tracking-wide hover:bg-amber-100 transition-colors"
             >
               <span className="material-symbols-outlined text-[18px] text-[#D97706]">phone_in_talk</span>
-              <span>24/7 Grid Support</span>
+              <span>Call {BUSINESS_NAP.primaryPhone}</span>
             </a>
             <button
               onClick={() => {

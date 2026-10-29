@@ -62,12 +62,12 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
   ];
 
   const districts = [
-    { region: 'Bengaluru Urban & Rural', hubs: 'Peenya, Bommasandra, Electronic City, Whitefield, Hoskote, Dabaspet' },
+    { region: 'Bengaluru North & Sahakarnagar HQ', hubs: 'Sahakarnagar, Hebbal, Yelahanka, Jakkur, Devanahalli Aerospace Park, Doddaballapur' },
+    { region: 'Bengaluru Industrial & IT Corridors', hubs: 'Peenya Phase 1–4, Yeshwanthpur, Whitefield, Electronic City, Bommasandra, Hosakote, Bidadi' },
     { region: 'Mysuru & Mandya Corridor', hubs: 'Hebbal Industrial Area, Nanjangud, Kadakola, Thandya' },
     { region: 'Hubballi-Dharwad & Belagavi', hubs: 'Belur Industrial Area, Tarihal, Rayapur, Kakati' },
     { region: 'Coastal Mangaluru & Udupi', hubs: 'Baikampady, Karnad, Manipal Industrial Estate' },
-    { region: 'Tumakuru & Hassan', hubs: 'Vasanthanarasapura Industrial Park, KIADB Phase 1-3' },
-    { region: 'Ballari & Central Karnataka', hubs: 'Toranagallu, Mundargi, Davanagere, Shivamogga' }
+    { region: 'Tumakuru, Ballari & Central Karnataka', hubs: 'Vasanthanarasapura KIADB Phase 1–3, Toranagallu, Davanagere, Shivamogga' }
   ];
 
   return (
@@ -78,13 +78,13 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
           <div className="lg:col-span-8 flex flex-col gap-4">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FEF3C7]/15 text-[#F59E0B] text-[12px] font-semibold w-fit border border-[#F59E0B]/30 leading-none">
               <span className="material-symbols-outlined text-[16px] leading-none">verified_user</span>
-              <span>About Ananya Electrical Solutions</span>
+              <span>Headquartered at Sahakarnagar, Bengaluru • Serving All 31 Districts</span>
             </div>
             <h1 className="font-display-xl text-white font-extrabold tracking-tight">
-              Precision Infrastructure Built on Trust and Rigor
+              About Ananya Electrical Solutions — Super Grade Electrical Contractor in Bengaluru
             </h1>
             <p className="font-body-lg text-slate-300 max-w-2xl leading-relaxed">
-              Ananya Electrical Solutions is a Super Grade Electrical Contractor with over 5 years of verified field excellence, dedicated to maximizing customer satisfaction through disciplined engineering and clean energy leadership.
+              Headquartered at 59, Opp Bank of India, G-Block, Sahakarnagar Main Road, Bengaluru 560092, Ananya Electrical Solutions is a Government of Karnataka Licensed Super Grade Electrical Contractor delivering turnkey HT/LT substations, industrial wiring, CEIG approvals, and solar EPC across Karnataka.
             </p>
           </div>
 

@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { EngineeringInquiry } from '../types';
+import {
+  BUSINESS_NAP,
+  trackConversionEvent,
+  buildWhatsAppInquiryUrl,
+  buildMailtoInquiryUrl,
+} from '../utils/seo';
 
 interface ConsultationModalProps {
   isOpen: boolean;
@@ -23,6 +29,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   const [complianceCheck, setComplianceCheck] = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [inquiryId, setInquiryId] = useState('');
+  const [lastInquiry, setLastInquiry] = useState<EngineeringInquiry | null>(null);
 
   useEffect(() => {
     if (initialService) {
@@ -69,10 +76,12 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
       location,
       loadDetails,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      complianceConfirmed: complianceCheck
+      complianceConfirmed: complianceCheck,
     };
 
     onSaveInquiry(inquiry);
+    setLastInquiry(inquiry);
+    trackConversionEvent('quote_form_submit', `${category} (${location || 'Bengaluru'})`, 'ConsultationModal');
     setSubmitted(true);
   };
 
@@ -83,6 +92,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     setLocation('');
     setLoadDetails('');
     setSubmitted(false);
+    setLastInquiry(null);
     onClose();
   };
 
@@ -100,10 +110,10 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 <span className="text-[11px] font-bold uppercase tracking-wider text-[#F59E0B] px-2 py-0.5 rounded bg-[#FEF3C7]/15">
                   Super Grade Desk
                 </span>
-                <span className="text-[12px] text-slate-300">Karnataka Electrical Inspectorate</span>
+                <span className="text-[12px] text-slate-300">Sahakarnagar HQ, Bengaluru</span>
               </div>
               <h3 className="font-display text-[18px] sm:text-[20px] font-bold">
-                Request Engineering Proposal &amp; Feasibility
+                Request Engineering Proposal &amp; Site Quote
               </h3>
             </div>
           </div>
@@ -118,7 +128,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
         {/* Content */}
         <div className="p-6 sm:p-8 max-h-[80vh] overflow-y-auto">
           {submitted ? (
-            <div className="flex flex-col items-center text-center py-6 gap-4">
+            <div className="flex flex-col items-center text-center py-4 gap-4">
               <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
                 <span className="material-symbols-outlined text-[36px]">check_circle</span>
               </div>
@@ -130,37 +140,75 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   Technical Inquiry Registered
                 </h4>
                 <p className="text-[14px] text-[#44474c] max-w-md mt-1 leading-relaxed">
-                  Thank you, <strong className="text-[#0B192C]">{name}</strong>. Your facility requirements have been dispatched to our Super Grade engineering desk. A certified engineer will contact you at <strong className="text-[#0B192C]">{phone}</strong> within 4 business hours with an initial single-line feasibility review.
+                  Thank you, <strong className="text-[#0B192C]">{name}</strong>. Your requirements have been logged for our Super Grade engineering team in Sahakarnagar, Bengaluru. We will reach you at <strong className="text-[#0B192C]">{phone}</strong> within 4 business hours.
                 </p>
               </div>
 
-              <div className="w-full bg-[#f8f9ff] border border-[#E2E8F0] rounded-xl p-4 text-left text-[13px] text-[#44474c] flex flex-col gap-2 mt-2">
+              <div className="w-full bg-[#f8f9ff] border border-[#E2E8F0] rounded-xl p-4 text-left text-[13px] text-[#44474c] flex flex-col gap-2">
                 <div className="flex justify-between">
                   <span className="text-slate-500">Service Category:</span>
                   <span className="font-semibold text-[#0B192C]">{category}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Location in Karnataka:</span>
-                  <span className="font-semibold text-[#0B192C]">{location || 'Peenya / Bengaluru'}</span>
+                  <span className="font-semibold text-[#0B192C]">{location || 'Bengaluru, Karnataka'}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Inspectorate Compliance:</span>
-                  <span className="font-semibold text-emerald-600">Standard CEIG / KERC Protocol</span>
+                  <span className="text-slate-500">Direct Engineering Desk:</span>
+                  <span className="font-semibold text-[#0284C7]">{BUSINESS_NAP.primaryPhone}</span>
                 </div>
               </div>
 
+              {/* Instant Lead Dispatch via WhatsApp & Email */}
+              {lastInquiry && (
+                <div className="w-full flex flex-col gap-2.5 pt-2">
+                  <span className="text-[12px] font-semibold text-[#0B192C]">
+                    For fastest priority response, also dispatch your inquiry directly via:
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <a
+                      href={buildWhatsAppInquiryUrl(lastInquiry)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() =>
+                        trackConversionEvent('whatsapp_click', `Modal Dispatch ${lastInquiry.id}`, 'ConsultationModal')
+                      }
+                      className="h-11 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-[13px] font-bold flex items-center justify-center gap-2 shadow-sm transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">chat</span>
+                      <span>Send via WhatsApp ({BUSINESS_NAP.primaryPhone})</span>
+                    </a>
+                    <a
+                      href={buildMailtoInquiryUrl(lastInquiry)}
+                      onClick={() =>
+                        trackConversionEvent('email_click', `Modal Email Dispatch ${lastInquiry.id}`, 'ConsultationModal')
+                      }
+                      className="h-11 px-4 rounded-xl bg-[#0284C7] hover:bg-[#0369a1] text-white text-[13px] font-bold flex items-center justify-center gap-2 shadow-sm transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">mail</span>
+                      <span>Send via Email</span>
+                    </a>
+                  </div>
+                </div>
+              )}
+
               <button
                 onClick={handleReset}
-                className="mt-4 px-6 py-2.5 rounded-lg bg-[#0B192C] text-white text-[14px] font-semibold hover:bg-[#006398] transition-colors"
+                className="mt-2 px-6 py-2.5 rounded-lg bg-[#0B192C] text-white text-[13.5px] font-semibold hover:bg-[#006398] transition-colors cursor-pointer"
               >
-                Close &amp; Return to Workspace
+                Close &amp; Return to Website
               </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-              <p className="text-[13px] text-[#44474c]">
-                Submit your project parameters for an immediate feasibility check, transformer sizing, statutory sanction guidance, and budgetary engineering estimate.
-              </p>
+              <div className="p-3.5 rounded-xl bg-[#f8f9ff] border border-[#CBD5E1] flex flex-wrap items-center justify-between gap-2 text-[12.5px] text-[#44474c]">
+                <span>
+                  Direct Call / WhatsApp: <strong className="text-[#0B192C]">{BUSINESS_NAP.primaryPhone}</strong>
+                </span>
+                <span>
+                  Email: <strong className="text-[#0284C7]">{BUSINESS_NAP.email}</strong>
+                </span>
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
@@ -185,7 +233,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+91 98765 43210"
+                    placeholder="+91 97434 61955"
                     className="h-11 px-3.5 rounded-lg bg-[#F8FAFC] border border-[#CBD5E1] text-[14px] text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:bg-white"
                   />
                 </div>
@@ -212,7 +260,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                       <option value="solar">Turnkey Solar EPC (Rooftop / Ground Mount)</option>
                       <option value="panels">LT Switchboards &amp; Control Panels (PCC/MCC)</option>
                       <option value="audit">Energy Audit &amp; Power Factor Correction (APFC)</option>
-                      <option value="statutory">CEIG / KPTCL Statutory Liaison &amp; Sanctions</option>
+                      <option value="statutory">CEIG / BESCOM / KPTCL Statutory Liaison</option>
                       <option value="testing">Pre-Commissioning Hi-Pot &amp; Relay Testing</option>
                       <option value="amc">Industrial AMC &amp; Preventive Maintenance</option>
                     </optgroup>
@@ -221,14 +269,29 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[13px] font-semibold text-[#0B192C]">
-                    Project Location in Karnataka <span className="text-red-500">*</span>
+                    Project Location in Bengaluru / Karnataka <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     required
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    placeholder="e.g. Peenya / Bommasandra / Hosakote"
+                    placeholder="e.g. Sahakarnagar / Peenya / Whitefield / Bommasandra"
+                    className="h-11 px-3.5 rounded-lg bg-[#F8FAFC] border border-[#CBD5E1] text-[14px] text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:bg-white"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5 sm:col-span-2">
+                  <label className="text-[13px] font-semibold text-[#0B192C]">
+                    Official Email (Optional for Formal PDF Quotation)
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="projects@yourcompany.com"
                     className="h-11 px-3.5 rounded-lg bg-[#F8FAFC] border border-[#CBD5E1] text-[14px] text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:bg-white"
                   />
                 </div>
@@ -242,7 +305,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   rows={3}
                   value={loadDetails}
                   onChange={(e) => setLoadDetails(e.target.value)}
-                  placeholder="Specify connected load (e.g. 1.5 MVA, 500 kWp solar), transformer specs, site voltage level, target energization timeline..."
+                  placeholder="Specify connected load (e.g. 500 kVA, 100 kWp solar), transformer specs, site voltage level, target energization timeline..."
                   className="p-3.5 rounded-lg bg-[#F8FAFC] border border-[#CBD5E1] text-[14px] text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:bg-white"
                 />
               </div>
@@ -256,7 +319,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   className="w-4 h-4 accent-[#0284C7] rounded cursor-pointer"
                 />
                 <label htmlFor="modal-compliance" className="text-[13px] text-[#44474c] cursor-pointer">
-                  I request technical compliance review according to Karnataka Inspectorate guidelines.
+                  I request technical compliance review according to Karnataka Electrical Inspectorate guidelines.
                 </label>
               </div>
 

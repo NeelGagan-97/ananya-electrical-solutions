@@ -1,0 +1,3 @@
+# Cloudflare Pages / Workers SPA Fallback & Canonical Redirect Rules
+https://ananya-electrical-solutions.neelgaganat97.workers.dev/* https://ananyaelectricalsolutions.in/:splat 301!
+/* /index.html 200

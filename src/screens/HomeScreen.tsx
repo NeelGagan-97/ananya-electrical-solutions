@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { NavigationTab, EngineeringInquiry, ProjectItem } from '../types';
 import { ASSETS, SERVICES, PROJECTS, ESCOMS, ELECTRICAL_EQUIPMENT } from '../data/constants';
 import { ElectricalServicesSection } from '../components/ElectricalServicesSection';
+import {
+  BUSINESS_NAP,
+  trackConversionEvent,
+  buildWhatsAppInquiryUrl,
+  buildMailtoInquiryUrl,
+} from '../utils/seo';
 
 interface HomeScreenProps {
   onSelectTab: (tab: NavigationTab) => void;
@@ -22,8 +28,32 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [formNotes, setFormNotes] = useState('');
   const [complianceCheck, setComplianceCheck] = useState(true);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [lastHomeInquiry, setLastHomeInquiry] = useState<EngineeringInquiry | null>(null);
   const [activeStage, setActiveStage] = useState<number | null>(null);
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
+  const logoVideoRef = useRef<HTMLVideoElement | null>(null);
+  const [logoAnimPhase, setLogoAnimPhase] = useState<'charging' | 'surge' | 'energized'>('charging');
+
+  useEffect(() => {
+    let rafId: number;
+    const syncWithVideo = () => {
+      const vid = logoVideoRef.current;
+      if (vid && !vid.paused) {
+        const t = vid.currentTime;
+        const dur = vid.duration || 8.0;
+        if (t < 1.85 || t > dur - 0.35) {
+          setLogoAnimPhase(prev => (prev !== 'charging' ? 'charging' : prev));
+        } else if (t >= 1.85 && t < 2.45) {
+          setLogoAnimPhase(prev => (prev !== 'surge' ? 'surge' : prev));
+        } else {
+          setLogoAnimPhase(prev => (prev !== 'energized' ? 'energized' : prev));
+        }
+      }
+      rafId = requestAnimationFrame(syncWithVideo);
+    };
+    rafId = requestAnimationFrame(syncWithVideo);
+    return () => cancelAnimationFrame(rafId);
+  }, []);
 
   const filteredProjects = projectFilter === 'all'
     ? PROJECTS.slice(0, 3)
@@ -42,6 +72,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       complianceConfirmed: complianceCheck
     };
     onSaveInquiry(newInquiry);
+    setLastHomeInquiry(newInquiry);
+    trackConversionEvent('quote_form_submit', `${formCategory} - ${formLocation || 'Bengaluru'}`, 'HomeScreen');
     setFormSubmitted(true);
   };
 
@@ -131,19 +163,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <div className="lg:col-span-7 flex flex-col gap-6">
               <div className="flex flex-col gap-3">
                 <span className="text-[14px] uppercase tracking-widest text-[#38BDF8] font-bold drop-shadow-sm">
-                  Engineering Infrastructure • Est. 2020
+                  Sahakarnagar, Bengaluru • Serving All Karnataka Since 2020
                 </span>
                 <h1 className="font-display-xl text-white tracking-tight font-extrabold leading-tight drop-shadow-md">
-                  Powering Progress with{' '}
+                  Super Grade{' '}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7dd3fc] via-[#38bdf8] to-[#fcd34d]">
-                    Precision Engineering
+                    Electrical Contractor in Bengaluru
                   </span>{' '}
-                  &amp; Clean Energy
+                  for HT/LT Substations &amp; Solar EPC
                 </h1>
               </div>
 
               <p className="font-body-lg text-slate-200 leading-relaxed max-w-2xl drop-shadow-sm">
-                Welcome to Ananya Electrical Solutions. We specialize in delivering safe, efficient, and innovative electrical services tailored to meet the needs of homes, businesses, and industrial facilities. From design and installation to maintenance and troubleshooting, our expert team is committed to powering your world with precision, professionalism, and care. Whether you're upgrading your system, building from the ground up, or looking for energy-efficient alternatives — we bring the expertise and reliability you can trust.
+                Welcome to <strong className="text-white">Ananya Electrical Solutions</strong> — Government of Karnataka Licensed Super Grade Electrical Contractors headquartered in Sahakarnagar, Bengaluru. We deliver turnkey 11kV–110kV substations, HT/LT switchgear panels, BESCOM &amp; CEIG statutory approvals, industrial/commercial/residential wiring, chemical earthing, and rooftop solar power plants across Bengaluru and Karnataka.
               </p>
 
               {/* CTAs: Structured 3D Twin Launchers + Primary Actions */}
@@ -217,6 +249,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <div className="lg:col-span-5 flex flex-col items-center lg:items-end justify-start gap-5 lg:-mt-20">
               <div className="w-full flex flex-col items-center lg:items-end justify-start lg:-mr-12 xl:-mr-16 bg-transparent">
                 <video
+                  ref={logoVideoRef}
                   src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm"
                   autoPlay
                   loop
@@ -225,17 +258,47 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   style={{ aspectRatio: '1.5 / 1.5' }}
                   className="w-full max-w-[260px] sm:max-w-[300px] aspect-[1.5/1.5] object-cover object-center bg-transparent lg:translate-x-12 xl:translate-x-16 lg:-translate-y-2 [clip-path:inset(0_0_33%_0)] drop-shadow-[0_0_18px_rgba(56,189,248,0.6)]"
                 />
-                {/* Custom Styled Brand Logo Lockup: ANANYA ELECTRICAL SOLUTIONS */}
-                <div className="w-full max-w-[260px] sm:max-w-[300px] flex flex-col items-center justify-center text-center -mt-20 sm:-mt-24 pb-2 lg:translate-x-12 xl:translate-x-16 select-none">
-                  <span className="font-['Orbitron'] text-[26px] sm:text-[31px] font-black uppercase tracking-[0.18em] leading-none bg-gradient-to-r from-[#FDE047] via-[#38BDF8] to-[#F59E0B] bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(245,158,11,0.45)]">
+                {/* Custom Styled Brand Logo Lockup Synchronized with Video Reveal */}
+                <div
+                  className={`w-full max-w-[260px] sm:max-w-[300px] flex flex-col items-center justify-center text-center -mt-20 sm:-mt-24 pb-2 lg:translate-x-12 xl:translate-x-16 select-none transition-all duration-500 ease-out ${
+                    logoAnimPhase === 'charging'
+                      ? 'opacity-0 translate-y-3 scale-90 blur-[5px]'
+                      : 'opacity-100 translate-y-0 scale-100 blur-0'
+                  }`}
+                >
+                  <span
+                    className={`font-['Orbitron'] text-[26px] sm:text-[31px] font-black uppercase leading-none bg-gradient-to-r from-[#FDE047] via-[#38BDF8] to-[#F59E0B] bg-clip-text text-transparent transition-all duration-500 ${
+                      logoAnimPhase === 'charging'
+                        ? 'tracking-[0.34em] scale-95'
+                        : logoAnimPhase === 'surge'
+                        ? 'tracking-[0.20em] scale-[1.04] animate-brand-surge'
+                        : 'tracking-[0.18em] scale-100 animate-brand-shimmer'
+                    }`}
+                  >
                     ANANYA
                   </span>
-                  <div className="flex items-center justify-center gap-2 mt-1.5 w-full">
-                    <span className="h-[1.5px] w-5 bg-gradient-to-r from-transparent via-[#F59E0B] to-[#38BDF8] rounded-full" />
-                    <span className="font-['Chakra_Petch'] text-[10.5px] sm:text-[12px] font-bold uppercase tracking-[0.26em] text-[#7DD3FC] drop-shadow-[0_1px_6px_rgba(56,189,248,0.5)] whitespace-nowrap">
+                  <div
+                    className={`flex items-center justify-center gap-2 mt-1.5 w-full transition-all duration-500 ${
+                      logoAnimPhase === 'energized'
+                        ? 'opacity-100 translate-y-0 scale-100'
+                        : logoAnimPhase === 'surge'
+                        ? 'opacity-70 translate-y-1 scale-95'
+                        : 'opacity-0 translate-y-2 scale-90'
+                    }`}
+                  >
+                    <span
+                      className={`h-[1.5px] bg-gradient-to-r from-transparent via-[#F59E0B] to-[#38BDF8] rounded-full transition-all duration-500 ${
+                        logoAnimPhase === 'energized' ? 'w-6 opacity-100' : 'w-1 opacity-0'
+                      }`}
+                    />
+                    <span className="font-['Chakra_Petch'] text-[10.5px] sm:text-[12px] font-bold uppercase tracking-[0.26em] text-[#7DD3FC] animate-sub-pulse whitespace-nowrap">
                       ELECTRICAL SOLUTIONS
                     </span>
-                    <span className="h-[1.5px] w-5 bg-gradient-to-l from-transparent via-[#F59E0B] to-[#38BDF8] rounded-full" />
+                    <span
+                      className={`h-[1.5px] bg-gradient-to-l from-transparent via-[#F59E0B] to-[#38BDF8] rounded-full transition-all duration-500 ${
+                        logoAnimPhase === 'energized' ? 'w-6 opacity-100' : 'w-1 opacity-0'
+                      }`}
+                    />
                   </div>
                 </div>
               </div>
@@ -1300,39 +1363,54 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <div className="flex flex-col gap-4">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#FEF3C7] text-[#2a1700] text-[12px] uppercase font-bold w-fit">
                   <span className="material-symbols-outlined text-[14px] text-[#F59E0B]">bolt</span>
-                  Super Grade Contractor
+                  Super Grade Contractor • Bengaluru
                 </div>
-                <h3 className="font-headline-lg text-white font-bold">
-                  Initiate Your Project Consultation
-                </h3>
+                <h2 className="font-headline-lg text-white font-bold">
+                  Request an Electrical or Solar Quote in Bengaluru
+                </h2>
                 <p className="font-body-md text-slate-300 leading-relaxed">
-                  Connect directly with our master electrical engineers. We handle statutory sanctions, load design, technical drawings, and turnkey procurement across all districts of Karnataka.
+                  Connect directly with our Super Grade electrical engineers at our Sahakarnagar headquarters. We handle BESCOM/KPTCL sanctions, CEIG approvals, HT/LT installations, and rooftop solar EPC across Karnataka.
                 </p>
               </div>
 
-              {/* Contact items */}
-              <div className="flex flex-col gap-6">
+              {/* Verified NAP Contact items */}
+              <div className="flex flex-col gap-5">
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-[#1E293B] flex items-center justify-center shrink-0 text-[#5bb8fe]">
-                    <span className="material-symbols-outlined text-[20px]">phone_in_talk</span>
+                  <div className="w-10 h-10 rounded-lg bg-[#1E293B] flex items-center justify-center shrink-0 text-[#F59E0B]">
+                    <span className="material-symbols-outlined text-[20px]">call</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[12px] text-slate-400 uppercase">Emergency &amp; Grid Dispatch</span>
-                    <a href="tel:+918660121438" className="font-headline-sm text-[18px] text-white font-bold hover:text-[#5bb8fe] transition-colors">
-                      +91 8660121438
+                    <span className="text-[12px] text-slate-400 uppercase">Primary Engineering Desk &amp; WhatsApp</span>
+                    <a
+                      href={`tel:${BUSINESS_NAP.primaryPhoneTel}`}
+                      onClick={() => trackConversionEvent('phone_click', BUSINESS_NAP.primaryPhone, 'Home Consultation Card')}
+                      className="font-headline-sm text-[19px] text-white font-bold hover:text-[#5bb8fe] transition-colors"
+                    >
+                      {BUSINESS_NAP.primaryPhone}
+                    </a>
+                    <a
+                      href={`tel:${BUSINESS_NAP.secondaryPhoneTel}`}
+                      onClick={() => trackConversionEvent('phone_click', BUSINESS_NAP.secondaryPhone, 'Home Consultation Card 24/7')}
+                      className="text-[13px] text-slate-300 hover:text-[#5bb8fe] transition-colors mt-0.5"
+                    >
+                      24/7 Grid Emergency Hotline: {BUSINESS_NAP.secondaryPhone}
                     </a>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-[#1E293B] flex items-center justify-center shrink-0 text-[#F59E0B]">
+                  <div className="w-10 h-10 rounded-lg bg-[#1E293B] flex items-center justify-center shrink-0 text-[#5bb8fe]">
                     <span className="material-symbols-outlined text-[20px]">mail</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[12px] text-slate-400 uppercase">Technical Desk</span>
-                    <span className="font-headline-sm text-[18px] text-white font-bold">
-                      contact@ananyaelectricalsolutions.in
-                    </span>
+                    <span className="text-[12px] text-slate-400 uppercase">Official Email</span>
+                    <a
+                      href={`mailto:${BUSINESS_NAP.email}`}
+                      onClick={() => trackConversionEvent('email_click', BUSINESS_NAP.email, 'Home Consultation Card')}
+                      className="text-[15px] text-white font-bold hover:text-[#5bb8fe] transition-colors break-all"
+                    >
+                      {BUSINESS_NAP.email}
+                    </a>
                   </div>
                 </div>
 
@@ -1341,10 +1419,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     <span className="material-symbols-outlined text-[20px]">location_on</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[12px] text-slate-400 uppercase">Registered Base</span>
-                    <span className="font-body-md text-slate-300">
-                      Bengaluru &amp; Industrial Corridors, Karnataka, India
+                    <span className="text-[12px] text-slate-400 uppercase">Registered Headquarters (Bengaluru)</span>
+                    <span className="text-[13.5px] text-slate-200 leading-relaxed">
+                      {BUSINESS_NAP.fullAddress}
                     </span>
+                    <a
+                      href={BUSINESS_NAP.googleMapsDirectUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[12px] text-[#38bdf8] font-semibold hover:underline mt-1"
+                    >
+                      View on Google Maps →
+                    </a>
                   </div>
                 </div>
               </div>
@@ -1352,7 +1438,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <div className="p-4 rounded-xl bg-[#1E293B] text-white flex items-center gap-3 border border-slate-700">
                 <span className="material-symbols-outlined text-[#F59E0B] text-[24px]">verified</span>
                 <span className="font-body-sm text-slate-300">
-                  Government of Karnataka Licensed Super Grade Electrical Contractor.
+                  Government of Karnataka Licensed Super Grade &amp; Class-1 PWD Electrical Contractor.
                 </span>
               </div>
             </div>
@@ -1361,11 +1447,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <div className="lg:col-span-7 p-8 lg:p-12 flex flex-col justify-center">
               <form onSubmit={handleFormSubmit} className="flex flex-col gap-6" id="quote-form">
                 <div className="flex flex-col gap-1">
-                  <h4 className="font-headline-sm text-[#0B192C] font-bold">
-                    Request an Engineering Proposal
-                  </h4>
+                  <h3 className="font-headline-sm text-[#0B192C] font-bold">
+                    Request an Engineering Proposal &amp; Site Assessment
+                  </h3>
                   <p className="font-body-sm text-[#44474c]">
-                    Submit your facility parameters for a certified feasibility review and cost estimate.
+                    Submit your facility parameters for a certified feasibility review and cost estimate within 4 business hours.
                   </p>
                 </div>
 
@@ -1391,7 +1477,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     <input
                       className="h-11 px-4 rounded bg-[#F8FAFC] border border-[#CBD5E1] text-[#0B192C] font-body-md focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:bg-white"
                       id="client-phone"
-                      placeholder="+91 98765 43210"
+                      placeholder="+91 97434 61955"
                       required
                       type="tel"
                       value={formPhone}
@@ -1423,19 +1509,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                         <option value="solar">Turnkey Solar EPC (Rooftop / Ground)</option>
                         <option value="panels">LT Switchboards &amp; Control Panels</option>
                         <option value="audit">Energy Audit &amp; Power Factor Correction</option>
-                        <option value="statutory">CEIG / KPTCL Statutory Liaison</option>
+                        <option value="statutory">CEIG / BESCOM / KPTCL Statutory Liaison</option>
                         <option value="amc">Industrial AMC &amp; Preventive Maintenance</option>
                       </optgroup>
                     </select>
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[14px] text-[#0B192C] font-semibold" htmlFor="location">
-                      Project Location in Karnataka <span className="text-red-500">*</span>
+                      Project Location in Bengaluru / Karnataka <span className="text-red-500">*</span>
                     </label>
                     <input
                       className="h-11 px-4 rounded bg-[#F8FAFC] border border-[#CBD5E1] text-[#0B192C] font-body-md focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:bg-white"
                       id="location"
-                      placeholder="e.g. Peenya / Bommasandra / Mysuru"
+                      placeholder="e.g. Sahakarnagar / Peenya / Whitefield / Mysuru"
                       required
                       type="text"
                       value={formLocation}
@@ -1468,7 +1554,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     type="checkbox"
                   />
                   <label className="font-body-sm text-[#44474c] cursor-pointer" htmlFor="compliance-check">
-                    I request technical compliance review according to Karnataka Inspectorate guidelines.
+                    I request technical compliance review according to Karnataka Electrical Inspectorate guidelines.
                   </label>
                 </div>
 
@@ -1480,12 +1566,38 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   Submit Engineering Inquiry
                 </button>
 
-                {formSubmitted && (
-                  <div className="p-4 rounded bg-emerald-50 text-emerald-800 font-body-sm flex items-center gap-2 border border-emerald-200">
-                    <span className="material-symbols-outlined text-emerald-600">check_circle</span>
-                    <span>
-                      Thank you. Your engineering parameters have been received. An Ananya Super Grade Engineer will reach out within 4 business hours.
-                    </span>
+                {formSubmitted && lastHomeInquiry && (
+                  <div className="p-4 rounded-xl bg-emerald-50 text-emerald-900 font-body-sm flex flex-col gap-3 border border-emerald-200">
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-emerald-600">check_circle</span>
+                      <span>
+                        <strong>Inquiry Logged ({lastHomeInquiry.id}):</strong> Our Super Grade engineering team will contact you within 4 business hours. You can also dispatch immediately via WhatsApp or Email:
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      <a
+                        href={buildWhatsAppInquiryUrl(lastHomeInquiry)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() =>
+                          trackConversionEvent('whatsapp_click', `Home Form WhatsApp ${lastHomeInquiry.id}`, 'HomeScreen')
+                        }
+                        className="h-10 px-3 rounded-lg bg-[#25D366] hover:bg-[#20bd5a] text-white text-[12.5px] font-bold flex items-center justify-center gap-1.5"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">chat</span>
+                        <span>Send on WhatsApp ({BUSINESS_NAP.primaryPhone})</span>
+                      </a>
+                      <a
+                        href={buildMailtoInquiryUrl(lastHomeInquiry)}
+                        onClick={() =>
+                          trackConversionEvent('email_click', `Home Form Email ${lastHomeInquiry.id}`, 'HomeScreen')
+                        }
+                        className="h-10 px-3 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white text-[12.5px] font-bold flex items-center justify-center gap-1.5"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">mail</span>
+                        <span>Send via Official Email</span>
+                      </a>
+                    </div>
                   </div>
                 )}
               </form>
@@ -1494,21 +1606,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </section>
 
-      {/* ================= REGULATORY & GEOGRAPHIC FOOTPRINT ================= */}
-      <section className="w-full bg-white py-16 border-t border-[#E2E8F0]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-[#E2E8F0]">
+      {/* ================= LOCAL BENGALURU & KARNATAKA SERVICE AREAS + REGULATORY FOOTPRINT ================= */}
+      <section className="w-full bg-white py-16 border-t border-[#E2E8F0]" id="service-areas">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-10">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-6 border-b border-[#E2E8F0]">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-[#FEF3C7] flex items-center justify-center text-[#2a1700] shrink-0">
                 <span className="material-symbols-outlined text-[28px] text-[#F59E0B]">shield</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-headline-sm text-[#0B192C] font-bold">
-                  Statutory Accreditation &amp; Governance
-                </span>
-                <span className="font-body-sm text-[#44474c]">
-                  Full statutory compliance with Central Electricity Authority (CEA) &amp; KERC regulations
-                </span>
+                <h2 className="font-headline-sm text-[#0B192C] font-bold">
+                  Areas We Serve Across Bengaluru &amp; Karnataka
+                </h2>
+                <p className="font-body-sm text-[#44474c]">
+                  Headquartered at 59, Opp Bank of India, G-Block, Sahakarnagar Main Road, Bengaluru 560092 • Serving all ESCOM jurisdictions
+                </p>
               </div>
             </div>
 
@@ -1525,10 +1637,41 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
           </div>
 
+          {/* Local Service Corridors Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="p-5 rounded-xl bg-[#f8f9ff] border border-[#E2E8F0] flex flex-col gap-2">
+              <h3 className="text-[15px] font-bold text-[#0B192C] flex items-center gap-2">
+                <span className="material-symbols-outlined text-[18px] text-[#0284C7]">location_on</span>
+                North &amp; Central Bengaluru (HQ Zone)
+              </h3>
+              <p className="text-[13px] text-[#44474c] leading-relaxed">
+                Rapid electrical contracting, residential/commercial wiring, and BESCOM approvals across <strong>Sahakarnagar, Hebbal, Yelahanka, Jakkur, Kodigehalli, RT Nagar, Malleshwaram, Rajajinagar, and Devanahalli Aerospace Park</strong>.
+              </p>
+            </div>
+            <div className="p-5 rounded-xl bg-[#f8f9ff] border border-[#E2E8F0] flex flex-col gap-2">
+              <h3 className="text-[15px] font-bold text-[#0B192C] flex items-center gap-2">
+                <span className="material-symbols-outlined text-[18px] text-[#0284C7]">factory</span>
+                Bengaluru Industrial &amp; IT Corridors
+              </h3>
+              <p className="text-[13px] text-[#44474c] leading-relaxed">
+                Turnkey 11kV/33kV/66kV substations, PCC/MCC panels, and rooftop solar EPC across <strong>Peenya Industrial Area, Yeshwanthpur, Whitefield, Mahadevapura, Electronic City, Bommasandra, Jigani, Hosakote, Dabaspet, and Bidadi</strong>.
+              </p>
+            </div>
+            <div className="p-5 rounded-xl bg-[#f8f9ff] border border-[#E2E8F0] flex flex-col gap-2">
+              <h3 className="text-[15px] font-bold text-[#0B192C] flex items-center gap-2">
+                <span className="material-symbols-outlined text-[18px] text-[#0284C7]">map</span>
+                Pan-Karnataka KIADB &amp; District Hubs
+              </h3>
+              <p className="text-[13px] text-[#44474c] leading-relaxed">
+                Statewide Super Grade execution and CEIG liaison in <strong>Mysuru, Tumakuru (Vasanthanarasapura), Hubballi-Dharwad, Belagavi, Mangaluru, Udupi, Ballari, Shivamogga, Hassan, and Kalaburagi</strong>.
+              </p>
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center items-stretch">
             <div className="p-5 rounded-xl bg-[#f8f9ff] border border-[#E2E8F0] flex flex-col justify-center gap-1">
               <span className="font-headline-md text-[#0B192C] font-bold">100%</span>
-              <span className="font-body-sm text-[#44474c]">Statutory Clearance Rate</span>
+              <span className="font-body-sm text-[#44474c]">CEIG Statutory Pass Rate</span>
             </div>
             <div className="p-5 rounded-xl bg-[#f8f9ff] border border-[#E2E8F0] flex flex-col justify-center gap-1">
               <span className="font-headline-md text-[#0284C7] font-bold">&lt; 48 Hrs</span>
@@ -1540,7 +1683,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
             <div className="p-5 rounded-xl bg-[#f8f9ff] border border-[#E2E8F0] flex flex-col justify-center gap-1">
               <span className="font-headline-md text-[#F59E0B] font-bold">Tier-1</span>
-              <span className="font-body-sm text-[#44474c]">Certified Solar Components</span>
+              <span className="font-body-sm text-[#44474c]">Certified Solar &amp; HV Hardware</span>
             </div>
           </div>
         </div>

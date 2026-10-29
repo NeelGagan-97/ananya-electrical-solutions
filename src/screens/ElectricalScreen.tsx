@@ -79,13 +79,13 @@ export const ElectricalScreen: React.FC<ElectricalScreenProps> = ({ onOpenConsul
           <div className="lg:col-span-8 flex flex-col gap-4">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0284C7]/20 text-[#5bb8fe] text-[12px] font-semibold w-fit border border-[#0284C7]/30 leading-none">
               <span className="material-symbols-outlined text-[16px] leading-none">power</span>
-              <span>Super Grade Engineering Division</span>
+              <span>Super Grade HT/EHT Division • Bengaluru &amp; Karnataka</span>
             </div>
             <h1 className="font-display-xl text-white font-extrabold tracking-tight">
-              High Voltage Substations &amp; Industrial Electrical Systems
+              HT/LT Substations, Transformers &amp; Industrial Switchgear Contractors in Bengaluru
             </h1>
             <p className="font-body-lg text-slate-300 max-w-2xl leading-relaxed">
-              Turnkey execution for 11kV, 33kV, 66kV, and 110kV grid step-down substations, custom HT &amp; LT distribution panels, industrial transformer setups, and heavy plant cabling across Karnataka.
+              Turnkey execution for 11kV, 33kV, 66kV, and 110kV grid step-down substations, custom PCC/MCC/APFC distribution panels, industrial transformer erection, XLPE cabling, and KPTCL/BESCOM/CEIG approvals across Karnataka.
             </p>
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <button

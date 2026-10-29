@@ -1,39 +1,62 @@
-# Interactive 2BHK Custom Length & Breadth Dimension Generator — Implementation Plan
+# Complete SEO & Local Search Optimization Plan — Ananya Electrical Solutions
 
-## 1. Overview & User Goals
-Enable users to specify custom **Length** and **Breadth (Width)** dimensions—both for the **overall 2BHK residential plot** and for **individual rooms**—using either **Feet (`ft`)** or **Meters (`m`)**, and dynamically regenerate the navigable 3D 2BHK Interior Twin, furniture layout, doorways, electrical points, and concealed IS:732 conduit routes in real time.
+## 1. Objective & Business Identity Alignment
+Transform **Ananya Electrical Solutions** into a search-optimized, high-converting digital platform targeting industrial, commercial, and residential customers across **Bengaluru and Karnataka**.
 
-## 2. Parametric 2BHK Dimension & Scaling Engine (`/src/data/residential2BHKData.ts`)
-- **Parametric Plot Generator (`scaleResidentialProjectToDimensions`)**:
-  - Accepts target overall **Breadth (Width, X-axis)**, **Length (Depth, Z-axis)**, and optional **Ceiling Height (Y-axis)** alongside a base `ResidentialProject`.
-  - Proportionally scales every room's `x`, `z`, `width` (breadth), and `length` so adjacent room walls remain seamlessly aligned without gaps or overlaps.
-  - Recalculates wall openings (`offset` along the scaled wall segment while keeping accessible doorway widths clamped to walkable architectural standards).
-  - Proportionally repositions all 3D `electricalPoints` (`x, y, z`) so wall switchboards, sockets, AC units, geysers, and Main DB remain flush against their respective room walls, and ceiling lights/fans remain centered in their scaled rooms.
-- **Preset Plot Dimension Quick-Chips**:
-  - Provide one-click plot presets alongside custom numeric inputs:
-    - **Compact 2BHK**: `36 ft × 34 ft` (`11.0 m × 10.4 m` — ~1,224 sq.ft)
-    - **Standard Spacious 2BHK**: `54 ft × 52 ft` (`16.4 m × 16.0 m` — ~2,800 sq.ft walkthrough scale)
-    - **Grand Villa 2BHK**: `68 ft × 64 ft` (`20.7 m × 19.5 m` — ~4,350 sq.ft)
-    - **Custom L × B**: User-entered arbitrary Length and Breadth.
+### Standardized Business NAP (Name, Address, Phone)
+- **Business Name**: Ananya Electrical Solutions
+- **Primary Headquarters**: 59, Opp Bank of India, G-Block, Sahakarnagar Main Road, Bengaluru, Karnataka 560092 (Geo: `13.0623, 77.5871`)
+- **Primary Phone & WhatsApp**: `+91 9743461955`
+- **Secondary 24/7 Emergency Hotline**: `+91 8660121438`
+- **Primary Official Email**: `ananyaelectricalsolutions@gmail.com`
+- **Canonical Production Domain**: `https://ananyaelectricalsolutions.in/`
+- **Cloudflare Workers Staging Domain**: `https://ananya-electrical-solutions.neelgaganat97.workers.dev/` (canonicalized to `https://ananyaelectricalsolutions.in/` to prevent duplicate indexing)
 
-## 3. Unit Conversion & Dual-Unit Support (`ft` ↔ `m`)
-- **Seamless Unit Toggle (`ft` / `m`)**:
-  - `1 m = 3.28084 ft` (`1 ft = 0.3048 m`).
-  - Users can switch between **Feet (`ft`)** and **Meters (`m`)** at any time in the header dimension bar, start overlay, and 2D Floor Plan & Dimensions editor.
-  - Display live computed **Total Built-up Area** in both **sq.ft** and **sq.m** (e.g., `2,824 sq.ft / 262.4 m²`).
+---
 
-## 4. UI Controls & Header Quick-Dimension Bar (`/src/screens/Residential3DScreen.tsx`)
-- **Top Header Quick-Dimension Bar & Popover**:
-  - In the top workspace header bar (next to the workspace mode switcher), add an interactive **Plot Dimensions (`L × B`)** control pill showing current Breadth × Length and Total Area with a `ft / m` toggle.
-  - Clicking or editing directly in the Quick-Dimension Bar opens an inline **Custom 2BHK Dimension Configurator** where the user can:
-    - Enter overall **Plot Breadth (Width)** and **Plot Length (Depth)** in `ft` or `m` and click **Generate 3D Model** (or adjust live).
-    - Select from quick size presets or expand **Individual Room Length × Breadth** overrides (Living & Dining Hall, Kitchen, Master Bedroom, Bedroom 2, Bathrooms, Foyer).
-- **"Enter Apartment" Walkthrough Start Screen**:
-  - Include a **Custom Apartment Dimensions (`Length × Breadth`)** card directly on the launch overlay so users can set their desired apartment Length and Breadth in Feet or Meters right before clicking **Enter Apartment**.
-- **Enhanced 2D Floor Plan & Dimensions Editor**:
-  - Upgrade the `2D Floor Plan` tab with a top **Overall Apartment Plot Length × Breadth** scaler card, `ft / m` unit switcher, and per-room **Length** and **Breadth** inputs that immediately update the 2D blueprint and 3D walkthrough model.
+## 2. Technical SEO, Clean URL Routing & Crawlability
+1. **Clean Path URL Router with Hash Fallback (`src/utils/seo.ts` & `src/App.tsx`)**:
+   - Upgrade navigation to use clean History API paths (`/`, `/services`, `/ht-lt-electrical-works`, `/solar-power-solutions`, `/projects-gallery`, `/about-us`, `/contact-us`, `/calculator`, `/3d-2bhk`, `/3d-transformer`, `/3d-motors`, `/3d-cables`) while preserving backwards-compatible `#hash` fallback.
+   - Dynamically update `<title>`, `<meta name="description">`, `<link rel="canonical">`, OpenGraph (`og:title`, `og:description`, `og:url`), Twitter Card tags, and dynamic `BreadcrumbList` JSON-LD on every route change.
+   - Render semantic visual breadcrumb navigation on internal pages for user clarity and crawl hierarchy.
+2. **Crawl & Hosting Configuration (`public/robots.txt`, `public/sitemap.xml`, `public/_redirects`)**:
+   - `public/robots.txt`: Allow all search engine crawlers (`User-agent: *`, `Allow: /`), disallow internal/admin endpoints, and declare `Sitemap: https://ananyaelectricalsolutions.in/sitemap.xml`.
+   - `public/sitemap.xml`: Complete XML sitemap of all canonical pages on `https://ananyaelectricalsolutions.in/` with priority and change frequency metadata.
+   - `public/_redirects`: Configure `/* /index.html 200` so Cloudflare Workers/Pages serves clean URLs without 404 errors.
 
-## 5. 3D Builder & First-Person Walkthrough Adaptation (`/src/three/ResidentialTwinBuilder.ts` & `/src/three/ResidentialCanvas.tsx`)
-- **Dynamic Furniture & Room Boundary Adaptation**:
-  - Ensure `buildRoomFurniture` adapts cleanly to custom room widths and lengths so furniture remains well-spaced with clear walking corridors.
-  - Automatically recalculate `houseCenter`, camera orbit target, room waypoint spawn coordinates, and 2D radar mini-map bounding box for any custom Length × Breadth dimensions.
+---
+
+## 3. Rich Schema.org (JSON-LD) Structured Data
+Inject a validated multi-entity `@graph` JSON-LD payload in `index.html` and dynamic route schemas via `src/utils/seo.ts`:
+- **`Electrician` & `LocalBusiness`**: Verified Sahakarnagar HQ address, geo coordinates (`13.0623, 77.5871`), primary & secondary phone numbers, opening hours, price range, and `areaServed` covering major Bengaluru & Karnataka industrial/residential hubs (Sahakarnagar, Hebbal, Yelahanka, Peenya Industrial Area, Whitefield, Electronic City, Yeshwanthpur, Devanahalli KIADB, Bommasandra, Sarjapur Road, Hoskote, Mysuru).
+- **`Service` & `OfferCatalog`**: Structured catalog for all 6 core electrical & solar EPC service pillars.
+- **`FAQPage`**: 6+ high-intent Bengaluru electrical contracting, BESCOM/KPTCL sanction, CEIG safety approval, and solar net-metering FAQs.
+- **`BreadcrumbList` & `WebSite`**: Dynamic per-page breadcrumb hierarchy and site-level metadata.
+
+---
+
+## 4. On-Page SEO, Service Pillars & Local Bengaluru Authority
+1. **Keyword-Mapped Heading Hierarchy & Content**:
+   - Optimize `H1`, `H2`, and `H3` structure across **Home**, **Services**, **HT/LT Electrical Works**, **Solar Solutions**, **Projects**, **About Us**, and **Contact Us**.
+   - Expand dedicated service sections covering all 6 core offerings with scope of work, applications, IS/IEC standards, and direct quote CTAs:
+     1. *HT / LT Electrical Works & Substations (11kV / 33kV / 66kV / 110kV)*
+     2. *Transformer, Switchgear & Control Panel Erection (PCC, MCC, APFC, VCB, ACB)*
+     3. *BESCOM / KPTCL Liaison, CEIG Approvals & Power Sanction*
+     4. *Commercial, Industrial & Residential Turnkey Wiring*
+     5. *Earthing, Lightning Protection, Energy Audits & Preventive AMC*
+     6. *Solar Rooftop EPC & BESCOM Net Metering*
+2. **Local SEO & Embedded Map**:
+   - Add an **"Areas We Serve Across Bengaluru & Karnataka"** section highlighting industrial estates, tech parks, and residential zones.
+   - Embed an interactive Google Map centered on `59, Opp Bank of India, G-Block, Sahakarnagar Main Road, Bengaluru, Karnataka 560092` with a direct **"Get Directions"** CTA.
+3. **E-E-A-T Trust Signals & Expanded FAQs**:
+   - Highlight Class-1 / Super Grade government licensing, CEIG/BESCOM statutory compliance workflow, safety protocols, and verified customer testimonials.
+   - Add a comprehensive 6-question FAQ accordion on the Home and Contact/Services views matching the `FAQPage` JSON-LD schema.
+
+---
+
+## 5. Conversion Rate Optimization (CRO) & Built-In SEO Audit Tracker
+1. **Instant WhatsApp & Email Lead Dispatch**:
+   - Upgrade the **Consultation Modal** and **Contact Page Quote Form** so submitting a project enquiry immediately formats a structured technical brief and provides 1-click dispatch via **WhatsApp (`+91 9743461955`)** and **Email (`ananyaelectricalsolutions@gmail.com`)** without relying on `window.open` or `window.alert`.
+2. **Conversion Event Tracking & Live SEO Audit Inspector**:
+   - Track `phone_click`, `whatsapp_click`, `email_click`, and `quote_form_submit` via `window.dataLayer` (GA4/GTM compatible).
+   - Provide a built-in **SEO & Conversion Audit Inspector** accessible from the site footer so you can inspect the active page's live `<title>`, `<meta name="description">`, canonical URL, keyword map, JSON-LD structured data, and real-time conversion event log.

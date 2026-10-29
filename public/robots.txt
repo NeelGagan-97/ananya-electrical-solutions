@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/private/
+Disallow: /private/
+
+# Host & Sitemap Configuration for Ananya Electrical Solutions
+Sitemap: https://ananyaelectricalsolutions.in/sitemap.xml

@@ -25,10 +25,10 @@ export const ProjectsGalleryScreen: React.FC<ProjectsGalleryScreenProps> = ({ on
               <span>Karnataka Commissioning Track Record</span>
             </div>
             <h1 className="font-display-xl text-white font-extrabold tracking-tight">
-              Major Project Installations &amp; Commissioning Portfolio
+              Commissioned Electrical Substation, Industrial Wiring &amp; Solar Projects Across Karnataka
             </h1>
             <p className="font-body-lg text-slate-300 max-w-2xl leading-relaxed">
-              Explore turnkey 11kV/33kV/66kV step-down substations, multi-megawatt captive solar power plants, and industrial automation assemblies delivered across Karnataka with zero safety deviations.
+              Explore turnkey 11kV/33kV/66kV step-down substations, industrial LT/HT panel installations, and multi-megawatt captive solar power plants delivered across Bengaluru, Peenya, Bommasandra, Hosakote, and Mysuru with zero safety deviations.
             </p>
           </div>
 

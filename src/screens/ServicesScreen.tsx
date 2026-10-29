@@ -77,13 +77,13 @@ export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultati
           <div className="lg:col-span-8 flex flex-col gap-4">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0284C7]/20 text-[#5bb8fe] text-[12px] font-semibold w-fit border border-[#0284C7]/30 leading-none">
               <span className="material-symbols-outlined text-[16px] leading-none">build_circle</span>
-              <span>Turnkey Engineering Capabilities</span>
+              <span>Turnkey Electrical Contracting • Sahakarnagar, Bengaluru</span>
             </div>
             <h1 className="font-display-xl text-white font-extrabold tracking-tight">
-              Comprehensive Turnkey Engineering Services
+              Electrical Installation, Testing &amp; Maintenance Services in Bengaluru, Karnataka
             </h1>
             <p className="font-body-lg text-slate-300 max-w-2xl leading-relaxed">
-              From initial Single Line Diagram (SLD) engineering and civil switchyard execution to pre-commissioning testing, CEIG safety clearances, and 24/7 preventative AMC.
+              From Single Line Diagram (SLD) engineering, 11kV–110kV substations, and PCC/MCC control panels to industrial/commercial wiring, CEIG safety clearances, BESCOM approvals, and 24/7 preventative AMC across Bengaluru and Karnataka.
             </p>
             {onSelectTab && (
               <div className="flex flex-wrap items-center gap-3 pt-2">

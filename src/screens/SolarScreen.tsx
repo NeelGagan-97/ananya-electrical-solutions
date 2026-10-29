@@ -39,13 +39,13 @@ export const SolarScreen: React.FC<SolarScreenProps> = ({ onOpenConsultation, on
           <div className="lg:col-span-8 flex flex-col gap-4">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FEF3C7]/15 text-[#F59E0B] text-[12px] font-semibold w-fit border border-[#F59E0B]/30 leading-none">
               <span className="material-symbols-outlined text-[16px] leading-none">solar_power</span>
-              <span>Turnkey Clean Energy EPC Division</span>
+              <span>Turnkey Solar EPC Division • Bengaluru &amp; Karnataka</span>
             </div>
             <h1 className="font-display-xl text-white font-extrabold tracking-tight">
-              Commercial &amp; Industrial Solar Power Plants
+              Commercial, Industrial &amp; Residential Solar Power Installation in Bengaluru
             </h1>
             <p className="font-body-lg text-slate-300 max-w-2xl leading-relaxed">
-              High-yield rooftop and ground-mounted solar power plants engineered with Tier-1 bifacial photovoltaic modules, smart grid synchronization, and full BESCOM / KERC Net Metering sanctions.
+              High-yield rooftop and ground-mounted solar power plants in Bengaluru and Karnataka engineered with Tier-1 bifacial photovoltaic modules, smart grid synchronization, CEIG solar clearances, and full BESCOM / KERC Net Metering approvals.
             </p>
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <button
