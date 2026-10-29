@@ -20,24 +20,37 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
   const [location, setLocation] = useState('');
   const [loadDetails, setLoadDetails] = useState('');
   const [complianceCheck, setComplianceCheck] = useState(true);
+  const [preferredChannel, setPreferredChannel] = useState<'whatsapp' | 'email'>('whatsapp');
+  const [formError, setFormError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [lastSubmittedInquiry, setLastSubmittedInquiry] = useState<EngineeringInquiry | null>(null);
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanedPhone = phone.replace(/[\s\-()]/g, '');
+    if (!/^(\+91|91|0)?[6-9]\d{9}$/.test(cleanedPhone)) {
+      setFormError('Please enter a valid 10-digit Indian mobile number (e.g., +91 97434 61955).');
+      return;
+    }
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setFormError('Please enter a valid email address.');
+      return;
+    }
+    setFormError(null);
     const newId = `AES-REQ-${Math.floor(100000 + Math.random() * 900000)}`;
 
     const inquiry: EngineeringInquiry = {
       id: newId,
-      name,
-      phone,
-      email,
+      name: name.trim(),
+      phone: phone.trim(),
+      email: email.trim() || undefined,
       category,
-      location,
-      loadDetails,
+      location: location.trim(),
+      loadDetails: loadDetails.trim(),
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       complianceConfirmed: complianceCheck,
+      preferredChannel,
     };
 
     onSaveInquiry(inquiry);
@@ -423,6 +436,38 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
                 />
               </div>
 
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[13px] font-semibold text-[#0B192C]">
+                  Preferred Instant Dispatch Channel
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setPreferredChannel('whatsapp')}
+                    className={`h-10 rounded-lg border text-[13px] font-bold flex items-center justify-center gap-2 cursor-pointer transition-colors ${
+                      preferredChannel === 'whatsapp'
+                        ? 'bg-[#25D366]/15 border-[#25D366] text-[#0B192C]'
+                        : 'bg-[#F8FAFC] border-[#CBD5E1] text-[#44474c]'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[18px] text-[#16a34a]">chat</span>
+                    <span>WhatsApp ({BUSINESS_NAP.primaryPhone})</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPreferredChannel('email')}
+                    className={`h-10 rounded-lg border text-[13px] font-bold flex items-center justify-center gap-2 cursor-pointer transition-colors ${
+                      preferredChannel === 'email'
+                        ? 'bg-[#0284C7]/15 border-[#0284C7] text-[#0B192C]'
+                        : 'bg-[#F8FAFC] border-[#CBD5E1] text-[#44474c]'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[18px] text-[#0284C7]">mail</span>
+                    <span>Official Email</span>
+                  </button>
+                </div>
+              </div>
+
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -435,6 +480,13 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
                   Request Single Line Diagram (SLD) &amp; compliance review per Karnataka Electrical Inspectorate norms.
                 </label>
               </div>
+
+              {formError && (
+                <div className="p-3.5 rounded-lg bg-red-50 border border-red-200 text-red-800 text-[13px] font-medium flex items-center gap-2" role="alert">
+                  <span className="material-symbols-outlined text-[18px] text-red-600 shrink-0">error</span>
+                  <span>{formError}</span>
+                </div>
+              )}
 
               <button
                 type="submit"

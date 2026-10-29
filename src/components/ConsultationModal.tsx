@@ -27,6 +27,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   const [location, setLocation] = useState('');
   const [loadDetails, setLoadDetails] = useState('');
   const [complianceCheck, setComplianceCheck] = useState(true);
+  const [formError, setFormError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [inquiryId, setInquiryId] = useState('');
   const [lastInquiry, setLastInquiry] = useState<EngineeringInquiry | null>(null);
@@ -64,17 +65,27 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanedPhone = phone.replace(/[\s\-()]/g, '');
+    if (!/^(\+91|91|0)?[6-9]\d{9}$/.test(cleanedPhone)) {
+      setFormError('Please enter a valid 10-digit Indian mobile number (e.g., +91 97434 61955).');
+      return;
+    }
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setFormError('Please enter a valid email address.');
+      return;
+    }
+    setFormError(null);
     const newId = `AES-REQ-${Math.floor(100000 + Math.random() * 900000)}`;
     setInquiryId(newId);
 
     const inquiry: EngineeringInquiry = {
       id: newId,
-      name,
-      phone,
-      email,
+      name: name.trim(),
+      phone: phone.trim(),
+      email: email.trim() || undefined,
       category,
-      location,
-      loadDetails,
+      location: location.trim(),
+      loadDetails: loadDetails.trim(),
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       complianceConfirmed: complianceCheck,
     };
@@ -322,6 +333,13 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   I request technical compliance review according to Karnataka Electrical Inspectorate guidelines.
                 </label>
               </div>
+
+              {formError && (
+                <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-800 text-[12.5px] font-medium flex items-center gap-2" role="alert">
+                  <span className="material-symbols-outlined text-[18px] text-red-600 shrink-0">error</span>
+                  <span>{formError}</span>
+                </div>
+              )}
 
               <div className="pt-2 flex items-center justify-end gap-3 border-t border-[#E2E8F0]">
                 <button

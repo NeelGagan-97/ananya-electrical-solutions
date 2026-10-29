@@ -23,9 +23,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [projectFilter, setProjectFilter] = useState<'all' | 'industrial' | 'commercial' | 'solar'>('all');
   const [formName, setFormName] = useState('');
   const [formPhone, setFormPhone] = useState('');
+  const [formEmail, setFormEmail] = useState('');
   const [formCategory, setFormCategory] = useState('substation');
   const [formLocation, setFormLocation] = useState('');
   const [formNotes, setFormNotes] = useState('');
+  const [preferredChannel, setPreferredChannel] = useState<'whatsapp' | 'email'>('whatsapp');
+  const [formError, setFormError] = useState<string | null>(null);
   const [complianceCheck, setComplianceCheck] = useState(true);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [lastHomeInquiry, setLastHomeInquiry] = useState<EngineeringInquiry | null>(null);
@@ -33,6 +36,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const logoVideoRef = useRef<HTMLVideoElement | null>(null);
   const [logoAnimPhase, setLogoAnimPhase] = useState<'charging' | 'surge' | 'energized'>('charging');
+
+  const handleImgFallback = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const target = e.currentTarget;
+    if (!target.dataset.fallbackApplied) {
+      target.dataset.fallbackApplied = 'true';
+      target.src = ASSETS.hero;
+    }
+  };
 
   useEffect(() => {
     let rafId: number;
@@ -61,15 +72,27 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanedPhone = formPhone.replace(/[\s\-()]/g, '');
+    if (!/^(\+91|91|0)?[6-9]\d{9}$/.test(cleanedPhone)) {
+      setFormError('Please enter a valid 10-digit Indian mobile number (e.g., +91 97434 61955).');
+      return;
+    }
+    if (formEmail.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formEmail.trim())) {
+      setFormError('Please enter a valid official email address.');
+      return;
+    }
+    setFormError(null);
     const newInquiry: EngineeringInquiry = {
       id: `AES-HOM-${Math.floor(100000 + Math.random() * 900000)}`,
-      name: formName,
-      phone: formPhone,
+      name: formName.trim(),
+      phone: formPhone.trim(),
+      email: formEmail.trim() || undefined,
       category: formCategory,
-      location: formLocation,
-      loadDetails: formNotes,
+      location: formLocation.trim(),
+      loadDetails: formNotes.trim(),
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      complianceConfirmed: complianceCheck
+      complianceConfirmed: complianceCheck,
+      preferredChannel,
     };
     onSaveInquiry(newInquiry);
     setLastHomeInquiry(newInquiry);
@@ -178,50 +201,69 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 Welcome to <strong className="text-white">Ananya Electrical Solutions</strong> — Government of Karnataka Licensed Super Grade Electrical Contractors headquartered in Sahakarnagar, Bengaluru. We deliver turnkey 11kV–110kV substations, HT/LT switchgear panels, BESCOM &amp; CEIG statutory approvals, industrial/commercial/residential wiring, chemical earthing, and rooftop solar power plants across Bengaluru and Karnataka.
               </p>
 
-              {/* CTAs: Structured 3D Twin Launchers + Primary Actions */}
+              {/* Primary Lead Conversion CTAs: Get a Quote, Call Now, WhatsApp */}
               <div className="flex flex-col gap-3 pt-2 max-w-2xl">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                  <button
-                    onClick={() => onSelectTab('residential-layout-3d')}
-                    className="inline-flex items-center justify-center h-11 px-4 rounded-lg bg-gradient-to-r from-[#0284c7] via-[#0369a1] to-[#0f172a] hover:from-[#0369a1] hover:to-[#0284c7] text-white text-[13px] font-bold shadow-lg shadow-sky-500/25 transition-all hover:-translate-y-0.5 cursor-pointer border border-[#38bdf8]/40 whitespace-nowrap backdrop-blur-sm"
-                  >
-                    <span className="material-symbols-outlined text-[18px] mr-1.5 text-[#38bdf8] leading-none shrink-0">map</span>
-                    <span>3D Layout &amp; Infra</span>
-                  </button>
-                  <button
-                    onClick={() => onSelectTab('residential-3d')}
-                    className="inline-flex items-center justify-center h-11 px-4 rounded-lg bg-gradient-to-r from-[#10b981] via-[#059669] to-[#047857] hover:from-[#059669] hover:to-[#10b981] text-white text-[13px] font-bold shadow-lg shadow-emerald-500/25 transition-all hover:-translate-y-0.5 cursor-pointer border border-[#34d399]/40 whitespace-nowrap backdrop-blur-sm"
-                  >
-                    <span className="material-symbols-outlined text-[18px] mr-1.5 text-[#a7f3d0] leading-none shrink-0">home</span>
-                    <span>3D 2BHK Interior</span>
-                  </button>
-                  <button
-                    onClick={() => onSelectTab('twin-3d')}
-                    className="inline-flex items-center justify-center h-11 px-4 rounded-lg bg-gradient-to-r from-[#f59e0b] via-[#d97706] to-[#b45309] hover:from-[#d97706] hover:to-[#f59e0b] text-slate-950 text-[13px] font-bold shadow-lg shadow-amber-500/25 transition-all hover:-translate-y-0.5 cursor-pointer border border-[#fde047]/40 whitespace-nowrap backdrop-blur-sm"
-                  >
-                    <span className="material-symbols-outlined text-[18px] mr-1.5 text-slate-950 leading-none shrink-0">electric_meter</span>
-                    <span>33kV Substation</span>
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  <button
-                    onClick={() => onSelectTab('services')}
-                    className="inline-flex items-center justify-center h-11 px-5 rounded-lg bg-[#0284C7] hover:bg-[#2563EB] text-white text-[13.5px] font-bold shadow-lg shadow-black/25 transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
-                  >
-                    <span className="material-symbols-outlined text-[18px] mr-1.5 leading-none shrink-0">precision_manufacturing</span>
-                    <span>Explore All Engineering Services</span>
-                  </button>
                   <button
                     onClick={() => {
                       const el = document.getElementById('consultation');
                       if (el) el.scrollIntoView({ behavior: 'smooth' });
                       else onOpenConsultation();
                     }}
-                    className="inline-flex items-center justify-center h-11 px-5 rounded-lg bg-[#0f1f36]/85 hover:bg-[#1E293B] text-white text-[13.5px] font-bold shadow-lg shadow-black/25 transition-all hover:-translate-y-0.5 cursor-pointer border border-white/15 backdrop-blur-md whitespace-nowrap"
+                    className="inline-flex items-center justify-center h-12 px-5 rounded-lg bg-[#F59E0B] hover:bg-[#D97706] text-[#2a1700] text-[13.5px] font-extrabold shadow-lg shadow-amber-500/25 transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
                   >
-                    <span className="material-symbols-outlined text-[18px] mr-1.5 text-[#F59E0B] leading-none shrink-0">request_quote</span>
-                    <span>Request Technical Quote</span>
+                    <span className="material-symbols-outlined text-[19px] mr-1.5 leading-none shrink-0">request_quote</span>
+                    <span>Get a Quote</span>
+                  </button>
+                  <a
+                    href={`tel:${BUSINESS_NAP.primaryPhoneTel}`}
+                    onClick={() => trackConversionEvent('phone_click', BUSINESS_NAP.primaryPhone, 'Hero Call Now CTA')}
+                    className="inline-flex items-center justify-center h-12 px-5 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white text-[13.5px] font-bold shadow-lg shadow-sky-500/25 transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
+                  >
+                    <span className="material-symbols-outlined text-[19px] mr-1.5 leading-none shrink-0">call</span>
+                    <span>Call Now: {BUSINESS_NAP.primaryPhone}</span>
+                  </a>
+                  <a
+                    href={`https://wa.me/${BUSINESS_NAP.whatsappNumber}?text=Hello%20Ananya%20Electrical%20Solutions%2C%20I%20would%20like%20to%20enquire%20about%20electrical%20contracting%20or%20solar%20installation%20in%20Bengaluru.`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => trackConversionEvent('whatsapp_click', BUSINESS_NAP.primaryPhone, 'Hero WhatsApp CTA')}
+                    className="inline-flex items-center justify-center h-12 px-5 rounded-lg bg-[#25D366] hover:bg-[#1ebe5d] text-slate-950 text-[13.5px] font-extrabold shadow-lg shadow-emerald-500/25 transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
+                  >
+                    <span className="material-symbols-outlined text-[19px] mr-1.5 leading-none shrink-0">chat</span>
+                    <span>WhatsApp Us</span>
+                  </a>
+                </div>
+
+                {/* Interactive 3D Engineering Twins & Services Bar */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <button
+                    onClick={() => onSelectTab('services')}
+                    className="inline-flex items-center justify-center h-10 px-3 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white text-[12px] font-bold transition-all cursor-pointer border border-white/20 backdrop-blur-md whitespace-nowrap"
+                  >
+                    <span className="material-symbols-outlined text-[16px] mr-1.5 text-[#38bdf8] leading-none shrink-0">precision_manufacturing</span>
+                    <span>All 12 Services</span>
+                  </button>
+                  <button
+                    onClick={() => onSelectTab('residential-layout-3d')}
+                    className="inline-flex items-center justify-center h-10 px-3 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white text-[12px] font-semibold transition-all cursor-pointer border border-[#38bdf8]/35 backdrop-blur-md whitespace-nowrap"
+                  >
+                    <span className="material-symbols-outlined text-[16px] mr-1.5 text-[#38bdf8] leading-none shrink-0">map</span>
+                    <span>3D Layout Twin</span>
+                  </button>
+                  <button
+                    onClick={() => onSelectTab('residential-3d')}
+                    className="inline-flex items-center justify-center h-10 px-3 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white text-[12px] font-semibold transition-all cursor-pointer border border-[#34d399]/35 backdrop-blur-md whitespace-nowrap"
+                  >
+                    <span className="material-symbols-outlined text-[16px] mr-1.5 text-[#34d399] leading-none shrink-0">home</span>
+                    <span>3D 2BHK Wiring</span>
+                  </button>
+                  <button
+                    onClick={() => onSelectTab('twin-3d')}
+                    className="inline-flex items-center justify-center h-10 px-3 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white text-[12px] font-semibold transition-all cursor-pointer border border-[#fde047]/35 backdrop-blur-md whitespace-nowrap"
+                  >
+                    <span className="material-symbols-outlined text-[16px] mr-1.5 text-[#F59E0B] leading-none shrink-0">electric_meter</span>
+                    <span>3D 33kV Yard</span>
                   </button>
                 </div>
               </div>
@@ -311,23 +353,23 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 </span>
               </div>
 
-              {/* Quick Telemetry Ticker */}
+              {/* Verified Engineering Scope Cards */}
               <div className="grid grid-cols-2 gap-3 w-full items-stretch">
                 <div className="p-4 rounded-xl bg-[#0B192C]/80 backdrop-blur-md text-white flex flex-col justify-between gap-1 border border-white/15 shadow-xl h-full">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] text-slate-300 uppercase tracking-wider font-semibold">Substations Delivered</span>
+                    <span className="text-[11px] text-slate-300 uppercase tracking-wider font-semibold">HT / EHT Grid Scope</span>
                     <span className="material-symbols-outlined text-[#38BDF8] text-[18px] leading-none shrink-0">domain</span>
                   </div>
-                  <span className="font-stat-counter text-white text-[26px] sm:text-[30px]">150+ MVA</span>
-                  <span className="text-[12px] text-slate-300">Aggregated Connected Load</span>
+                  <span className="font-stat-counter text-white text-[22px] sm:text-[26px]">11kV – 110kV</span>
+                  <span className="text-[12px] text-slate-300">Substations, VCB &amp; CEIG Liaison</span>
                 </div>
                 <div className="p-4 rounded-xl bg-[#0B192C]/80 backdrop-blur-md text-white flex flex-col justify-between gap-1 border border-white/15 shadow-xl h-full">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] text-slate-300 uppercase tracking-wider font-semibold">Solar Capacity</span>
+                    <span className="text-[11px] text-slate-300 uppercase tracking-wider font-semibold">LT Panels &amp; Solar</span>
                     <span className="material-symbols-outlined text-[#F59E0B] text-[18px] leading-none shrink-0">wb_sunny</span>
                   </div>
-                  <span className="font-stat-counter text-white text-[26px] sm:text-[30px]">45+ MWp</span>
-                  <span className="text-[12px] text-slate-300">Clean Industrial Energy</span>
+                  <span className="font-stat-counter text-white text-[22px] sm:text-[26px]">415V – 6300A</span>
+                  <span className="text-[12px] text-slate-300">PCC/MCC Panels &amp; Solar EPC</span>
                 </div>
               </div>
             </div>
@@ -367,9 +409,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </section>
 
-      {/* ================= CREDENTIALS SPOTLIGHT BANNER ================= */}
+      {/* ================= CREDENTIALS SPOTLIGHT & TARGET CUSTOMER SEGMENTS ================= */}
       <section className="w-full bg-[#dce9ff] py-12">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-8">
           <div className="rounded-2xl bg-white p-8 lg:p-10 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-8 border border-[#CBD5E1]/60">
             <div className="flex items-start gap-5">
               <div className="w-14 h-14 rounded-xl bg-[#FEF3C7] flex items-center justify-center shrink-0">
@@ -380,10 +422,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   Official Credentials
                 </span>
                 <h2 className="font-headline-md text-[#0B192C] font-bold">
-                  Super Grade Electrical Contractor in Karnataka
+                  Super Grade Electrical Contractor in Bengaluru &amp; Karnataka
                 </h2>
                 <p className="font-body-md text-[#44474c] max-w-3xl leading-relaxed">
-                  Ananya Electrical solutions is a Super Grade Electrical Contractor with an expertise over 5 years with a luminous track record aimed at maximising Customer Satisfaction. From 2020, Ananya Electrical has been constantly excelling in Designing, Installation, Commissioning of Electrical Systems throughout Karnataka catering to various sectors of the Industry.
+                  <strong>Ananya Electrical Solutions</strong> is a Government of Karnataka Licensed Super Grade Electrical Contractor with over 5 years of specialized expertise dedicated to safety, statutory compliance, and customer satisfaction. Since 2020, <strong>Ananya Electrical Solutions</strong> has delivered turnkey design, installation, testing, and commissioning of HT/LT electrical and solar power systems throughout Bengaluru and Karnataka.
                 </p>
               </div>
             </div>
@@ -397,6 +439,78 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <span className="text-[12px] text-[#44474c] text-center font-medium">
                 Class-1 PWD &amp; Electrical Inspectorate Compliant
               </span>
+            </div>
+          </div>
+
+          {/* 5 Target Customer Segments We Serve */}
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+              <div>
+                <span className="text-[12px] uppercase font-bold tracking-wider text-[#006398]">
+                  Who We Serve Across Bengaluru &amp; Karnataka
+                </span>
+                <h3 className="font-headline-sm text-[#0B192C] font-bold">
+                  Tailored Electrical Contracting &amp; Solar EPC for Every Sector
+                </h3>
+              </div>
+              <span className="text-[12.5px] text-[#44474c]">
+                Click any customer segment to request a sector-specific estimate
+              </span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 items-stretch">
+              {[
+                {
+                  segment: 'Industrial & Manufacturing',
+                  icon: 'factory',
+                  scope: '11kV–110kV substations, power transformers, VCBs, busducts, PCC/MCC panels, XLPE cabling & CEIG approvals.',
+                  ctaTopic: 'Industrial Substation & Plant Electrification',
+                },
+                {
+                  segment: 'Commercial & IT Parks',
+                  icon: 'apartment',
+                  scope: 'HT/LT distribution boards, DG synchronization, APFC harmonic panels, UPS risers & BESCOM load sanctions.',
+                  ctaTopic: 'Commercial & IT Building Electrification',
+                },
+                {
+                  segment: 'Residential & Townships',
+                  icon: 'home_work',
+                  scope: 'IS 732 concealed FRLS wiring, MCB/RCCB DBs, layout DTR electrification, underground cabling & smart home controls.',
+                  ctaTopic: 'Residential & Township Layout Electrification',
+                },
+                {
+                  segment: 'Institutional & Healthcare',
+                  icon: 'local_hospital',
+                  scope: 'Hospitals, universities & public infrastructure requiring isolated earthing, zero-downtime changeover & AMC.',
+                  ctaTopic: 'Institutional & Hospital Electrical Works',
+                },
+                {
+                  segment: 'Solar & Clean Energy',
+                  icon: 'solar_power',
+                  scope: 'Rooftop & ground-mounted solar PV plants, string/central inverters, bidirectional metering & KERC net-metering.',
+                  ctaTopic: 'Turnkey Rooftop / Ground-Mount Solar EPC',
+                },
+              ].map((item) => (
+                <div
+                  key={item.segment}
+                  onClick={() => onOpenConsultation(item.ctaTopic)}
+                  className="bg-white rounded-xl p-4 border border-[#CBD5E1] hover:border-[#0284C7] shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between gap-3 group"
+                >
+                  <div className="flex flex-col gap-2">
+                    <div className="w-9 h-9 rounded-lg bg-[#e5eeff] text-[#006398] group-hover:bg-[#0284C7] group-hover:text-white transition-colors flex items-center justify-center">
+                      <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
+                    </div>
+                    <h4 className="text-[14px] font-bold text-[#0B192C] group-hover:text-[#0284C7] transition-colors">
+                      {item.segment}
+                    </h4>
+                    <p className="text-[12px] text-[#44474c] leading-relaxed">
+                      {item.scope}
+                    </p>
+                  </div>
+                  <span className="text-[11.5px] font-bold text-[#006398] flex items-center gap-1 pt-2 border-t border-[#E2E8F0]">
+                    Get Sector Quote <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -739,6 +853,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   <img
                     src={service.image || ASSETS.pillarHighVoltage}
                     alt={service.title}
+                    loading="lazy"
+                    onError={handleImgFallback}
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
@@ -840,6 +956,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                       <img
                         src={item.image}
                         alt={item.name}
+                        loading="lazy"
+                        onError={handleImgFallback}
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
@@ -1530,6 +1648,53 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   </div>
                 </div>
 
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[14px] text-[#0B192C] font-semibold" htmlFor="client-email">
+                      Official Email (Optional)
+                    </label>
+                    <input
+                      className="h-11 px-4 rounded bg-[#F8FAFC] border border-[#CBD5E1] text-[#0B192C] font-body-md focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:bg-white"
+                      id="client-email"
+                      placeholder="projects@yourcompany.com"
+                      type="email"
+                      value={formEmail}
+                      onChange={(e) => setFormEmail(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[14px] text-[#0B192C] font-semibold">
+                      Preferred Instant Response Channel
+                    </label>
+                    <div className="grid grid-cols-2 gap-2 h-11">
+                      <button
+                        type="button"
+                        onClick={() => setPreferredChannel('whatsapp')}
+                        className={`rounded border text-[12.5px] font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors ${
+                          preferredChannel === 'whatsapp'
+                            ? 'bg-[#25D366]/15 border-[#25D366] text-[#0B192C]'
+                            : 'bg-[#F8FAFC] border-[#CBD5E1] text-[#44474c]'
+                        }`}
+                      >
+                        <span className="material-symbols-outlined text-[16px] text-[#16a34a]">chat</span>
+                        <span>WhatsApp</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPreferredChannel('email')}
+                        className={`rounded border text-[12.5px] font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors ${
+                          preferredChannel === 'email'
+                            ? 'bg-[#0284C7]/15 border-[#0284C7] text-[#0B192C]'
+                            : 'bg-[#F8FAFC] border-[#CBD5E1] text-[#44474c]'
+                        }`}
+                      >
+                        <span className="material-symbols-outlined text-[16px] text-[#0284C7]">mail</span>
+                        <span>Email</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[14px] text-[#0B192C] font-semibold" htmlFor="notes">
                     Project Scope &amp; Connected Load Details
@@ -1558,6 +1723,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   </label>
                 </div>
 
+                {formError && (
+                  <div className="p-3.5 rounded-lg bg-red-50 border border-red-200 text-red-800 text-[13px] font-medium flex items-center gap-2" role="alert">
+                    <span className="material-symbols-outlined text-[18px] text-red-600 shrink-0">error</span>
+                    <span>{formError}</span>
+                  </div>
+                )}
+
                 <button
                   className="h-12 w-full rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[14px] font-bold shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
                   type="submit"
@@ -1571,7 +1743,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     <div className="flex items-center gap-2">
                       <span className="material-symbols-outlined text-emerald-600">check_circle</span>
                       <span>
-                        <strong>Inquiry Logged ({lastHomeInquiry.id}):</strong> Our Super Grade engineering team will contact you within 4 business hours. You can also dispatch immediately via WhatsApp or Email:
+                        <strong>Inquiry Logged ({lastHomeInquiry.id}):</strong> Our Super Grade engineering team will contact you within 4 business hours. Click below to immediately transmit your structured enquiry to our engineering desk:
                       </span>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">

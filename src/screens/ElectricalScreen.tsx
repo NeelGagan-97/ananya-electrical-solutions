@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ASSETS } from '../data/constants';
-
 import { NavigationTab } from '../types';
+import { BUSINESS_NAP, trackConversionEvent } from '../utils/seo';
 
 interface ElectricalScreenProps {
   onOpenConsultation: (service?: string) => void;
@@ -37,7 +37,7 @@ export const ElectricalScreen: React.FC<ElectricalScreenProps> = ({ onOpenConsul
       id: 'incoming',
       title: '11kV / 33kV Utility Feeder',
       desc: 'Dedicated express feeder or tapping from KPTCL / BESCOM transmission line with double pole (DP) structure, lightning arresters, and gang operated disconnect switch.',
-      spec: 'Conductor: Dog/Panther ACSR or HT XLPE Undergound Cable'
+      spec: 'Conductor: ACSR Overhead Line or 11kV/33kV HT XLPE Underground Cable (IS 7098)'
     },
     {
       id: 'vcb',
@@ -93,12 +93,30 @@ export const ElectricalScreen: React.FC<ElectricalScreenProps> = ({ onOpenConsul
                 className="h-11 px-5 rounded-lg bg-[#0284C7] hover:bg-[#2563EB] text-white text-[13.5px] font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px] leading-none">request_quote</span>
-                <span>Request Substation Feasibility Review</span>
+                <span>Request Substation Quote</span>
               </button>
+              <a
+                href={`tel:${BUSINESS_NAP.primaryPhoneTel}`}
+                onClick={() => trackConversionEvent('phone_click', BUSINESS_NAP.primaryPhone, 'ElectricalScreen Hero')}
+                className="h-11 px-4 rounded-lg bg-[#F59E0B] hover:bg-[#d97706] text-[#2a1700] text-[13.5px] font-bold shadow-md transition-all inline-flex items-center gap-1.5"
+              >
+                <span className="material-symbols-outlined text-[18px] leading-none">call</span>
+                <span>Call {BUSINESS_NAP.primaryPhone}</span>
+              </a>
+              <a
+                href={`https://wa.me/${BUSINESS_NAP.whatsappNumber}?text=Hello%20Ananya%20Electrical%20Solutions%2C%20I%20need%20a%20quote%20for%20HT%2FLT%20Substation%20or%20Switchgear%20works%20in%20Bengaluru.`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackConversionEvent('whatsapp_click', BUSINESS_NAP.primaryPhone, 'ElectricalScreen Hero')}
+                className="h-11 px-4 rounded-lg bg-[#25D366] hover:bg-[#1ebe5d] text-slate-950 text-[13.5px] font-bold shadow-md transition-all inline-flex items-center gap-1.5"
+              >
+                <span className="material-symbols-outlined text-[18px] leading-none">chat</span>
+                <span>WhatsApp</span>
+              </a>
               {onSelectTab && (
                 <button
                   onClick={() => onSelectTab('twin-3d')}
-                  className="h-11 px-5 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white border border-[#38bdf8]/50 text-[13.5px] font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
+                  className="h-11 px-4 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white border border-[#38bdf8]/50 text-[13px] font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[18px] text-[#38bdf8] leading-none">3d_rotation</span>
                   <span>Inspect in 3D Yard Twin</span>

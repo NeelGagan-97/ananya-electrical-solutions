@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { SERVICES } from '../data/constants';
-import { ServiceItem } from '../types';
+import { ServiceItem, NavigationTab } from '../types';
 import {
   CategoryDynamicIcon,
   ServiceCardVisualHeader,
   CategoryColorConfig,
   ServiceCategoryKey
 } from '../components/ServiceCategoryIcons';
-
-import { NavigationTab } from '../types';
+import { BUSINESS_NAP, trackConversionEvent } from '../utils/seo';
 
 interface ServicesScreenProps {
   onOpenConsultation: (service?: string) => void;
@@ -119,7 +118,7 @@ export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultati
                   Service Portfolio
                 </span>
                 <span className="px-2.5 py-1 rounded bg-[#FEF3C7] text-[#2a1700] text-[11px] font-bold uppercase tracking-wider leading-none">
-                  8 Turnkey Domains
+                  12 Turnkey Services
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -294,26 +293,186 @@ export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultati
                       ))}
                     </ul>
                   </div>
+                  {service.standards && (
+                    <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-[11px]">
+                      <span className="text-slate-400 uppercase font-semibold">Standards:</span>
+                      <span className="font-mono font-semibold text-[#006398]">{service.standards}</span>
+                    </div>
+                  )}
+
+                  {service.targetSegments && service.targetSegments.length > 0 && (
+                    <div className="flex flex-wrap gap-1 pt-1">
+                      {service.targetSegments.map((seg, idx) => (
+                        <span
+                          key={idx}
+                          className="text-[10.5px] px-2 py-0.5 rounded bg-[#f8f9ff] text-[#0B192C] border border-[#CBD5E1] font-medium"
+                        >
+                          {seg}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
-                <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-between">
+                <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-between gap-2">
                   <button
                     onClick={() => setSelectedService(service)}
                     className="text-[13px] text-slate-600 hover:text-[#0B192C] font-semibold underline underline-offset-4 cursor-pointer"
                   >
                     Technical Specs
                   </button>
-                  <button
-                    onClick={() => onOpenConsultation(service.title)}
-                    className="px-4 py-2 rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[13px] font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <span>Inquire</span>
-                    <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={`https://wa.me/${BUSINESS_NAP.whatsappNumber}?text=${encodeURIComponent(`Hello Ananya Electrical Solutions, I would like a quote for ${service.title} in Bengaluru/Karnataka.`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => trackConversionEvent('whatsapp_click', service.title, 'ServicesScreen Card')}
+                      className="px-2.5 py-2 rounded-lg bg-[#25D366]/15 hover:bg-[#25D366] text-[#15803d] hover:text-white text-[12px] font-bold transition-colors inline-flex items-center gap-1"
+                      title="Enquire on WhatsApp"
+                    >
+                      <span className="material-symbols-outlined text-[15px]">chat</span>
+                      <span>WhatsApp</span>
+                    </a>
+                    <button
+                      onClick={() => onOpenConsultation(service.title)}
+                      className="px-3.5 py-2 rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[12.5px] font-semibold transition-colors flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>Get Quote</span>
+                      <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Dedicated 7-Pillar Technical Service Scope Guide */}
+        <div className="mt-4 bg-white rounded-2xl border border-[#CBD5E1] p-6 sm:p-8 shadow-sm flex flex-col gap-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E2E8F0] pb-4">
+            <div>
+              <span className="text-[12px] uppercase font-bold text-[#0284C7] tracking-wider">
+                Comprehensive Technical Service Guide
+              </span>
+              <h2 className="font-headline-md text-[#0B192C] font-bold">
+                7 Confirmed Electrical &amp; Solar Engineering Pillars in Bengaluru &amp; Karnataka
+              </h2>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <a
+                href={`tel:${BUSINESS_NAP.primaryPhoneTel}`}
+                onClick={() => trackConversionEvent('phone_click', BUSINESS_NAP.primaryPhone, 'ServicesScreen 7-Pillar')}
+                className="h-10 px-4 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white text-[12.5px] font-bold inline-flex items-center gap-1.5"
+              >
+                <span className="material-symbols-outlined text-[16px]">call</span>
+                <span>Call {BUSINESS_NAP.primaryPhone}</span>
+              </a>
+              <button
+                onClick={() => onOpenConsultation('Turnkey Electrical & Solar Package')}
+                className="h-10 px-4 rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[12.5px] font-bold inline-flex items-center gap-1.5 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[16px] text-[#F59E0B]">request_quote</span>
+                <span>Request BOQ Estimate</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {[
+              {
+                num: '01',
+                title: 'HT / LT Electrical Works & Substations (11kV – 110kV)',
+                scope: 'Turnkey design, supply, erection, and commissioning of 11kV, 33kV, 66kV, and 110kV indoor/outdoor substations, DP structures, ONAN/dry-type power transformers, SF6/VCB switchgear, and CT/PT metering units.',
+                standards: 'IS 2026, IEC 62271-100, CEA Safety Regulations',
+                tab: 'electrical' as NavigationTab,
+                tabLabel: 'Explore HT/LT Substation Page',
+              },
+              {
+                num: '02',
+                title: 'Armored XLPE Cabling, Trenching & Cable Tray Networks',
+                scope: 'Heavy underground and overhead HT/LT armored XLPE cable laying (1.1kV to 33kV), HDPE pipe trenching, hot-dip galvanized (HDG) perforated & ladder cable trays, heat-shrink/cold-shrink terminations, and route markers.',
+                standards: 'IS 7098 (XLPE), IS 1255 (Cable Installation Code)',
+                tab: 'residential-layout-3d' as NavigationTab,
+                tabLabel: 'Inspect 3D Cable Trench Twin',
+              },
+              {
+                num: '03',
+                title: 'Electrical Control Panels (PCC, MCC, APFC, AMF & Busducts)',
+                scope: 'Custom CPRI type-tested Form-4b Power Control Centers (PCC), Motor Control Centers (MCC), VFD automation panels, DG AMF synchronization panels, sandwich busduct trunking up to 6300A, and 7% detuned APFC banks.',
+                standards: 'IEC 61439-1/2, IS 8623, IP54 / IP65 Enclosure Rating',
+                tab: 'electrical' as NavigationTab,
+                tabLabel: 'Calculate Panel & Breaker Sizing',
+              },
+              {
+                num: '04',
+                title: 'Installation, Pre-Commissioning Testing & Statutory Approvals',
+                scope: 'Primary and secondary relay injection testing, 5kV/10kV digital Megger insulation resistance, VLF Hi-Pot dielectric testing, transformer oil BDV & Tan-Delta diagnostics, plus complete CEIG & BESCOM/KPTCL statutory clearances.',
+                standards: 'CEA Regulations 2010, IS 3043 Earthing, KPTCL Norms',
+                tab: 'contact-us' as NavigationTab,
+                tabLabel: 'Book CEIG / Testing Consultation',
+              },
+              {
+                num: '05',
+                title: 'Industrial, Commercial & Residential Electrification',
+                scope: 'Factory high-bay lighting, machine power drops, IT office UPS & raw power distribution, hospital isolated power systems, and IS 732 residential 2BHK/villa concealed FRLS conduit wiring with MCB/RCCB protection.',
+                standards: 'IS 732 Wiring Code, NBC 2016 Part 8',
+                tab: 'residential-3d' as NavigationTab,
+                tabLabel: 'Explore 3D 2BHK Wiring Simulator',
+              },
+              {
+                num: '06',
+                title: 'Preventive Maintenance (AMC), Thermal Audits & Earthing',
+                scope: '24/7 emergency breakdown dispatch across Bengaluru & Karnataka, quarterly transformer oil filtration, VCB/ACB breaker servicing, FLIR infrared thermography audits, and IS 3043 chemical copper/GI earthing pits.',
+                standards: 'IS 3043, ISO 45001 Safety Protocol, LOTO Procedures',
+                tab: 'contact-us' as NavigationTab,
+                tabLabel: 'Schedule Facility AMC Audit',
+              },
+              {
+                num: '07',
+                title: 'Turnkey Solar Power Installations (Rooftop & Ground-Mount)',
+                scope: 'Commercial, industrial, and residential solar EPC using Tier-1 bifacial Mono-PERC/TOPCon PV modules, string & central inverters, hot-dip galvanized wind-rated structures, ACDB/DCDB protection, and BESCOM KERC net metering.',
+                standards: 'IEC 61215, IS 16221, KERC Net-Metering Norms',
+                tab: 'solar-solutions' as NavigationTab,
+                tabLabel: 'Launch Solar ROI Calculator',
+              },
+            ].map((pillar) => (
+              <div
+                key={pillar.num}
+                className="p-5 rounded-xl bg-[#f8f9ff] border border-[#CBD5E1] flex flex-col justify-between gap-3 hover:border-[#0284C7] transition-colors"
+              >
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded bg-[#0B192C] text-[#F59E0B]">
+                      PILLAR {pillar.num}
+                    </span>
+                    <span className="text-[11px] font-mono text-[#006398] font-semibold">
+                      {pillar.standards}
+                    </span>
+                  </div>
+                  <h3 className="text-[16px] font-bold text-[#0B192C]">{pillar.title}</h3>
+                  <p className="text-[13px] text-[#44474c] leading-relaxed">{pillar.scope}</p>
+                </div>
+                <div className="pt-3 border-t border-[#E2E8F0] flex flex-wrap items-center justify-between gap-2">
+                  {onSelectTab && (
+                    <button
+                      onClick={() => onSelectTab(pillar.tab)}
+                      className="text-[12.5px] font-bold text-[#0284C7] hover:underline inline-flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>{pillar.tabLabel}</span>
+                      <span className="material-symbols-outlined text-[15px]">open_in_new</span>
+                    </button>
+                  )}
+                  <button
+                    onClick={() => onOpenConsultation(pillar.title)}
+                    className="text-[12.5px] font-bold text-[#0B192C] hover:text-[#0284C7] inline-flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>Enquire Scope</span>
+                    <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Scope Responsibility Matrix Table */}

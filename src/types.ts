@@ -21,6 +21,8 @@ export interface ServiceItem {
   specs: string[];
   icon: string;
   image?: string;
+  standards?: string;
+  targetSegments?: string[];
 }
 
 export interface ElectricalEquipmentItem {
@@ -50,6 +52,9 @@ export interface ProjectItem {
   completionYear: string;
   clientVertical: string;
   approvals: string[];
+  scopeOfWork?: string[];
+  clientReferencePlaceholder?: string;
+  isPlaceholderEditable?: boolean;
 }
 
 export interface EngineeringInquiry {
@@ -62,4 +67,5 @@ export interface EngineeringInquiry {
   loadDetails: string;
   timestamp: string;
   complianceConfirmed: boolean;
+  preferredChannel?: 'whatsapp' | 'email';
 }

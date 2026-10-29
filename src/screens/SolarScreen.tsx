@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ASSETS } from '../data/constants';
-
 import { NavigationTab } from '../types';
+import { BUSINESS_NAP, trackConversionEvent } from '../utils/seo';
 
 interface SolarScreenProps {
   onOpenConsultation: (service?: string) => void;
@@ -53,12 +53,30 @@ export const SolarScreen: React.FC<SolarScreenProps> = ({ onOpenConsultation, on
                 className="h-11 px-5 rounded-lg bg-[#F59E0B] hover:bg-[#d97706] text-[#2a1700] text-[13.5px] font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px] leading-none">solar_power</span>
-                <span>Request Solar Site Assessment</span>
+                <span>Request Solar Quote</span>
               </button>
+              <a
+                href={`tel:${BUSINESS_NAP.primaryPhoneTel}`}
+                onClick={() => trackConversionEvent('phone_click', BUSINESS_NAP.primaryPhone, 'SolarScreen Hero')}
+                className="h-11 px-4 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white text-[13.5px] font-bold shadow-md transition-all inline-flex items-center gap-1.5"
+              >
+                <span className="material-symbols-outlined text-[18px] leading-none">call</span>
+                <span>Call {BUSINESS_NAP.primaryPhone}</span>
+              </a>
+              <a
+                href={`https://wa.me/${BUSINESS_NAP.whatsappNumber}?text=Hello%20Ananya%20Electrical%20Solutions%2C%20I%20would%20like%20a%20rooftop%20solar%20installation%20quote%20in%20Bengaluru.`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackConversionEvent('whatsapp_click', BUSINESS_NAP.primaryPhone, 'SolarScreen Hero')}
+                className="h-11 px-4 rounded-lg bg-[#25D366] hover:bg-[#1ebe5d] text-slate-950 text-[13.5px] font-bold shadow-md transition-all inline-flex items-center gap-1.5"
+              >
+                <span className="material-symbols-outlined text-[18px] leading-none">chat</span>
+                <span>WhatsApp</span>
+              </a>
               {onSelectTab && (
                 <button
                   onClick={() => onSelectTab('twin-3d')}
-                  className="h-11 px-5 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white border border-[#38bdf8]/50 text-[13.5px] font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
+                  className="h-11 px-4 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white border border-[#38bdf8]/50 text-[13px] font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[18px] text-[#38bdf8] leading-none">3d_rotation</span>
                   <span>View 3D Solar Array</span>
@@ -71,10 +89,10 @@ export const SolarScreen: React.FC<SolarScreenProps> = ({ onOpenConsultation, on
             <div className="p-6 rounded-2xl bg-[#1E293B]/90 border border-slate-700/80 shadow-xl flex flex-col gap-4">
               <div className="flex items-center justify-between pb-3 border-b border-slate-700/80">
                 <span className="text-[11px] font-mono uppercase tracking-wider text-[#F59E0B] font-bold">
-                  Solar EPC Metrics
+                  Solar EPC Specifications
                 </span>
                 <span className="px-2.5 py-1 rounded bg-[#FEF3C7] text-[#2a1700] text-[11px] font-bold uppercase tracking-wider leading-none">
-                  45+ MWp Installed
+                  CEIG &amp; KERC Compliant
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-4">

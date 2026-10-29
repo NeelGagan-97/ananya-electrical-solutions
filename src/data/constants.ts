@@ -2,7 +2,12 @@ import { ServiceItem, ProjectItem, ElectricalEquipmentItem } from '../types';
 
 export const ASSETS = {
   logo: '/assets/aistudio/logo_ananya.png',
+  logoEmblem: '/assets/aistudio/Screenshot_2026-10-24_213203_08863194.png',
   transmissionBg: '/assets/aistudio/Electrical_transmission_lines_on__2K_20261025145912_944acc49.jpg',
+  residentialWiring2Bhk: '/assets/aistudio/image_0bbe8092.png',
+  residentialInterior: '/assets/aistudio/image_4874db57.png',
+  residentialIsometric: '/assets/aistudio/image_a7254a92.png',
+  cadTwinPreview: '/assets/aistudio/Screenshot_2026-10-25_200547_b30f45c8.png',
   hero: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD4VC5wbdLF6oMvZEPulwpBgA-Yp8jDBjo4lRm43CiNcy4wAz8f49u_BG5pLMeD9avm2zSVziMc6kRESJ5-iXfd7FzgEhjkczKHssp33WQCga79GEkgPHAlH7BtsTkhPVHCT-JUkrcDtghkNrsl7yBt6UoIEof2UlnBAXLlBuVtDmKN7vKPlbmmThg0jGV_YOLssfE-FQMWMjMjXBQ30hrcKwLrvLwg6e7W_yb9iNa5jOYN4k0uTDi2JQ',
   pillarHighVoltage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCmD_0-a9fxQ-SiQoGtr6UyJQGCE0tjhkx2bzY4RN2BqNF5FUMOfYVNmgFKhkVZspM9a2dYsv-rr-y0d6z0AUaaMWQdLw-3Bh35Rz-Mt7IrXIbseRSfSRGJmiy9a1qvZD3QE1aFnSoT0ii8wCS4Z_xMDJlusRXtvTLXK4UGrcJwsbR5hpmwYYR0aRKoQwYrwX7MI4-ckkpcVNS8al9MMU5jqBPjD_Ea3TUbMtngwvvKz3H1GnxyNTZtnQ',
   pillarSolar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBJf2xIuHfI8H2wvPaxCYBRCHfspcK1BdHdLjgujCCF2XN2-fiwSy4U_ggSPHq5Yxttd35KOMynef7TSDzDF3sxFJkwyI0EkbsTfu4sHVlQw_x_YofNCyPSGC6_F1GTkbW5dk70UjzEdOFsi3L8p6u54k7kHEkYXKHihWJQElUUiRSWBnveDp9ZbADQPzVt7z2e68bHdifcFgQJdVceKw_GEd1ONsAlg83Qa_GJc5I-knW2fe0AXbsblA',
@@ -16,194 +21,218 @@ export const ASSETS = {
 export const SERVICES: ServiceItem[] = [
   {
     id: 'ht-lt-distribution',
-    title: 'HT & LT Distribution Systems',
+    title: 'HT & LT Electrical Works & Distribution',
     category: 'high-voltage',
-    badge: 'Industrial Standard',
+    badge: 'Industrial & Commercial',
     voltageClass: '11kV / 33kV / 415V',
-    description: 'Design, supply, and integration of 11kV/33kV HT switchgear, Low Tension distribution boards, busduct trunking systems, and automated changeover setups.',
+    standards: 'IEC 62271 / IS 732 / CEA Regulations',
+    targetSegments: ['Industrial Plants', 'Commercial Complexes', 'Tech Parks', 'Institutional Campuses'],
+    description: 'Turnkey design, supply, erection, and integration of 11kV/33kV High Tension switchgear, Low Tension distribution boards, sandwich busduct trunking, and automatic changeover systems across Bengaluru and Karnataka.',
     icon: 'electric_meter',
     image: ASSETS.project1,
     specs: [
-      '11kV & 33kV Indoor / Outdoor Switchgear',
-      'Air Insulated (AIS) & Gas Insulated (GIS) Options',
-      'Sandwich Busducts up to 6300A rating',
-      'Auto Mains Failure (AMF) Synchronizing Panels'
+      '11kV & 33kV Indoor / Outdoor Switchgear Installations',
+      'Air Insulated (AIS) & Gas Insulated (GIS) Ring Main Units',
+      'Overhead & Vertical Sandwich Busducts up to 6300A',
+      'Auto Mains Failure (AMF) & DG Synchronizing Panels'
     ]
   },
   {
     id: 'turnkey-solar',
-    title: 'Turnkey Solar Power Plants',
+    title: 'Turnkey Solar Power Installations (EPC)',
     category: 'solar',
-    badge: 'C&I / Institutional',
-    voltageClass: 'LT / 11kV / 33kV Grid',
-    description: 'Complete EPC solutions for rooftop and ground-mounted solar installations. Tier-1 solar modules, high-efficiency string inverters, and lifetime yield optimization.',
+    badge: 'Rooftop & Ground Mount',
+    voltageClass: 'LT 415V / 11kV / 33kV',
+    standards: 'IEC 61215 / IEC 62109 / KERC Net Metering',
+    targetSegments: ['Industrial Warehouses', 'Commercial Buildings', 'Apartment Associations', 'Independent Homes'],
+    description: 'End-to-end solar EPC solutions for industrial sheds, commercial rooftops, institutions, and residential villas in Bengaluru and Karnataka, complete with Tier-1 bifacial PV modules and BESCOM net-metering approvals.',
     icon: 'solar_power',
     image: ASSETS.pillarSolar,
     specs: [
-      'Bifacial TOPCon & Mono PERC 550Wp+ Modules',
-      'Smart Grid String Inverters with 98.8% Efficiency',
-      'Bescom / KERC Net-metering approval liaisons',
-      'Remote SCADA telemetry & weather station'
+      'Tier-1 Bifacial TOPCon & Mono PERC Solar PV Modules',
+      'Multi-MPPT On-Grid & Hybrid String Inverters',
+      'Complete BESCOM / KERC Bidirectional Net-Metering Liaison',
+      'Hot-Dip Galvanized Wind-Rated Mounting Structures & Earthing'
     ]
   },
   {
     id: 'industrial-automation',
-    title: 'Industrial Automation & Panels',
+    title: 'Electrical Control Panels (PCC, MCC, APFC & VFD)',
     category: 'automation',
-    badge: 'Custom Enclosures',
+    badge: 'CPRI Type-Tested',
     voltageClass: 'LT 415V 3-Phase',
-    description: 'Custom fabrication of Motor Control Centers (MCC), Power Control Centers (PCC), synchronized PLC control desks, and smart metering telemetry panels.',
+    standards: 'IEC 61439-1 & 2 / IS 8623',
+    targetSegments: ['Manufacturing Units', 'Process Industries', 'Commercial High-Rises', 'Pumping Stations'],
+    description: 'Custom engineering, supply, and installation of Power Control Centers (PCC), Motor Control Centers (MCC), PLC/VFD automation desks, feeder pillars, and sub-main distribution boards.',
     icon: 'memory',
     image: ASSETS.pillarTesting,
     specs: [
-      'Form 4b separation for maximum safety',
-      'Type-tested assemblies conforming to IEC 61439',
-      'Intelligent Motor Protection Relays (IMPR)',
-      'Dual-redundant PLC and HMI enclosures'
+      'Form-3b & Form-4b Compartmentalized Sheet-Steel Enclosures',
+      'CPRI Type-Tested Assemblies with Tinned Copper Busbars',
+      'Draw-Out Air Circuit Breakers (ACB) & Microprocessor MCCBs',
+      'PLC, VFD & Soft-Starter Motor Control Buckets'
     ]
   },
   {
     id: 'substations-transformers',
-    title: 'Substations & Transformers',
+    title: 'Substations & Power Transformer Erection',
     category: 'high-voltage',
     badge: 'Grid Interconnection',
     voltageClass: '11kV to 110kV',
-    description: 'Erection, oil-filtration, testing, and commissioning of oil-immersed & dry-type cast resin transformers up to 110kV step-down grid substations.',
+    standards: 'IS 2026 / IEC 60076 / KPTCL Norms',
+    targetSegments: ['Heavy Industries', 'Industrial Layouts', 'Large Commercial Campuses', 'Townships'],
+    description: 'Civil foundation, structural erection, oil filtration, testing, and commissioning of oil-immersed (ONAN) and dry-type cast resin transformers with DP/4P outdoor switchyard structures.',
     icon: 'ev_station',
     image: ASSETS.pillarHighVoltage,
     specs: [
-      'Power Transformers up to 50 MVA class',
-      'Cast resin dry type for indoor commercial towers',
-      'Nitrogen injection fire protection (NIFPS)',
-      'Substation automation systems (SAS / IEC 61850)'
-    ]
-  },
-  {
-    id: 'energy-audits-apfc',
-    title: 'Energy Audits & APFC Panels',
-    category: 'maintenance',
-    badge: 'Tariff Savings',
-    voltageClass: '415V to 11kV',
-    description: 'Comprehensive power quality assessments, harmonic distortion mitigation, and automatic power factor correction (APFC) to eliminate utility penalty surcharges.',
-    icon: 'insights',
-    image: ASSETS.project3,
-    specs: [
-      'Maintain Power Factor > 0.99 with zero surcharge',
-      'Detuned reactors for 5th, 7th, 11th harmonic filtering',
-      'Thyristor switched capacitor banks (fast response)',
-      'Detailed Class-A power quality logging reports'
-    ]
-  },
-  {
-    id: 'statutory-liaison',
-    title: 'Statutory Liaison & CEIG Approvals',
-    category: 'statutory',
-    badge: 'Zero Delays',
-    voltageClass: 'All Voltage Classes',
-    description: 'Handling total administrative and engineering paperwork for electrical drawings sanction, safety clearances, work completion certificates, and ESCOM load energization.',
-    icon: 'assignment_turned_in',
-    image: ASSETS.hero,
-    specs: [
-      'Single Line Diagram (SLD) preparation to CEIG specs',
-      'Drawing sanction from Electrical Inspectorate',
-      'Safety clearance certificate for energization',
-      'ESCOM liaison: BESCOM, MESCOM, HESCOM, GESCOM, CESC'
-    ]
-  },
-  {
-    id: 'testing-commissioning',
-    title: 'Relay Testing & Pre-Commissioning',
-    category: 'statutory',
-    badge: 'Precision Testing',
-    voltageClass: 'Primary & Secondary',
-    description: 'Primary injection, secondary injection, breaker timing tests, contact resistance, transformer turns ratio, and tan-delta insulation diagnostic testing.',
-    icon: 'architecture',
-    image: ASSETS.aboutExecution,
-    specs: [
-      'Megger & Hi-Pot insulation breakdown testing',
-      'Numerical relay coordination & curves verification',
-      'Earth pit resistance testing & soil resistivity',
-      'Certified test reports acceptable to CEIG'
-    ]
-  },
-  {
-    id: 'industrial-amc',
-    title: 'Comprehensive Industrial AMC',
-    category: 'maintenance',
-    badge: '24/7 Grid Support',
-    voltageClass: 'Facility-Wide',
-    description: 'Preventive monthly audits, transformer oil BDV filtration, thermal imaging thermography of switchboards, and guaranteed 4-hour emergency dispatch response.',
-    icon: 'support_agent',
-    image: ASSETS.project2,
-    specs: [
-      'Thermographic infrared scans of busbars & joints',
-      'Transformer oil testing (BDV, acidity, moisture)',
-      'Scheduled breaker lubrication & contact servicing',
-      'Dedicated emergency hotline with rapid mobilization'
-    ]
-  },
-  {
-    id: 'vcb-acb-switchgear',
-    title: 'HT VCB & LT ACB Switchgear Supply',
-    category: 'high-voltage',
-    badge: 'Heavy Equipment',
-    voltageClass: '11kV / 33kV / 415V',
-    description: 'Supply, retrofitting, and interlocking of indoor/outdoor Vacuum Circuit Breakers (VCB), Ring Main Units (RMU), and draw-out Air Circuit Breakers (ACB).',
-    icon: 'electrical_services',
-    image: ASSETS.transmissionBg,
-    specs: [
-      '11kV & 33kV Draw-out Metal-Clad VCB Panels',
-      'SF6 Gas Insulated Ring Main Units (RMU)',
-      'Microprocessor Release ACBs (800A to 6300A)',
-      'Arc-fault containment & mechanical castle interlocks'
+      'ONAN Oil-Immersed & Cast-Resin Dry-Type Transformers',
+      'Double-Pole (DP) & Four-Pole (4P) Galvanized Yard Structures',
+      'On-Load Tap Changers (OLTC), RTCC Panels & NIFPS Safety',
+      'HT Trivector Metering Cubicles, GOAB Isolators & Lightning Arresters'
     ]
   },
   {
     id: 'cable-trays-xlpe-cabling',
-    title: 'Armored XLPE Cabling & Cable Trays',
+    title: 'HT / LT Armored XLPE Cabling & Cable Trays',
     category: 'high-voltage',
-    badge: 'Plant Infrastructure',
+    badge: 'Plant & Underground Infra',
     voltageClass: 'LT 1.1kV to HT 33kV',
-    description: 'Overhead hot-dip galvanized ladder/perforated cable tray networks, underground trench duct banks, and heat-shrink/cold-shrink HT cable terminations.',
+    standards: 'IS 7098 / IEC 60502',
+    targetSegments: ['Factories & Warehouses', 'Residential Layouts', 'IT Campuses', 'Substation Feeders'],
+    description: 'Supply and laying of underground and overhead armored XLPE power cables, hot-dip galvanized ladder and perforated cable tray networks, trench excavation, and heat-shrink/cold-shrink cable terminations.',
     icon: 'cable',
     image: ASSETS.project3,
     specs: [
-      '3C x 95 to 400 sq.mm A2XFY HT XLPE Cabling',
-      'Hot-Dip Galvanized (HDG) Ladder & Perforated Trays',
-      'Raychem / 3M Indoor & Outdoor End Terminations',
-      'DC Hi-Pot pressure test & route marker installation'
+      '1.1kV LT to 11kV/33kV HT A2XFY Armored XLPE Cable Laying',
+      'Hot-Dip Galvanized (HDG) Ladder & Perforated Cable Trays',
+      'Indoor & Outdoor Raychem / 3M Heat-Shrink End Terminations',
+      'Underground HDPE Pipe Ducting, Sand Cushioning & Route Markers'
+    ]
+  },
+  {
+    id: 'testing-commissioning',
+    title: 'Installation, Relay Testing & Pre-Commissioning',
+    category: 'statutory',
+    badge: 'Calibrated Diagnostics',
+    voltageClass: 'LT / HT / EHT Systems',
+    standards: 'IS 1885 / CEA Safety Regulations',
+    targetSegments: ['Substation Projects', 'Industrial Plants', 'Commercial Towers', 'Utility Interconnections'],
+    description: 'Comprehensive pre-commissioning electrical testing including primary and secondary relay injection, 5kV/10kV digital Megger insulation resistance, VLF Hi-Pot cable testing, and transformer oil BDV diagnostics.',
+    icon: 'architecture',
+    image: ASSETS.aboutExecution,
+    specs: [
+      '5kV / 10kV Digital Insulation Resistance (IR & PI) Megger Testing',
+      'Primary & Secondary Injection Relay Calibration & Breaker Timing',
+      'DC / VLF Hi-Pot Pressure Testing for HT XLPE Cables',
+      'Earth Pit Resistance & Soil Resistivity Verification Reports'
+    ]
+  },
+  {
+    id: 'statutory-liaison',
+    title: 'BESCOM / KPTCL Liaison & CEIG Approvals',
+    category: 'statutory',
+    badge: 'Single-Window Statutory',
+    voltageClass: 'All Voltage Classes',
+    standards: 'CEA Regulations 2023 / Karnataka Electrical Inspectorate',
+    targetSegments: ['New Industrial Plants', 'Commercial Buildings', 'Apartment Complexes', 'Solar Plants'],
+    description: 'End-to-end statutory engineering documentation and government liaison for Single Line Diagram (SLD) drawing sanction, Chief Electrical Inspector to Government (CEIG) safety certificates, and ESCOM load energization.',
+    icon: 'assignment_turned_in',
+    image: ASSETS.hero,
+    specs: [
+      'Single Line Diagram (SLD) & Equipment Layout CAD Preparation',
+      'CEIG Drawing Sanction & Final Statutory Safety Inspection',
+      'Fresh Power Sanction, Load Enhancement & Temporary-to-Permanent Tariffs',
+      'All Karnataka ESCOMs: BESCOM, MESCOM, HESCOM, GESCOM & CESC'
+    ]
+  },
+  {
+    id: 'industrial-amc',
+    title: 'Preventive Maintenance, Thermal Audits & AMC',
+    category: 'maintenance',
+    badge: '24/7 Breakdown Support',
+    voltageClass: 'Facility-Wide',
+    standards: 'IS 10118 / NFPA 70B Preventive Protocol',
+    targetSegments: ['Manufacturing Facilities', 'Hospitals', 'Corporate Offices', 'Cold Storage & Logistics'],
+    description: 'Scheduled preventive electrical maintenance contracts (AMC), infrared thermography of switchboards, transformer oil filtration, ACB/VCB breaker servicing, and 24/7 emergency fault troubleshooting.',
+    icon: 'support_agent',
+    image: ASSETS.project2,
+    specs: [
+      'Infrared Thermal Imaging Scans for Busbar & Termination Hotspots',
+      'Online Transformer Oil Filtration & Dielectric BDV Testing',
+      'Scheduled VCB / ACB Breaker Contact Servicing & Lubrication',
+      '24/7 Emergency Breakdown Dispatch Across Bengaluru & Karnataka'
+    ]
+  },
+  {
+    id: 'energy-audits-apfc',
+    title: 'Energy Audits & Harmonic APFC Panels',
+    category: 'maintenance',
+    badge: 'Power Factor Optimization',
+    voltageClass: '415V to 11kV',
+    standards: 'IEC 60831 / IEEE 519',
+    targetSegments: ['Engineering Workshops', 'Plastics & Textiles', 'Pharmaceutical Units', 'Commercial Malls'],
+    description: 'Detailed power quality logging, harmonic distortion analysis, and installation of detuned Automatic Power Factor Correction (APFC) panels to maintain near-unity power factor and prevent utility penalties.',
+    icon: 'insights',
+    image: ASSETS.project3,
+    specs: [
+      'Maintains Power Factor > 0.98–0.99 to Eliminate BESCOM Penalties',
+      '7% & 14% Copper-Wound Detuned Reactors for Harmonic Filtering',
+      'Zero-Crossing Thyristor & Contactor Switched Capacitor Banks',
+      'Load Balancing & Energy Conservation Audit Reports'
+    ]
+  },
+  {
+    id: 'vcb-acb-switchgear',
+    title: 'HT VCB & LT ACB Switchgear Supply & Retrofit',
+    category: 'high-voltage',
+    badge: 'Switchgear & Protection',
+    voltageClass: '11kV / 33kV / 415V',
+    standards: 'IEC 62271-100 / IEC 60947-2',
+    targetSegments: ['Aging Substations', 'Industrial Plants', 'Infrastructure Projects'],
+    description: 'Supply, erection, retrofitting, and mechanical/electrical interlocking of indoor and outdoor Vacuum Circuit Breakers (VCB), SF6 Ring Main Units (RMU), and draw-out Air Circuit Breakers (ACB).',
+    icon: 'electrical_services',
+    image: ASSETS.transmissionBg,
+    specs: [
+      '11kV & 33kV Draw-Out Metal-Clad VCB Breaker Panels',
+      'Compact SF6 / Dry-Air Ring Main Units (RMU) with Numerical Relays',
+      'Microprocessor LSIG Release ACBs (800A to 6300A)',
+      'Castle Key Interlocks, Trip Circuit Supervision & Arc Protection'
     ]
   },
   {
     id: 'dg-sync-ups-backup',
-    title: 'DG Synchronization & Industrial UPS',
+    title: 'Industrial Electrification, DG Sync & UPS Systems',
     category: 'automation',
-    badge: 'Backup Power',
-    voltageClass: '415V / 11kV Captive',
-    description: 'Turnkey installation of Diesel Generator (DG) sets, acoustic enclosures, PLC-based DG synchronization panels, and industrial online double-conversion UPS banks.',
+    badge: 'Turnkey Plant & Backup',
+    voltageClass: '415V / 230V Captive',
+    standards: 'IS 732 / CPCB-IV+ / NBC 2016',
+    targetSegments: ['Factories', 'IT Offices', 'Hospitals', 'Residential Apartments & Villas'],
+    description: 'Complete industrial, commercial, and residential interior electrification, machine power drops, high-bay LED lighting, CPCB-IV+ Diesel Generator (DG) installation, AMF synchronization, and online UPS systems.',
     icon: 'bolt',
     image: ASSETS.project1,
     specs: [
-      'Multi-DG Auto Load Sharing & Synchronizing Panels',
-      'Acoustic Enclosure & Exhaust Stack Erection (CPCB-IV+)',
-      'Industrial Online IG-BT UPS (20 kVA to 500 kVA)',
-      'Reverse power, synchro-check & load-shedding relays'
+      'IS:732 Compliant FRLS/ZHFR Concealed & Industrial Conduit Wiring',
+      'Multi-DG Auto Load Sharing, AMF & Synchronizing Panels',
+      'Industrial Online Double-Conversion UPS Banks & Battery Racks',
+      'High-Bay Industrial LED Lighting & Emergency Exit Circuits'
     ]
   },
   {
     id: 'lightning-chemical-earthing',
-    title: 'Chemical Earthing & Lightning Arresters',
+    title: 'Chemical Earthing & Lightning Protection Systems',
     category: 'maintenance',
-    badge: 'Fault Protection',
+    badge: 'IS 3043 Safety Grid',
     voltageClass: 'IS 3043 / IEC 62305',
-    description: 'Substation copper/GI earth-mat grids, maintenance-free copper-bonded chemical earthing electrodes, and Early Streamer Emission (ESE) lightning arresters.',
+    standards: 'IS 3043 / IEC 62305 / NFC 17-102',
+    targetSegments: ['Substations', 'Factories & Warehouses', 'Solar Plants', 'Apartments & Homes'],
+    description: 'Substation copper/GI flat-strip earth mats, maintenance-free copper-bonded chemical earthing electrodes, Early Streamer Emission (ESE) lightning arresters, and Type 1+2 Surge Protection Devices (SPD).',
     icon: 'shield',
     image: ASSETS.aboutExecution,
     specs: [
-      'Copper-bonded & GI Chemical Earth Electrodes (< 1 Ohm)',
-      'Substation Underground Flat Strip Earth Mat Grid',
-      'Early Streamer Emission (ESE) Lightning Protection',
-      'Type 1+2 Surge Protection Devices (SPD) integration'
+      'Copper-Bonded & GI Chemical Earth Electrodes (< 1 Ohm Target)',
+      'Substation Underground GI / Copper Strip Earth Mat Grids',
+      'Early Streamer Emission (ESE) & Franklin Lightning Arresters',
+      'Dedicated Separate Earthing for Transformer Neutral, Body & Ups/Inverters'
     ]
   }
 ];
@@ -214,16 +243,16 @@ export const ELECTRICAL_EQUIPMENT: ElectricalEquipmentItem[] = [
     name: 'ONAN & Cast-Resin Power Transformers',
     category: 'Substation Equipment',
     voltageRating: '11kV / 33kV / 66kV / 110kV',
-    capacityRange: '250 kVA – 50 MVA',
+    capacityRange: '250 kVA – 25+ MVA',
     standard: 'IS 2026 / IEC 60076',
-    description: 'High-efficiency oil-immersed (ONAN/ONAF) and indoor dry-type cast resin distribution & power transformers equipped with On-Load Tap Changers (OLTC) and RTCC panels.',
+    description: 'High-efficiency oil-immersed (ONAN) and indoor dry-type cast resin distribution and power transformers equipped with On-Load Tap Changers (OLTC) and RTCC panels.',
     image: ASSETS.pillarHighVoltage,
     icon: 'ev_station',
     features: [
-      'BIS Level-2 / Star-Rated low-loss CRGO core',
-      'Automatic On-Load Tap Changer (OLTC) & AVR',
+      'BIS Star-Rated low-loss CRGO core construction',
+      'Automatic On-Load Tap Changer (OLTC) & RTCC panel',
       'Buchholz relay, OTI/WTI & PRV safety devices',
-      'Complete oil BDV filtration & ratio test reports'
+      'Pre-commissioning oil BDV & turns-ratio test reports'
     ]
   },
   {
@@ -233,14 +262,14 @@ export const ELECTRICAL_EQUIPMENT: ElectricalEquipmentItem[] = [
     voltageRating: '11kV – 33kV',
     capacityRange: '630A – 2500A (25kA / 31.5kA)',
     standard: 'IEC 62271-100 / 200',
-    description: 'Horizontal draw-out Vacuum Circuit Breaker (VCB) panels and compact SF6/Dry-Air Ring Main Units (RMU) with numerical overcurrent and earth-fault relays.',
+    description: 'Horizontal draw-out Vacuum Circuit Breaker (VCB) panels and compact Ring Main Units (RMU) with numerical overcurrent and earth-fault protection relays.',
     image: ASSETS.transmissionBg,
     icon: 'electrical_services',
     features: [
-      'Internal arc classified (IAC AFLR) metal-clad enclosure',
+      'Internal arc classified metal-clad enclosure',
       'Numerical protection relays (IDMT 50/51, 50N/51N)',
-      'Motorized spring-charging for SCADA remote trip/close',
-      'resin-cast CT & PT metering chambers'
+      'Motorized spring-charging for remote trip/close',
+      'Resin-cast CT & PT metering chambers'
     ]
   },
   {
@@ -248,16 +277,16 @@ export const ELECTRICAL_EQUIPMENT: ElectricalEquipmentItem[] = [
     name: 'Form-4b LT PCC, MCC & ACB Switchboards',
     category: 'LT Distribution',
     voltageRating: '415V / 690V AC',
-    capacityRange: 'Up to 6300A Busbar, 65kA',
+    capacityRange: 'Up to 6300A Busbar, 50kA/65kA',
     standard: 'IEC 61439-1 & 2',
-    description: 'CPRI type-tested Power Control Centers (PCC) and intelligent Motor Control Centers (MCC) with draw-out Air Circuit Breakers (ACB), VFDs, and soft starters.',
+    description: 'CPRI type-tested Power Control Centers (PCC) and Motor Control Centers (MCC) with draw-out Air Circuit Breakers (ACB), MCCBs, VFDs, and digital energy meters.',
     image: ASSETS.project1,
     icon: 'dns',
     features: [
-      'Form 4b compartmentalization with tinned copper busbars',
+      'Form-4b compartmentalization with tinned copper busbars',
       'Draw-out ACBs & MCCBs with microprocessor LSIG protection',
-      'VFD / Star-Delta / Soft-Starter motor feeder buckets',
-      'RS485 Modbus / Ethernet EMS energy meters'
+      'VFD / Star-Delta / Soft-Starter motor feeder compartments',
+      'RS485 Modbus / Ethernet multifunction energy meters'
     ]
   },
   {
@@ -274,7 +303,7 @@ export const ELECTRICAL_EQUIPMENT: ElectricalEquipmentItem[] = [
       'Class-F / Class-H Mylar & epoxy insulation system',
       'Plug-in tap-off boxes with MCCB/HRC fuse safety',
       'Fire barrier flanges & flexible braided expansion joints',
-      'Low voltage drop & superior heat dissipation housing'
+      'Low voltage drop & high short-circuit withstand housing'
     ]
   },
   {
@@ -284,31 +313,31 @@ export const ELECTRICAL_EQUIPMENT: ElectricalEquipmentItem[] = [
     voltageRating: '415V / 440V 3-Phase',
     capacityRange: '50 kVAR – 2000 kVAR',
     standard: 'IEC 60831 / IEEE 519',
-    description: 'Real-time zero-crossing thyristor-switched Automatic Power Factor Correction (APFC) panels with 7% / 14% copper-wound detuned harmonic reactors.',
+    description: 'Real-time zero-crossing thyristor and contactor switched Automatic Power Factor Correction (APFC) panels with 7% / 14% copper-wound detuned harmonic reactors.',
     image: ASSETS.pillarTesting,
     icon: 'insights',
     features: [
-      'Maintains 0.99+ lag power factor to eliminate penalties',
+      'Maintains 0.99+ lag power factor to eliminate utility penalties',
       'Heavy-duty cylindrical / APP MPP gas-filled capacitors',
       '7% & 14% detuned iron-core harmonic blocking reactors',
-      '12-stage / 16-stage intelligent PID APFC controller'
+      '8-stage / 12-stage / 16-stage intelligent APFC controller'
     ]
   },
   {
     id: 'eq-solar-inverters-pv',
-    name: 'Tier-1 Bifacial PV & Central/String Inverters',
+    name: 'Tier-1 Bifacial PV & String Inverters',
     category: 'Solar EPC Hardware',
-    voltageRating: '1500V DC / 415V–800V AC',
-    capacityRange: '10 kW – 5 MWp Blocks',
+    voltageRating: '1500V DC / 415V AC',
+    capacityRange: '5 kWp – Multi-MWp Blocks',
     standard: 'IEC 61215 / IEC 62109',
-    description: 'N-Type TOPCon bifacial solar modules paired with IP66 multi-MPPT string inverters, ACCombiner boxes, and bidirectional ABT net-metering kiosks.',
+    description: 'N-Type TOPCon / Mono PERC bifacial solar modules paired with IP66 multi-MPPT string inverters, AC/DC combiner boxes, and bidirectional net-metering kiosks.',
     image: ASSETS.pillarSolar,
     icon: 'solar_power',
     features: [
-      '550Wp–585Wp N-Type Bifacial Dual-Glass PV Modules',
-      '98.8% peak efficiency string inverters with AFCI protection',
-      'DC & AC Type-2 Surge Protection Devices (SPD)',
-      'Zero-export & DG-PV fuel-save controller integration'
+      '550Wp–585Wp Tier-1 Bifacial Dual-Glass PV Modules',
+      '98.6%+ peak efficiency string inverters with AFCI protection',
+      'DC & AC Type-1+2 Surge Protection Devices (SPD)',
+      'BESCOM / KERC approved bidirectional ABT net metering'
     ]
   },
   {
@@ -317,15 +346,15 @@ export const ELECTRICAL_EQUIPMENT: ElectricalEquipmentItem[] = [
     category: 'Testing Apparatus',
     voltageRating: 'Up to 110kV Diagnostic',
     capacityRange: '5kV / 10kV IR & 80kV BDV',
-    standard: 'CEA / IS 1885 / NETA',
-    description: 'NABL-calibrated electrical testing fleet including digital insulation resistance meggers, VLF Hi-Pot kits, secondary relay injectors, and Fluke thermal cameras.',
+    standard: 'CEA / IS 1885',
+    description: 'Calibrated electrical testing instruments including digital insulation resistance Meggers, VLF Hi-Pot kits, secondary relay test kits, and thermal imaging cameras.',
     image: ASSETS.aboutExecution,
     icon: 'troubleshoot',
     features: [
       '5kV / 10kV Digital PI & DAR Insulation Megger Testers',
       '3-Phase Secondary Relay Test Kit & Breaker Timer',
       '60kV / 80kV Automatic Transformer Oil BDV Tester',
-      'High-resolution Infrared Thermography & Earth Clamp'
+      'Infrared Thermography & Digital Earth Resistance Tester'
     ]
   },
   {
@@ -339,10 +368,10 @@ export const ELECTRICAL_EQUIPMENT: ElectricalEquipmentItem[] = [
     image: ASSETS.hero,
     icon: 'settings_input_component',
     features: [
-      'KPTCL/BESCOM approved HT Trivector Tod Metering Cubicle',
+      'KPTCL/BESCOM approved HT Trivector TOD Metering Cubicle',
       'Gang Operated Air Break (GOAB) Isolators with Earth Switch',
       'Station-class Polymeric Metal-Oxide Lightning Arresters',
-      'Porcelain / Polymeric Disc & Pin Insulators with ACSR hardware'
+      'Porcelain / Polymeric Disc & Pin Insulators with hardware'
     ]
   }
 ];
@@ -350,93 +379,141 @@ export const ELECTRICAL_EQUIPMENT: ElectricalEquipmentItem[] = [
 export const PROJECTS: ProjectItem[] = [
   {
     id: 'peenya-substation',
-    title: '33kV Substation & HT Panel Setup',
+    title: 'HT Substation & PCC/MCC Switchgear Installation',
     category: 'industrial',
-    tag: 'Manufacturing Facility',
-    description: 'Turnkey design, supply, testing, and CEIG statutory clearance for a 2.5 MVA industrial manufacturing unit in Peenya Industrial Area.',
-    location: 'Bengaluru Urban (Peenya)',
-    status: 'Completed & Energized',
+    tag: 'Industrial Substation Scope',
+    description: 'Turnkey engineering, supply, erection, testing, and CEIG statutory clearance for an industrial step-down substation, HT VCB incomer, and Form-4b LT PCC/MCC distribution panels.',
+    location: 'Peenya Industrial Area, Bengaluru',
+    status: 'Verified Scope Category',
     image: ASSETS.project1,
-    capacity: '2.5 MVA Connected Load',
-    voltage: '33kV / 415V Step-Down',
-    completionYear: '2023',
-    clientVertical: 'Precision Machine Tool Industry',
-    approvals: ['CEIG Bengaluru Clearance', 'BESCOM Power Sanction', 'KPTCL Feasibility']
+    capacity: '11kV / 33kV Class (Customizable Scope)',
+    voltage: '11kV or 33kV / 415V Step-Down',
+    completionYear: 'Representative Scope',
+    clientVertical: 'Industrial Manufacturing & Engineering',
+    approvals: ['CEIG Drawing & Safety Clearance', 'BESCOM HT Power Sanction', 'Earth Grid & Hi-Pot Test Reports'],
+    scopeOfWork: [
+      'Preparation of Single Line Diagram (SLD) & substation layout CAD drawings',
+      'Erection of DP/4P yard structure, GOAB isolator, lightning arresters & HT metering cubicle',
+      'Installation & commissioning of step-down transformer, indoor VCB panel & LT PCC/MCC board',
+      'Chemical earthing grid (<1 Ohm), Megger/Hi-Pot testing & CEIG final energization approval'
+    ],
+    clientReferencePlaceholder: '[Editable Owner Record: Add Verified Client Name, PO Ref & Sanctioned kVA]',
+    isPlaceholderEditable: true
   },
   {
     id: 'hosakote-solar',
-    title: '1.2 MWp Rooftop Solar EPC',
+    title: 'Commercial & Industrial Rooftop Solar EPC',
     category: 'solar',
-    tag: 'Commercial Logistics Hub',
-    description: 'Captive solar power installation with high-efficiency bifacial modules and seamless Net Metering sync to the 11kV grid feeder.',
-    location: 'Hosakote Industrial Corridor',
-    status: 'Generating Clean Power',
+    tag: 'Rooftop Solar & Net Metering',
+    description: 'Turnkey rooftop solar PV power plant installation with high-efficiency bifacial modules, multi-MPPT string inverters, AC/DC surge protection, and BESCOM bidirectional net metering.',
+    location: 'Bengaluru & Hosakote Industrial Belt',
+    status: 'Verified Scope Category',
     image: ASSETS.project2,
-    capacity: '1,200 kWp (1.2 MWp)',
-    voltage: '11kV Net-Metered Sync',
-    completionYear: '2024',
-    clientVertical: 'Cold Chain Warehousing & Logistics',
-    approvals: ['BESCOM Net Metering Approval', 'KERC Open Access / Grid Parallel', 'CEIG Solar Clearance']
+    capacity: '10 kWp – 1000+ kWp (Site Specific)',
+    voltage: '415V LT / 11kV Grid Sync',
+    completionYear: 'Representative Scope',
+    clientVertical: 'Commercial Warehousing, Factories & Institutions',
+    approvals: ['BESCOM / ESCOM Net Metering Sanction', 'CEIG Solar Safety Clearance', 'Bidirectional ABT Meter Commissioning'],
+    scopeOfWork: [
+      'Shadow analysis, structural wind-load calculation & hot-dip galvanized module mounting',
+      'Installation of Tier-1 bifacial solar PV panels, DC string cables & MC4 terminations',
+      'Grid-tied string inverter erection, ACDB/DCDB protection & 3-pit獨立 earthing',
+      'End-to-end BESCOM net-metering portal filing, inspection & bidirectional meter synchronization'
+    ],
+    clientReferencePlaceholder: '[Editable Owner Record: Add Verified Solar Site Name, kWp Capacity & Commissioning Date]',
+    isPlaceholderEditable: true
   },
   {
     id: 'bidadi-pharma',
-    title: 'Cleanroom LT Distribution & APFC',
+    title: 'Industrial Cabling, Cable Trays & Harmonic APFC Panels',
     category: 'commercial',
-    tag: 'Pharmaceutical Plant',
-    description: 'Complete cleanroom electrical wiring, flameproof enclosures, harmonic filters, and power factor improvement to 0.99 unity.',
-    location: 'Bidadi Industrial Area',
-    status: 'Under Full-Year AMC',
+    tag: 'Cabling & Power Quality',
+    description: 'Complete industrial & commercial electrical distribution featuring hot-dip galvanized ladder/perforated cable trays, armored XLPE feeder cables, sub-DBs, and detuned APFC panels.',
+    location: 'Bengaluru Industrial Corridors (Bommasandra / Bidadi / Whitefield)',
+    status: 'Verified Scope Category',
     image: ASSETS.project3,
-    capacity: '1.8 MVA with 800 kVAR APFC',
+    capacity: 'LT 415V Distribution & APFC',
     voltage: '415V Three Phase 50Hz',
-    completionYear: '2024',
-    clientVertical: 'Sterile Injectable Formulations',
-    approvals: ['CEIG Safety Certification', 'Class 10,000 Cleanroom Electrical Protocol', 'Factory Directorate Pass']
+    completionYear: 'Representative Scope',
+    clientVertical: 'Commercial Buildings, Tech Parks & Process Plants',
+    approvals: ['IS 732 & IEC 61439 Compliance', 'Power Factor > 0.99 Verification', 'Megger Insulation Test Certificate'],
+    scopeOfWork: [
+      'Overhead HDG perforated & ladder cable tray fabrication and ceiling suspension',
+      'Laying, dressing, double-compression glanding & termination of armored XLPE cables',
+      'Installation of 7% detuned reactor APFC panels to eliminate BESCOM power factor penalties',
+      'High-bay industrial LED lighting, machine drops & phase load balancing'
+    ],
+    clientReferencePlaceholder: '[Editable Owner Record: Add Verified Commercial / Industrial Facility Name & Scope Details]',
+    isPlaceholderEditable: true
   },
   {
-    id: 'bommasandra-automotive',
-    title: '66kV / 11kV In-Plant Switching Yard',
+    id: 'sahakarnagar-layout-electrification',
+    title: 'Residential Layout Electrification & Underground Cabling',
+    category: 'commercial',
+    tag: 'Layout & Apartment Infra',
+    description: 'Turnkey layout and apartment complex electrification in North Bengaluru including 11kV overhead/underground network, distribution transformers (DTC), feeder pillars, and street lighting.',
+    location: 'North Bengaluru (Sahakarnagar / Hebbal / Yelahanka / Devanahalli)',
+    status: 'Verified Scope Category',
+    image: ASSETS.transmissionBg,
+    capacity: '11kV / 433V Layout Distribution',
+    voltage: '11kV / 433V Three Phase',
+    completionYear: 'Representative Scope',
+    clientVertical: 'Residential Townships, Gated Layouts & Builders',
+    approvals: ['BESCOM Layout Electrification Sanction', 'CEIG Transformer Approval', 'Underground Cable Route Certification'],
+    scopeOfWork: [
+      '11kV HT line extension, pole-mounted or plinth-mounted Distribution Transformer Center (DTC)',
+      'Underground armored XLPE cable trenching with HDPE duct pipes & sand/brick protection',
+      'Weatherproof outdoor LT Feeder Pillars, consumer meter panels & service terminations',
+      'Tubular street lighting poles with automatic astronomical timer control panels'
+    ],
+    clientReferencePlaceholder: '[Editable Owner Record: Add Verified Builder / Layout Project Name & Location]',
+    isPlaceholderEditable: true
+  },
+  {
+    id: 'bengaluru-residential-commercial-wiring',
+    title: 'Residential 2BHK/3BHK Villa & Commercial Interior Wiring',
+    category: 'commercial',
+    tag: 'IS:732 Wiring & Automation',
+    description: 'Precision concealed FRLS/ZHFR conduit wiring, TPN MCB/RCCB distribution boards, surge protection, chemical earthing, and smart lighting automation for homes and offices.',
+    location: 'Sahakarnagar & Across Bengaluru',
+    status: 'Verified Scope Category',
+    image: ASSETS.residentialWiring2Bhk,
+    capacity: '1-Phase / 3-Phase LT Sanction',
+    voltage: '230V / 415V AC',
+    completionYear: 'Representative Scope',
+    clientVertical: 'Independent Homes, Luxury Villas, Apartments & Offices',
+    approvals: ['IS:732 Wiring Code Compliance', '30mA RCCB Shock Protection', 'IS 3043 Earthing Verification'],
+    scopeOfWork: [
+      'Concealed heavy-duty PVC conduit routing and wall chasing per architectural CAD drawings',
+      'Flame-Retardant Low-Smoke (FRLS) copper wiring for lighting, 6A/16A sockets, AC & geyser points',
+      'TPN / SPN double-door MCB distribution board assembly with RCCB and Type-2 SPD',
+      'Smart touch switches, DALI/KNX dimming, inverter/UPS backup wiring & BESCOM meter sanction'
+    ],
+    clientReferencePlaceholder: '[Editable Owner Record: Add Verified Residence / Commercial Office Project Details]',
+    isPlaceholderEditable: true
+  },
+  {
+    id: 'testing-amc-commissioning',
+    title: 'Electrical Testing, Commissioning & Preventive AMC',
     category: 'industrial',
-    tag: 'Automotive OEM',
-    description: 'Dual feeder 66kV transmission tapping with double busbar arrangement and redundant 10 MVA power transformers for robotics stamping line.',
-    location: 'Bommasandra Industrial Area',
-    status: 'Completed & Energized',
-    image: ASSETS.pillarHighVoltage,
-    capacity: '10 MVA Redundant',
-    voltage: '66kV / 11kV Grid',
-    completionYear: '2023',
-    clientVertical: 'Electric Vehicle Chassis Manufacturer',
-    approvals: ['KPTCL Grid Interconnection', 'CEIG Super Grade Sanction', 'BESCOM Tariff Allocation']
-  },
-  {
-    id: 'mysuru-techpark-solar',
-    title: '750 kWp Solar Carport & Building PV',
-    category: 'solar',
-    tag: 'IT Software Campus',
-    description: 'Architectural solar carport with integrated EV charging infrastructure and synchronized rooftop PV arrays supplying 40% of daytime baseload.',
-    location: 'Mysuru IT Park (Hebbal)',
-    status: 'Generating Clean Power',
-    image: ASSETS.pillarSolar,
-    capacity: '750 kWp + 120kW EV Hub',
-    voltage: '415V Synchronized Grid',
-    completionYear: '2023',
-    clientVertical: 'Enterprise Technology Campus',
-    approvals: ['CESC Mysuru Net Metering', 'CEIG Structural & Electrical Pass']
-  },
-  {
-    id: 'dabaspet-foundry',
-    title: 'Electric Arc Furnace HT Substation & Capacitor Bank',
-    category: 'industrial',
-    tag: 'Heavy Engineering',
-    description: 'Heavy duty vacuum switchgear, dry cast resin rectifiers, harmonic detention reactors, and dedicated underground 11kV cable duct bank.',
-    location: 'Dabaspet Industrial Area',
-    status: 'Completed & Energized',
+    tag: 'Testing, Safety Audit & AMC',
+    description: 'Pre-commissioning relay/Megger/Hi-Pot testing, thermal imaging audits, transformer oil filtration, and annual electrical maintenance contracts for industrial and commercial facilities.',
+    location: 'Bengaluru & All Karnataka Industrial Corridors',
+    status: 'Verified Scope Category',
     image: ASSETS.aboutExecution,
-    capacity: '5.0 MVA High Surge',
-    voltage: '11kV Dedicated Feeder',
-    completionYear: '2022',
-    clientVertical: 'Ferrous Casting & Forging',
-    approvals: ['BESCOM Dedicated Express Feeder Sanction', 'CEIG Industrial Safety Certificate']
+    capacity: 'LT 415V to 110kV Diagnostics',
+    voltage: 'All Voltage Classes',
+    completionYear: 'Representative Scope',
+    clientVertical: 'Factories, Hospitals, Tech Parks & Commercial Complexes',
+    approvals: ['Calibrated Test Certificates', 'CEA Statutory Safety Audit Report', 'CEIG Periodical Inspection Support'],
+    scopeOfWork: [
+      '5kV/10kV digital insulation resistance (Megger) and VLF Hi-Pot cable breakdown testing',
+      'Primary & secondary current injection testing of overcurrent and earth-fault protection relays',
+      'Infrared thermography of LT/HT panels to detect loose terminations and phase unbalance',
+      'Transformer oil BDV filtration, silica gel breather replacement & 24/7 emergency breakdown support'
+    ],
+    clientReferencePlaceholder: '[Editable Owner Record: Add Verified AMC / Testing Client Reference]',
+    isPlaceholderEditable: true
   }
 ];
 

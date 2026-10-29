@@ -1,62 +1,89 @@
 import React from 'react';
 import { ASSETS } from '../data/constants';
+import { BUSINESS_NAP, trackConversionEvent } from '../utils/seo';
 
 interface AboutScreenProps {
   onOpenConsultation: (topic?: string) => void;
 }
 
 export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) => {
-  const leadership = [
+  const engineeringDivisions = [
     {
-      initials: 'RG',
-      name: 'Er. R. S. Gowda, M.Tech (Power Systems)',
-      role: 'Chief Technical Director & Super Grade Licensee',
-      experience: '22+ Years • High Voltage Substation & KPTCL Liaison',
-      desc: 'Expertise in primary substation grid design up to 110kV, protection coordination, and statutory liaison with the Chief Electrical Inspector to Government (CEIG).'
+      code: 'DIV-01',
+      name: 'HT / EHT Substation & Statutory Liaison Division',
+      role: 'Super Grade Electrical Licensing & CEIG / KPTCL Coordination',
+      scope: '11kV – 110kV Substations • SLD Sanctions • CEIG Safety Certificates',
+      desc: 'Handles Single Line Diagram (SLD) engineering, protection relay coordination, 11kV–110kV transformer and VCB switchyard erection, and direct statutory representation with the Karnataka Electrical Inspectorate (CEIG), KPTCL, and BESCOM.',
+      placeholderNote: '[Editable Owner Record: Super Grade License No. & Chief Supervisor Permit Ref]'
     },
     {
-      initials: 'SV',
-      name: 'Er. Sandeep V., B.E. (Electrical)',
-      role: 'Head of Solar EPC & Clean Energy Solutions',
-      experience: '14+ Years • Ground Mount & C&I Rooftop Solar EPC',
-      desc: 'Supervised over 45 MWp of cumulative solar PV capacity across Karnataka industrial belts, managing KERC net metering and bidirectional metering synchronization.'
+      code: 'DIV-02',
+      name: 'Solar EPC & Clean Energy Integration Division',
+      role: 'Commercial, Industrial & Residential Solar Power Systems',
+      scope: 'Rooftop & Ground-Mount PV • String/Central Inverters • KERC Net-Metering',
+      desc: 'Executes turnkey solar photovoltaic plants across Bengaluru and Karnataka including shadow-free 3D array layout, wind-rated HDG mounting structures, ACDB/DCDB protection, bidirectional metering, and BESCOM net-metering synchronization.',
+      placeholderNote: '[Editable Owner Record: Empanelment / Solar Division Supervisor Ref]'
     },
     {
-      initials: 'NK',
-      name: 'Naveen Kumar, B.E., Certified Safety Auditor',
-      role: 'Lead Testing & Commissioning Engineer',
-      experience: '12+ Years • Megger, Hi-Pot & Relay Injection Testing',
-      desc: 'Certified electrical safety supervisor ensuring zero deviation protocols and 100% first-pass clearance in statutory government electrical inspections.'
+      code: 'DIV-03',
+      name: 'Testing, Commissioning, Safety & 24/7 AMC Division',
+      role: 'Pre-Commissioning Diagnostics, Industrial Wiring & Preventive AMC',
+      scope: 'Megger & VLF Hi-Pot • Relay Injection • IS 3043 Earthing • 24/7 Dispatch',
+      desc: 'Operates NABL-calibrated testing instruments for insulation resistance, primary/secondary injection, transformer oil BDV, FLIR thermal imaging, LOTO safety enforcement, and 24/7 emergency breakdown support.',
+      placeholderNote: '[Editable Owner Record: Calibration Certificate & Safety Officer Ref]'
     }
   ];
 
   const credentials = [
     {
       title: 'Super Grade Electrical Contractor License',
-      authority: 'Government of Karnataka • Electrical Inspectorate',
-      validity: 'Authorized for all High Tension & Extra High Tension (HT/EHT) works statewide',
-      badge: 'HT / EHT',
+      authority: 'Government of Karnataka • Department of Electrical Inspectorate (CEIG)',
+      validity: 'Authorized for High Tension & Extra High Tension (11kV, 33kV, 66kV, 110kV) and Low Tension electrical installations across Karnataka.',
+      badge: 'SUPER GRADE',
       icon: 'bolt'
     },
     {
-      title: 'Class-1 PWD Registered Contractor',
-      authority: 'Public Works Department, Karnataka',
-      validity: 'Eligible for large infrastructure public and private sector turnkey tenders',
-      badge: 'CLASS-1',
+      title: 'Class-1 PWD Registered Electrical Contractor',
+      authority: 'Public Works Department (PWD), Government of Karnataka',
+      validity: 'Qualified for institutional, industrial, commercial, and public-sector turnkey electrical infrastructure works.',
+      badge: 'CLASS-1 PWD',
       icon: 'engineering'
     },
     {
-      title: 'ISO 9001:2015 Quality Management',
-      authority: 'International Organization for Standardization',
-      validity: 'Standardized procurement, fabrication, and testing documentation',
-      badge: 'ISO 9001',
+      title: 'CEA & Indian Electricity Rules Compliance',
+      authority: 'Central Electricity Authority (Measures Relating to Safety & Electric Supply)',
+      validity: 'All substation clearances, earthing grids (IS 3043), switchgear panels (IEC 61439), and wiring (IS 732) strictly follow statutory codes.',
+      badge: 'CEA / BIS',
       icon: 'verified'
     },
     {
-      title: 'ISO 45001 / OHSAS Occupational Safety',
-      authority: 'Occupational Health & Safety Standards',
-      validity: 'Zero-tolerance protocols, PPE enforcement, and live-circuit isolation drills',
-      badge: 'ISO 45001',
+      title: 'Zero-Deviation Occupational Safety Protocol',
+      authority: 'Lockout-Tagout (LOTO) & Arc-Flash PPE Field Governance',
+      validity: 'Mandatory Permit-to-Work (PTW) system, calibrated HV discharge rods, insulated mat verification, and pre-energization safety audits.',
+      badge: 'SAFETY FIRST',
+      icon: 'health_and_safety'
+    }
+  ];
+
+  const safetyPractices = [
+    {
+      title: 'Lockout-Tagout (LOTO) & Permit-to-Work',
+      desc: 'Strict de-energization, physical breaker padlocking, line earthing discharge rods, and multi-stage voltage verification prior to any HT/LT panel or transformer intervention.',
+      icon: 'lock'
+    },
+    {
+      title: 'IS 3043 Dual-Grid Chemical Earthing',
+      desc: 'Dedicated maintenance-free copper-bonded and GI chemical earthing electrodes with bentonite backfill, ensuring earth grid resistance below 1 Ohm for substations and neutral grounding.',
+      icon: 'shield'
+    },
+    {
+      title: 'NABL-Calibrated Pre-Commissioning Testing',
+      desc: 'Every cable, transformer, and breaker undergoes 5kV/10kV digital Megger insulation tests, VLF Hi-Pot dielectric tests, contact resistance (CRM), and relay trip-curve verification.',
+      icon: 'biotech'
+    },
+    {
+      title: 'Arc-Flash PPE & Insulated Tooling',
+      desc: 'Field technicians operate with Class-2/Class-4 electrical insulated gloves, arc-flash face shields, flame-retardant harnesses, and 1000V VDE-certified insulated tools.',
       icon: 'health_and_safety'
     }
   ];
@@ -84,8 +111,25 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
               About Ananya Electrical Solutions — Super Grade Electrical Contractor in Bengaluru
             </h1>
             <p className="font-body-lg text-slate-300 max-w-2xl leading-relaxed">
-              Headquartered at 59, Opp Bank of India, G-Block, Sahakarnagar Main Road, Bengaluru 560092, Ananya Electrical Solutions is a Government of Karnataka Licensed Super Grade Electrical Contractor delivering turnkey HT/LT substations, industrial wiring, CEIG approvals, and solar EPC across Karnataka.
+              Headquartered at {BUSINESS_NAP.fullAddress}, <strong className="text-white">Ananya Electrical Solutions</strong> is a Government of Karnataka Licensed Super Grade Electrical Contractor delivering turnkey HT/LT substations, industrial &amp; commercial wiring, CEIG approvals, and rooftop solar EPC across Karnataka.
             </p>
+            <div className="flex flex-wrap items-center gap-3 pt-1">
+              <button
+                onClick={() => onOpenConsultation('Company Credentials & Turnkey Inquiry')}
+                className="h-11 px-5 rounded-lg bg-[#F59E0B] hover:bg-[#d97706] text-[#2a1700] text-[13.5px] font-bold inline-flex items-center gap-1.5 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[18px]">request_quote</span>
+                <span>Request Company Profile &amp; Quote</span>
+              </button>
+              <a
+                href={`tel:${BUSINESS_NAP.primaryPhoneTel}`}
+                onClick={() => trackConversionEvent('phone_click', BUSINESS_NAP.primaryPhone, 'AboutScreen Hero')}
+                className="h-11 px-4 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white text-[13.5px] font-bold inline-flex items-center gap-1.5"
+              >
+                <span className="material-symbols-outlined text-[18px]">call</span>
+                <span>Call {BUSINESS_NAP.primaryPhone}</span>
+              </a>
+            </div>
           </div>
 
           <div className="lg:col-span-4 flex flex-col justify-center">
@@ -130,28 +174,28 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
                 Our Journey Since 2020
               </span>
               <h2 className="font-headline-lg text-[#0B192C] font-bold">
-                Engineering Reliability for Karnataka&apos;s Industrial Growth
+                Engineering Reliability for Karnataka&apos;s Industrial, Commercial &amp; Residential Growth
               </h2>
               <p className="text-[15px] text-[#44474c] leading-relaxed">
-                Founded in 2020, Ananya Electrical Solutions was established to address a persistent challenge in industrial infrastructure: the friction between intricate statutory government compliance and rapid plant construction.
+                Founded in 2020 and headquartered in Sahakarnagar, Bengaluru, <strong className="text-[#0B192C]">Ananya Electrical Solutions</strong> was established to solve a critical challenge in Karnataka&apos;s infrastructure development: bridging strict government statutory electrical compliance with dependable, on-schedule engineering execution.
               </p>
               <p className="text-[15px] text-[#44474c] leading-relaxed">
-                As a licensed <strong className="text-[#0B192C]">Super Grade Electrical Contractor</strong> under the Karnataka Electrical Inspectorate, we take single-window ownership from the initial Single Line Diagram (SLD) approval to the live closing of circuit breakers and ongoing 24/7 grid dispatch support.
+                As a Government of Karnataka Licensed <strong className="text-[#0B192C]">Super Grade Electrical Contractor</strong> under the Department of Electrical Inspectorate, <strong className="text-[#0B192C]">Ananya Electrical Solutions</strong> takes single-window responsibility from initial Single Line Diagram (SLD) design and CEIG drawing sanctions to equipment erection, pre-commissioning testing, BESCOM/KPTCL energization, and 24/7 preventive maintenance.
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-[#E2E8F0]">
               <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-center">
-                <span className="font-stat-counter text-[#0B192C] text-[28px] lg:text-[32px]">150+ MVA</span>
-                <span className="text-[12px] text-slate-500 font-medium mt-1">Connected Power Commissioned</span>
+                <span className="font-stat-counter text-[#0B192C] text-[24px] lg:text-[28px]">Est. 2020</span>
+                <span className="text-[12px] text-slate-500 font-medium mt-1">5+ Years in Karnataka</span>
               </div>
               <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-center">
-                <span className="font-stat-counter text-[#0284C7] text-[28px] lg:text-[32px]">45+ MWp</span>
-                <span className="text-[12px] text-slate-500 font-medium mt-1">Clean Solar Capacity</span>
+                <span className="font-stat-counter text-[#0284C7] text-[24px] lg:text-[28px]">11kV–110kV</span>
+                <span className="text-[12px] text-slate-500 font-medium mt-1">HT/EHT &amp; LT Scope</span>
               </div>
               <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col justify-center">
-                <span className="font-stat-counter text-[#F59E0B] text-[28px] lg:text-[32px]">100%</span>
-                <span className="text-[12px] text-slate-500 font-medium mt-1">Zero Safety Deviations</span>
+                <span className="font-stat-counter text-[#F59E0B] text-[24px] lg:text-[28px]">100%</span>
+                <span className="text-[12px] text-slate-500 font-medium mt-1">CEA &amp; CEIG Safety Compliance</span>
               </div>
             </div>
           </div>
@@ -160,7 +204,8 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
             <div className="relative w-full min-h-[360px] lg:min-h-full rounded-2xl overflow-hidden shadow-xl border border-[#CBD5E1] flex flex-col justify-end">
               <img
                 src={ASSETS.aboutExecution}
-                alt="Engineers executing electrical safety protocol"
+                alt="Ananya Electrical Solutions engineers executing electrical safety and testing protocol"
+                loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C]/90 via-[#0B192C]/30 to-transparent"></div>
@@ -169,9 +214,9 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
                   <span className="text-[12px] uppercase tracking-wider font-bold text-[#5bb8fe]">
                     Zero-Deviation Field Protocol
                   </span>
-                  <h4 className="font-headline-sm font-bold text-white">
-                    100% In-House Master Engineers
-                  </h4>
+                  <h3 className="font-headline-sm font-bold text-white">
+                    Licensed Electrical Supervisors &amp; Testing Teams
+                  </h3>
                 </div>
                 <span className="px-3.5 py-1.5 rounded-lg bg-[#FEF3C7] text-[#2a1700] text-[12px] font-bold tracking-wider uppercase w-fit shrink-0">
                   SUPER GRADE
@@ -187,9 +232,9 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
             <span className="text-[12px] uppercase font-bold text-[#006398] tracking-wider">
               Statutory Standing
             </span>
-            <h3 className="font-headline-lg text-[#0B192C] font-bold">
-              Official Licensing &amp; Industry Certifications
-            </h3>
+            <h2 className="font-headline-lg text-[#0B192C] font-bold">
+              Official Licensing &amp; Regulatory Compliance
+            </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
@@ -203,9 +248,9 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
                 </div>
                 <div className="flex flex-col flex-1 gap-1.5">
                   <div className="flex items-start justify-between gap-3">
-                    <h4 className="font-headline-sm text-[17px] text-[#0B192C] font-bold leading-snug">
+                    <h3 className="font-headline-sm text-[17px] text-[#0B192C] font-bold leading-snug">
                       {cred.title}
-                    </h4>
+                    </h3>
                     <span className="px-2.5 py-0.5 rounded bg-[#f8f9ff] border border-[#CBD5E1] text-[#006398] text-[10px] font-mono font-bold uppercase shrink-0 mt-0.5">
                       {cred.badge}
                     </span>
@@ -218,46 +263,85 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
           </div>
         </div>
 
-        {/* Master Engineering Leadership */}
+        {/* Electrical Safety Practices & Quality Assurance */}
+        <div className="rounded-2xl bg-[#0B192C] text-white p-6 sm:p-8 lg:p-10 border border-slate-700 shadow-lg flex flex-col gap-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-700/80 pb-4">
+            <div>
+              <span className="text-[12px] uppercase font-bold text-[#F59E0B] tracking-wider">
+                Safety &amp; Quality Assurance
+              </span>
+              <h2 className="font-headline-md text-white font-bold">
+                Field Safety Practices &amp; Testing Standards
+              </h2>
+            </div>
+            <span className="text-[12px] font-mono text-[#38bdf8]">
+              CEA Regulations • IS 3043 • IEC 61439 • IS 732
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {safetyPractices.map((practice, idx) => (
+              <div
+                key={idx}
+                className="p-5 rounded-xl bg-[#1E293B]/90 border border-slate-700 flex flex-col gap-3"
+              >
+                <div className="w-10 h-10 rounded-lg bg-[#0284C7]/20 text-[#38bdf8] flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[22px]">{practice.icon}</span>
+                </div>
+                <h3 className="text-[15px] font-bold text-white leading-snug">{practice.title}</h3>
+                <p className="text-[12.5px] text-slate-300 leading-relaxed">{practice.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* In-House Engineering & Supervision Divisions */}
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-1.5">
             <span className="text-[12px] uppercase font-bold text-[#006398] tracking-wider">
               Technical Governance
             </span>
-            <h3 className="font-headline-lg text-[#0B192C] font-bold">
-              Master In-House Engineering Leadership
-            </h3>
+            <h2 className="font-headline-lg text-[#0B192C] font-bold">
+              In-House Engineering &amp; Supervision Divisions
+            </h2>
+            <p className="text-[13.5px] text-[#44474c]">
+              Structured technical cells at our Sahakarnagar headquarters managing design, statutory approvals, field execution, and pre-commissioning testing.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-            {leadership.map((leader, i) => (
+            {engineeringDivisions.map((div, i) => (
               <div
                 key={i}
-                className="p-6 rounded-2xl bg-white border border-[#CBD5E1] shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-5 h-full"
+                className="p-6 rounded-2xl bg-white border border-[#CBD5E1] shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-4 h-full"
               >
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center gap-3.5">
-                    <div className="w-12 h-12 rounded-xl bg-[#0B192C] text-white flex items-center justify-center font-bold font-display text-[15px] shrink-0 shadow-xs">
-                      {leader.initials}
+                    <div className="w-12 h-12 rounded-xl bg-[#0B192C] text-[#F59E0B] flex items-center justify-center font-bold font-mono text-[12px] shrink-0 shadow-xs">
+                      {div.code}
                     </div>
                     <div className="flex flex-col">
-                      <h4 className="font-headline-sm text-[16px] text-[#0B192C] font-bold leading-snug">
-                        {leader.name}
-                      </h4>
+                      <h3 className="font-headline-sm text-[16px] text-[#0B192C] font-bold leading-snug">
+                        {div.name}
+                      </h3>
                       <span className="text-[12px] text-[#0284C7] font-semibold leading-snug mt-0.5">
-                        {leader.role}
+                        {div.role}
                       </span>
                     </div>
                   </div>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#f8f9ff] border border-[#E2E8F0] text-[11px] font-mono text-slate-600 uppercase w-fit">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#f8f9ff] border border-[#E2E8F0] text-[11px] font-mono text-slate-600 w-fit">
                     <span className="material-symbols-outlined text-[14px] text-[#0284C7] leading-none">workspace_premium</span>
-                    <span>{leader.experience}</span>
+                    <span>{div.scope}</span>
                   </div>
                 </div>
 
-                <p className="text-[13px] text-[#44474c] leading-relaxed pt-4 border-t border-[#E2E8F0] mt-auto">
-                  {leader.desc}
+                <p className="text-[13px] text-[#44474c] leading-relaxed pt-3 border-t border-[#E2E8F0]">
+                  {div.desc}
                 </p>
+
+                <div className="p-2.5 rounded-lg bg-amber-50/70 border border-amber-200/80 text-[11px] text-[#2a1700] font-mono">
+                  {div.placeholderNote}
+                </div>
               </div>
             ))}
           </div>
@@ -270,9 +354,9 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
               <span className="text-[12px] uppercase font-bold text-[#0284C7] tracking-wider">
                 Statewide Footprint
               </span>
-              <h3 className="font-headline-sm text-[#0B192C] font-bold">
-                Rapid Mobilization Across Karnataka Industrial Corridors
-              </h3>
+              <h2 className="font-headline-sm text-[#0B192C] font-bold">
+                Rapid Mobilization Across Bengaluru &amp; Karnataka Industrial Corridors
+              </h2>
             </div>
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-[12px] text-emerald-900 font-medium w-fit shrink-0">
               <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
@@ -303,14 +387,14 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
 
           <div className="pt-4 border-t border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <span className="text-[13px] text-[#44474c]">
-              Need on-site load survey or statutory liaison in your industrial area?
+              Need an on-site load survey, CEIG drawing sanction, or turnkey quote in Bengaluru or anywhere in Karnataka?
             </span>
             <button
               onClick={() => onOpenConsultation('Karnataka State Contract')}
               className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[13px] font-semibold transition-colors cursor-pointer shrink-0"
             >
               <span className="material-symbols-outlined text-[17px] leading-none">engineering</span>
-              <span>Consult with a Regional Engineer</span>
+              <span>Consult with Our Engineering Desk</span>
             </button>
           </div>
         </div>
