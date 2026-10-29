@@ -60,7 +60,7 @@ export const SeoAuditModal: React.FC<SeoAuditModalProps> = ({
     },
     {
       title: 'Canonical Website & Domain Consolidation',
-      detail: `Preferred: ${BUSINESS_NAP.canonicalDomain} (301 redirect from workers.dev staging configured in _redirects)`,
+      detail: `Preferred: ${BUSINESS_NAP.canonicalDomain} (Canonical tags active sitewide; relative 301 aliases in _redirects)`,
       status: 'Canonical Active',
     },
     {
@@ -246,12 +246,11 @@ export const SeoAuditModal: React.FC<SeoAuditModalProps> = ({
 
                 <div className="p-4 rounded-xl bg-[#f8f9ff] border border-[#CBD5E1] flex flex-col gap-2">
                   <span className="text-[11px] font-mono uppercase font-bold text-[#0284C7]">
-                    Cloudflare Workers Canonical &amp; Redirect Setup
+                    Cloudflare Workers Canonical &amp; SPA Routing Setup
                   </span>
                   <p className="text-[12.5px] text-[#44474c] leading-relaxed">
-                    Both <code className="font-mono text-[#0B192C]">public/_redirects</code> and dynamic{' '}
-                    <code className="font-mono text-[#0B192C]">&lt;link rel=&quot;canonical&quot;&gt;</code> tags are configured so that{' '}
-                    <code className="font-mono text-[#0B192C]">ananya-electrical-solutions.neelgaganat97.workers.dev</code> consolidates 100% of link equity into{' '}
+                    Configured <code className="font-mono text-[#0B192C]">wrangler.jsonc</code> (<code className="font-mono text-[#0B192C]">not_found_handling: &quot;single-page-application&quot;</code>), relative 301 aliases in <code className="font-mono text-[#0B192C]">public/_redirects</code>, and dynamic{' '}
+                    <code className="font-mono text-[#0B192C]">&lt;link rel=&quot;canonical&quot;&gt;</code> tags pointing to{' '}
                     <strong className="text-[#0B192C]">https://ananyaelectricalsolutions.in/</strong>.
                   </p>
                   <div className="mt-auto pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-[12px]">

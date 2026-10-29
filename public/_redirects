@@ -1,3 +1,9 @@
-# Cloudflare Pages / Workers SPA Fallback & Canonical Redirect Rules
-https://ananya-electrical-solutions.neelgaganat97.workers.dev/* https://ananyaelectricalsolutions.in/:splat 301!
-/* /index.html 200
+# Cloudflare Workers / Pages Static Assets Redirect Rules
+# Only relative source and destination paths are used; SPA fallback is handled natively via not_found_handling: "single-page-application"
+/home / 301
+/index.htm / 301
+/electrical /ht-lt-electrical-works 301
+/solar /solar-power-solutions 301
+/projects /projects-gallery 301
+/about /about-us 301
+/contact /contact-us 301
