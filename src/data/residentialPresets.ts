@@ -702,191 +702,447 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
   ]
 };
 
-export const COMPACT_2BHK_PROJECT: ResidentialProject = {
-  ...STANDARD_2BHK_PROJECT,
-  id: 'proj_2bhk_compact_spacious',
-  meta: {
-    ...STANDARD_2BHK_PROJECT.meta,
-    projectName: 'Urban Nest 2BHK Spacious (1,650 sq.ft)',
-    customerName: 'Smt. Priya Sundaram',
-    location: 'Electronic City, Bengaluru',
-    plotWidth: 26.0,
-    plotLength: 22.0,
-    floorHeight: 3.6,
-    sanctionedLoadKw: 6.0
-  },
-  rooms: [
-    {
-      id: 'room_living',
-      name: 'Living & Dining Area',
-      type: 'living',
-      x: 0,
-      z: 0,
-      width: 9.6,
-      length: 7.4,
-      ceilingHeight: 3.6,
-      color: '#E0F2FE'
-    },
-    {
-      id: 'room_kitchen',
-      name: 'Kitchen',
-      type: 'kitchen',
-      x: 9.6,
-      z: 0,
-      width: 5.6,
-      length: 4.8,
-      ceilingHeight: 3.6,
-      color: '#FEF3C7'
-    },
-    {
-      id: 'room_bath1',
-      name: 'Common Bathroom',
-      type: 'bathroom',
-      x: 9.6,
-      z: 4.8,
-      width: 4.4,
-      length: 2.6,
-      ceilingHeight: 3.6,
-      color: '#CCFBF1'
-    },
-    {
-      id: 'room_master_bed',
-      name: 'Master Bedroom',
-      type: 'master_bedroom',
-      x: 0,
-      z: 7.4,
-      width: 7.6,
-      length: 6.8,
-      ceilingHeight: 3.6,
-      color: '#EDE9FE'
-    },
-    {
-      id: 'room_bed2',
-      name: 'Bedroom 2',
-      type: 'bedroom_2',
-      x: 7.6,
-      z: 7.4,
-      width: 6.6,
-      length: 6.8,
-      ceilingHeight: 3.6,
-      color: '#DCFCE7'
-    },
-    {
-      id: 'room_foyer',
-      name: 'Entrance Foyer & DB Zone',
-      type: 'foyer',
-      x: 0,
-      z: -3.2,
-      width: 4.6,
-      length: 3.2,
-      ceilingHeight: 3.6,
-      color: '#F1F5F9'
-    }
-  ]
-};
+export const METERS_TO_FEET = 3.28084;
+export const SQM_TO_SQFT = 10.7639;
 
-export const LUXURY_3BHK_PROJECT: ResidentialProject = {
-  ...STANDARD_2BHK_PROJECT,
-  id: 'proj_3bhk_luxury_spacious',
-  meta: {
-    ...STANDARD_2BHK_PROJECT.meta,
-    projectName: 'Prestige Villa Grand 3BHK Smart Home (3,400 sq.ft)',
-    customerName: 'Dr. Vikram Malhotra',
-    location: 'Sadashivanagar, Bengaluru',
-    plotWidth: 36.0,
-    plotLength: 30.0,
-    floorHeight: 4.0,
-    sanctionedLoadKw: 12.0,
-    supplyPhase: '3-phase 415V'
-  },
-  rooms: [
-    {
-      id: 'room_living',
-      name: 'Formal Living & Dining Hall',
-      type: 'living',
-      x: 0,
-      z: 0,
-      width: 12.6,
-      length: 9.6,
-      ceilingHeight: 4.0,
-      color: '#E0F2FE'
-    },
-    {
-      id: 'room_kitchen',
-      name: 'Island Kitchen & Utility',
-      type: 'kitchen',
-      x: 12.6,
-      z: 0,
-      width: 7.4,
-      length: 6.2,
-      ceilingHeight: 4.0,
-      color: '#FEF3C7'
-    },
-    {
-      id: 'room_bath1',
-      name: 'Luxury Bath Suite',
-      type: 'bathroom',
-      x: 12.6,
-      z: 6.2,
-      width: 5.6,
-      length: 3.4,
-      ceilingHeight: 4.0,
-      color: '#CCFBF1'
-    },
-    {
-      id: 'room_master_bed',
-      name: 'Grand Master Suite',
-      type: 'master_bedroom',
-      x: 0,
-      z: 9.6,
-      width: 9.6,
-      length: 8.6,
-      ceilingHeight: 4.0,
-      color: '#EDE9FE'
-    },
-    {
-      id: 'room_bed2',
-      name: 'Guest Suite',
-      type: 'bedroom_2',
-      x: 9.6,
-      z: 9.6,
-      width: 8.4,
-      length: 8.6,
-      ceilingHeight: 4.0,
-      color: '#DCFCE7'
-    },
-    {
-      id: 'room_foyer',
-      name: 'Grand Entrance Foyer & DB Zone',
-      type: 'foyer',
-      x: 0,
-      z: -4.0,
-      width: 5.6,
-      length: 4.0,
-      ceilingHeight: 4.0,
-      color: '#F1F5F9'
+export function metersToFeet(m: number): number {
+  return Number((m * METERS_TO_FEET).toFixed(1));
+}
+
+export function feetToMeters(ft: number): number {
+  return Number((ft / METERS_TO_FEET).toFixed(2));
+}
+
+export function getApartmentFootprintMetrics(project: ResidentialProject) {
+  let minX = Infinity,
+    maxX = -Infinity,
+    minZ = Infinity,
+    maxZ = -Infinity;
+  let carpetAreaSqM = 0;
+
+  project.rooms.forEach((r) => {
+    minX = Math.min(minX, r.x);
+    maxX = Math.max(maxX, r.x + r.width);
+    minZ = Math.min(minZ, r.z);
+    maxZ = Math.max(maxZ, r.z + r.length);
+    carpetAreaSqM += r.width * r.length;
+  });
+
+  if (!isFinite(minX)) {
+    minX = 0;
+    maxX = 17.4;
+    minZ = -3.6;
+    maxZ = 16.0;
+  }
+
+  const breadthM = Number((maxX - minX).toFixed(2));
+  const lengthM = Number((maxZ - minZ).toFixed(2));
+  const breadthFt = metersToFeet(breadthM);
+  const lengthFt = metersToFeet(lengthM);
+  const carpetAreaSqFt = Math.round(carpetAreaSqM * SQM_TO_SQFT);
+  const footprintAreaSqM = Number((breadthM * lengthM).toFixed(1));
+  const footprintAreaSqFt = Math.round(footprintAreaSqM * SQM_TO_SQFT);
+
+  return {
+    minX,
+    maxX,
+    minZ,
+    maxZ,
+    breadthM,
+    lengthM,
+    breadthFt,
+    lengthFt,
+    carpetAreaSqM: Number(carpetAreaSqM.toFixed(1)),
+    carpetAreaSqFt,
+    footprintAreaSqM,
+    footprintAreaSqFt
+  };
+}
+
+/**
+ * Parametrically scales a ResidentialProject (all rooms, shared walls, doors, windows,
+ * concealed conduit endpoints, switches, sockets, fans, and downlights) to any user-specified
+ * overall Breadth (Width, X-axis) and Length (Depth, Z-axis) in meters.
+ */
+export function scaleResidentialProjectToDimensions(
+  sourceProject: ResidentialProject,
+  targetBreadthM: number,
+  targetLengthM: number,
+  targetCeilingHeightM?: number
+): ResidentialProject {
+  const clampedBreadthM = Math.max(7.5, Math.min(45.0, targetBreadthM));
+  const clampedLengthM = Math.max(8.0, Math.min(50.0, targetLengthM));
+  const metrics = getApartmentFootprintMetrics(sourceProject);
+
+  const scaleX = clampedBreadthM / Math.max(1, metrics.breadthM);
+  const scaleZ = clampedLengthM / Math.max(1, metrics.lengthM);
+  const nextCeilH = Number(
+    Math.max(2.7, Math.min(5.5, targetCeilingHeightM ?? sourceProject.meta.floorHeight ?? 3.8)).toFixed(2)
+  );
+
+  const oldRoomMap = new Map(sourceProject.rooms.map((r) => [r.id, r]));
+
+  // 1. Scale Rooms proportionally while keeping shared walls aligned
+  const newRooms = sourceProject.rooms.map((r) => {
+    const newX = Number(((r.x - metrics.minX) * scaleX + metrics.minX).toFixed(2));
+    const newZ = Number((r.z * scaleZ).toFixed(2));
+    const newW = Number(Math.max(2.0, r.width * scaleX).toFixed(2));
+    const newL = Number(Math.max(2.0, r.length * scaleZ).toFixed(2));
+    return {
+      ...r,
+      x: newX,
+      z: newZ,
+      width: newW,
+      length: newL,
+      ceilingHeight: nextCeilH
+    };
+  });
+
+  const newRoomMap = new Map(newRooms.map((r) => [r.id, r]));
+
+  // 2. Scale Door & Window Openings along their host walls
+  const newOpenings = sourceProject.openings.map((op) => {
+    const oldRm = oldRoomMap.get(op.roomId);
+    const newRm = newRoomMap.get(op.roomId);
+    if (!oldRm || !newRm) return op;
+
+    const isHoriz = op.wallDirection === 'north' || op.wallDirection === 'south';
+    const oldWallLen = isHoriz ? oldRm.width : oldRm.length;
+    const newWallLen = isHoriz ? newRm.width : newRm.length;
+    const wallRatio = newWallLen / Math.max(0.5, oldWallLen);
+
+    let nextWidth = op.width;
+    if (op.type === 'door') {
+      // Keep doors realistic (between 0.95m and 2.1m) and fitting inside the wall
+      nextWidth = Number(
+        Math.min(Math.max(0.95, op.width * Math.pow(wallRatio, 0.65)), Math.max(0.9, newWallLen - 0.35)).toFixed(2)
+      );
+    } else {
+      nextWidth = Number(
+        Math.min(Math.max(0.75, op.width * wallRatio), Math.max(0.75, newWallLen - 0.4)).toFixed(2)
+      );
     }
-  ]
-};
+
+    const rawOffset = op.offset * wallRatio;
+    const nextOffset = Number(
+      Math.max(0.15, Math.min(Math.max(0.15, newWallLen - nextWidth - 0.15), rawOffset)).toFixed(2)
+    );
+    const nextHeight =
+      op.type === 'door'
+        ? Number(Math.min(nextCeilH - 0.45, Math.max(2.1, op.height)).toFixed(2))
+        : op.height;
+
+    return {
+      ...op,
+      offset: nextOffset,
+      width: nextWidth,
+      height: nextHeight
+    };
+  });
+
+  // 3. Reposition Electrical Points so wall-mounted switches/sockets/DB stay flush on walls
+  // and ceiling lights/fans stay centered in their scaled rooms
+  const newElectricalPoints = sourceProject.electricalPoints.map((pt) => {
+    const oldRm = oldRoomMap.get(pt.roomId);
+    const newRm = newRoomMap.get(pt.roomId);
+
+    if (pt.type === 'earth_pit') {
+      const foyer = newRooms.find((r) => r.type === 'foyer') || newRooms[0];
+      return {
+        ...pt,
+        x: Number((foyer.x - 1.8).toFixed(2)),
+        y: 0.05,
+        z: Number((foyer.z + foyer.length * 0.35).toFixed(2))
+      };
+    }
+
+    if (!oldRm || !newRm) {
+      return {
+        ...pt,
+        x: Number((pt.x * scaleX).toFixed(2)),
+        z: Number((pt.z * scaleZ).toFixed(2))
+      };
+    }
+
+    const relX = Math.max(0.05, Math.min(0.95, (pt.x - oldRm.x) / Math.max(0.5, oldRm.width)));
+    const relZ = Math.max(0.05, Math.min(0.95, (pt.z - oldRm.z) / Math.max(0.5, oldRm.length)));
+
+    let nextX = newRm.x + relX * newRm.width;
+    let nextZ = newRm.z + relZ * newRm.length;
+    let nextY = pt.y;
+
+    if (pt.wallPlacement === 'west') {
+      nextX = newRm.x + 0.18;
+    } else if (pt.wallPlacement === 'east') {
+      nextX = newRm.x + newRm.width - 0.18;
+    } else if (pt.wallPlacement === 'north') {
+      nextZ = newRm.z + 0.18;
+    } else if (pt.wallPlacement === 'south') {
+      nextZ = newRm.z + newRm.length - 0.18;
+    } else if (pt.wallPlacement === 'ceiling') {
+      nextY = pt.type === 'ceiling_fan' ? nextCeilH - 0.38 : nextCeilH - 0.08;
+    }
+
+    if (pt.type === 'ac_isolator' || pt.type === 'geyser_point') {
+      nextY = Math.min(nextCeilH - 0.55, pt.y);
+    }
+
+    return {
+      ...pt,
+      x: Number(nextX.toFixed(2)),
+      y: Number(nextY.toFixed(2)),
+      z: Number(nextZ.toFixed(2))
+    };
+  });
+
+  const newMetrics = getApartmentFootprintMetrics({
+    ...sourceProject,
+    rooms: newRooms
+  });
+
+  return {
+    ...sourceProject,
+    meta: {
+      ...sourceProject.meta,
+      plotWidth: Number((newMetrics.breadthM + 8.0).toFixed(1)),
+      plotLength: Number((newMetrics.lengthM + 8.0).toFixed(1)),
+      floorHeight: nextCeilH
+    },
+    rooms: newRooms,
+    openings: newOpenings,
+    electricalPoints: newElectricalPoints
+  };
+}
+
+/**
+ * Updates a single room's Breadth (Width, X) and Length (Depth, Z) while shifting
+ * adjacent rooms along shared walls and keeping all doors, windows, and electrical points aligned.
+ */
+export function updateSingleRoomDimensions(
+  project: ResidentialProject,
+  roomId: string,
+  newBreadthM: number,
+  newLengthM: number
+): ResidentialProject {
+  const targetRoom = project.rooms.find((r) => r.id === roomId);
+  if (!targetRoom) return project;
+
+  const clampedW = Number(Math.max(2.0, Math.min(25.0, newBreadthM)).toFixed(2));
+  const clampedL = Number(Math.max(2.0, Math.min(25.0, newLengthM)).toFixed(2));
+  const deltaW = clampedW - targetRoom.width;
+  const deltaL = clampedL - targetRoom.length;
+
+  const oldRoomMap = new Map(project.rooms.map((r) => [r.id, r]));
+  const oldRightEdge = targetRoom.x + targetRoom.width;
+  const oldBottomEdge = targetRoom.z + targetRoom.length;
+
+  const updatedRooms = project.rooms.map((r) => {
+    if (r.id === roomId) {
+      return {
+        ...r,
+        width: clampedW,
+        length: clampedL
+      };
+    }
+
+    let nextX = r.x;
+    let nextZ = r.z;
+
+    // Shift rooms immediately to the East of this room if they share its East wall
+    const zOverlap =
+      Math.min(r.z + r.length, oldBottomEdge) - Math.max(r.z, targetRoom.z) > 0.2;
+    if (Math.abs(r.x - oldRightEdge) < 0.25 && zOverlap) {
+      nextX = Number((r.x + deltaW).toFixed(2));
+    }
+
+    // Shift rooms immediately to the South of this room if they share its South wall
+    const xOverlap =
+      Math.min(r.x + r.width, oldRightEdge) - Math.max(r.x, targetRoom.x) > 0.2;
+    if (Math.abs(r.z - oldBottomEdge) < 0.25 && xOverlap) {
+      nextZ = Number((r.z + deltaL).toFixed(2));
+    }
+
+    return {
+      ...r,
+      x: nextX,
+      z: nextZ
+    };
+  });
+
+  const newRoomMap = new Map(updatedRooms.map((r) => [r.id, r]));
+
+  // Re-align openings for any room whose position or size changed
+  const updatedOpenings = project.openings.map((op) => {
+    const oldRm = oldRoomMap.get(op.roomId);
+    const newRm = newRoomMap.get(op.roomId);
+    if (!oldRm || !newRm) return op;
+
+    const isHoriz = op.wallDirection === 'north' || op.wallDirection === 'south';
+    const oldWallLen = isHoriz ? oldRm.width : oldRm.length;
+    const newWallLen = isHoriz ? newRm.width : newRm.length;
+    if (Math.abs(oldWallLen - newWallLen) < 0.01) return op;
+
+    const wallRatio = newWallLen / Math.max(0.5, oldWallLen);
+    const nextWidth = Number(
+      Math.min(op.width, Math.max(0.8, newWallLen - 0.35)).toFixed(2)
+    );
+    const nextOffset = Number(
+      Math.max(0.15, Math.min(Math.max(0.15, newWallLen - nextWidth - 0.15), op.offset * wallRatio)).toFixed(2)
+    );
+    return {
+      ...op,
+      width: nextWidth,
+      offset: nextOffset
+    };
+  });
+
+  // Re-align electrical points inside any modified/shifted room
+  const updatedPoints = project.electricalPoints.map((pt) => {
+    if (pt.type === 'earth_pit') return pt;
+    const oldRm = oldRoomMap.get(pt.roomId);
+    const newRm = newRoomMap.get(pt.roomId);
+    if (!oldRm || !newRm) return pt;
+
+    const relX = Math.max(0.05, Math.min(0.95, (pt.x - oldRm.x) / Math.max(0.5, oldRm.width)));
+    const relZ = Math.max(0.05, Math.min(0.95, (pt.z - oldRm.z) / Math.max(0.5, oldRm.length)));
+
+    let nextX = newRm.x + relX * newRm.width;
+    let nextZ = newRm.z + relZ * newRm.length;
+
+    if (pt.wallPlacement === 'west') nextX = newRm.x + 0.18;
+    else if (pt.wallPlacement === 'east') nextX = newRm.x + newRm.width - 0.18;
+    else if (pt.wallPlacement === 'north') nextZ = newRm.z + 0.18;
+    else if (pt.wallPlacement === 'south') nextZ = newRm.z + newRm.length - 0.18;
+
+    return {
+      ...pt,
+      x: Number(nextX.toFixed(2)),
+      z: Number(nextZ.toFixed(2))
+    };
+  });
+
+  const newMetrics = getApartmentFootprintMetrics({
+    ...project,
+    rooms: updatedRooms
+  });
+
+  return {
+    ...project,
+    meta: {
+      ...project.meta,
+      plotWidth: Number((newMetrics.breadthM + 8.0).toFixed(1)),
+      plotLength: Number((newMetrics.lengthM + 8.0).toFixed(1))
+    },
+    rooms: updatedRooms,
+    openings: updatedOpenings,
+    electricalPoints: updatedPoints
+  };
+}
+
+export interface PlotDimensionPreset {
+  id: string;
+  label: string;
+  sublabel: string;
+  breadthFt: number;
+  lengthFt: number;
+  breadthM: number;
+  lengthM: number;
+  ceilingHeightM: number;
+}
+
+export const PLOT_DIMENSION_PRESETS: PlotDimensionPreset[] = [
+  {
+    id: 'classic_1000',
+    label: 'Classic 1,000 sq.ft 2BHK',
+    sublabel: '34 ft × 38 ft (10.4m × 11.6m)',
+    breadthFt: 34,
+    lengthFt: 38,
+    breadthM: 10.36,
+    lengthM: 11.58,
+    ceilingHeightM: 3.2
+  },
+  {
+    id: 'compact_spacious',
+    label: 'Urban Spacious 2BHK',
+    sublabel: '46 ft × 52 ft (14.0m × 15.8m)',
+    breadthFt: 46,
+    lengthFt: 52,
+    breadthM: 14.02,
+    lengthM: 15.85,
+    ceilingHeightM: 3.6
+  },
+  {
+    id: 'standard_grand',
+    label: 'Grand Walkthrough 2BHK',
+    sublabel: '57 ft × 64 ft (17.4m × 19.6m)',
+    breadthFt: 57.1,
+    lengthFt: 64.3,
+    breadthM: 17.4,
+    lengthM: 19.6,
+    ceilingHeightM: 3.8
+  },
+  {
+    id: 'villa_palatial',
+    label: 'Palatial Villa 2BHK Twin',
+    sublabel: '72 ft × 80 ft (22.0m × 24.4m)',
+    breadthFt: 72,
+    lengthFt: 80,
+    breadthM: 21.95,
+    lengthM: 24.38,
+    ceilingHeightM: 4.2
+  }
+];
+
+export const COMPACT_2BHK_PROJECT: ResidentialProject = (() => {
+  const scaled = scaleResidentialProjectToDimensions(STANDARD_2BHK_PROJECT, 14.0, 15.8, 3.6);
+  return {
+    ...scaled,
+    id: 'proj_2bhk_compact_spacious',
+    meta: {
+      ...scaled.meta,
+      projectName: 'Urban Nest 2BHK Spacious (14.0m × 15.8m)',
+      customerName: 'Smt. Priya Sundaram',
+      location: 'Electronic City, Bengaluru',
+      sanctionedLoadKw: 6.0
+    }
+  };
+})();
+
+export const LUXURY_3BHK_PROJECT: ResidentialProject = (() => {
+  const scaled = scaleResidentialProjectToDimensions(STANDARD_2BHK_PROJECT, 21.5, 24.0, 4.1);
+  return {
+    ...scaled,
+    id: 'proj_3bhk_luxury_spacious',
+    meta: {
+      ...scaled.meta,
+      projectName: 'Prestige Villa Grand 2BHK/3BHK Twin (21.5m × 24.0m)',
+      customerName: 'Dr. Vikram Malhotra',
+      location: 'Sadashivanagar, Bengaluru',
+      sanctionedLoadKw: 12.0,
+      supplyPhase: '3-phase 415V'
+    }
+  };
+})();
 
 export const RESIDENTIAL_TEMPLATES = [
   {
     id: '2bhk',
     badge: '2BHK GRAND',
-    name: 'Greenwood Heights Grand 2BHK',
+    name: 'Greenwood Heights Grand 2BHK (57×64 ft)',
     project: STANDARD_2BHK_PROJECT
   },
   {
     id: '2bhk_compact',
-    badge: '2BHK SPACIOUS',
-    name: 'Urban Nest 2BHK',
+    badge: '2BHK URBAN',
+    name: 'Urban Nest 2BHK (46×52 ft)',
     project: COMPACT_2BHK_PROJECT
   },
   {
     id: '3bhk_luxury',
-    badge: '3BHK VILLA',
-    name: 'Prestige Villa Grand 3BHK',
+    badge: '2BHK VILLA',
+    name: 'Prestige Villa Twin (71×79 ft)',
     project: LUXURY_3BHK_PROJECT
   }
 ];
+
 

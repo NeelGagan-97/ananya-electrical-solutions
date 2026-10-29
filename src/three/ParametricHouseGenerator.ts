@@ -380,92 +380,107 @@ export function generateParametricTwin(
     rmGroup.name = `Furniture_${room.id}`;
 
     if (room.type === 'living') {
-      // Grand L-Shaped Fabric Lounge Sofa in West-South Living Zone (leaves huge 5m+ central walking floor)
-      const sofaX = rx + 2.5;
-      const sofaZ = rz + rl - 1.55;
-      addBox(rmGroup, 3.2, 0.45, 1.05, 0x334155, sofaX, 0.225, sofaZ, 0.8, 0.05, 1, true);
-      addBox(rmGroup, 3.2, 0.52, 0.22, 0x1e293b, sofaX, 0.68, sofaZ + 0.42, 0.85, 0.05);
-      addBox(rmGroup, 1.05, 0.45, 2.2, 0x334155, rx + 1.42, 0.225, sofaZ - 0.95, 0.8, 0.05, 1, true);
+      // Scale living furniture proportionally so both compact and grand dimensions have wide walking paths
+      const sofaW = Math.min(3.2, rw * 0.32);
+      const sofaSideL = Math.min(2.2, rl * 0.28);
+      const sofaX = rx + Math.max(sofaW / 2 + 0.6, rw * 0.24);
+      const sofaZ = rz + rl - Math.min(1.55, rl * 0.22);
+      addBox(rmGroup, sofaW, 0.45, 1.0, 0x334155, sofaX, 0.225, sofaZ, 0.8, 0.05, 1, true);
+      addBox(rmGroup, sofaW, 0.52, 0.22, 0x1e293b, sofaX, 0.68, sofaZ + 0.4, 0.85, 0.05);
+      addBox(rmGroup, 1.0, 0.45, sofaSideL, 0x334155, sofaX - sofaW / 2 + 0.5, 0.225, sofaZ - sofaSideL / 2 + 0.1, 0.8, 0.05, 1, true);
       // Accent Cushions
-      addBox(rmGroup, 0.48, 0.36, 0.16, 0x0284c7, sofaX - 0.85, 0.62, sofaZ + 0.22, 0.7, 0.0);
-      addBox(rmGroup, 0.48, 0.36, 0.16, 0xf59e0b, sofaX + 0.85, 0.62, sofaZ + 0.22, 0.7, 0.0);
+      addBox(rmGroup, 0.44, 0.36, 0.16, 0x0284c7, sofaX - sofaW * 0.25, 0.62, sofaZ + 0.2, 0.7, 0.0);
+      addBox(rmGroup, 0.44, 0.36, 0.16, 0xf59e0b, sofaX + sofaW * 0.25, 0.62, sofaZ + 0.2, 0.7, 0.0);
       // Area Rug & Center Coffee Table (no blocking collision on coffee table so walking feels completely free)
-      addBox(rmGroup, 3.4, 0.015, 2.4, 0xcbd5e1, sofaX + 0.35, 0.055, sofaZ - 1.85, 0.95, 0.0);
-      addBox(rmGroup, 1.45, 0.4, 0.75, 0x78350f, sofaX + 0.35, 0.21, sofaZ - 1.85, 0.4, 0.1, 1, false);
-      // TV Entertainment Console + 75" Wall-Mounted Smart TV on North Wall (clear of foyer doorway)
+      const rugZ = Math.max(rz + 1.8, sofaZ - Math.min(1.75, rl * 0.24));
+      addBox(rmGroup, Math.min(3.4, rw * 0.34), 0.015, Math.min(2.3, rl * 0.28), 0xcbd5e1, sofaX + 0.25, 0.055, rugZ, 0.95, 0.0);
+      addBox(rmGroup, Math.min(1.45, rw * 0.16), 0.4, 0.72, 0x78350f, sofaX + 0.25, 0.21, rugZ, 0.4, 0.1, 1, false);
+      // TV Entertainment Console + Wall-Mounted Smart TV on North Wall (clear of foyer doorway)
       const tvX = rx + rw * 0.56;
-      addBox(rmGroup, 2.6, 0.52, 0.48, 0x5c3a21, tvX, 0.26, rz + 0.34, 0.5, 0.1, 1, true);
-      addBox(rmGroup, 2.1, 1.15, 0.05, 0x090d16, tvX, 1.65, rz + 0.15, 0.15, 0.6);
+      const tvW = Math.min(2.6, rw * 0.26);
+      addBox(rmGroup, tvW, 0.52, 0.46, 0x5c3a21, tvX, 0.26, rz + 0.34, 0.5, 0.1, 1, true);
+      addBox(rmGroup, tvW * 0.82, 1.12, 0.05, 0x090d16, tvX, 1.65, rz + 0.15, 0.15, 0.6);
       // 6-Seater Grand Dining Table & Chairs in East Dining Zone (clear of Kitchen & Bath doorways)
-      const dx = rx + rw - 2.4;
+      const dx = rx + rw - Math.max(1.6, Math.min(2.4, rw * 0.24));
       const dz = rz + rl * 0.52;
-      addBox(rmGroup, 2.1, 0.06, 1.15, 0x78350f, dx, 0.78, dz, 0.35, 0.1, 1, false);
-      addBox(rmGroup, 0.1, 0.76, 0.1, 0x1e293b, dx - 0.85, 0.38, dz - 0.42, 0.4, 0.6);
-      addBox(rmGroup, 0.1, 0.76, 0.1, 0x1e293b, dx + 0.85, 0.38, dz - 0.42, 0.4, 0.6);
-      addBox(rmGroup, 0.1, 0.76, 0.1, 0x1e293b, dx - 0.85, 0.38, dz + 0.42, 0.4, 0.6);
-      addBox(rmGroup, 0.1, 0.76, 0.1, 0x1e293b, dx + 0.85, 0.38, dz + 0.42, 0.4, 0.6);
-      addBox(rmGroup, 0.48, 0.46, 0.48, 0x475569, dx - 0.5, 0.23, dz - 0.75, 0.7, 0.1);
-      addBox(rmGroup, 0.48, 0.46, 0.48, 0x475569, dx + 0.5, 0.23, dz - 0.75, 0.7, 0.1);
-      addBox(rmGroup, 0.48, 0.46, 0.48, 0x475569, dx - 0.5, 0.23, dz + 0.75, 0.7, 0.1);
-      addBox(rmGroup, 0.48, 0.46, 0.48, 0x475569, dx + 0.5, 0.23, dz + 0.75, 0.7, 0.1);
+      const dtW = Math.min(2.1, rw * 0.22);
+      addBox(rmGroup, dtW, 0.06, 1.1, 0x78350f, dx, 0.78, dz, 0.35, 0.1, 1, false);
+      addBox(rmGroup, 0.1, 0.76, 0.1, 0x1e293b, dx - dtW * 0.4, 0.38, dz - 0.4, 0.4, 0.6);
+      addBox(rmGroup, 0.1, 0.76, 0.1, 0x1e293b, dx + dtW * 0.4, 0.38, dz - 0.4, 0.4, 0.6);
+      addBox(rmGroup, 0.1, 0.76, 0.1, 0x1e293b, dx - dtW * 0.4, 0.38, dz + 0.4, 0.4, 0.6);
+      addBox(rmGroup, 0.1, 0.76, 0.1, 0x1e293b, dx + dtW * 0.4, 0.38, dz + 0.4, 0.4, 0.6);
+      addBox(rmGroup, 0.45, 0.46, 0.45, 0x475569, dx - dtW * 0.24, 0.23, dz - 0.72, 0.7, 0.1);
+      addBox(rmGroup, 0.45, 0.46, 0.45, 0x475569, dx + dtW * 0.24, 0.23, dz - 0.72, 0.7, 0.1);
+      addBox(rmGroup, 0.45, 0.46, 0.45, 0x475569, dx - dtW * 0.24, 0.23, dz + 0.72, 0.7, 0.1);
+      addBox(rmGroup, 0.45, 0.46, 0.45, 0x475569, dx + dtW * 0.24, 0.23, dz + 0.72, 0.7, 0.1);
     } else if (room.type === 'kitchen') {
       // L-Shaped Modular Kitchen Base Cabinets & Black Granite Countertop along East and North Walls
-      addBox(rmGroup, 0.72, 0.88, rl - 0.4, 0x0f766e, rx + rw - 0.42, 0.44, rz + rl / 2, 0.5, 0.1, 1, true);
-      addBox(rmGroup, 0.76, 0.04, rl - 0.36, 0x111827, rx + rw - 0.42, 0.9, rz + rl / 2, 0.2, 0.3);
-      addBox(rmGroup, rw - 1.4, 0.88, 0.68, 0x0f766e, rx + (rw - 1.4) / 2 + 0.35, 0.44, rz + 0.42, 0.5, 0.1, 1, true);
-      addBox(rmGroup, rw - 1.36, 0.04, 0.72, 0x111827, rx + (rw - 1.4) / 2 + 0.35, 0.9, rz + 0.42, 0.2, 0.3);
+      const eastCabL = Math.max(1.6, rl - 0.4);
+      const northCabW = Math.max(1.4, rw - 1.4);
+      addBox(rmGroup, 0.7, 0.88, eastCabL, 0x0f766e, rx + rw - 0.42, 0.44, rz + rl / 2, 0.5, 0.1, 1, true);
+      addBox(rmGroup, 0.74, 0.04, eastCabL + 0.04, 0x111827, rx + rw - 0.42, 0.9, rz + rl / 2, 0.2, 0.3);
+      addBox(rmGroup, northCabW, 0.88, 0.68, 0x0f766e, rx + northCabW / 2 + 0.35, 0.44, rz + 0.42, 0.5, 0.1, 1, true);
+      addBox(rmGroup, northCabW + 0.04, 0.04, 0.72, 0x111827, rx + northCabW / 2 + 0.35, 0.9, rz + 0.42, 0.2, 0.3);
       // 4-Burner Induction / Glass Hob & Auto-Clean Chimney
-      addBox(rmGroup, 0.54, 0.03, 0.92, 0x030712, rx + rw - 0.42, 0.93, rz + rl * 0.42, 0.15, 0.5);
-      addBox(rmGroup, 0.52, 0.25, 0.95, 0x94a3b8, rx + rw - 0.42, 2.05, rz + rl * 0.42, 0.25, 0.85);
+      addBox(rmGroup, 0.52, 0.03, Math.min(0.9, rl * 0.22), 0x030712, rx + rw - 0.42, 0.93, rz + rl * 0.42, 0.15, 0.5);
+      addBox(rmGroup, 0.5, 0.25, Math.min(0.92, rl * 0.22), 0x94a3b8, rx + rw - 0.42, 2.05, rz + rl * 0.42, 0.25, 0.85);
       addBox(rmGroup, 0.26, 1.15, 0.26, 0x94a3b8, rx + rw - 0.3, 2.7, rz + rl * 0.42, 0.25, 0.85);
       // Stainless Steel Double Sink
-      addBox(rmGroup, 0.52, 0.02, 0.82, 0xcbd5e1, rx + rw - 0.42, 0.925, rz + rl * 0.75, 0.2, 0.9);
+      addBox(rmGroup, 0.5, 0.02, Math.min(0.8, rl * 0.2), 0xcbd5e1, rx + rw - 0.42, 0.925, rz + rl * 0.75, 0.2, 0.9);
       // Side-by-Side Double-Door Refrigerator & Microwave Oven on North Wall
-      addBox(rmGroup, 0.92, 1.95, 0.78, 0x64748b, rx + 0.95, 0.975, rz + 0.52, 0.25, 0.8, 1, true);
-      addBox(rmGroup, 0.58, 0.35, 0.44, 0x1e293b, rx + 2.35, 1.1, rz + 0.42, 0.3, 0.6);
+      addBox(rmGroup, 0.88, 1.95, 0.75, 0x64748b, rx + Math.min(0.95, rw * 0.22), 0.975, rz + 0.5, 0.25, 0.8, 1, true);
+      addBox(rmGroup, 0.56, 0.35, 0.42, 0x1e293b, rx + Math.min(2.25, rw * 0.48), 1.1, rz + 0.42, 0.3, 0.6);
     } else if (room.type === 'master_bedroom') {
-      // Grand King-Size Bed along South Wall (leaves huge open bedroom floor)
-      const bx = rx + rw / 2 - 0.2;
-      const bz = rz + rl - 1.35;
-      addBox(rmGroup, 2.25, 0.38, 2.35, 0x5c3a21, bx, 0.19, bz, 0.6, 0.05, 1, true);
-      addBox(rmGroup, 2.14, 0.24, 2.22, 0xf8fafc, bx, 0.45, bz + 0.02, 0.85, 0.0);
-      addBox(rmGroup, 2.15, 0.06, 1.25, 0x1e3a8a, bx, 0.58, bz + 0.42, 0.85, 0.0);
-      addBox(rmGroup, 2.32, 1.25, 0.14, 0x451a03, bx, 0.625, rz + rl - 0.14, 0.55, 0.05);
+      // Grand King-Size Bed along South Wall (scales cleanly with room dimensions)
+      const bedW = Math.min(2.25, rw * 0.34);
+      const bedL = Math.min(2.35, rl * 0.36);
+      const bx = rx + rw / 2 - 0.15;
+      const bz = rz + rl - bedL / 2 - 0.18;
+      addBox(rmGroup, bedW, 0.38, bedL, 0x5c3a21, bx, 0.19, bz, 0.6, 0.05, 1, true);
+      addBox(rmGroup, bedW - 0.1, 0.24, bedL - 0.12, 0xf8fafc, bx, 0.45, bz + 0.02, 0.85, 0.0);
+      addBox(rmGroup, bedW - 0.08, 0.06, bedL * 0.52, 0x1e3a8a, bx, 0.58, bz + bedL * 0.18, 0.85, 0.0);
+      addBox(rmGroup, bedW + 0.06, 1.25, 0.14, 0x451a03, bx, 0.625, rz + rl - 0.14, 0.55, 0.05);
       // 2 Pillows
-      addBox(rmGroup, 0.72, 0.12, 0.42, 0xe2e8f0, bx - 0.52, 0.61, rz + rl - 0.45, 0.8, 0.0);
-      addBox(rmGroup, 0.72, 0.12, 0.42, 0xe2e8f0, bx + 0.52, 0.61, rz + rl - 0.45, 0.8, 0.0);
+      addBox(rmGroup, Math.min(0.7, bedW * 0.34), 0.12, 0.4, 0xe2e8f0, bx - bedW * 0.23, 0.61, rz + rl - 0.44, 0.8, 0.0);
+      addBox(rmGroup, Math.min(0.7, bedW * 0.34), 0.12, 0.4, 0xe2e8f0, bx + bedW * 0.23, 0.61, rz + rl - 0.44, 0.8, 0.0);
       // Bedside Tables
-      addBox(rmGroup, 0.58, 0.52, 0.48, 0x5c3a21, bx - 1.52, 0.26, rz + rl - 0.42, 0.5, 0.05, 1, false);
-      addBox(rmGroup, 0.58, 0.52, 0.48, 0x5c3a21, bx + 1.52, 0.26, rz + rl - 0.42, 0.5, 0.05, 1, false);
+      addBox(rmGroup, 0.54, 0.52, 0.46, 0x5c3a21, bx - bedW / 2 - 0.38, 0.26, rz + rl - 0.42, 0.5, 0.05, 1, false);
+      addBox(rmGroup, 0.54, 0.52, 0.46, 0x5c3a21, bx + bedW / 2 + 0.38, 0.26, rz + rl - 0.42, 0.5, 0.05, 1, false);
       // Full-Height Sliding Door Wardrobe along West Wall
-      addBox(rmGroup, 0.65, 2.55, 2.8, 0x78350f, rx + 0.38, 1.275, rz + 2.6, 0.45, 0.1, 1, true);
+      const wardL = Math.min(2.8, rl * 0.38);
+      addBox(rmGroup, 0.62, 2.55, wardL, 0x78350f, rx + 0.38, 1.275, rz + rl * 0.36, 0.45, 0.1, 1, true);
       // Wall-Mounted 1.5T Split AC Indoor Unit above Bed
-      addBox(rmGroup, 1.15, 0.32, 0.24, 0xf8fafc, bx, 2.95, rz + rl - 0.18, 0.2, 0.1);
+      addBox(rmGroup, 1.15, 0.32, 0.24, 0xf8fafc, bx, Math.min(2.95, room.ceilingHeight - 0.45), rz + rl - 0.18, 0.2, 0.1);
     } else if (room.type === 'bedroom_2') {
       // Spacious Queen Bed along South Wall
-      const bx = rx + rw / 2 + 0.15;
-      const bz = rz + rl - 1.3;
-      addBox(rmGroup, 1.85, 0.36, 2.25, 0x78350f, bx, 0.18, bz, 0.6, 0.05, 1, true);
-      addBox(rmGroup, 1.74, 0.22, 2.12, 0xf8fafc, bx, 0.42, bz, 0.85, 0.0);
-      addBox(rmGroup, 1.76, 0.05, 1.15, 0x047857, bx, 0.54, bz + 0.38, 0.85, 0.0);
-      addBox(rmGroup, 1.92, 1.15, 0.12, 0x5c3a21, bx, 0.56, rz + rl - 0.14, 0.55, 0.05);
+      const bedW = Math.min(1.85, rw * 0.34);
+      const bedL = Math.min(2.25, rl * 0.35);
+      const bx = rx + rw / 2 + 0.12;
+      const bz = rz + rl - bedL / 2 - 0.18;
+      addBox(rmGroup, bedW, 0.36, bedL, 0x78350f, bx, 0.18, bz, 0.6, 0.05, 1, true);
+      addBox(rmGroup, bedW - 0.1, 0.22, bedL - 0.12, 0xf8fafc, bx, 0.42, bz, 0.85, 0.0);
+      addBox(rmGroup, bedW - 0.08, 0.05, bedL * 0.5, 0x047857, bx, 0.54, bz + bedL * 0.16, 0.85, 0.0);
+      addBox(rmGroup, bedW + 0.06, 1.15, 0.12, 0x5c3a21, bx, 0.56, rz + rl - 0.14, 0.55, 0.05);
       // Wardrobe along West Wall & Study Desk along East Wall
-      addBox(rmGroup, 0.6, 2.45, 2.2, 0x78350f, rx + 0.36, 1.225, rz + 3.6, 0.5, 0.1, 1, true);
-      addBox(rmGroup, 0.65, 0.78, 1.65, 0x92400e, rx + rw - 0.38, 0.39, rz + 3.6, 0.5, 0.1, 1, true);
+      const wardL = Math.min(2.2, rl * 0.32);
+      const deskL = Math.min(1.65, rl * 0.26);
+      addBox(rmGroup, 0.58, 2.45, wardL, 0x78350f, rx + 0.36, 1.225, rz + rl * 0.45, 0.5, 0.1, 1, true);
+      addBox(rmGroup, 0.62, 0.78, deskL, 0x92400e, rx + rw - 0.38, 0.39, rz + rl * 0.45, 0.5, 0.1, 1, true);
       // Split AC Indoor Unit
-      addBox(rmGroup, 1.05, 0.3, 0.22, 0xf8fafc, bx, 2.95, rz + rl - 0.18, 0.2, 0.1);
+      addBox(rmGroup, 1.05, 0.3, 0.22, 0xf8fafc, bx, Math.min(2.95, room.ceilingHeight - 0.45), rz + rl - 0.18, 0.2, 0.1);
     } else if (room.type === 'bathroom') {
       // Vanity Counter + Basin + Ceramic WC along East Wall (wide open central bathroom floor)
-      addBox(rmGroup, 0.65, 0.84, 0.95, 0x334155, rx + rw - 0.38, 0.42, rz + 0.75, 0.4, 0.2, 1, true);
-      addBox(rmGroup, 0.48, 0.14, 0.55, 0xffffff, rx + rw - 0.38, 0.9, rz + 0.75, 0.15, 0.1);
-      addBox(rmGroup, 0.48, 0.44, 0.62, 0xffffff, rx + rw - 0.42, 0.22, rz + rl - 0.65, 0.15, 0.1, 1, true);
-      addBox(rmGroup, 0.42, 0.44, 0.22, 0xffffff, rx + rw - 0.22, 0.62, rz + rl - 0.65, 0.15, 0.1);
+      const vanityL = Math.min(0.95, rl * 0.32);
+      addBox(rmGroup, 0.62, 0.84, vanityL, 0x334155, rx + rw - 0.38, 0.42, rz + Math.max(0.65, rl * 0.25), 0.4, 0.2, 1, true);
+      addBox(rmGroup, 0.46, 0.14, Math.min(0.55, vanityL * 0.65), 0xffffff, rx + rw - 0.38, 0.9, rz + Math.max(0.65, rl * 0.25), 0.15, 0.1);
+      addBox(rmGroup, 0.46, 0.44, 0.6, 0xffffff, rx + rw - 0.42, 0.22, rz + rl - 0.62, 0.15, 0.1, 1, true);
+      addBox(rmGroup, 0.4, 0.44, 0.22, 0xffffff, rx + rw - 0.22, 0.62, rz + rl - 0.62, 0.15, 0.1);
     } else if (room.type === 'foyer') {
       // Incoming Digital Energy Meter (kWh) & Main Isolator Enclosure beside DB on West Wall
-      addBox(rmGroup, 0.26, 0.34, 0.14, 0x1e293b, rx + 0.16, 1.65, rz + rl - 0.75, 0.3, 0.7);
-      addBox(rmGroup, 0.02, 0.1, 0.16, 0x38bdf8, rx + 0.3, 1.7, rz + rl - 0.75, 0.2, 0.1);
-      // Sleek Shoe Rack Console on East Wall of Foyer (leaves 4.2m wide clear foyer corridor)
-      addBox(rmGroup, 0.42, 0.72, 1.35, 0x5c3a21, rx + rw - 0.28, 0.36, rz + rl / 2, 0.6, 0.05, 1, true);
+      addBox(rmGroup, 0.26, 0.34, 0.14, 0x1e293b, rx + 0.16, 1.65, rz + rl - 0.72, 0.3, 0.7);
+      addBox(rmGroup, 0.02, 0.1, 0.16, 0x38bdf8, rx + 0.3, 1.7, rz + rl - 0.72, 0.2, 0.1);
+      // Sleek Shoe Rack Console on East Wall of Foyer
+      addBox(rmGroup, 0.4, 0.72, Math.min(1.35, rl * 0.4), 0x5c3a21, rx + rw - 0.28, 0.36, rz + rl / 2, 0.6, 0.05, 1, true);
     }
 
     furnitureGroup.add(rmGroup);

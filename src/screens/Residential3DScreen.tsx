@@ -6,7 +6,13 @@ import {
 } from '../types/residentialDesigner';
 import {
   STANDARD_2BHK_PROJECT,
-  RESIDENTIAL_TEMPLATES
+  RESIDENTIAL_TEMPLATES,
+  PLOT_DIMENSION_PRESETS,
+  getApartmentFootprintMetrics,
+  scaleResidentialProjectToDimensions,
+  updateSingleRoomDimensions,
+  metersToFeet,
+  feetToMeters
 } from '../data/residentialPresets';
 import {
   ViewMode3D,
@@ -159,9 +165,68 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
     null
   );
 
-  // Modals
+  // Modals & Parametric Length × Breadth Configurator States
   const [showWizardModal, setShowWizardModal] = useState<boolean>(false);
   const [showBoqModal, setShowBoqModal] = useState<boolean>(false);
+  const [showDimensionModal, setShowDimensionModal] = useState<boolean>(false);
+  const [dimensionUnit, setDimensionUnit] = useState<'ft' | 'm'>('ft');
+
+  const footprintMetrics = useMemo(() => getApartmentFootprintMetrics(project), [project]);
+
+  const [customBreadthInput, setCustomBreadthInput] = useState<string>(
+    String(footprintMetrics.breadthFt)
+  );
+  const [customLengthInput, setCustomLengthInput] = useState<string>(
+    String(footprintMetrics.lengthFt)
+  );
+  const [customHeightInput, setCustomHeightInput] = useState<string>(
+    String(metersToFeet(project.meta.floorHeight || 3.8))
+  );
+
+  useEffect(() => {
+    const m = getApartmentFootprintMetrics(project);
+    const ceilM = project.meta.floorHeight || 3.8;
+    if (dimensionUnit === 'ft') {
+      setCustomBreadthInput(String(m.breadthFt));
+      setCustomLengthInput(String(m.lengthFt));
+      setCustomHeightInput(String(metersToFeet(ceilM)));
+    } else {
+      setCustomBreadthInput(String(m.breadthM));
+      setCustomLengthInput(String(m.lengthM));
+      setCustomHeightInput(String(Number(ceilM.toFixed(2))));
+    }
+  }, [project, dimensionUnit]);
+
+  const handleApplyOverallDimensions = () => {
+    const rawB = parseFloat(customBreadthInput);
+    const rawL = parseFloat(customLengthInput);
+    const rawH = parseFloat(customHeightInput);
+    if (isNaN(rawB) || isNaN(rawL) || rawB <= 0 || rawL <= 0) return;
+
+    const targetBreadthM = dimensionUnit === 'ft' ? feetToMeters(rawB) : rawB;
+    const targetLengthM = dimensionUnit === 'ft' ? feetToMeters(rawL) : rawL;
+    const targetHeightM =
+      !isNaN(rawH) && rawH > 0
+        ? dimensionUnit === 'ft'
+          ? feetToMeters(rawH)
+          : rawH
+        : project.meta.floorHeight || 3.8;
+
+    const scaled = scaleResidentialProjectToDimensions(
+      project,
+      targetBreadthM,
+      targetLengthM,
+      targetHeightM
+    );
+    setProject(scaled);
+  };
+
+  const handleUpdateSingleRoom = (roomId: string, newBreadthVal: number, newLengthVal: number) => {
+    const nextBM = dimensionUnit === 'ft' ? feetToMeters(newBreadthVal) : newBreadthVal;
+    const nextLM = dimensionUnit === 'ft' ? feetToMeters(newLengthVal) : newLengthVal;
+    const updated = updateSingleRoomDimensions(project, roomId, nextBM, nextLM);
+    setProject(updated);
+  };
 
   // Sync wallOpacity when viewMode changes
   useEffect(() => {
@@ -452,6 +517,34 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
               </option>
             ))}
           </select>
+
+          {/* Quick Length × Breadth Dimension Pill in 3D Header */}
+          <button
+            onClick={() => setShowDimensionModal((prev) => !prev)}
+            className={`px-2.5 py-1 rounded-lg border text-xs font-mono font-semibold flex items-center gap-1.5 transition-all cursor-pointer shrink-0 ${
+              showDimensionModal
+                ? 'bg-sky-500 text-slate-950 border-sky-400 font-bold shadow-md'
+                : 'bg-slate-900/95 hover:bg-slate-800 text-sky-300 border-sky-500/40'
+            }`}
+            title="Set Custom Apartment & Room Length × Breadth Dimensions (Feet / Meters)"
+          >
+            <span className="material-symbols-outlined text-[15px]">straighten</span>
+            <span>
+              L×B:{' '}
+              {dimensionUnit === 'ft'
+                ? `${footprintMetrics.lengthFt}×${footprintMetrics.breadthFt} ft`
+                : `${footprintMetrics.lengthM}×${footprintMetrics.breadthM} m`}
+            </span>
+            <span
+              className={`hidden md:inline px-1.5 py-0.2 rounded text-[10px] ${
+                showDimensionModal
+                  ? 'bg-slate-950/25 text-slate-950'
+                  : 'bg-sky-500/20 text-emerald-300'
+              }`}
+            >
+              {footprintMetrics.carpetAreaSqFt} sq.ft
+            </span>
+          </button>
         </div>
 
         {/* Center: Primary Mode Switcher */}
@@ -592,8 +685,8 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
                 OVERLAY A: "ENTER APARTMENT" START SCREEN OVERLAY
                =============================================================== */}
             {!isWalkthroughStarted && cameraMode === 'fpp' && (
-              <div className="absolute inset-0 z-30 bg-slate-950/75 backdrop-blur-md flex items-center justify-center p-4">
-                <div className="max-w-xl w-full bg-[#0B132B]/95 border border-sky-500/40 rounded-2xl shadow-2xl p-6 text-slate-100 space-y-5">
+              <div className="absolute inset-0 z-30 bg-slate-950/75 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+                <div className="max-w-xl w-full bg-[#0B132B]/95 border border-sky-500/40 rounded-2xl shadow-2xl p-5 sm:p-6 text-slate-100 space-y-4 my-auto">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-2xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-400 shrink-0">
@@ -603,18 +696,128 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
                         <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono text-[10px] font-bold uppercase tracking-wider">
                           Interactive First-Person Exploration
                         </span>
-                        <h2 className="text-xl font-bold text-white mt-1">
+                        <h2 className="text-lg sm:text-xl font-bold text-white mt-1">
                           Greenwood Heights — 2BHK Interior Twin
                         </h2>
                         <p className="text-xs text-slate-400">
-                          1,000 sq.ft Furnished Indian Apartment • IS:732 Concealed Electrical Installation
+                          {footprintMetrics.lengthFt} ft × {footprintMetrics.breadthFt} ft ({footprintMetrics.carpetAreaSqFt} sq.ft Carpet) • IS:732 Concealed Electrical Twin
                         </p>
                       </div>
                     </div>
                   </div>
 
+                  {/* Custom Apartment Length × Breadth Configurator on Start Screen */}
+                  <div className="bg-slate-900/95 border border-sky-500/30 rounded-xl p-3.5 space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-sky-400 text-[17px]">
+                          straighten
+                        </span>
+                        <span className="text-xs font-bold text-white uppercase tracking-wider">
+                          Custom 2BHK Dimensions (Length × Breadth)
+                        </span>
+                      </div>
+
+                      {/* Unit Toggle: Feet (ft) / Meters (m) */}
+                      <div className="flex items-center bg-slate-800 rounded-lg p-0.5 border border-slate-700 text-[10px] font-mono font-bold">
+                        <button
+                          onClick={() => setDimensionUnit('ft')}
+                          className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                            dimensionUnit === 'ft'
+                              ? 'bg-sky-500 text-slate-950'
+                              : 'text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          Feet (ft)
+                        </button>
+                        <button
+                          onClick={() => setDimensionUnit('m')}
+                          className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                            dimensionUnit === 'm'
+                              ? 'bg-sky-500 text-slate-950'
+                              : 'text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          Meters (m)
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      <div>
+                        <label className="text-[10px] text-slate-400 block mb-1 font-medium">
+                          Length / Depth ({dimensionUnit})
+                        </label>
+                        <input
+                          type="number"
+                          step={dimensionUnit === 'ft' ? '1' : '0.2'}
+                          min={dimensionUnit === 'ft' ? 26 : 8}
+                          max={dimensionUnit === 'ft' ? 160 : 50}
+                          value={customLengthInput}
+                          onChange={(e) => setCustomLengthInput(e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-700 focus:border-sky-400 rounded-lg px-2.5 py-1.5 text-xs text-white font-mono font-bold focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] text-slate-400 block mb-1 font-medium">
+                          Breadth / Width ({dimensionUnit})
+                        </label>
+                        <input
+                          type="number"
+                          step={dimensionUnit === 'ft' ? '1' : '0.2'}
+                          min={dimensionUnit === 'ft' ? 24 : 7.5}
+                          max={dimensionUnit === 'ft' ? 140 : 45}
+                          value={customBreadthInput}
+                          onChange={(e) => setCustomBreadthInput(e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-700 focus:border-sky-400 rounded-lg px-2.5 py-1.5 text-xs text-white font-mono font-bold focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="flex flex-col justify-end">
+                        <button
+                          onClick={handleApplyOverallDimensions}
+                          className="w-full py-1.5 px-3 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-1 transition-all cursor-pointer h-[30px]"
+                        >
+                          <span className="material-symbols-outlined text-[15px]">auto_fix_high</span>
+                          <span>Apply L × B</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Quick Preset Chips */}
+                    <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                      {PLOT_DIMENSION_PRESETS.map((preset) => (
+                        <button
+                          key={preset.id}
+                          onClick={() => {
+                            const scaled = scaleResidentialProjectToDimensions(
+                              project,
+                              preset.breadthM,
+                              preset.lengthM,
+                              preset.ceilingHeightM
+                            );
+                            setProject(scaled);
+                          }}
+                          className="px-2 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-[10px] font-mono text-slate-300 hover:text-sky-300 transition-colors cursor-pointer"
+                        >
+                          {preset.label.split(' ')[0]}:{' '}
+                          {dimensionUnit === 'ft'
+                            ? `${preset.lengthFt}×${preset.breadthFt}ft`
+                            : `${preset.lengthM}×${preset.breadthM}m`}
+                        </button>
+                      ))}
+                      <button
+                        onClick={() => setShowDimensionModal(true)}
+                        className="px-2 py-1 rounded-md bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-[10px] font-mono text-emerald-300 transition-colors cursor-pointer ml-auto"
+                      >
+                        Edit Individual Rooms →
+                      </button>
+                    </div>
+                  </div>
+
                   {/* Walkthrough Controls Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 bg-slate-900/90 border border-slate-800 rounded-xl p-3.5 text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs">
                     <div className="flex items-center gap-2.5">
                       <span className="px-2 py-1 rounded bg-slate-800 border border-slate-700 font-mono font-bold text-sky-300 shrink-0">
                         W A S D
@@ -1710,6 +1913,8 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
             onUpdateProject={(updated) => setProject(updated)}
             selectedPointId={selectedCompId}
             onSelectPoint={(id) => setSelectedCompId(id || 'pt_main_db')}
+            dimensionUnit={dimensionUnit}
+            onChangeDimensionUnit={setDimensionUnit}
           />
         )}
 
@@ -1833,6 +2038,268 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
 
       {showBoqModal && (
         <BoqModal project={project} onClose={() => setShowBoqModal(false)} />
+      )}
+
+      {/* 4. Parametric 2BHK Length × Breadth Configurator Modal / Popover */}
+      {showDimensionModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="max-w-2xl w-full bg-[#0B132B] border border-sky-500/40 rounded-2xl shadow-2xl overflow-hidden text-slate-100 flex flex-col max-h-[90vh]">
+            {/* Modal Header */}
+            <div className="px-5 py-3.5 bg-slate-900/95 border-b border-slate-800 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-sky-400">
+                  <span className="material-symbols-outlined text-[18px]">straighten</span>
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white">
+                    2BHK Twin — Custom Length × Breadth Generator
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Set overall apartment plot dimensions or individual room Length &amp; Breadth
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {/* Feet / Meters Toggle */}
+                <div className="flex items-center bg-slate-800 rounded-lg p-0.5 border border-slate-700 text-xs font-mono font-bold">
+                  <button
+                    onClick={() => setDimensionUnit('ft')}
+                    className={`px-2.5 py-1 rounded transition-colors cursor-pointer ${
+                      dimensionUnit === 'ft'
+                        ? 'bg-sky-500 text-slate-950'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    Feet (ft)
+                  </button>
+                  <button
+                    onClick={() => setDimensionUnit('m')}
+                    className={`px-2.5 py-1 rounded transition-colors cursor-pointer ${
+                      dimensionUnit === 'm'
+                        ? 'bg-sky-500 text-slate-950'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    Meters (m)
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => setShowDimensionModal(false)}
+                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[18px]">close</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-5 overflow-y-auto space-y-5">
+              {/* Section 1: Overall Apartment Plot Length × Breadth */}
+              <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-xs font-bold text-sky-400 uppercase tracking-wider">
+                    1. Overall 2BHK Apartment Footprint (Length × Breadth)
+                  </span>
+                  <span className="text-xs font-mono text-emerald-400 font-semibold">
+                    Carpet Area: {footprintMetrics.carpetAreaSqFt} sq.ft ({footprintMetrics.carpetAreaSqM} m²) • Footprint: {footprintMetrics.footprintAreaSqFt} sq.ft
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                  <div>
+                    <label className="text-[11px] text-slate-400 block mb-1">
+                      Length / Depth ({dimensionUnit})
+                    </label>
+                    <input
+                      type="number"
+                      step={dimensionUnit === 'ft' ? '1' : '0.2'}
+                      min={dimensionUnit === 'ft' ? 26 : 8}
+                      max={dimensionUnit === 'ft' ? 160 : 50}
+                      value={customLengthInput}
+                      onChange={(e) => setCustomLengthInput(e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-700 focus:border-sky-400 rounded-lg px-3 py-1.5 text-sm text-white font-mono font-bold focus:outline-none"
+                    />
+                    <span className="text-[10px] text-slate-500 font-mono mt-0.5 block">
+                      North–South Z-Axis
+                    </span>
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] text-slate-400 block mb-1">
+                      Breadth / Width ({dimensionUnit})
+                    </label>
+                    <input
+                      type="number"
+                      step={dimensionUnit === 'ft' ? '1' : '0.2'}
+                      min={dimensionUnit === 'ft' ? 24 : 7.5}
+                      max={dimensionUnit === 'ft' ? 140 : 45}
+                      value={customBreadthInput}
+                      onChange={(e) => setCustomBreadthInput(e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-700 focus:border-sky-400 rounded-lg px-3 py-1.5 text-sm text-white font-mono font-bold focus:outline-none"
+                    />
+                    <span className="text-[10px] text-slate-500 font-mono mt-0.5 block">
+                      East–West X-Axis
+                    </span>
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] text-slate-400 block mb-1">
+                      Slab Height ({dimensionUnit})
+                    </label>
+                    <input
+                      type="number"
+                      step={dimensionUnit === 'ft' ? '0.5' : '0.1'}
+                      min={dimensionUnit === 'ft' ? 9 : 2.7}
+                      max={dimensionUnit === 'ft' ? 18 : 5.5}
+                      value={customHeightInput}
+                      onChange={(e) => setCustomHeightInput(e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-700 focus:border-sky-400 rounded-lg px-3 py-1.5 text-sm text-white font-mono font-bold focus:outline-none"
+                    />
+                    <span className="text-[10px] text-slate-500 font-mono mt-0.5 block">
+                      Ceiling Y-Axis
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col justify-end pb-4">
+                    <button
+                      onClick={handleApplyOverallDimensions}
+                      className="w-full py-2 px-3 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">auto_fix_high</span>
+                      <span>Scale 3D Twin</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Preset Size Buttons */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                  {PLOT_DIMENSION_PRESETS.map((preset) => (
+                    <button
+                      key={preset.id}
+                      onClick={() => {
+                        const scaled = scaleResidentialProjectToDimensions(
+                          project,
+                          preset.breadthM,
+                          preset.lengthM,
+                          preset.ceilingHeightM
+                        );
+                        setProject(scaled);
+                      }}
+                      className="p-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-left transition-all cursor-pointer"
+                    >
+                      <div className="text-xs font-bold text-white truncate">{preset.label}</div>
+                      <div className="text-[10px] font-mono text-sky-400 mt-0.5">
+                        {dimensionUnit === 'ft'
+                          ? `L ${preset.lengthFt} × B ${preset.breadthFt} ft`
+                          : `L ${preset.lengthM} × B ${preset.breadthM} m`}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Section 2: Per-Room Length × Breadth Overrides */}
+              <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
+                    2. Individual Room Dimensions (Length × Breadth in {dimensionUnit})
+                  </span>
+                  <span className="text-[11px] text-slate-400">
+                    Shared walls &amp; IS:732 conduits adjust automatically
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {project.rooms.map((rm) => {
+                    const rmBreadthDisp =
+                      dimensionUnit === 'ft' ? metersToFeet(rm.width) : rm.width;
+                    const rmLengthDisp =
+                      dimensionUnit === 'ft' ? metersToFeet(rm.length) : rm.length;
+                    const rmAreaSqFt = Math.round(rm.width * rm.length * 10.7639);
+
+                    return (
+                      <div
+                        key={rm.id}
+                        className="p-3 rounded-xl bg-slate-950/90 border border-slate-800 flex flex-col gap-2"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-slate-200">{rm.name}</span>
+                          <span className="text-[10px] font-mono text-sky-400">
+                            {rmAreaSqFt} sq.ft ({(rm.width * rm.length).toFixed(1)} m²)
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="text-[10px] text-slate-400 block mb-0.5">
+                              Length ({dimensionUnit})
+                            </label>
+                            <input
+                              type="number"
+                              step={dimensionUnit === 'ft' ? '0.5' : '0.1'}
+                              min={dimensionUnit === 'ft' ? 6.5 : 2.0}
+                              max={dimensionUnit === 'ft' ? 80 : 25}
+                              value={rmLengthDisp}
+                              onChange={(e) => {
+                                const val = parseFloat(e.target.value);
+                                if (!isNaN(val) && val > 0) {
+                                  handleUpdateSingleRoom(rm.id, rmBreadthDisp, val);
+                                }
+                              }}
+                              className="w-full bg-slate-900 border border-slate-700 focus:border-emerald-400 rounded px-2 py-1 text-xs text-white font-mono font-bold focus:outline-none"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="text-[10px] text-slate-400 block mb-0.5">
+                              Breadth ({dimensionUnit})
+                            </label>
+                            <input
+                              type="number"
+                              step={dimensionUnit === 'ft' ? '0.5' : '0.1'}
+                              min={dimensionUnit === 'ft' ? 6.5 : 2.0}
+                              max={dimensionUnit === 'ft' ? 80 : 25}
+                              value={rmBreadthDisp}
+                              onChange={(e) => {
+                                const val = parseFloat(e.target.value);
+                                if (!isNaN(val) && val > 0) {
+                                  handleUpdateSingleRoom(rm.id, val, rmLengthDisp);
+                                }
+                              }}
+                              className="w-full bg-slate-900 border border-slate-700 focus:border-emerald-400 rounded px-2 py-1 text-xs text-white font-mono font-bold focus:outline-none"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-5 py-3 bg-slate-900/95 border-t border-slate-800 flex items-center justify-between">
+              <button
+                onClick={() => {
+                  const resetProj = JSON.parse(JSON.stringify(STANDARD_2BHK_PROJECT));
+                  setProject(resetProj);
+                }}
+                className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold cursor-pointer"
+              >
+                Reset to Default Grand 2BHK
+              </button>
+
+              <button
+                onClick={() => setShowDimensionModal(false)}
+                className="px-4 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold cursor-pointer"
+              >
+                Done &amp; Return to 3D Twin
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

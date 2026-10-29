@@ -215,7 +215,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
             {/* Hero Visual Showcase: Video + Telemetry */}
             <div className="lg:col-span-5 flex flex-col items-center lg:items-end justify-start gap-5 lg:-mt-20">
-              <div className="w-full flex items-start justify-center lg:justify-end lg:-mr-12 xl:-mr-16 bg-transparent">
+              <div className="w-full flex flex-col items-center lg:items-end justify-start lg:-mr-12 xl:-mr-16 bg-transparent">
                 <video
                   src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm"
                   autoPlay
@@ -223,8 +223,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   muted
                   playsInline
                   style={{ aspectRatio: '1.5 / 1.5' }}
-                  className="w-full max-w-[260px] sm:max-w-[300px] aspect-[1.5/1.5] object-cover object-center bg-transparent lg:translate-x-12 xl:translate-x-16 lg:-translate-y-4 drop-shadow-[0_2px_12px_rgba(255,255,255,0.5)]"
+                  className="w-full max-w-[260px] sm:max-w-[300px] aspect-[1.5/1.5] object-cover object-center bg-transparent lg:translate-x-12 xl:translate-x-16 lg:-translate-y-2 [clip-path:inset(0_0_33%_0)] drop-shadow-[0_0_18px_rgba(56,189,248,0.6)]"
                 />
+                {/* Custom Styled Brand Logo Lockup: ANANYA ELECTRICAL SOLUTIONS */}
+                <div className="w-full max-w-[260px] sm:max-w-[300px] flex flex-col items-center justify-center text-center -mt-20 sm:-mt-24 pb-2 lg:translate-x-12 xl:translate-x-16 select-none">
+                  <span className="font-['Orbitron'] text-[26px] sm:text-[31px] font-black uppercase tracking-[0.18em] leading-none bg-gradient-to-r from-[#FDE047] via-[#38BDF8] to-[#F59E0B] bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(245,158,11,0.45)]">
+                    ANANYA
+                  </span>
+                  <div className="flex items-center justify-center gap-2 mt-1.5 w-full">
+                    <span className="h-[1.5px] w-5 bg-gradient-to-r from-transparent via-[#F59E0B] to-[#38BDF8] rounded-full" />
+                    <span className="font-['Chakra_Petch'] text-[10.5px] sm:text-[12px] font-bold uppercase tracking-[0.26em] text-[#7DD3FC] drop-shadow-[0_1px_6px_rgba(56,189,248,0.5)] whitespace-nowrap">
+                      ELECTRICAL SOLUTIONS
+                    </span>
+                    <span className="h-[1.5px] w-5 bg-gradient-to-l from-transparent via-[#F59E0B] to-[#38BDF8] rounded-full" />
+                  </div>
+                </div>
               </div>
 
               {/* Status Below Video with Exact Vertical Alignment */}

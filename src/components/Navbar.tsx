@@ -59,15 +59,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => handleNavClick('home')}
             className="flex items-center gap-3 shrink-0 text-left cursor-pointer group"
           >
-            <img
-              alt="Ananya Electrical Solutions Logo"
-              className="h-10 w-10 sm:h-11 sm:w-11 object-contain rounded-md shrink-0 transition-transform group-hover:scale-105"
-              src="/assets/aistudio/Screenshot_2026-10-24_213203_08863194.png"
-            />
+            <div className="relative h-10 w-10 sm:h-11 sm:w-11 rounded-lg bg-[#0B192C] p-0.5 flex items-center justify-center overflow-hidden shadow-sm border border-[#38BDF8]/40 shrink-0 transition-transform group-hover:scale-105">
+              <img
+                alt="Ananya Electrical Solutions Logo"
+                className="h-full w-full object-cover object-top scale-125 translate-y-1 rounded-md"
+                src="/assets/aistudio/Screenshot_2026-10-24_213203_08863194.png"
+              />
+            </div>
             <div className="flex flex-col justify-center">
-              <span className="font-display text-[16px] sm:text-[18px] text-[#0B192C] tracking-tight font-bold leading-tight">
-                Ananya Electrical Solutions
-              </span>
+              <div className="flex items-baseline gap-1.5">
+                <span className="font-['Orbitron'] text-[16px] sm:text-[18px] font-black uppercase tracking-[0.12em] bg-gradient-to-r from-[#0284C7] via-[#0B192C] to-[#D97706] bg-clip-text text-transparent leading-tight">
+                  ANANYA
+                </span>
+                <span className="font-['Chakra_Petch'] text-[13px] sm:text-[14.5px] font-bold uppercase tracking-[0.14em] text-[#0284C7] leading-tight">
+                  ELECTRICAL SOLUTIONS
+                </span>
+              </div>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#FEF3C7] text-[#2a1700] text-[10px] uppercase tracking-wider font-semibold leading-none">
                   <span className="material-symbols-outlined text-[12px] text-[#F59E0B] leading-none">bolt</span>

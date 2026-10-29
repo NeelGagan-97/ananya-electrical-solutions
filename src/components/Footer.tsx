@@ -18,14 +18,21 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab }) => {
           {/* Brand & Mission Statement */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <img
-                alt="Ananya Electrical Solutions Logo"
-                className="h-10 w-10 sm:h-11 sm:w-11 object-contain rounded-md shrink-0"
-                src="/assets/aistudio/Screenshot_2026-10-24_213203_08863194.png"
-              />
-              <span className="font-display text-[20px] text-[#0B192C] font-bold">
-                Ananya Electrical Solutions
-              </span>
+              <div className="relative h-10 w-10 sm:h-11 sm:w-11 rounded-lg bg-[#0B192C] p-0.5 flex items-center justify-center overflow-hidden shadow-sm border border-[#38BDF8]/40 shrink-0">
+                <img
+                  alt="Ananya Electrical Solutions Logo"
+                  className="h-full w-full object-cover object-top scale-125 translate-y-1 rounded-md"
+                  src="/assets/aistudio/Screenshot_2026-10-24_213203_08863194.png"
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-['Orbitron'] text-[18px] sm:text-[20px] font-black uppercase tracking-[0.14em] bg-gradient-to-r from-[#0284C7] via-[#0B192C] to-[#D97706] bg-clip-text text-transparent leading-none">
+                  ANANYA
+                </span>
+                <span className="font-['Chakra_Petch'] text-[11.5px] font-bold uppercase tracking-[0.22em] text-[#0284C7] mt-1 leading-none">
+                  ELECTRICAL SOLUTIONS
+                </span>
+              </div>
             </div>
             <p className="text-[13px] text-[#44474c] max-w-sm leading-relaxed">
               Government of Karnataka Licensed Super Grade Electrical Contractors and Turnkey Clean Energy EPC Specialists. Delivering utility-scale substations, industrial power distribution networks, and high-yield commercial solar infrastructure with zero safety deviations.

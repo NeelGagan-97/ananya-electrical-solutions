@@ -737,9 +737,17 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
     }
   }, [pointerLockTrigger, isWalkthroughStarted, isWalkthroughPaused, cameraMode]);
 
-  // 3. Rebuild 3D Parametric Twin ONLY when structural geometry or viewMode changes
-  // (Electrical point toggles, door swings, breaker trips, and activeCircuit are updated live at 60fps in animate!)
-  const structuralKey = `${project.id}_${project.rooms.length}_${project.openings.length}_${viewMode}_${ceilingVisible}`;
+  // 3. Rebuild 3D Parametric Twin whenever room dimensions, openings, electrical point positions, or viewMode change
+  const roomsDimSignature = project.rooms
+    .map((r) => `${r.id}:${r.x}:${r.z}:${r.width}:${r.length}:${r.ceilingHeight}`)
+    .join('|');
+  const openingsSignature = project.openings
+    .map((o) => `${o.id}:${o.wallDirection}:${o.offset}:${o.width}`)
+    .join('|');
+  const pointsPosSignature = project.electricalPoints
+    .map((p) => `${p.id}:${p.x}:${p.y}:${p.z}`)
+    .join('|');
+  const structuralKey = `${project.id}_${project.meta.floorHeight}_${roomsDimSignature}_${openingsSignature}_${pointsPosSignature}_${viewMode}_${ceilingVisible}`;
 
   useEffect(() => {
     const scene = sceneRef.current;
@@ -843,14 +851,18 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
           break;
       }
     } else {
+      const spanX = twin.buildingBounds.maxX - twin.buildingBounds.minX;
+      const spanZ = twin.buildingBounds.maxZ - twin.buildingBounds.minZ;
+      const maxSpan = Math.max(18, spanX, spanZ);
+
       switch (cameraPreset) {
         case 'overview':
         case 'exterior_entry':
-          targetPos.set(17.5, 16.5, 20.5);
+          targetPos.set(maxSpan * 0.72, maxSpan * 0.68, maxSpan * 0.85);
           targetLook.set(0, 1.4, 0.5);
           break;
         case 'top':
-          targetPos.set(0, 28.0, 0.01);
+          targetPos.set(0, maxSpan * 1.15, 0.01);
           targetLook.set(0, 0, 0);
           break;
         case 'foyer':

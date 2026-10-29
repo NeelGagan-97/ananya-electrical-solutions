@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   ResidentialProject,
   RoomData,
@@ -7,12 +7,22 @@ import {
   ElectricalPointType,
   RoomType
 } from '../../types/residentialDesigner';
+import {
+  getApartmentFootprintMetrics,
+  scaleResidentialProjectToDimensions,
+  updateSingleRoomDimensions,
+  metersToFeet,
+  feetToMeters,
+  PLOT_DIMENSION_PRESETS
+} from '../../data/residentialPresets';
 
 interface FloorPlanEditorProps {
   project: ResidentialProject;
   onUpdateProject: (updated: ResidentialProject) => void;
   selectedPointId: string | null;
   onSelectPoint: (id: string | null) => void;
+  dimensionUnit?: 'ft' | 'm';
+  onChangeDimensionUnit?: (unit: 'ft' | 'm') => void;
 }
 
 type EditorTool =
@@ -32,15 +42,38 @@ export const FloorPlanEditor: React.FC<FloorPlanEditorProps> = ({
   project,
   onUpdateProject,
   selectedPointId,
-  onSelectPoint
+  onSelectPoint,
+  dimensionUnit = 'ft',
+  onChangeDimensionUnit
 }) => {
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(project.rooms[0]?.id || null);
   const [activeTool, setActiveTool] = useState<EditorTool>('select');
   const [snapToGrid, setSnapToGrid] = useState<boolean>(true);
-  const [zoom, setZoom] = useState<number>(45); // pixels per meter
-  const [pan, setPan] = useState<{ x: number; y: number }>({ x: 80, y: 120 });
+  const [zoom, setZoom] = useState<number>(36); // pixels per meter
+  const [pan, setPan] = useState<{ x: number; y: number }>({ x: 90, y: 150 });
   const [isPanning, setIsPanning] = useState<boolean>(false);
   const [startPan, setStartPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [localUnit, setLocalUnit] = useState<'ft' | 'm'>(dimensionUnit);
+
+  const activeUnit = onChangeDimensionUnit ? dimensionUnit : localUnit;
+  const handleSetUnit = (u: 'ft' | 'm') => {
+    setLocalUnit(u);
+    onChangeDimensionUnit?.(u);
+  };
+
+  const footprint = getApartmentFootprintMetrics(project);
+  const [customBreadth, setCustomBreadth] = useState<string>(
+    activeUnit === 'ft' ? String(footprint.breadthFt) : String(footprint.breadthM)
+  );
+  const [customLength, setCustomLength] = useState<string>(
+    activeUnit === 'ft' ? String(footprint.lengthFt) : String(footprint.lengthM)
+  );
+
+  useEffect(() => {
+    const m = getApartmentFootprintMetrics(project);
+    setCustomBreadth(activeUnit === 'ft' ? String(m.breadthFt) : String(m.breadthM));
+    setCustomLength(activeUnit === 'ft' ? String(m.lengthFt) : String(m.lengthM));
+  }, [project, activeUnit]);
 
   // History for Undo/Redo
   const [history, setHistory] = useState<ResidentialProject[]>([project]);
@@ -246,10 +279,46 @@ export const FloorPlanEditor: React.FC<FloorPlanEditorProps> = ({
 
   const handleUpdateSelectedRoom = (field: keyof RoomData, val: any) => {
     if (!selectedRoom) return;
+    if (field === 'width') {
+      const nextProject = updateSingleRoomDimensions(
+        project,
+        selectedRoom.id,
+        Number(val) || 2.5,
+        selectedRoom.length
+      );
+      commitProjectChange(nextProject);
+      return;
+    }
+    if (field === 'length') {
+      const nextProject = updateSingleRoomDimensions(
+        project,
+        selectedRoom.id,
+        selectedRoom.width,
+        Number(val) || 2.5
+      );
+      commitProjectChange(nextProject);
+      return;
+    }
     const updatedRooms = project.rooms.map((r) =>
       r.id === selectedRoom.id ? { ...r, [field]: val } : r
     );
     commitProjectChange({ ...project, rooms: updatedRooms });
+  };
+
+  const handleApplyOverallDimensions = () => {
+    const rawB = parseFloat(customBreadth);
+    const rawL = parseFloat(customLength);
+    if (isNaN(rawB) || isNaN(rawL) || rawB <= 0 || rawL <= 0) return;
+
+    const targetBM = activeUnit === 'ft' ? feetToMeters(rawB) : rawB;
+    const targetLM = activeUnit === 'ft' ? feetToMeters(rawL) : rawL;
+    const scaled = scaleResidentialProjectToDimensions(
+      project,
+      targetBM,
+      targetLM,
+      project.meta.floorHeight
+    );
+    commitProjectChange(scaled);
   };
 
   const handleAddRoom = (type: RoomType) => {
@@ -829,19 +898,136 @@ export const FloorPlanEditor: React.FC<FloorPlanEditorProps> = ({
         </div>
 
         {/* Right Properties & Room Management Panel */}
-        <div className="w-80 bg-[#0F172A] border-l border-slate-800 p-4 flex flex-col gap-4 overflow-y-auto">
-          {/* Room Inspector */}
+        <div className="w-88 bg-[#0F172A] border-l border-slate-800 p-4 flex flex-col gap-4 overflow-y-auto">
+          {/* 1. Overall 2BHK Apartment Length × Breadth Parametric Generator */}
+          <div className="bg-slate-900/95 rounded-xl p-3.5 border border-sky-500/40 shadow-lg space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[16px]">straighten</span>
+                2BHK Length × Breadth
+              </span>
+
+              {/* Dual-Unit Switcher (Feet / Meters) */}
+              <div className="flex items-center bg-slate-800 rounded-lg p-0.5 border border-slate-700 text-[10px] font-mono font-bold">
+                <button
+                  onClick={() => handleSetUnit('ft')}
+                  className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                    activeUnit === 'ft'
+                      ? 'bg-sky-500 text-slate-950'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Feet (ft)
+                </button>
+                <button
+                  onClick={() => handleSetUnit('m')}
+                  className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                    activeUnit === 'm'
+                      ? 'bg-sky-500 text-slate-950'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Meters (m)
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-[10px] text-slate-400 block mb-1 font-medium">
+                  Breadth / Width ({activeUnit})
+                </label>
+                <input
+                  type="number"
+                  step={activeUnit === 'ft' ? '1' : '0.2'}
+                  min={activeUnit === 'ft' ? 24 : 7.5}
+                  max={activeUnit === 'ft' ? 140 : 45}
+                  value={customBreadth}
+                  onChange={(e) => setCustomBreadth(e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-700 focus:border-sky-400 rounded-lg px-2.5 py-1.5 text-xs text-white font-mono font-bold focus:outline-none"
+                />
+                <span className="text-[9px] text-slate-400 font-mono mt-0.5 block">
+                  {activeUnit === 'ft'
+                    ? `${footprint.breadthM} m (X-Axis)`
+                    : `${footprint.breadthFt} ft (X-Axis)`}
+                </span>
+              </div>
+
+              <div>
+                <label className="text-[10px] text-slate-400 block mb-1 font-medium">
+                  Length / Depth ({activeUnit})
+                </label>
+                <input
+                  type="number"
+                  step={activeUnit === 'ft' ? '1' : '0.2'}
+                  min={activeUnit === 'ft' ? 26 : 8.0}
+                  max={activeUnit === 'ft' ? 160 : 50}
+                  value={customLength}
+                  onChange={(e) => setCustomLength(e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-700 focus:border-sky-400 rounded-lg px-2.5 py-1.5 text-xs text-white font-mono font-bold focus:outline-none"
+                />
+                <span className="text-[9px] text-slate-400 font-mono mt-0.5 block">
+                  {activeUnit === 'ft'
+                    ? `${footprint.lengthM} m (Z-Axis)`
+                    : `${footprint.lengthFt} ft (Z-Axis)`}
+                </span>
+              </div>
+            </div>
+
+            <button
+              onClick={handleApplyOverallDimensions}
+              className="w-full py-2 px-3 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[16px]">auto_fix_high</span>
+              <span>Scale 2BHK Twin to L × B</span>
+            </button>
+
+            {/* Quick Plot Size Presets */}
+            <div className="pt-1 border-t border-slate-800">
+              <span className="text-[9px] font-mono uppercase tracking-wider text-slate-400 block mb-1.5">
+                Quick 2BHK Size Presets:
+              </span>
+              <div className="grid grid-cols-2 gap-1.5">
+                {PLOT_DIMENSION_PRESETS.map((preset) => (
+                  <button
+                    key={preset.id}
+                    onClick={() => {
+                      const scaled = scaleResidentialProjectToDimensions(
+                        project,
+                        preset.breadthM,
+                        preset.lengthM,
+                        preset.ceilingHeightM
+                      );
+                      commitProjectChange(scaled);
+                    }}
+                    className="px-2 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-left transition-colors cursor-pointer"
+                  >
+                    <div className="text-[10px] font-bold text-slate-200 truncate">
+                      {preset.label.split(' ')[0]} {preset.label.split(' ')[1]}
+                    </div>
+                    <div className="text-[9px] font-mono text-sky-400">
+                      {activeUnit === 'ft'
+                        ? `${preset.breadthFt}×${preset.lengthFt} ft`
+                        : `${preset.breadthM}×${preset.lengthM} m`}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 2. Selected Room Inspector (Breadth × Length) */}
           {selectedRoom ? (
             <div className="bg-slate-800/80 rounded-xl p-3.5 border border-slate-700">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-[16px]">room_preferences</span>
-                  Room Dimensions
+                  Room Length × Breadth
                 </span>
                 <button
                   onClick={() => handleDeleteRoom(selectedRoom.id)}
                   disabled={project.rooms.length <= 1}
-                  className="text-rose-400 hover:text-rose-300 disabled:opacity-30 p-1 rounded"
+                  className="text-rose-400 hover:text-rose-300 disabled:opacity-30 p-1 rounded cursor-pointer"
                   title="Delete Room"
                 >
                   <span className="material-symbols-outlined text-[16px]">delete</span>
@@ -861,34 +1047,56 @@ export const FloorPlanEditor: React.FC<FloorPlanEditorProps> = ({
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[11px] text-slate-400 block mb-1">Width (m)</label>
+                    <label className="text-[11px] text-slate-400 block mb-1">
+                      Breadth / Width ({activeUnit})
+                    </label>
                     <input
                       type="number"
-                      step="0.1"
-                      min="1.5"
-                      max="15"
-                      value={selectedRoom.width}
-                      onChange={(e) => handleUpdateSelectedRoom('width', parseFloat(e.target.value) || 2)}
-                      className="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-xs text-white font-mono"
+                      step={activeUnit === 'ft' ? '0.5' : '0.1'}
+                      min={activeUnit === 'ft' ? '6.5' : '2.0'}
+                      max={activeUnit === 'ft' ? '80' : '25'}
+                      value={
+                        activeUnit === 'ft'
+                          ? metersToFeet(selectedRoom.width)
+                          : selectedRoom.width
+                      }
+                      onChange={(e) => {
+                        const raw = parseFloat(e.target.value);
+                        if (isNaN(raw)) return;
+                        const mVal = activeUnit === 'ft' ? feetToMeters(raw) : raw;
+                        handleUpdateSelectedRoom('width', mVal);
+                      }}
+                      className="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-xs text-white font-mono font-bold"
                     />
                     <span className="text-[10px] text-slate-400 font-mono mt-0.5 block">
-                      {toFeetInches(selectedRoom.width)}
+                      {selectedRoom.width.toFixed(2)}m • {toFeetInches(selectedRoom.width)}
                     </span>
                   </div>
 
                   <div>
-                    <label className="text-[11px] text-slate-400 block mb-1">Length (m)</label>
+                    <label className="text-[11px] text-slate-400 block mb-1">
+                      Length / Depth ({activeUnit})
+                    </label>
                     <input
                       type="number"
-                      step="0.1"
-                      min="1.5"
-                      max="15"
-                      value={selectedRoom.length}
-                      onChange={(e) => handleUpdateSelectedRoom('length', parseFloat(e.target.value) || 2)}
-                      className="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-xs text-white font-mono"
+                      step={activeUnit === 'ft' ? '0.5' : '0.1'}
+                      min={activeUnit === 'ft' ? '6.5' : '2.0'}
+                      max={activeUnit === 'ft' ? '80' : '25'}
+                      value={
+                        activeUnit === 'ft'
+                          ? metersToFeet(selectedRoom.length)
+                          : selectedRoom.length
+                      }
+                      onChange={(e) => {
+                        const raw = parseFloat(e.target.value);
+                        if (isNaN(raw)) return;
+                        const mVal = activeUnit === 'ft' ? feetToMeters(raw) : raw;
+                        handleUpdateSelectedRoom('length', mVal);
+                      }}
+                      className="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-xs text-white font-mono font-bold"
                     />
                     <span className="text-[10px] text-slate-400 font-mono mt-0.5 block">
-                      {toFeetInches(selectedRoom.length)}
+                      {selectedRoom.length.toFixed(2)}m • {toFeetInches(selectedRoom.length)}
                     </span>
                   </div>
                 </div>
