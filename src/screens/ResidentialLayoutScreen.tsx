@@ -184,7 +184,7 @@ export const ResidentialLayoutScreen: React.FC<ResidentialLayoutScreenProps> = (
     const dataUrl = canvas.toDataURL('image/png');
     const dl = document.createElement('a');
     dl.href = dataUrl;
-    dl.download = `${project.meta.projectName.replace(/\s+/g, '_')}_3D_Twin.png`;
+    dl.download = `${project.meta.projectName.replace(/\s+/g, '_')}_3D_Model.png`;
     document.body.appendChild(dl);
     dl.click();
     dl.remove();
@@ -233,8 +233,8 @@ export const ResidentialLayoutScreen: React.FC<ResidentialLayoutScreenProps> = (
             </span>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-white tracking-tight leading-none">
-                  ANANYA RESIDENTIAL LAYOUT DESIGNER
+                <span className="text-xs font-bold text-white tracking-tight leading-none uppercase">
+                  Residential Layout &amp; Infrastructure
                 </span>
                 <span className={`px-1.5 py-0.2 rounded text-[9px] font-mono font-bold uppercase border ${
                   project.meta.workflow === 'new_layout'
@@ -260,7 +260,7 @@ export const ResidentialLayoutScreen: React.FC<ResidentialLayoutScreenProps> = (
             }`}
           >
             <span className="material-symbols-outlined text-[16px]">view_in_ar</span>
-            <span>3D Site Twin</span>
+            <span>3D Site Model</span>
           </button>
 
           <button
@@ -382,21 +382,21 @@ export const ResidentialLayoutScreen: React.FC<ResidentialLayoutScreenProps> = (
             <input type="file" accept=".json" onChange={handleImportJson} className="hidden" />
           </label>
 
-          {/* Quick link to 2BHK Interior Twin */}
+          {/* Quick link to Residential 2BHK Interior */}
           <button
             onClick={() => onSelectTab('residential-3d')}
             className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs font-semibold transition-colors cursor-pointer"
-            title="Open 2BHK Residential Interior Twin"
+            title="Open Residential 2BHK Interior"
           >
             <span className="material-symbols-outlined text-[16px]">home</span>
-            <span>2BHK Interior Twin</span>
+            <span>Residential 2BHK Interior</span>
           </button>
         </div>
       </div>
 
       {/* Workspace Content */}
       <div className="flex-1 relative overflow-hidden">
-        {/* TAB 1: 3D SITE TWIN */}
+        {/* TAB 1: 3D SITE MODEL */}
         {activeTab === '3d_twin' && (
           <div className="w-full h-full relative">
             <ResidentialLayoutCanvas
@@ -415,7 +415,7 @@ export const ResidentialLayoutScreen: React.FC<ResidentialLayoutScreenProps> = (
                   <div className="flex items-center gap-1.5">
                     <span className={`w-2 h-2 rounded-full ${isNight ? 'bg-amber-400' : 'bg-emerald-400'} animate-pulse`} />
                     <span className="font-mono text-[10px] font-bold text-sky-400 uppercase tracking-wider">
-                      Layout Digital Twin • {project.meta.totalAreaAcres} Acres
+                      3D Layout Model • {project.meta.totalAreaAcres} Acres
                     </span>
                   </div>
                   <span className="text-[10px] text-slate-400 font-mono">

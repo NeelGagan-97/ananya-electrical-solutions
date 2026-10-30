@@ -211,6 +211,29 @@ export const ResidentialLayoutCanvas: React.FC<ResidentialLayoutCanvasProps> = (
 
     renderer.domElement.addEventListener('pointerdown', handlePointerDown);
 
+    // Keyboard WASD Movement
+    const keysPressed: Record<string, boolean> = {};
+    let hasMovedManually = false;
+    let lastPresetTracked = stateRef.current.cameraPreset;
+    const camFwd = new THREE.Vector3();
+    const camRight = new THREE.Vector3();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        document.activeElement?.tagName === 'INPUT' ||
+        document.activeElement?.tagName === 'SELECT' ||
+        document.activeElement?.tagName === 'TEXTAREA'
+      ) {
+        return;
+      }
+      keysPressed[e.code] = true;
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      keysPressed[e.code] = false;
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
     // 9. Resize
     const handleResize = () => {
       if (!container) return;
@@ -269,17 +292,45 @@ export const ResidentialLayoutCanvas: React.FC<ResidentialLayoutCanvasProps> = (
         currentTwin.update(delta);
       }
 
+      if (curPreset !== lastPresetTracked) {
+        lastPresetTracked = curPreset;
+        hasMovedManually = false;
+      }
+
+      const moveFwd =
+        (keysPressed['KeyW'] || keysPressed['ArrowUp'] ? 1 : 0) -
+        (keysPressed['KeyS'] || keysPressed['ArrowDown'] ? 1 : 0);
+      const moveStrafe =
+        (keysPressed['KeyD'] || keysPressed['ArrowRight'] ? 1 : 0) -
+        (keysPressed['KeyA'] || keysPressed['ArrowLeft'] ? 1 : 0);
+      const isSprinting = keysPressed['ShiftLeft'] || keysPressed['ShiftRight'];
+
+      if (moveFwd !== 0 || moveStrafe !== 0) {
+        hasMovedManually = true;
+        const speed = (isSprinting ? 48.0 : 28.0) * delta;
+        camera.getWorldDirection(camFwd);
+        camFwd.y = 0;
+        if (camFwd.lengthSq() > 0.0001) camFwd.normalize();
+        camRight.set(-camFwd.z, 0, camFwd.x);
+        const stepX = (camFwd.x * moveFwd + camRight.x * moveStrafe) * speed;
+        const stepZ = (camFwd.z * moveFwd + camRight.z * moveStrafe) * speed;
+        camera.position.x += stepX;
+        camera.position.z += stepZ;
+        controls.target.x += stepX;
+        controls.target.z += stepZ;
+      }
+
       // Camera Preset Lerping
       const preset = cameraPresetsMap[curPreset] || cameraPresetsMap.aerial_overview;
       _targetPos.copy(preset.pos);
       _targetLook.copy(preset.lookAt);
 
-      if (!isUserInteracting) {
+      if (!isUserInteracting && !hasMovedManually) {
         camera.position.lerp(_targetPos, 1 - Math.exp(-3.5 * delta));
         controls.target.lerp(_targetLook, 1 - Math.exp(-3.5 * delta));
       }
 
-      controls.autoRotate = curRotate;
+      controls.autoRotate = curRotate && moveFwd === 0 && moveStrafe === 0;
       controls.autoRotateSpeed = 0.8;
       controls.update();
 
@@ -301,6 +352,8 @@ export const ResidentialLayoutCanvas: React.FC<ResidentialLayoutCanvasProps> = (
       cancelAnimationFrame(frameId);
       clearTimeout(frameId);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
       renderer.domElement.removeEventListener('pointerdown', handlePointerDown);
       controls.dispose();
       renderer.dispose();

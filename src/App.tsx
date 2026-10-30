@@ -21,9 +21,12 @@ import {
   trackConversionEvent,
 } from './utils/seo';
 
-// Code-split heavy Three.js 3D Digital Twins & SEO Audit Modal for fast initial page load
+// Code-split heavy Three.js 3D Engineering Models & SEO Audit Modal for fast initial page load
 const Substation3DScreen = React.lazy(() =>
   import('./screens/Substation3DScreen').then((m) => ({ default: m.Substation3DScreen }))
+);
+const ResidentialSolar3DScreen = React.lazy(() =>
+  import('./screens/ResidentialSolar3DScreen').then((m) => ({ default: m.ResidentialSolar3DScreen }))
 );
 const Residential3DScreen = React.lazy(() =>
   import('./screens/Residential3DScreen').then((m) => ({ default: m.Residential3DScreen }))
@@ -98,6 +101,7 @@ export default function App() {
 
   const is3DWorkspace =
     currentTab === 'twin-3d' ||
+    currentTab === 'residential-solar-3d' ||
     currentTab === 'residential-3d' ||
     currentTab === 'residential-layout-3d' ||
     currentTab === 'smart-home-3d';
@@ -108,7 +112,7 @@ export default function App() {
     <div className="min-h-[70vh] w-full bg-[#071120] text-white flex flex-col items-center justify-center gap-3 p-8">
       <div className="w-10 h-10 rounded-full border-3 border-[#38BDF8] border-t-transparent animate-spin" />
       <span className="text-[13px] font-mono text-[#38BDF8] uppercase tracking-wider">
-        Loading 3D Engineering Digital Twin...
+        Loading 3D Engineering Model...
       </span>
     </div>
   );
@@ -199,6 +203,15 @@ export default function App() {
           </Suspense>
         )}
 
+        {currentTab === 'residential-solar-3d' && (
+          <Suspense fallback={fallbackLoader}>
+            <ResidentialSolar3DScreen
+              onSelectTab={handleSelectTab}
+              onOpenConsultation={handleOpenConsultation}
+            />
+          </Suspense>
+        )}
+
         {currentTab === 'residential-3d' && (
           <Suspense fallback={fallbackLoader}>
             <Residential3DScreen
@@ -271,13 +284,16 @@ export default function App() {
         )}
       </main>
 
-      {/* Institutional Footer (omitted on full-bleed 3D Digital Twins) */}
-      {currentTab !== 'twin-3d' && currentTab !== 'residential-3d' && currentTab !== 'smart-home-3d' && (
-        <Footer
-          onSelectTab={handleSelectTab}
-          onOpenSeoAudit={() => setSeoAuditModalOpen(true)}
-        />
-      )}
+      {/* Institutional Footer (omitted on full-bleed 3D Engineering Models) */}
+      {currentTab !== 'twin-3d' &&
+        currentTab !== 'residential-solar-3d' &&
+        currentTab !== 'residential-3d' &&
+        currentTab !== 'smart-home-3d' && (
+          <Footer
+            onSelectTab={handleSelectTab}
+            onOpenSeoAudit={() => setSeoAuditModalOpen(true)}
+          />
+        )}
 
       {/* Global Consultation / Proposal Modal */}
       <ConsultationModal

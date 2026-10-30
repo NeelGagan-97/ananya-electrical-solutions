@@ -53,6 +53,7 @@ export const TAB_TO_PATH: Record<NavigationTab, string> = {
   'contact-us': '/contact-us',
   'residential-3d': '/3d-2bhk',
   'twin-3d': '/3d-transformer',
+  'residential-solar-3d': '/3d-residential-solar',
   'residential-layout-3d': '/3d-layout',
   'smart-home-3d': '/3d-smart-home',
 };
@@ -77,6 +78,8 @@ export const PATH_TO_TAB: Record<string, NavigationTab> = {
   '/residential-3d': 'residential-3d',
   '/3d-transformer': 'twin-3d',
   '/twin-3d': 'twin-3d',
+  '/3d-residential-solar': 'residential-solar-3d',
+  '/residential-solar-3d': 'residential-solar-3d',
   '/3d-layout': 'residential-layout-3d',
   '/3d-cables': 'residential-layout-3d',
   '/residential-layout-3d': 'residential-layout-3d',
@@ -240,10 +243,10 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
     tab: 'residential-3d',
     path: '/3d-2bhk',
     canonicalUrl: 'https://ananyaelectricalsolutions.in/3d-2bhk',
-    title: 'Residential Electrical Wiring Services in Bengaluru | 3D 2BHK IS:732 Wiring Simulator',
+    title: 'Residential 2BHK Interior | 3D IS:732 Wiring Simulator Bengaluru | Ananya Electrical Solutions',
     description:
-      'Interactive 3D 2BHK residential electrical wiring model in Bengaluru. Inspect IS:732 concealed FRLS conduit routing, MCB/RCCB distribution boards, earthing, and custom room dimensions.',
-    h1: 'Residential 2BHK Electrical Wiring & Distribution Board 3D Engineering Twin',
+      'Interactive 3D Residential 2BHK Interior electrical wiring model in Bengaluru. Inspect IS:732 concealed FRLS conduit routing, MCB/RCCB distribution boards, earthing, and custom room dimensions.',
+    h1: 'Residential 2BHK Interior — 3D Electrical Wiring & Distribution Board Simulation',
     primaryKeyword: 'Residential electrical wiring services Bengaluru',
     secondaryKeywords: [
       'Home wiring contractor Bangalore',
@@ -255,17 +258,17 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
     breadcrumbs: [
       { name: 'Home', path: '/' },
       { name: '3D Engineering Models', path: '/services' },
-      { name: '3D 2BHK Residential Wiring', path: '/3d-2bhk' },
+      { name: 'Residential 2BHK Interior', path: '/3d-2bhk' },
     ],
   },
   'twin-3d': {
     tab: 'twin-3d',
     path: '/3d-transformer',
     canonicalUrl: 'https://ananyaelectricalsolutions.in/3d-transformer',
-    title: '33kV/11kV Substation & Power Transformer 3D Digital Twin | Ananya Electrical Bengaluru',
+    title: '33kV Substation | 3D Power Transformer & VCB Switchyard Model | Ananya Electrical Bengaluru',
     description:
-      'Explore our interactive 3D 33kV/11kV electrical substation and solar switchyard twin. Inspect ONAN power transformers, VCB switchgear, lightning arresters, and earth-mat protection.',
-    h1: '33kV / 11kV Substation, Power Transformer & Solar Switchyard 3D Digital Twin',
+      'Explore our interactive 33kV Substation 3D engineering model. Inspect ONAN power transformers, outdoor VCB switchgear, lightning arresters, CT/PT metering, and earth-mat protection.',
+    h1: '33kV Substation — 3D Power Transformer & Switchyard Engineering Model',
     primaryKeyword: '33kV substation contractor Bangalore',
     secondaryKeywords: [
       'Power transformer installation Bengaluru',
@@ -276,17 +279,39 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
     breadcrumbs: [
       { name: 'Home', path: '/' },
       { name: '3D Engineering Models', path: '/services' },
-      { name: '33kV Substation 3D Twin', path: '/3d-transformer' },
+      { name: '33kV Substation', path: '/3d-transformer' },
+    ],
+  },
+  'residential-solar-3d': {
+    tab: 'residential-solar-3d',
+    path: '/3d-residential-solar',
+    canonicalUrl: 'https://ananyaelectricalsolutions.in/3d-residential-solar',
+    title: 'Residential Solar Installation | 3D Rooftop Solar & BESCOM Net-Metering Model | Bengaluru',
+    description:
+      'Interactive 3D Residential Solar Installation model on a G+1 Indian RCC house. Inspect 3kWp–10kWp rooftop PV arrays, DCDB/ACDB, string inverter, earthing pits, and BESCOM bi-directional net metering.',
+    h1: 'Residential Solar Installation — 3D Rooftop Solar PV & BESCOM Net-Metering Simulation',
+    primaryKeyword: 'Residential rooftop solar installation Bengaluru',
+    secondaryKeywords: [
+      'BESCOM net metering rooftop solar Bangalore',
+      'Hybrid solar inverter installation Karnataka',
+      'Residential solar EPC contractor Bengaluru',
+    ],
+    searchIntent: 'Informational / Interactive',
+    schemaType: 'WebApplication + Service + BreadcrumbList',
+    breadcrumbs: [
+      { name: 'Home', path: '/' },
+      { name: '3D Engineering Models', path: '/services' },
+      { name: 'Residential Solar Installation', path: '/3d-residential-solar' },
     ],
   },
   'residential-layout-3d': {
     tab: 'residential-layout-3d',
     path: '/3d-layout',
     canonicalUrl: 'https://ananyaelectricalsolutions.in/3d-layout',
-    title: 'Residential Layout Electrification & Underground XLPE Cabling 3D Twin | Bengaluru',
+    title: 'Residential Layout & Infrastructure | 3D Underground XLPE Cabling Model | Bengaluru',
     description:
-      'Interactive 3D residential township layout electrification planner. Design 11kV DTR poles, underground armored XLPE cable trenches, feeder pillars, street lighting, and BESCOM BOQ estimates.',
-    h1: 'Residential Township Layout Electrification & Underground Cabling 3D Digital Twin',
+      'Interactive 3D Residential Layout & Infrastructure electrification planner. Design 11kV DTR poles, underground armored XLPE cable trenches, feeder pillars, street lighting, and BESCOM BOQ estimates.',
+    h1: 'Residential Layout & Infrastructure — 3D Township Electrification & Underground Cabling Model',
     primaryKeyword: 'Layout electrification contractor Bengaluru',
     secondaryKeywords: [
       'Underground XLPE cable laying Bangalore',
@@ -297,17 +322,17 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
     breadcrumbs: [
       { name: 'Home', path: '/' },
       { name: '3D Engineering Models', path: '/services' },
-      { name: '3D Layout Electrification', path: '/3d-layout' },
+      { name: 'Residential Layout & Infrastructure', path: '/3d-layout' },
     ],
   },
   'smart-home-3d': {
     tab: 'smart-home-3d',
     path: '/3d-smart-home',
     canonicalUrl: 'https://ananyaelectricalsolutions.in/3d-smart-home',
-    title: 'Smart Home & Building Automation Contractor in Bengaluru | 3D Automation Twin',
+    title: 'Smart Home Automation | 3D Building & Home Automation Model in Bengaluru',
     description:
-      'Interactive 3D Smart Home & Building Automation simulator by Ananya Electrical Solutions Bengaluru. Experience DALI/KNX smart lighting, HVAC controls, motorized curtains, and energy telemetry.',
-    h1: 'Smart Home & Commercial Building Automation 3D Engineering Twin',
+      'Interactive 3D Smart Home Automation simulator by Ananya Electrical Solutions Bengaluru. Experience DALI/KNX smart lighting, HVAC controls, motorized curtains, and energy telemetry.',
+    h1: 'Smart Home Automation — 3D Home & Building Automation Engineering Model',
     primaryKeyword: 'Smart home automation contractor Bengaluru',
     secondaryKeywords: [
       'Building management system electrical Bangalore',
@@ -318,7 +343,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
     breadcrumbs: [
       { name: 'Home', path: '/' },
       { name: '3D Engineering Models', path: '/services' },
-      { name: 'Smart Home Automation 3D', path: '/3d-smart-home' },
+      { name: 'Smart Home Automation', path: '/3d-smart-home' },
     ],
   },
 };
@@ -326,6 +351,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
 const VALID_TABS: NavigationTab[] = [
   'home',
   'twin-3d',
+  'residential-solar-3d',
   'residential-3d',
   'residential-layout-3d',
   'smart-home-3d',

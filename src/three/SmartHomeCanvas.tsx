@@ -967,6 +967,25 @@ export const SmartHomeCanvas: React.FC<SmartHomeCanvasProps> = ({
     const clock = new THREE.Clock();
     let frameId = 0;
     let frameCounter = 0;
+    const keysPressed: Record<string, boolean> = {};
+    const camFwd = new THREE.Vector3();
+    const camRight = new THREE.Vector3();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        document.activeElement?.tagName === 'INPUT' ||
+        document.activeElement?.tagName === 'SELECT' ||
+        document.activeElement?.tagName === 'TEXTAREA'
+      ) {
+        return;
+      }
+      keysPressed[e.code] = true;
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      keysPressed[e.code] = false;
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
 
     function afterDraw(cb: () => void) {
       const gl = renderer.getContext() as WebGL2RenderingContext;
@@ -988,8 +1007,31 @@ export const SmartHomeCanvas: React.FC<SmartHomeCanvasProps> = ({
       const dt = Math.min(clock.getDelta(), 0.1);
       const st = stateRef.current;
 
+      const moveFwd =
+        (keysPressed['KeyW'] || keysPressed['ArrowUp'] ? 1 : 0) -
+        (keysPressed['KeyS'] || keysPressed['ArrowDown'] ? 1 : 0);
+      const moveStrafe =
+        (keysPressed['KeyD'] || keysPressed['ArrowRight'] ? 1 : 0) -
+        (keysPressed['KeyA'] || keysPressed['ArrowLeft'] ? 1 : 0);
+      const isSprinting = keysPressed['ShiftLeft'] || keysPressed['ShiftRight'];
+
+      if (moveFwd !== 0 || moveStrafe !== 0) {
+        cameraTransitionActive = false;
+        const speed = (isSprinting ? 10.0 : 6.0) * dt;
+        camera.getWorldDirection(camFwd);
+        camFwd.y = 0;
+        if (camFwd.lengthSq() > 0.0001) camFwd.normalize();
+        camRight.set(-camFwd.z, 0, camFwd.x);
+        const stepX = (camFwd.x * moveFwd + camRight.x * moveStrafe) * speed;
+        const stepZ = (camFwd.z * moveFwd + camRight.z * moveStrafe) * speed;
+        camera.position.x += stepX;
+        camera.position.z += stepZ;
+        controls.target.x += stepX;
+        controls.target.z += stepZ;
+      }
+
       // Sync Auto-Orbit
-      controls.autoRotate = st.isAutoRotate;
+      controls.autoRotate = st.isAutoRotate && moveFwd === 0 && moveStrafe === 0;
 
       // Check room camera preset transition
       if (st.selectedRoom !== lastRoomPreset) {
@@ -1134,6 +1176,8 @@ export const SmartHomeCanvas: React.FC<SmartHomeCanvasProps> = ({
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
       cancelAnimationFrame(frameId);
       clearTimeout(frameId);
       controls.dispose();

@@ -555,6 +555,19 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
       frameId = requestAnimationFrame(animate);
       const delta = Math.min(clock.getDelta(), 0.1);
 
+      const keys = keysPressed.current;
+      const keyForward =
+        (keys['KeyW'] || keys['ArrowUp'] ? 1 : 0) -
+        (keys['KeyS'] || keys['ArrowDown'] ? 1 : 0);
+      const keyRight =
+        (keys['KeyD'] || keys['ArrowRight'] ? 1 : 0) -
+        (keys['KeyA'] || keys['ArrowLeft'] ? 1 : 0);
+      const isSprinting = Boolean(keys['ShiftLeft'] || keys['ShiftRight']);
+
+      if (keyForward !== 0 || keyRight !== 0) {
+        cameraTransitionRef.current.active = false;
+      }
+
       // Smooth Camera Preset Transition
       if (cameraTransitionRef.current.active) {
         const alpha = 1 - Math.exp(-7 * delta);
@@ -589,10 +602,8 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
           );
         }
 
-        if (isStartedRef.current && !isPausedRef.current) {
-          const isSprint =
-            keysPressed.current['ShiftLeft'] || keysPressed.current['ShiftRight'];
-          const walkSpeed = (isSprint ? 8.8 : 5.2) * delta;
+        if (!isPausedRef.current) {
+          const walkSpeed = (isSprinting ? 7.8 : 5.2) * delta;
 
           const forward = new THREE.Vector3(
             -Math.sin(fppYaw.current),
@@ -605,17 +616,8 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
             -Math.sin(fppYaw.current)
           ).normalize();
 
-          let moveForward = 0;
-          let moveRight = 0;
-
-          if (keysPressed.current['KeyW'] || keysPressed.current['ArrowUp']) moveForward += 1;
-          if (keysPressed.current['KeyS'] || keysPressed.current['ArrowDown']) moveForward -= 1;
-          if (keysPressed.current['KeyD'] || keysPressed.current['ArrowRight']) moveRight += 1;
-          if (keysPressed.current['KeyA'] || keysPressed.current['ArrowLeft']) moveRight -= 1;
-
-          // Combine with Mobile Virtual Walk Joystick
-          moveForward += mob.moveY;
-          moveRight += mob.moveX;
+          const moveForward = keyForward + mob.moveY;
+          const moveRight = keyRight + mob.moveX;
 
           const moveVec = new THREE.Vector3();
           moveVec.addScaledVector(forward, moveForward);
@@ -630,7 +632,7 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
             camera.position.x = resolved.x;
             camera.position.z = resolved.z;
 
-            walkCycleRef.current += delta * (isSprint ? 13 : 9.5);
+            walkCycleRef.current += delta * (isSprinting ? 13 : 9.5);
             camera.position.y = 1.75 + Math.sin(walkCycleRef.current) * 0.024;
           } else {
             // Smoothly settle eye height back to 1.75m when standing still
@@ -662,6 +664,19 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
           if (onHoverTargetChangeRef.current) {
             onHoverTargetChangeRef.current(null);
           }
+        }
+        if (keyForward !== 0 || keyRight !== 0) {
+          const orbitSpeed = (isSprinting ? 14.0 : 8.5) * delta;
+          const camFwd = new THREE.Vector3();
+          camera.getWorldDirection(camFwd);
+          camFwd.y = 0;
+          if (camFwd.lengthSq() > 0.0001) camFwd.normalize();
+          const camRight = new THREE.Vector3(-camFwd.z, 0, camFwd.x);
+          const stepVec = new THREE.Vector3()
+            .addScaledVector(camFwd, keyForward * orbitSpeed)
+            .addScaledVector(camRight, keyRight * orbitSpeed);
+          camera.position.add(stepVec);
+          controls.target.add(stepVec);
         }
         controls.update();
       }

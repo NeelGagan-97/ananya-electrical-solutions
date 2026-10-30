@@ -110,7 +110,12 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenSeoAudit }) =
               </li>
               <li className="hover:text-[#006398] transition-colors">
                 <button onClick={() => handleTabClick('residential-3d')} className="text-left cursor-pointer hover:underline">
-                  3D 2BHK Wiring &amp; Substation Twins
+                  Residential 2BHK Interior (3D)
+                </button>
+              </li>
+              <li className="hover:text-[#006398] transition-colors">
+                <button onClick={() => handleTabClick('residential-solar-3d')} className="text-left cursor-pointer hover:underline">
+                  Residential Solar Installation (3D)
                 </button>
               </li>
               <li className="hover:text-[#006398] transition-colors">

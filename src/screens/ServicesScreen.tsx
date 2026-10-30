@@ -393,7 +393,7 @@ export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultati
                 scope: 'Heavy underground and overhead HT/LT armored XLPE cable laying (1.1kV to 33kV), HDPE pipe trenching, hot-dip galvanized (HDG) perforated & ladder cable trays, heat-shrink/cold-shrink terminations, and route markers.',
                 standards: 'IS 7098 (XLPE), IS 1255 (Cable Installation Code)',
                 tab: 'residential-layout-3d' as NavigationTab,
-                tabLabel: 'Inspect 3D Cable Trench Twin',
+                tabLabel: 'Residential Layout & Infrastructure',
               },
               {
                 num: '03',
@@ -417,7 +417,7 @@ export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultati
                 scope: 'Factory high-bay lighting, machine power drops, IT office UPS & raw power distribution, hospital isolated power systems, and IS 732 residential 2BHK/villa concealed FRLS conduit wiring with MCB/RCCB protection.',
                 standards: 'IS 732 Wiring Code, NBC 2016 Part 8',
                 tab: 'residential-3d' as NavigationTab,
-                tabLabel: 'Explore 3D 2BHK Wiring Simulator',
+                tabLabel: 'Residential 2BHK Interior',
               },
               {
                 num: '06',

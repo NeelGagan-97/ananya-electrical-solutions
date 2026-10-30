@@ -94,6 +94,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 currentTab === 'residential-layout-3d' ||
                 currentTab === 'residential-3d' ||
                 currentTab === 'twin-3d' ||
+                currentTab === 'residential-solar-3d' ||
                 currentTab === 'smart-home-3d'
                   ? 'bg-[#dce9ff] text-[#0b1c30] font-bold shadow-xs'
                   : 'text-[#0284c7] hover:bg-[#e0f2fe] font-bold'
@@ -109,7 +110,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Dropdown Menu */}
             {modelDropdownOpen && (
               <div className="absolute top-full left-0 w-88 max-w-[calc(100vw-2rem)] max-h-[calc(100vh-5.5rem)] overflow-y-auto bg-white rounded-xl shadow-xl border border-[#CBD5E1] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
-                {/* 1. Residential Layout & Infrastructure Twin */}
+                {/* 1. Residential Layout & Infrastructure */}
                 <button
                   onClick={() => {
                     handleNavClick('residential-layout-3d');
@@ -124,7 +125,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[13px] font-bold text-[#0B192C]">Residential Layouts</span>
+                      <span className="text-[13px] font-bold text-[#0B192C]">Residential Layout &amp; Infrastructure</span>
                       <span className="px-1.5 py-0.2 rounded bg-sky-100 text-sky-700 text-[9px] font-mono font-bold">
                         SITE CAD
                       </span>
@@ -137,7 +138,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
                 <div className="my-1 border-t border-[#F1F5F9]" />
 
-                {/* 2. Residential Interior 2BHK Twin */}
+                {/* 2. Residential 2BHK Interior */}
                 <button
                   onClick={() => {
                     handleNavClick('residential-3d');
@@ -152,7 +153,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[13px] font-bold text-[#0B192C]">Residential Interior</span>
+                      <span className="text-[13px] font-bold text-[#0B192C]">Residential 2BHK Interior</span>
                       <span className="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-700 text-[9px] font-mono font-bold">
                         IS:732 CAD
                       </span>
@@ -165,7 +166,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
                 <div className="my-1 border-t border-[#F1F5F9]" />
 
-                {/* 3. 33kV Substation & Solar Yard */}
+                {/* 3. 33kV Substation */}
                 <button
                   onClick={() => {
                     handleNavClick('twin-3d');
@@ -180,20 +181,48 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[13px] font-bold text-[#0B192C]">33kV Substation and Solar Yard</span>
+                      <span className="text-[13px] font-bold text-[#0B192C]">33kV Substation</span>
                       <span className="px-1.5 py-0.2 rounded bg-amber-100 text-amber-700 text-[9px] font-mono font-bold">
                         33kV EPC
                       </span>
                     </div>
                     <span className="text-[11px] text-[#64748b]">
-                      Power transformers, VCB switchgear &amp; solar tracker
+                      1,250 kVA Power Transformer, outdoor VCB &amp; CT/PT metering
                     </span>
                   </div>
                 </button>
 
                 <div className="my-1 border-t border-[#F1F5F9]" />
 
-                {/* 4. Smart Home Automation Twin */}
+                {/* 4. Residential Solar Installation */}
+                <button
+                  onClick={() => {
+                    handleNavClick('residential-solar-3d');
+                    setModelDropdownOpen(false);
+                  }}
+                  className={`w-full px-4 py-2.5 text-left flex items-start gap-3 hover:bg-[#f0f9ff] transition-colors cursor-pointer ${
+                    currentTab === 'residential-solar-3d' ? 'bg-[#e0f2fe]' : ''
+                  }`}
+                >
+                  <span className="w-8 h-8 rounded-lg bg-yellow-50 text-amber-600 flex items-center justify-center shrink-0 mt-0.5 border border-amber-200">
+                    <span className="material-symbols-outlined text-[18px]">solar_power</span>
+                  </span>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[13px] font-bold text-[#0B192C]">Residential Solar Installation</span>
+                      <span className="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 text-[9px] font-mono font-bold">
+                        NET-METER
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-[#64748b]">
+                      Rooftop PV modules, DCDB/ACDB, inverter &amp; BESCOM grid export
+                    </span>
+                  </div>
+                </button>
+
+                <div className="my-1 border-t border-[#F1F5F9]" />
+
+                {/* 5. Smart Home Automation */}
                 <button
                   onClick={() => {
                     handleNavClick('smart-home-3d');
@@ -484,7 +513,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <div className="flex items-center gap-2">
                       <span className="material-symbols-outlined text-[16px] text-sky-600">map</span>
-                      <span>Residential Layouts</span>
+                      <span>Residential Layout &amp; Infrastructure</span>
                     </div>
                     {currentTab === 'residential-layout-3d' && (
                       <span className="material-symbols-outlined text-[16px] text-[#0284C7]">check</span>
@@ -501,7 +530,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <div className="flex items-center gap-2">
                       <span className="material-symbols-outlined text-[16px] text-emerald-600">home</span>
-                      <span>Residential Interior</span>
+                      <span>Residential 2BHK Interior</span>
                     </div>
                     {currentTab === 'residential-3d' && (
                       <span className="material-symbols-outlined text-[16px] text-[#0284C7]">check</span>
@@ -518,9 +547,26 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <div className="flex items-center gap-2">
                       <span className="material-symbols-outlined text-[16px] text-[#0284c7]">electric_meter</span>
-                      <span>33kV Substation and Solar Yard</span>
+                      <span>33kV Substation</span>
                     </div>
                     {currentTab === 'twin-3d' && (
+                      <span className="material-symbols-outlined text-[16px] text-[#0284C7]">check</span>
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => handleNavClick('residential-solar-3d')}
+                    className={`px-5 py-2.5 text-left text-[14px] flex items-center justify-between cursor-pointer ${
+                      currentTab === 'residential-solar-3d'
+                        ? 'bg-[#dce9ff] text-[#0B192C] font-bold'
+                        : 'text-[#334155] hover:bg-[#f8f9ff]'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[16px] text-amber-600">solar_power</span>
+                      <span>Residential Solar Installation</span>
+                    </div>
+                    {currentTab === 'residential-solar-3d' && (
                       <span className="material-symbols-outlined text-[16px] text-[#0284C7]">check</span>
                     )}
                   </button>

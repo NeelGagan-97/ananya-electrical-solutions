@@ -141,7 +141,7 @@ export const Substation3DScreen: React.FC<Substation3DScreenProps> = ({
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-[#38bdf8]" />
               <span className="font-mono text-[11px] font-semibold tracking-wider text-[#38bdf8] uppercase">
-                3D Digital Twin • Live Model
+                3D Substation Model • Live Simulation
               </span>
             </div>
             <button
@@ -154,11 +154,11 @@ export const Substation3DScreen: React.FC<Substation3DScreenProps> = ({
           </div>
 
           <h2 className="text-base sm:text-lg font-bold text-white tracking-tight leading-tight">
-            Interactive Substation &amp; Solar EPC Yard
+            33kV Substation
           </h2>
 
           <p className="text-[12px] text-[#cbd5e1] mt-1 leading-snug">
-            33kV/11kV Transformer • Vacuum Circuit Breaker • 500kWp Solar Tracker • Statutory Metering Plinth
+            33kV/11kV Power Transformer • Outdoor Vacuum Circuit Breaker • Statutory CT/PT Metering Plinth
           </p>
 
           <div className="flex flex-wrap items-center gap-2 mt-2.5 pt-2 border-t border-[#334155]/80 text-[11px]">
@@ -181,10 +181,10 @@ export const Substation3DScreen: React.FC<Substation3DScreenProps> = ({
           <button
             onClick={onSwitchToResidential}
             className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[#10b981] hover:bg-[#059669] text-white shadow-md transition-all flex items-center gap-1.5 cursor-pointer border border-[#34d399]/50"
-            title="Switch to Residential 2BHK Electrical 3D Twin"
+            title="Switch to Residential 2BHK Interior"
           >
             <span className="material-symbols-outlined text-[16px]">home</span>
-            <span>Switch to 2BHK Home Twin</span>
+            <span>Residential 2BHK Interior</span>
           </button>
         )}
         <button
@@ -201,7 +201,7 @@ export const Substation3DScreen: React.FC<Substation3DScreenProps> = ({
         </button>
 
         <button
-          onClick={() => onOpenConsultation(`3D Substation Twin: ${currentSpec.name}`)}
+          onClick={() => onOpenConsultation(`33kV Substation: ${currentSpec.name}`)}
           className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[#f59e0b] hover:bg-[#d97706] text-[#0f172a] shadow-lg transition-transform hover:scale-105 flex items-center gap-1.5 cursor-pointer"
         >
           <span className="material-symbols-outlined text-[16px]">bolt</span>
@@ -316,14 +316,15 @@ export const Substation3DScreen: React.FC<Substation3DScreenProps> = ({
                 { id: 'overview', label: 'Yard Overview', icon: 'grid_view' },
                 { id: 'transformer', label: 'Power Transformer', icon: 'electric_meter' },
                 { id: 'breaker', label: 'Vacuum Circuit Breaker', icon: 'shield' },
-                { id: 'solar', label: 'Solar PV Tracker', icon: 'wb_sunny' },
                 { id: 'metering', label: 'Statutory Metering', icon: 'assignment' }
               ].map((item) => (
                 <button
                   key={item.id}
                   onClick={() => {
                     setCameraPreset(item.id as CameraPreset);
-                    setSelectedCompId(item.id);
+                    if (item.id !== 'overview') {
+                      setSelectedCompId(item.id);
+                    }
                   }}
                   className={`px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-2 whitespace-nowrap transition-all cursor-pointer border ${
                     cameraPreset === item.id
@@ -388,7 +389,7 @@ export const Substation3DScreen: React.FC<Substation3DScreenProps> = ({
             </div>
           )}
 
-          {/* TAB 3: Operating Modes & Solar Tracker Controls */}
+          {/* TAB 3: Operating Modes */}
           {activeDockTab === 'modes' && (
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-1 flex-wrap">
               {/* Visual Modes */}
@@ -413,26 +414,6 @@ export const Substation3DScreen: React.FC<Substation3DScreenProps> = ({
                     <span className="hidden sm:inline">{mode.label}</span>
                   </button>
                 ))}
-              </div>
-
-              {/* Solar Tilt Angle Slider */}
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <span className="text-xs text-[#94a3b8] whitespace-nowrap">Solar Tracker Angle:</span>
-                <input
-                  type="range"
-                  min="-30"
-                  max="30"
-                  step="1"
-                  value={solarTilt}
-                  onChange={(e) => {
-                    setSolarTilt(parseInt(e.target.value));
-                    setCameraPreset('solar');
-                  }}
-                  className="w-28 h-2 bg-[#0f172a] rounded-lg appearance-none cursor-pointer accent-[#f59e0b]"
-                />
-                <span className="font-mono text-xs text-[#f59e0b] w-8">
-                  {solarTilt}°
-                </span>
               </div>
             </div>
           )}

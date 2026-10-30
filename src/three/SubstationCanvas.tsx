@@ -173,12 +173,10 @@ export const SubstationCanvas: React.FC<SubstationCanvasProps> = ({
     breaker.group.position.set(3.5, 0, 0);
     scene.add(breaker.group);
 
-    // Solar PV Tracker Array (0, 0, -5.5)
+    // Solar PV Tracker Array kept only as an internal reference node (not added to 33kV Substation switchyard scene)
     const solarTracker: SolarTrackerNodes = createSolarTrackerGroup(
       renderer.capabilities.getMaxAnisotropy()
     );
-    solarTracker.group.position.set(0, 0, -5.5);
-    scene.add(solarTracker.group);
 
     // CT/PT Metering & Lightning Mast (+8.5, 0, -0.5)
     const meteringGroup = createMeteringAndMastGroup();
@@ -192,10 +190,8 @@ export const SubstationCanvas: React.FC<SubstationCanvasProps> = ({
       roughness: 0.15
     });
 
-    // Busbar curve: Solar Inverter -> Transformer LV -> Breaker -> Metering
+    // Busbar curve: Transformer LV/HV -> Breaker -> Metering & Grid takeoff
     const mainBusCurve = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(2.4, 1.6, -5.2), // solar inverter output
-      new THREE.Vector3(0, 3.8, -3.0),
       new THREE.Vector3(-4.0, 3.8, 0.5), // transformer LV
       new THREE.Vector3(-4.0, 4.3, -0.4), // transformer HV
       new THREE.Vector3(-0.2, 4.8, -0.4), // overhead span
@@ -268,6 +264,27 @@ export const SubstationCanvas: React.FC<SubstationCanvasProps> = ({
     };
 
     renderer.domElement.addEventListener('pointerdown', handlePointerDown);
+
+    // Keyboard WASD Movement
+    const keysPressed: Record<string, boolean> = {};
+    let hasMovedManually = false;
+    let lastPresetTracked = stateRef.current.cameraPreset;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        document.activeElement?.tagName === 'INPUT' ||
+        document.activeElement?.tagName === 'SELECT' ||
+        document.activeElement?.tagName === 'TEXTAREA'
+      ) {
+        return;
+      }
+      keysPressed[e.code] = true;
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      keysPressed[e.code] = false;
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
 
     // 9. Resize Handler
     const handleResize = () => {
@@ -351,18 +368,46 @@ export const SubstationCanvas: React.FC<SubstationCanvasProps> = ({
         arm.rotation.x = currentBladeAngle;
       });
 
-      // 4. Camera target position dampening when preset changes
+      // 4. Camera target position dampening when preset changes + WASD movement
+      if (curPreset !== lastPresetTracked) {
+        lastPresetTracked = curPreset;
+        hasMovedManually = false;
+      }
+
+      const moveFwd =
+        (keysPressed['KeyW'] || keysPressed['ArrowUp'] ? 1 : 0) -
+        (keysPressed['KeyS'] || keysPressed['ArrowDown'] ? 1 : 0);
+      const moveStrafe =
+        (keysPressed['KeyD'] || keysPressed['ArrowRight'] ? 1 : 0) -
+        (keysPressed['KeyA'] || keysPressed['ArrowLeft'] ? 1 : 0);
+      const isSprinting = keysPressed['ShiftLeft'] || keysPressed['ShiftRight'];
+
+      if (moveFwd !== 0 || moveStrafe !== 0) {
+        hasMovedManually = true;
+        const speed = (isSprinting ? 14.0 : 8.5) * delta;
+        camera.getWorldDirection(_scratchVec3A);
+        _scratchVec3A.y = 0;
+        if (_scratchVec3A.lengthSq() > 0.0001) _scratchVec3A.normalize();
+        _scratchVec3B.set(-_scratchVec3A.z, 0, _scratchVec3A.x);
+        const stepX = (_scratchVec3A.x * moveFwd + _scratchVec3B.x * moveStrafe) * speed;
+        const stepZ = (_scratchVec3A.z * moveFwd + _scratchVec3B.z * moveStrafe) * speed;
+        camera.position.x += stepX;
+        camera.position.z += stepZ;
+        controls.target.x += stepX;
+        controls.target.z += stepZ;
+      }
+
       const presetTarget = cameraPresetsMap[curPreset] || cameraPresetsMap.overview;
       _targetCamPos.copy(presetTarget.pos);
       _targetLookAt.copy(presetTarget.lookAt);
 
-      if (!isUserInteracting) {
-        // Only glide towards preset if user is not actively dragging OrbitControls
+      if (!isUserInteracting && !hasMovedManually) {
+        // Only glide towards preset if user is not actively dragging OrbitControls or moving with WASD
         camera.position.lerp(_targetCamPos, 1 - Math.exp(-4 * delta));
         controls.target.lerp(_targetLookAt, 1 - Math.exp(-4 * delta));
       }
 
-      if (curAutoRotate) {
+      if (curAutoRotate && moveFwd === 0 && moveStrafe === 0) {
         controls.autoRotate = true;
         controls.autoRotateSpeed = 1.2;
       } else {
@@ -428,6 +473,8 @@ export const SubstationCanvas: React.FC<SubstationCanvasProps> = ({
       cancelAnimationFrame(frameId);
       clearTimeout(frameId);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
       renderer.domElement.removeEventListener('pointerdown', handlePointerDown);
       controls.dispose();
       renderer.dispose();

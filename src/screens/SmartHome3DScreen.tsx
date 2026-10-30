@@ -360,7 +360,7 @@ export const SmartHome3DScreen: React.FC<SmartHome3DScreenProps> = ({
     const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(payload, null, 2));
     const a = document.createElement('a');
     a.setAttribute('href', dataStr);
-    a.setAttribute('download', `${projectPreset.projectName.replace(/\s+/g, '_')}_SmartHome_Twin.json`);
+    a.setAttribute('download', `${projectPreset.projectName.replace(/\s+/g, '_')}_SmartHome_Model.json`);
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -403,10 +403,10 @@ export const SmartHome3DScreen: React.FC<SmartHome3DScreenProps> = ({
       name: customerName.trim(),
       phone: phone.trim(),
       email: 'smarthome@ananyaelectricals.in',
-      category: 'Smart Home Automation Twin & Electrical Design',
+      category: 'Smart Home Automation & Electrical Design',
       location: `${propertyType} (${projectLocation.trim()})`,
       loadDetails: `${projectPreset.supplyPhase}, ${(runningWatts / 1000).toFixed(2)} kW • Preferred Automation: ${selectedFeatures.join(', ')}. ${
-        additionalNotes.trim() || 'Standard Turnkey Smart Home BOQ & 3D Twin'
+        additionalNotes.trim() || 'Standard Turnkey Smart Home BOQ & 3D Model'
       }`,
       timestamp: new Date().toISOString(),
       complianceConfirmed: true,
@@ -431,7 +431,7 @@ export const SmartHome3DScreen: React.FC<SmartHome3DScreenProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-sm font-bold text-white tracking-wide uppercase font-['Space_Grotesk']">
-                Ananya Smart Electrical Designer
+                Smart Home Automation
               </h1>
               <span className="px-2 py-0.5 text-[10px] font-mono font-semibold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded">
                 IS:732 / KNX / DALI
@@ -454,7 +454,7 @@ export const SmartHome3DScreen: React.FC<SmartHome3DScreenProps> = ({
             }`}
           >
             <span className="material-symbols-outlined text-[16px]">view_in_ar</span>
-            <span>3D Digital Twin</span>
+            <span>3D Model</span>
           </button>
 
           <button
@@ -557,14 +557,14 @@ export const SmartHome3DScreen: React.FC<SmartHome3DScreenProps> = ({
             <input type="file" accept=".json" onChange={handleImportJson} className="hidden" />
           </label>
 
-          {/* Switch to Substation Twin */}
+          {/* Switch to 33kV Substation */}
           <button
             onClick={() => onSelectTab('twin-3d')}
             className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs font-semibold transition-colors cursor-pointer"
-            title="Open 33kV Substation & Solar Yard Twin"
+            title="Open 33kV Substation"
           >
-            <span className="material-symbols-outlined text-[16px]">solar_power</span>
-            <span>Substation Twin</span>
+            <span className="material-symbols-outlined text-[16px]">electric_meter</span>
+            <span>33kV Substation</span>
           </button>
         </div>
       </div>
@@ -1012,7 +1012,7 @@ export const SmartHome3DScreen: React.FC<SmartHome3DScreenProps> = ({
                     className="px-3 py-1.5 rounded-lg bg-sky-500 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-[15px]">view_in_ar</span>
-                    <span>Back to 3D Twin</span>
+                    <span>Back to 3D Model</span>
                   </button>
                 </div>
               </div>
@@ -1148,7 +1148,7 @@ export const SmartHome3DScreen: React.FC<SmartHome3DScreenProps> = ({
                       }}
                       className="w-full py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs cursor-pointer transition-colors"
                     >
-                      Locate Device in 3D Digital Twin
+                      Locate Device in 3D Model
                     </button>
                   </div>
                 </div>
@@ -1410,7 +1410,7 @@ export const SmartHome3DScreen: React.FC<SmartHome3DScreenProps> = ({
                     }}
                     className="px-4 py-2 rounded-lg bg-emerald-500 text-slate-950 font-bold text-xs cursor-pointer"
                   >
-                    Return to 3D Digital Twin
+                    Return to 3D Model
                   </button>
                 </div>
               </div>
@@ -1518,7 +1518,7 @@ export const SmartHome3DScreen: React.FC<SmartHome3DScreenProps> = ({
                 <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
                   <button
                     type="button"
-                    onClick={() => onOpenConsultation('Smart Home Automation Twin & Turnkey Wiring')}
+                    onClick={() => onOpenConsultation('Smart Home Automation & Turnkey Wiring')}
                     className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold cursor-pointer"
                   >
                     Open General Consultation

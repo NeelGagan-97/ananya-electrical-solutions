@@ -75,11 +75,11 @@ export const SolarScreen: React.FC<SolarScreenProps> = ({ onOpenConsultation, on
               </a>
               {onSelectTab && (
                 <button
-                  onClick={() => onSelectTab('twin-3d')}
+                  onClick={() => onSelectTab('residential-solar-3d')}
                   className="h-11 px-4 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white border border-[#38bdf8]/50 text-[13px] font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[18px] text-[#38bdf8] leading-none">3d_rotation</span>
-                  <span>View 3D Solar Array</span>
+                  <span>Residential Solar Installation (3D)</span>
                 </button>
               )}
             </div>

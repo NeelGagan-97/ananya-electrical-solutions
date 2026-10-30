@@ -398,6 +398,21 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({
 
       if (workspaceTab !== '3d_twin') return;
 
+      if (
+        !isWalkthroughStarted &&
+        (e.code === 'KeyW' ||
+          e.code === 'KeyA' ||
+          e.code === 'KeyS' ||
+          e.code === 'KeyD' ||
+          e.code === 'ArrowUp' ||
+          e.code === 'ArrowDown' ||
+          e.code === 'ArrowLeft' ||
+          e.code === 'ArrowRight')
+      ) {
+        setIsWalkthroughStarted(true);
+        setIsWalkthroughPaused(false);
+      }
+
       if (e.code === 'KeyF') {
         handleToggleAllFans();
       } else if (e.code === 'KeyL') {
@@ -621,7 +636,7 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({
             <div className="truncate">
               <div className="flex items-center gap-1.5">
                 <h1 className="text-xs sm:text-sm font-bold tracking-tight text-white truncate">
-                  ANANYA ELECTRICAL SOLUTIONS — 2 BHK Smart Home Tour
+                  ANANYA ELECTRICAL SOLUTIONS — Residential 2BHK Interior
                 </h1>
                 <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded hidden md:inline-block">
                   Photoreal 3D
@@ -825,10 +840,10 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({
                           ANANYA ELECTRICAL SOLUTIONS
                         </div>
                         <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white mt-0.5">
-                          SMARTER HOMES. BETTER LIVING.
+                          RESIDENTIAL 2BHK INTERIOR
                         </h2>
                         <p className="text-xs sm:text-sm text-slate-300 mt-0.5">
-                          Experience our fully furnished 2 BHK smart home.
+                          Explore our interactive 2 BHK interior with Google Street View room navigation.
                         </p>
                       </div>
                     </div>
@@ -987,15 +1002,15 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 bg-slate-900/95 border border-emerald-500/40 rounded-xl p-3.5 text-xs animate-fade-in">
                       <div className="flex items-center gap-2.5">
                         <span className="px-2 py-1 rounded bg-slate-800 border border-slate-700 font-mono font-bold text-sky-300 shrink-0">
-                          W A S D
+                          W A S D / ARROWS
                         </span>
-                        <span className="text-slate-300">Walk at Human Eye-Level (1.75m)</span>
+                        <span className="text-slate-300">Walk Smoothly + Street View Arrows</span>
                       </div>
                       <div className="flex items-center gap-2.5">
                         <span className="px-2 py-1 rounded bg-slate-800 border border-slate-700 font-mono font-bold text-sky-300 shrink-0">
                           MOUSE
                         </span>
-                        <span className="text-slate-300">Smooth 360° Look Around</span>
+                        <span className="text-slate-300">Smooth 360° Street View Look</span>
                       </div>
                       <div className="flex items-center gap-2.5">
                         <span className="px-2 py-1 rounded bg-slate-800 border border-slate-700 font-mono font-bold text-amber-300 shrink-0">
@@ -1298,25 +1313,77 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({
                   </button>
                 </div>
 
-                {/* Room Waypoint Selector */}
-                <select
-                  value={cameraPreset}
-                  onChange={(e) => setCameraPreset(e.target.value as CameraPreset)}
-                  className="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs font-semibold text-sky-300 focus:outline-none focus:border-sky-500 cursor-pointer"
-                >
-                  <option value="exterior_entry">Spawn: Outside Main Entrance</option>
-                  <option value="foyer">Room: Entrance Foyer &amp; DB</option>
-                  <option value="living">Room: Living &amp; Dining Hall</option>
-                  <option value="balcony">Room: Sit-Out Balcony</option>
-                  <option value="kitchen">Room: Modular Kitchen</option>
-                  <option value="master_bed">Room: Master Bedroom</option>
-                  <option value="bed2">Room: Second Bedroom &amp; Study</option>
-                  <option value="bath1">Room: Common Bathroom</option>
-                  <option value="bath2">Room: Master Bathroom</option>
-                  <option value="db">Inspect: 8-Way TPN Main DB</option>
-                  <option value="overview">View: 3D Isometric Overview</option>
-                  <option value="top">View: Top Plan</option>
-                </select>
+                {/* Google Street View Room Waypoint Selector + Prev/Next Step Arrows */}
+                {(() => {
+                  const streetViewOrder: CameraPreset[] = [
+                    'exterior_entry',
+                    'foyer',
+                    'living',
+                    'balcony',
+                    'kitchen',
+                    'master_bed',
+                    'bed2',
+                    'bath1',
+                    'bath2',
+                    'db'
+                  ];
+                  const curIdx = streetViewOrder.indexOf(cameraPreset);
+                  const prevPreset =
+                    curIdx > 0 ? streetViewOrder[curIdx - 1] : streetViewOrder[streetViewOrder.length - 1];
+                  const nextPreset =
+                    curIdx >= 0 && curIdx < streetViewOrder.length - 1
+                      ? streetViewOrder[curIdx + 1]
+                      : streetViewOrder[0];
+
+                  return (
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => {
+                          setCameraMode('fpp');
+                          setIsWalkthroughStarted(true);
+                          setCameraPreset(prevPreset);
+                        }}
+                        className="px-2 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-amber-300 text-xs font-bold flex items-center gap-0.5 cursor-pointer"
+                        title="Google Street View: Previous Room Station"
+                      >
+                        <span className="material-symbols-outlined text-[15px]">arrow_back</span>
+                        <span className="hidden xl:inline text-[10px]">Prev</span>
+                      </button>
+
+                      <select
+                        value={cameraPreset}
+                        onChange={(e) => setCameraPreset(e.target.value as CameraPreset)}
+                        className="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs font-semibold text-sky-300 focus:outline-none focus:border-sky-500 cursor-pointer"
+                      >
+                        <option value="exterior_entry">Street View 1: Outside Entrance</option>
+                        <option value="foyer">Street View 2: Entrance Foyer &amp; DB</option>
+                        <option value="living">Street View 3: Living &amp; Dining Hall</option>
+                        <option value="balcony">Street View 4: Sit-Out Balcony</option>
+                        <option value="kitchen">Street View 5: Modular Kitchen</option>
+                        <option value="master_bed">Street View 6: Master Bedroom</option>
+                        <option value="bed2">Street View 7: Second Bedroom &amp; Study</option>
+                        <option value="bath1">Street View 8: Common Bathroom</option>
+                        <option value="bath2">Street View 9: Master Bathroom</option>
+                        <option value="db">Inspect: 8-Way TPN Main DB</option>
+                        <option value="overview">View: 3D Isometric Overview</option>
+                        <option value="top">View: Top Plan</option>
+                      </select>
+
+                      <button
+                        onClick={() => {
+                          setCameraMode('fpp');
+                          setIsWalkthroughStarted(true);
+                          setCameraPreset(nextPreset);
+                        }}
+                        className="px-2 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold flex items-center gap-0.5 cursor-pointer"
+                        title="Google Street View: Next Room Station"
+                      >
+                        <span className="hidden xl:inline text-[10px]">Next</span>
+                        <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
+                      </button>
+                    </div>
+                  );
+                })()}
 
                 {/* Smart Home Quick Shortcut Buttons: [F] Fan, [L] Lights, [T] TV, [C] AC */}
                 <div className="hidden md:flex items-center gap-1 bg-slate-900/95 px-1.5 py-0.5 rounded-lg border border-slate-800">
@@ -1888,7 +1955,7 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({
 
                   <div className="flex items-center gap-2">
                     <span className="hidden md:inline text-[10px] font-mono text-slate-400">
-                      WASD Walk • Mouse Look • [E] Interact • [X] X-Ray
+                      Street View Room Arrows • Mouse Look • [F/L/T/C] Appliances • [E] Interact • [X] X-Ray
                     </span>
                     <button
                       onClick={() => setDockExpanded(!dockExpanded)}
@@ -2328,7 +2395,7 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-white">
-                    2BHK Twin — Custom Length × Breadth Generator
+                    Residential 2BHK Interior — Custom Length × Breadth Generator
                   </h3>
                   <p className="text-[11px] text-slate-400">
                     Set overall apartment plot dimensions or individual room Length &amp; Breadth
@@ -2444,7 +2511,7 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({
                       className="w-full py-2 px-3 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-[16px]">auto_fix_high</span>
-                      <span>Scale 3D Twin</span>
+                      <span>Scale 3D Model</span>
                     </button>
                   </div>
                 </div>
@@ -2571,7 +2638,7 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({
                 onClick={() => setShowDimensionModal(false)}
                 className="px-4 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold cursor-pointer"
               >
-                Done &amp; Return to 3D Twin
+                Done &amp; Return to 3D Model
               </button>
             </div>
           </div>
