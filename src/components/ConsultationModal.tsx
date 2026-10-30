@@ -275,6 +275,10 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                       <option value="testing">Pre-Commissioning Hi-Pot &amp; Relay Testing</option>
                       <option value="amc">Industrial AMC &amp; Preventive Maintenance</option>
                     </optgroup>
+                    <optgroup label="Solar Services">
+                      <option value="solar-rooftop-ongrid">Roof Top On-Grid</option>
+                      <option value="solar-hybrid">Hybrid</option>
+                    </optgroup>
                   </select>
                 </div>
 

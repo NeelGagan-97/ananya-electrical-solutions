@@ -1643,6 +1643,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                         <option value="statutory">CEIG / BESCOM / KPTCL Statutory Liaison</option>
                         <option value="amc">Industrial AMC &amp; Preventive Maintenance</option>
                       </optgroup>
+                      <optgroup label="Solar Services">
+                        <option value="solar-rooftop-ongrid">Roof Top On-Grid</option>
+                        <option value="solar-hybrid">Hybrid</option>
+                      </optgroup>
                     </select>
                   </div>
                   <div className="flex flex-col gap-1.5">

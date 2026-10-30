@@ -11,8 +11,8 @@ export const BUSINESS_NAP = {
   country: 'IN',
   fullAddress: '59, Opp Bank of India, G-Block, Sahakarnagar Main Road, Bengaluru, Karnataka 560092',
   geo: {
-    lat: 13.0623,
-    lng: 77.5871,
+    lat: 13.063471473522608,
+    lng: 77.59142761283867,
   },
   primaryPhone: '+91 9743461955',
   primaryPhoneTel: '+919743461955',
@@ -23,9 +23,9 @@ export const BUSINESS_NAP = {
   canonicalDomain: 'https://ananyaelectricalsolutions.in',
   stagingDomain: 'https://ananya-electrical-solutions.neelgaganat97.workers.dev',
   googleMapsEmbedUrl:
-    'https://www.google.com/maps?q=59,+Opp+Bank+of+India,+G-Block,+Sahakarnagar+Main+Road,+Bengaluru,+Karnataka+560092&output=embed',
+    'https://www.google.com/maps?q=13.063471473522608,77.59142761283867&z=17&output=embed',
   googleMapsDirectUrl:
-    'https://www.google.com/maps/search/?api=1&query=59+Opp+Bank+of+India+G-Block+Sahakarnagar+Main+Road+Bengaluru+Karnataka+560092',
+    'https://www.google.com/maps/search/?api=1&query=13.063471473522608,77.59142761283867',
   openingHours: 'Mon–Sat: 08:30 AM – 07:30 PM (24/7 Emergency Breakdown Dispatch)',
 };
 
