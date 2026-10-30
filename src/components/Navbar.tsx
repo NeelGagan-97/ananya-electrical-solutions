@@ -69,10 +69,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
             <div className="flex flex-col justify-center">
               <div className="flex items-baseline gap-1.5">
-                <span className="font-['Cinzel'] text-[17px] sm:text-[19px] font-black uppercase tracking-[0.14em] bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent leading-tight">
+                <span className="font-['Montserrat'] text-[18px] sm:text-[20px] font-black [font-weight:900] uppercase tracking-[0.06em] bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent leading-tight">
                   ANANYA
                 </span>
-                <span className="font-['Cinzel'] text-[17px] sm:text-[19px] font-black uppercase tracking-[0.14em] bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent leading-tight">
+                <span className="font-['Montserrat'] text-[18px] sm:text-[20px] font-black [font-weight:900] uppercase tracking-[0.06em] bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent leading-tight">
                   ELECTRICAL SOLUTIONS
                 </span>
               </div>
