@@ -30,7 +30,7 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
     e.preventDefault();
     const cleanedPhone = phone.replace(/[\s\-()]/g, '');
     if (!/^(\+91|91|0)?[6-9]\d{9}$/.test(cleanedPhone)) {
-      setFormError('Please enter a valid 10-digit Indian mobile number (e.g., +91 97434 61955).');
+      setFormError('Please enter a valid 10-digit Indian mobile number (e.g., +91 96320 25123).');
       return;
     }
     if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
@@ -371,7 +371,7 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+91 97434 61955"
+                    placeholder="+91 96320 25123"
                     className="h-11 px-4 rounded-lg bg-[#F8FAFC] border border-[#CBD5E1] text-[14px] text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:bg-white"
                   />
                 </div>
