@@ -72,14 +72,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span className="font-['Cinzel'] text-[17px] sm:text-[19px] font-black uppercase tracking-[0.14em] bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent leading-tight">
                   ANANYA
                 </span>
-                <span className="font-['Montserrat'] text-[12px] sm:text-[13.5px] font-extrabold uppercase tracking-[0.16em] bg-[linear-gradient(90deg,#EA580C_0%,#F97316_42%,#EF4444_72%,#0284C7_100%)] bg-clip-text text-transparent leading-tight">
+                <span className="font-['Cinzel'] text-[17px] sm:text-[19px] font-black uppercase tracking-[0.14em] bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent leading-tight">
                   ELECTRICAL SOLUTIONS
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-gradient-to-r from-[#FFEDD5] via-[#FEF3C7] to-[#DBEAFE] border border-[#F97316]/30 text-[#9A3412] font-['Rajdhani'] text-[11px] uppercase tracking-[0.12em] font-bold leading-none">
-                  <span className="material-symbols-outlined text-[12px] text-[#EA580C] leading-none">bolt</span>
-                  <span>Super Grade Licensed Contractor</span>
                 </span>
               </div>
             </div>

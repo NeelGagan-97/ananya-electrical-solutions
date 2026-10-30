@@ -804,11 +804,11 @@ export const RealisticLightningBackground: React.FC = () => {
         ctx.restore();
       }
 
-      // 5. Subtle whole-sky atmospheric sheet-flash reflection during intense return strokes
-      if (globalSkyFlash > 0.22) {
+      // 5. Subtle whole-sky atmospheric sheet-flash reflection during intense return strokes (dimmed)
+      if (globalSkyFlash > 0.28) {
         ctx.save();
         ctx.globalCompositeOperation = 'screen';
-        ctx.fillStyle = `rgba(186, 230, 253, ${(globalSkyFlash - 0.22) * 0.22})`;
+        ctx.fillStyle = `rgba(186, 230, 253, ${(globalSkyFlash - 0.28) * 0.08})`;
         ctx.fillRect(0, 0, width, height);
         ctx.restore();
       }
@@ -829,7 +829,7 @@ export const RealisticLightningBackground: React.FC = () => {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="absolute inset-0 w-full h-full pointer-events-none select-none mix-blend-screen"
+      className="absolute inset-0 w-full h-full pointer-events-none select-none mix-blend-screen opacity-40"
     />
   );
 };

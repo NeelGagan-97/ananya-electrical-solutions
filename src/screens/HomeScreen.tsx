@@ -160,19 +160,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#0284C7]/25 rounded-full blur-3xl" />
           <div className="absolute bottom-0 right-10 w-96 h-96 bg-[#38BDF8]/15 rounded-full blur-3xl" />
 
-          {/* Continuous Rolling Thunder-Cloud Illumination Overlays */}
+          {/* Continuous Rolling Thunder-Cloud Illumination Overlays (Dimmed) */}
           <div
-            className="absolute inset-0 mix-blend-screen animate-thunder-flash-1"
+            className="absolute inset-0 mix-blend-screen animate-thunder-flash-1 opacity-45"
             style={{
               background:
-                'radial-gradient(ellipse 68% 52% at 72% 16%, rgba(186, 230, 253, 0.42) 0%, rgba(56, 189, 248, 0.22) 45%, rgba(15, 23, 42, 0) 78%)'
+                'radial-gradient(ellipse 68% 52% at 72% 16%, rgba(186, 230, 253, 0.18) 0%, rgba(56, 189, 248, 0.09) 45%, rgba(15, 23, 42, 0) 78%)'
             }}
           />
           <div
-            className="absolute inset-0 mix-blend-screen animate-thunder-flash-2"
+            className="absolute inset-0 mix-blend-screen animate-thunder-flash-2 opacity-45"
             style={{
               background:
-                'radial-gradient(ellipse 64% 48% at 28% 14%, rgba(224, 242, 254, 0.38) 0%, rgba(59, 130, 246, 0.2) 46%, rgba(15, 23, 42, 0) 76%)'
+                'radial-gradient(ellipse 64% 48% at 28% 14%, rgba(224, 242, 254, 0.16) 0%, rgba(59, 130, 246, 0.08) 46%, rgba(15, 23, 42, 0) 76%)'
             }}
           />
 
@@ -193,32 +193,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-12">
-          {/* Top Monospace Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FEF3C7]/95 backdrop-blur-md text-[#2a1700] text-[12px] uppercase tracking-wider font-semibold shadow-lg shadow-black/25 border border-[#F59E0B]/40">
-              <span className="material-symbols-outlined text-[16px] text-[#F59E0B]">verified</span>
-              Karnataka Electrical Inspectorate • Super Grade Licensed Contractor
-            </div>
-          </div>
-
           {/* Main Hero Split Content */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             <div className="lg:col-span-7 flex flex-col gap-6">
               <div className="flex flex-col gap-3">
-                <span className="text-[14px] uppercase tracking-widest text-[#38BDF8] font-bold drop-shadow-sm">
-                  Sahakarnagar, Bengaluru • Serving All Karnataka Since 2020
-                </span>
                 <h1 className="font-display-xl text-white tracking-tight font-extrabold leading-tight drop-shadow-md">
-                  Super Grade{' '}
+                  Class I{' '}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7dd3fc] via-[#38bdf8] to-[#fcd34d]">
                     Electrical Contractor in Bengaluru
                   </span>{' '}
-                  for HT/LT Substations &amp; Solar EPC
+                  for HT/LT &amp; Solar
                 </h1>
               </div>
 
               <p className="font-body-lg text-slate-200 leading-relaxed max-w-2xl drop-shadow-sm">
-                Welcome to <strong className="text-white">Ananya Electrical Solutions</strong> — Government of Karnataka Licensed Super Grade Electrical Contractors headquartered in Sahakarnagar, Bengaluru. We deliver turnkey 11kV–110kV substations, HT/LT switchgear panels, BESCOM &amp; CEIG statutory approvals, industrial/commercial/residential wiring, chemical earthing, and rooftop solar power plants across Bengaluru and Karnataka.
+                Welcome to <strong className="text-white">Ananya Electrical Solutions</strong> — Government of Karnataka Licensed Class I Electrical Contractors headquartered in Sahakarnagar, Bengaluru. We deliver turnkey 11kV–110kV substations, HT/LT switchgear panels, BESCOM &amp; CEIG statutory approvals, industrial/commercial/residential wiring, chemical earthing, and rooftop solar power plants across Bengaluru and Karnataka.
               </p>
 
               {/* Primary Lead Conversion CTAs: Get a Quote, Call Now, WhatsApp */}
@@ -308,7 +297,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
 
             {/* Hero Visual Showcase: Video + Telemetry */}
-            <div className="lg:col-span-5 flex flex-col items-center lg:items-end justify-start gap-5 lg:-mt-44 xl:-mt-48">
+            <div className="lg:col-span-5 flex flex-col items-center lg:items-end justify-start gap-5 lg:-mt-20 xl:-mt-24">
               <div className="w-full flex flex-col items-center lg:items-end justify-start -mt-6 lg:-mt-10 xl:-mt-12 lg:mr-[calc(min(0px,(80rem-100vw)/2)-3rem)] bg-transparent">
                 <video
                   ref={logoVideoRef}
@@ -318,7 +307,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   muted
                   playsInline
                   style={{ aspectRatio: '1.5 / 1.5' }}
-                  className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent [clip-path:inset(0_0_31%_0)] drop-shadow-[0_0_22px_rgba(56,189,248,0.65)]"
+                  className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent [clip-path:inset(0_0_31%_0)] brightness-90 drop-shadow-[0_0_14px_rgba(56,189,248,0.42)]"
                 />
                 {/* Custom Styled Brand Logo Lockup Synchronized with Video Reveal */}
                 <div
@@ -362,14 +351,33 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                       }`}
                     />
                   </div>
+                  <span
+                    className={`mt-1.5 font-['Montserrat'] text-[10.5px] sm:text-[12px] lg:text-[13px] font-bold italic tracking-[0.16em] bg-[linear-gradient(90deg,#FB923C_0%,#F97316_24%,#F59E0B_44%,#EF4444_64%,#38BDF8_82%,#F97316_100%)] bg-clip-text text-transparent transition-all duration-500 ${
+                      logoAnimPhase === 'charging'
+                        ? 'opacity-0 translate-y-2 scale-90'
+                        : logoAnimPhase === 'surge'
+                        ? 'opacity-85 translate-y-0.5 scale-[1.03] animate-brand-surge'
+                        : 'opacity-100 translate-y-0 scale-100 animate-brand-shimmer animate-sub-pulse'
+                    }`}
+                  >
+                    &ldquo;Powering Brighter Tomorrow&rdquo;
+                  </span>
                 </div>
               </div>
 
-              {/* Status Below Video with Exact Vertical Alignment */}
-              <div className="inline-flex items-center justify-center gap-2 text-center px-3.5 py-1.5 rounded-full bg-[#0B192C]/85 backdrop-blur-md border border-white/15 shadow-lg">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
-                <span className="text-[13px] sm:text-[14px] font-bold text-white tracking-wide leading-none">
-                  HT/LT Dispatch &amp; Solar EPC Active across Karnataka
+              {/* Status Below Video with Green Dots for BESCOM, HT/LT, SOLAR */}
+              <div className="inline-flex flex-wrap items-center justify-center gap-4 sm:gap-5 text-center px-4 py-1.5 rounded-full bg-[#0B192C]/85 backdrop-blur-md border border-white/15 shadow-lg lg:mr-10 xl:mr-12">
+                <span className="inline-flex items-center gap-1.5 text-[13px] sm:text-[14px] font-bold text-white tracking-wider uppercase leading-none">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+                  <span>BESCOM</span>
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-[13px] sm:text-[14px] font-bold text-white tracking-wider uppercase leading-none">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+                  <span>HT/LT</span>
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-[13px] sm:text-[14px] font-bold text-white tracking-wider uppercase leading-none">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+                  <span>SOLAR</span>
                 </span>
               </div>
 
@@ -380,15 +388,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     <span className="text-[11px] text-slate-300 uppercase tracking-wider font-semibold">HT / EHT Grid Scope</span>
                     <span className="material-symbols-outlined text-[#38BDF8] text-[18px] leading-none shrink-0">domain</span>
                   </div>
-                  <span className="font-stat-counter text-white text-[22px] sm:text-[26px]">11kV – 110kV</span>
-                  <span className="text-[12px] text-slate-300">Substations, VCB &amp; CEIG Liaison</span>
+                  <span className="font-stat-counter text-white text-[22px] sm:text-[26px]">11KV - 400KV</span>
+                  <span className="text-[12px] text-slate-300">Substations, CEIG Liasioning</span>
                 </div>
                 <div className="p-4 rounded-xl bg-[#0B192C]/80 backdrop-blur-md text-white flex flex-col justify-between gap-1 border border-white/15 shadow-xl h-full">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[11px] text-slate-300 uppercase tracking-wider font-semibold">LT Panels &amp; Solar</span>
                     <span className="material-symbols-outlined text-[#F59E0B] text-[18px] leading-none shrink-0">wb_sunny</span>
                   </div>
-                  <span className="font-stat-counter text-white text-[22px] sm:text-[26px]">415V – 6300A</span>
+                  <span className="font-stat-counter text-white text-[22px] sm:text-[26px]">230V-11KV</span>
                   <span className="text-[12px] text-slate-300">PCC/MCC Panels &amp; Solar EPC</span>
                 </div>
               </div>
