@@ -197,12 +197,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             <div className="lg:col-span-7 flex flex-col gap-6">
               <div className="flex flex-col gap-3">
-                <h1 className="font-display-xl text-white tracking-tight font-extrabold leading-tight drop-shadow-md">
-                  Class 1{' '}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7dd3fc] via-[#38bdf8] to-[#fcd34d]">
-                    Electrical Contractor in Bengaluru
-                  </span>{' '}
-                  for HT/LT &amp; Solar
+                <h1 className="font-display-xl tracking-tight font-extrabold leading-tight drop-shadow-md text-transparent bg-clip-text bg-gradient-to-r from-[#7dd3fc] via-[#38bdf8] to-[#fcd34d]">
+                  Class 1 Electrical Contractor in Karnataka for HT/LT &amp; Solar
                 </h1>
               </div>
 
@@ -455,7 +451,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   Official Credentials
                 </span>
                 <h2 className="font-headline-md text-[#0B192C] font-bold">
-                  Super Grade Electrical Contractor in Bengaluru &amp; Karnataka
+                  Class 1 Electrical Contractor in Karnataka
                 </h2>
                 <p className="font-body-md text-[#44474c] max-w-3xl leading-relaxed">
                   <strong>Ananya Electrical Solutions</strong> is a Government of Karnataka Licensed Super Grade Electrical Contractor with over 5 years of specialized expertise dedicated to safety, statutory compliance, and customer satisfaction. Since 2020, <strong>Ananya Electrical Solutions</strong> has delivered turnkey design, installation, testing, and commissioning of HT/LT electrical and solar power systems throughout Bengaluru and Karnataka.
@@ -925,11 +921,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                       {service.description}
                     </p>
                   </div>
-                  <div className="flex items-center justify-between pt-2 border-t border-[#E2E8F0]">
-                    <span className="text-[10.5px] text-slate-500 uppercase font-semibold flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[13px] text-emerald-600">verified</span>
-                      CEIG &amp; IS Compliant
-                    </span>
+                  <div className="flex items-center justify-end pt-2 border-t border-[#E2E8F0]">
                     <button
                       onClick={() => onOpenConsultation(service.title)}
                       className="text-[12px] text-[#006398] hover:text-[#0B192C] font-bold flex items-center gap-1 cursor-pointer"
@@ -1012,8 +1004,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                         </p>
                       </div>
 
-                      <div className="pt-2 border-t border-slate-700/80 flex items-center justify-between">
-                        <span className="text-[9.5px] font-mono text-slate-400">{item.standard}</span>
+                      <div className="pt-2 border-t border-slate-700/80 flex items-center justify-end">
                         <button
                           onClick={() => onOpenConsultation(item.name)}
                           className="text-[11px] font-bold text-[#38bdf8] hover:text-white flex items-center gap-0.5 cursor-pointer"
