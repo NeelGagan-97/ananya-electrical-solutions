@@ -197,13 +197,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             <div className="lg:col-span-7 flex flex-col gap-6">
               <div className="flex flex-col gap-3">
-                <h1 className="font-display-xl tracking-tight font-extrabold leading-tight drop-shadow-md text-transparent bg-clip-text bg-gradient-to-r from-[#7dd3fc] via-[#38bdf8] to-[#fcd34d]">
+                <h1 className="font-display-xl tracking-tight font-extrabold leading-tight drop-shadow-md bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent">
                   Class 1 Electrical Contractor in Karnataka for HT/LT &amp; Solar
                 </h1>
               </div>
 
               <p className="font-body-lg text-slate-200 leading-relaxed max-w-2xl drop-shadow-sm">
-                Welcome to <strong className="text-white">Ananya Electrical Solutions</strong> — Government of Karnataka Licensed Class I Electrical Contractors headquartered in Sahakarnagar, Bengaluru. We deliver turnkey 11kV–110kV substations, HT/LT switchgear panels, BESCOM &amp; CEIG statutory approvals, industrial/commercial/residential wiring, chemical earthing, and rooftop solar power plants across Bengaluru and Karnataka.
+                Welcome to <strong className="text-white">Ananya Electrical Solutions</strong> — Government of Karnataka Licensed Class I Electrical Contractors headquartered in Sahakarnagar, Bengaluru. We deliver turnkey 11kV–110kV Substations, HT/LT Services, BESCOM &amp; CEIG statutory approvals, Industrial/Commercial/Residential wiring and Rooftop solar power plants across Bengaluru and Karnataka.
               </p>
 
               {/* Primary Lead Conversion CTAs: Get a Quote, Call Now, WhatsApp */}
@@ -454,7 +454,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   Class 1 Electrical Contractor in Karnataka
                 </h2>
                 <p className="font-body-md text-[#44474c] max-w-3xl leading-relaxed">
-                  <strong>Ananya Electrical Solutions</strong> is a Government of Karnataka Licensed Super Grade Electrical Contractor with over 5 years of specialized expertise dedicated to safety, statutory compliance, and customer satisfaction. Since 2020, <strong>Ananya Electrical Solutions</strong> has delivered turnkey design, installation, testing, and commissioning of HT/LT electrical and solar power systems throughout Bengaluru and Karnataka.
+                  <strong>Ananya Electrical Solutions</strong> is a Government Licensed Class 1 Electrical Contractor with over 5 years of specialized expertise dedicated to safety, statutory compliance, and customer satisfaction. Since 2020, <strong>Ananya Electrical Solutions</strong> has delivered Turnkey solutions, Design, Installation, Testing, and Commissioning of HT/LT electrical and solar power systems throughout Bengaluru and Karnataka.
                 </p>
               </div>
             </div>
@@ -491,31 +491,31 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 {
                   segment: 'Industrial & Manufacturing',
                   icon: 'factory',
-                  scope: '11kV–110kV substations, power transformers, VCBs, busducts, PCC/MCC panels, XLPE cabling & CEIG approvals.',
+                  scope: '11kV–110kV Substations, Power Transformers, RMU, VCB, Busducts, Panels, XLPE cabling & CEIG approvals.',
                   ctaTopic: 'Industrial Substation & Plant Electrification',
                 },
                 {
                   segment: 'Commercial & IT Parks',
                   icon: 'apartment',
-                  scope: 'HT/LT distribution boards, DG synchronization, APFC harmonic panels, UPS risers & BESCOM load sanctions.',
+                  scope: 'HT/LT Distribution Boards, DG Synchronization, APFC harmonic panels, UPS risers & BESCOM Load sanctions.',
                   ctaTopic: 'Commercial & IT Building Electrification',
                 },
                 {
                   segment: 'Residential & Townships',
                   icon: 'home_work',
-                  scope: 'IS 732 concealed FRLS wiring, MCB/RCCB DBs, layout DTR electrification, underground cabling & smart home controls.',
+                  scope: 'MCB/RCCB DBs, Wiring, Design Co-ordination, Aesthetic Integration, Co-Lights, Underground cabling & Smart Home Automation.',
                   ctaTopic: 'Residential & Township Layout Electrification',
                 },
                 {
                   segment: 'Institutional & Healthcare',
                   icon: 'local_hospital',
-                  scope: 'Hospitals, universities & public infrastructure requiring isolated earthing, zero-downtime changeover & AMC.',
+                  scope: 'Hospitals, Universities & Public Infrastructure requiring isolated earthing, Zero-Downtime & AMC.',
                   ctaTopic: 'Institutional & Hospital Electrical Works',
                 },
                 {
                   segment: 'Solar & Clean Energy',
                   icon: 'solar_power',
-                  scope: 'Rooftop & ground-mounted solar PV plants, string/central inverters, bidirectional metering & KERC net-metering.',
+                  scope: 'Rooftop & Ground-Mounted solar PV plants, String/Central inverters, Bidirectional metering & KERC net-metering.',
                   ctaTopic: 'Turnkey Rooftop / Ground-Mount Solar EPC',
                 },
               ].map((item) => (
