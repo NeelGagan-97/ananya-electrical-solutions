@@ -124,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[13px] font-bold text-[#0B192C]">Residential Layout &amp; Infra Twin</span>
+                      <span className="text-[13px] font-bold text-[#0B192C]">Residential Layouts</span>
                       <span className="px-1.5 py-0.2 rounded bg-sky-100 text-sky-700 text-[9px] font-mono font-bold">
                         SITE CAD
                       </span>
@@ -152,7 +152,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[13px] font-bold text-[#0B192C]">Residential 2BHK Interior Twin</span>
+                      <span className="text-[13px] font-bold text-[#0B192C]">Residential Interior</span>
                       <span className="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-700 text-[9px] font-mono font-bold">
                         IS:732 CAD
                       </span>
@@ -180,7 +180,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[13px] font-bold text-[#0B192C]">33kV Substation &amp; Solar Yard</span>
+                      <span className="text-[13px] font-bold text-[#0B192C]">33kV Substation and Solar Yard</span>
                       <span className="px-1.5 py-0.2 rounded bg-amber-100 text-amber-700 text-[9px] font-mono font-bold">
                         33kV EPC
                       </span>
@@ -223,7 +223,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[13px] font-bold text-[#0B192C]">Smart Home Automation Twin</span>
+                      <span className="text-[13px] font-bold text-[#0B192C]">Smart Home Automation</span>
                       <span className="px-1.5 py-0.2 rounded bg-teal-100 text-teal-700 text-[9px] font-mono font-bold">
                         SMART HOME
                       </span>
@@ -484,7 +484,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <div className="flex items-center gap-2">
                       <span className="material-symbols-outlined text-[16px] text-sky-600">map</span>
-                      <span>Residential Layout &amp; Infra Twin</span>
+                      <span>Residential Layouts</span>
                     </div>
                     {currentTab === 'residential-layout-3d' && (
                       <span className="material-symbols-outlined text-[16px] text-[#0284C7]">check</span>
@@ -501,7 +501,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <div className="flex items-center gap-2">
                       <span className="material-symbols-outlined text-[16px] text-emerald-600">home</span>
-                      <span>Residential 2BHK Interior Twin</span>
+                      <span>Residential Interior</span>
                     </div>
                     {currentTab === 'residential-3d' && (
                       <span className="material-symbols-outlined text-[16px] text-[#0284C7]">check</span>
@@ -518,10 +518,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <div className="flex items-center gap-2">
                       <span className="material-symbols-outlined text-[16px] text-[#0284c7]">electric_meter</span>
-                      <span>33kV Substation &amp; Solar Yard</span>
+                      <span>33kV Substation and Solar Yard</span>
                     </div>
                     {currentTab === 'twin-3d' && (
-                      <span className="material-symbols-outlined text-[16px] text-[#0284c7]">check</span>
+                      <span className="material-symbols-outlined text-[16px] text-[#0284C7]">check</span>
                     )}
                   </button>
 
@@ -551,7 +551,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       </svg>
                       <div className="flex flex-col">
                         <div className="flex items-center gap-1.5">
-                          <span>Smart Home Automation Twin</span>
+                          <span>Smart Home Automation</span>
                           <span className="px-1.5 py-0.2 rounded bg-teal-100 text-teal-700 text-[9px] font-mono font-bold">
                             SMART HOME
                           </span>

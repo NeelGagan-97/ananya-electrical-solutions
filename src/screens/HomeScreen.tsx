@@ -586,27 +586,34 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 Step into real-time 3D engineering simulations. Inspect modern Indian concealed conduit wiring, Distribution Boards, Township Layout Transformers, or 66kV Substations with Solar Arrays.
               </p>
             </div>
-            <div className="flex flex-wrap items-center gap-3 shrink-0 w-full lg:w-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 shrink-0 w-full lg:w-auto">
+              <button
+                onClick={() => onSelectTab('residential-layout-3d')}
+                className="w-full sm:w-auto h-12 px-5 rounded-xl bg-gradient-to-r from-[#F59E0B] to-[#D97706] hover:from-[#D97706] hover:to-[#F59E0B] text-[#2a1700] font-bold text-[13.5px] flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 transition-transform hover:scale-105 cursor-pointer border border-[#fbbf24]/60"
+              >
+                <span className="material-symbols-outlined text-[20px]">map</span>
+                <span>Residential Layouts</span>
+              </button>
               <button
                 onClick={() => onSelectTab('residential-3d')}
                 className="w-full sm:w-auto h-12 px-5 rounded-xl bg-gradient-to-r from-[#10b981] to-[#047857] hover:from-[#059669] hover:to-[#10b981] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 transition-transform hover:scale-105 cursor-pointer border border-[#34d399]/50"
               >
                 <span className="material-symbols-outlined text-[20px]">home</span>
-                <span>3D Home Wiring</span>
-              </button>
-              <button
-                onClick={() => onSelectTab('residential-layout-3d')}
-                className="w-full sm:w-auto h-12 px-5 rounded-xl bg-gradient-to-r from-[#F59E0B] to-[#D97706] hover:from-[#D97706] hover:to-[#F59E0B] text-[#2a1700] font-bold text-[13.5px] flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 transition-transform hover:scale-105 cursor-pointer border border-[#fbbf24]/60"
-              >
-                <span className="material-symbols-outlined text-[20px]">apartment</span>
-                <span>3D Layout Electrification</span>
+                <span>Residential Interior</span>
               </button>
               <button
                 onClick={() => onSelectTab('twin-3d')}
                 className="w-full sm:w-auto h-12 px-5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#006398] hover:from-[#006398] hover:to-[#0284C7] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25 transition-transform hover:scale-105 cursor-pointer border border-[#38bdf8]/50"
               >
-                <span className="material-symbols-outlined text-[20px]">explore</span>
-                <span>3D 33kV Substation</span>
+                <span className="material-symbols-outlined text-[20px]">electric_meter</span>
+                <span>33kV Substation and Solar Yard</span>
+              </button>
+              <button
+                onClick={() => onSelectTab('smart-home-3d')}
+                className="w-full sm:w-auto h-12 px-5 rounded-xl bg-gradient-to-r from-[#0d9488] to-[#0f766e] hover:from-[#0f766e] hover:to-[#0d9488] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 shadow-lg shadow-teal-500/25 transition-transform hover:scale-105 cursor-pointer border border-[#2dd4bf]/50"
+              >
+                <span className="material-symbols-outlined text-[20px]">smart_toy</span>
+                <span>Smart Home Automation</span>
               </button>
             </div>
           </div>
