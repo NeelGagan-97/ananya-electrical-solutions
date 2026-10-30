@@ -134,16 +134,20 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenSeoAudit }) =
 
           {/* Verified Sahakarnagar HQ & NAP */}
           <div className="flex flex-col gap-3">
-            <span className="font-display text-[15px] text-[#0B192C] font-bold uppercase tracking-wider">
-              Registered Headquarters
-            </span>
+            <div className="flex flex-col pl-6">
+              <strong className="font-display text-[15px] text-[#0B192C] font-bold uppercase tracking-wider block leading-tight">
+                Ananya Electrical Solutions
+              </strong>
+              <span className="font-display text-[12px] text-[#0284C7] font-bold uppercase tracking-wider mt-0.5">
+                Registered Headquarters
+              </span>
+            </div>
             <address className="not-italic flex flex-col gap-2.5 text-[13px] text-[#44474c]">
               <div className="flex items-start gap-2">
                 <span className="material-symbols-outlined text-[18px] text-[#006398] shrink-0 mt-0.5">
                   location_on
                 </span>
                 <div>
-                  <strong className="text-[#0B192C] block">Ananya Electrical Solutions</strong>
                   <span>{BUSINESS_NAP.fullAddress}</span>
                   <a
                     href={BUSINESS_NAP.googleMapsDirectUrl}

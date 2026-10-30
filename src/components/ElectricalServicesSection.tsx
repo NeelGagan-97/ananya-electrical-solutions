@@ -318,23 +318,6 @@ export const ElectricalServicesSection: React.FC<ElectricalServicesSectionProps>
                     </p>
                   </div>
 
-                  {/* Scope Highlights Checklist */}
-                  <div className="pt-2 border-t border-[#E2E8F0] flex flex-col gap-1 flex-1">
-                    <span className="text-[9.5px] uppercase tracking-wider text-slate-500 font-bold">
-                      Included Scope &amp; Equipment:
-                    </span>
-                    <ul className="flex flex-col gap-1 text-[11px] text-[#44474c]">
-                      {service.features.slice(0, 3).map((item, fIdx) => (
-                        <li key={fIdx} className="flex items-start gap-1.5">
-                          <span className="material-symbols-outlined text-[13px] shrink-0 mt-0.5 text-[#0284C7] leading-none">
-                            check_circle
-                          </span>
-                          <span className="leading-tight line-clamp-1">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
                   {/* Optional Standards Note */}
                   {service.disclaimer && (
                     <p className="text-[10px] text-slate-500 italic bg-[#F8FAFC] px-2 py-1 rounded border border-[#E2E8F0] mt-auto line-clamp-1">

@@ -198,7 +198,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <div className="lg:col-span-7 flex flex-col gap-6">
               <div className="flex flex-col gap-3">
                 <h1 className="font-display-xl text-white tracking-tight font-extrabold leading-tight drop-shadow-md">
-                  Class I{' '}
+                  Class 1{' '}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7dd3fc] via-[#38bdf8] to-[#fcd34d]">
                     Electrical Contractor in Bengaluru
                   </span>{' '}
@@ -365,20 +365,22 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 </div>
               </div>
 
-              {/* Status Below Video with Green Dots for BESCOM, HT/LT, SOLAR */}
-              <div className="inline-flex flex-wrap items-center justify-center gap-4 sm:gap-5 text-center px-4 py-1.5 rounded-full bg-[#0B192C]/85 backdrop-blur-md border border-white/15 shadow-lg lg:mr-10 xl:mr-12">
-                <span className="inline-flex items-center gap-1.5 text-[13px] sm:text-[14px] font-bold text-white tracking-wider uppercase leading-none">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
-                  <span>BESCOM</span>
-                </span>
-                <span className="inline-flex items-center gap-1.5 text-[13px] sm:text-[14px] font-bold text-white tracking-wider uppercase leading-none">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
-                  <span>HT/LT</span>
-                </span>
-                <span className="inline-flex items-center gap-1.5 text-[13px] sm:text-[14px] font-bold text-white tracking-wider uppercase leading-none">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
-                  <span>SOLAR</span>
-                </span>
+              {/* Status Below Video Aligned Directly Below ANANYA ELECTRICAL SOLUTIONS */}
+              <div className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] flex items-center justify-center lg:mr-[calc(min(0px,(80rem-100vw)/2)-3rem)]">
+                <div className="inline-flex flex-wrap items-center justify-center gap-4 sm:gap-5 text-center px-4 py-1.5 rounded-full bg-[#0B192C]/85 backdrop-blur-md border border-white/15 shadow-lg">
+                  <span className="inline-flex items-center gap-1.5 text-[13px] sm:text-[14px] font-bold text-white tracking-wider uppercase leading-none">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+                    <span>BESCOM</span>
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 text-[13px] sm:text-[14px] font-bold text-white tracking-wider uppercase leading-none">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+                    <span>HT/LT</span>
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 text-[13px] sm:text-[14px] font-bold text-white tracking-wider uppercase leading-none">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+                    <span>SOLAR</span>
+                  </span>
+                </div>
               </div>
 
               {/* Verified Engineering Scope Cards */}
@@ -922,16 +924,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     <p className="text-[12px] text-[#44474c] leading-snug line-clamp-2">
                       {service.description}
                     </p>
-                    <div className="flex flex-wrap gap-1 pt-0.5">
-                      {service.specs.slice(0, 3).map((spec, sIdx) => (
-                        <span
-                          key={sIdx}
-                          className="text-[10px] px-2 py-0.5 rounded bg-[#f8f9ff] text-[#00476e] border border-[#CBD5E1] font-medium"
-                        >
-                          {spec}
-                        </span>
-                      ))}
-                    </div>
                   </div>
                   <div className="flex items-center justify-between pt-2 border-t border-[#E2E8F0]">
                     <span className="text-[10.5px] text-slate-500 uppercase font-semibold flex items-center gap-1">
@@ -1018,16 +1010,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                         <p className="text-[11px] text-slate-300 leading-snug line-clamp-2">
                           {item.description}
                         </p>
-                        <ul className="flex flex-col gap-0.5 pt-0.5">
-                          {item.features.slice(0, 2).map((feat, fIdx) => (
-                            <li key={fIdx} className="text-[10.5px] text-slate-300 flex items-start gap-1">
-                              <span className="material-symbols-outlined text-[12px] text-emerald-400 shrink-0 mt-0.5">
-                                check_circle
-                              </span>
-                              <span className="line-clamp-1">{feat}</span>
-                            </li>
-                          ))}
-                        </ul>
                       </div>
 
                       <div className="pt-2 border-t border-slate-700/80 flex items-center justify-between">
