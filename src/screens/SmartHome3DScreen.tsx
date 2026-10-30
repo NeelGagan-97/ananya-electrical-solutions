@@ -400,19 +400,17 @@ export const SmartHome3DScreen: React.FC<SmartHome3DScreenProps> = ({
 
     const newInquiry: EngineeringInquiry = {
       id: `SH-${Date.now().toString().slice(-5)}`,
-      clientName: customerName.trim(),
-      companyName: `${propertyType} (${projectLocation.trim()})`,
+      name: customerName.trim(),
       phone: phone.trim(),
       email: 'smarthome@ananyaelectricals.in',
-      serviceCategory: 'Smart Home Automation Twin & Electrical Design',
-      voltageClass: projectPreset.supplyPhase,
-      estimatedLoadKw: Number((runningWatts / 1000).toFixed(2)),
-      location: projectLocation.trim(),
-      projectNotes: `Preferred Automation: ${selectedFeatures.join(', ')}. Additional Requirements: ${
+      category: 'Smart Home Automation Twin & Electrical Design',
+      location: `${propertyType} (${projectLocation.trim()})`,
+      loadDetails: `${projectPreset.supplyPhase}, ${(runningWatts / 1000).toFixed(2)} kW • Preferred Automation: ${selectedFeatures.join(', ')}. ${
         additionalNotes.trim() || 'Standard Turnkey Smart Home BOQ & 3D Twin'
       }`,
-      createdAt: new Date().toISOString(),
-      status: 'New'
+      timestamp: new Date().toISOString(),
+      complianceConfirmed: true,
+      preferredChannel: 'whatsapp'
     };
 
     if (onSaveInquiry) {

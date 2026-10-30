@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import {
   ResidentialProject,
   InteractiveTarget,
@@ -16,13 +17,16 @@ import {
 } from './ParametricHouseGenerator';
 
 export type CameraMode = 'orbit' | 'fpp';
+export type LightingSceneMode = 'daytime' | 'evening';
 export type CameraPreset =
   | 'overview'
   | 'top'
   | 'exterior_entry'
   | 'foyer'
   | 'living'
+  | 'balcony'
   | 'master_bed'
+  | 'bath2'
   | 'bed2'
   | 'kitchen'
   | 'bath1'
@@ -40,6 +44,7 @@ interface ResidentialCanvasProps {
   viewMode: ViewMode3D;
   cameraMode: CameraMode;
   cameraPreset: CameraPreset;
+  lightingScene?: LightingSceneMode;
   ceilingVisible: boolean;
   dbDoorOpen: boolean;
   dbExploded: boolean;
@@ -71,6 +76,7 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
   viewMode,
   cameraMode,
   cameraPreset,
+  lightingScene = 'daytime',
   ceilingVisible,
   dbDoorOpen,
   dbExploded,
@@ -102,6 +108,8 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
   const controlsRef = useRef<OrbitControls | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const twinRef = useRef<GeneratedTwin | null>(null);
+  const hemiLightRef = useRef<THREE.HemisphereLight | null>(null);
+  const sunLightRef = useRef<THREE.DirectionalLight | null>(null);
 
   // Live refs for animation loop access without re-binding listeners
   const projectRef = useRef(project);
@@ -196,8 +204,8 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
     const height = container.clientHeight || 600;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0b132b);
-    scene.fog = new THREE.FogExp2(0x0b132b, 0.008);
+    scene.background = new THREE.Color(0x1e293b);
+    scene.fog = new THREE.FogExp2(0x1e293b, 0.005);
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(62, width / height, 0.1, 220);
@@ -208,15 +216,27 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
       antialias: true,
       powerPreference: 'high-performance'
     });
+    const gl = renderer.getContext();
+    const debugRenderer = gl.getParameter(gl.RENDERER) || '';
+    const isSoftwareGl = /SwiftShader|llvmpipe|softpipe/i.test(String(debugRenderer));
+
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
+    renderer.setPixelRatio(isSoftwareGl ? 1 : Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = !isSoftwareGl;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.18;
+    renderer.toneMappingExposure = 1.22;
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
+
+    // RoomEnvironment IBL for realistic reflections on vitrified tiles, glass, marble & chrome
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    pmremGenerator.compileEquirectangularShader();
+    const envTarget = pmremGenerator.fromScene(new RoomEnvironment(), 0.04);
+    scene.environment = envTarget.texture;
+    scene.environmentIntensity = 0.72;
+    pmremGenerator.dispose();
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
@@ -228,15 +248,16 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
     controlsRef.current = controls;
 
     // Studio & Architectural Lighting
-    const hemiLight = new THREE.HemisphereLight(0xf8fafc, 0x1e293b, 0.96);
+    const hemiLight = new THREE.HemisphereLight(0xfffbeb, 0x334155, 1.15);
     hemiLight.position.set(0, 26, 0);
     scene.add(hemiLight);
+    hemiLightRef.current = hemiLight;
 
-    const sunLight = new THREE.DirectionalLight(0xfffbeb, 1.45);
-    sunLight.position.set(20, 34, 24);
-    sunLight.castShadow = true;
-    sunLight.shadow.mapSize.width = 2048;
-    sunLight.shadow.mapSize.height = 2048;
+    const sunLight = new THREE.DirectionalLight(0xfff7ed, 1.65);
+    sunLight.position.set(-22, 32, 24);
+    sunLight.castShadow = !isSoftwareGl;
+    sunLight.shadow.mapSize.width = isSoftwareGl ? 1024 : 2048;
+    sunLight.shadow.mapSize.height = isSoftwareGl ? 1024 : 2048;
     sunLight.shadow.camera.near = 1;
     sunLight.shadow.camera.far = 85;
     const d = 24;
@@ -246,9 +267,10 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
     sunLight.shadow.camera.bottom = -d;
     sunLight.shadow.bias = -0.0005;
     scene.add(sunLight);
+    sunLightRef.current = sunLight;
 
-    const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.45);
-    fillLight.position.set(-20, 16, -18);
+    const fillLight = new THREE.DirectionalLight(0xbae6fd, 0.48);
+    fillLight.position.set(22, 18, -18);
     scene.add(fillLight);
 
     // Helper: Resolve Circle-vs-AABB Sliding Collision in World Space
@@ -769,6 +791,40 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
     twinRef.current = newTwin;
   }, [structuralKey]);
 
+  // 3b. Dynamically adjust Daytime vs Evening Lighting Scene
+  useEffect(() => {
+    const scene = sceneRef.current;
+    const hemi = hemiLightRef.current;
+    const sun = sunLightRef.current;
+    if (!scene) return;
+
+    if (lightingScene === 'evening') {
+      scene.background = new THREE.Color(0x0b101e);
+      scene.fog = new THREE.FogExp2(0x0b101e, 0.008);
+      if (hemi) {
+        hemi.color.setHex(0x8fa8d6);
+        hemi.groundColor.setHex(0x2a241f);
+        hemi.intensity = 0.42;
+      }
+      if (sun) {
+        sun.color.setHex(0x6082b6);
+        sun.intensity = 0.28;
+      }
+    } else {
+      scene.background = new THREE.Color(0xdbeafe);
+      scene.fog = new THREE.FogExp2(0xdbeafe, 0.005);
+      if (hemi) {
+        hemi.color.setHex(0xfffaf2);
+        hemi.groundColor.setHex(0x4a423a);
+        hemi.intensity = 0.92;
+      }
+      if (sun) {
+        sun.color.setHex(0xfff7ed);
+        sun.intensity = 1.45;
+      }
+    }
+  }, [lightingScene]);
+
   // 4. Handle Camera Mode & Room POV Presets
   useEffect(() => {
     const camera = cameraRef.current;
@@ -792,12 +848,25 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
       };
     };
 
+    const findRoomById = (id: string, fallbackX: number, fallbackZ: number) => {
+      const rm = project.rooms.find((r) => r.id === id);
+      if (!rm) return { x: fallbackX - cx, z: fallbackZ - cz, w: 3.0, l: 3.0 };
+      return {
+        x: rm.x + rm.width / 2 - cx,
+        z: rm.z + rm.length / 2 - cz,
+        w: rm.width,
+        l: rm.length
+      };
+    };
+
     const foyer = findRoomCenter('foyer', 2.5, -1.8);
     const living = findRoomCenter('living', 5.5, 4.2);
+    const balcony = findRoomById('room_balcony', 6.5, -1.3);
     const master = findRoomCenter('master_bedroom', 4.2, 12.2);
     const bed2 = findRoomCenter('bedroom_2', 12.0, 12.2);
     const kitchen = findRoomCenter('kitchen', 14.2, 2.7);
-    const bath1 = findRoomCenter('bathroom', 13.4, 6.9);
+    const bath1 = findRoomById('room_bath1', 13.4, 6.9);
+    const bath2 = findRoomById('room_bath2', 15.6, 6.9);
 
     const dbPt = project.electricalPoints.find((p) => p.type === 'db');
     const dbX = dbPt ? dbPt.x - cx : foyer.x - 1.2;
@@ -830,24 +899,32 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
           targetLook.set(dbX, dbY, dbZ);
           break;
         case 'living':
-          targetPos.set(living.x - 2.0, eyeH, living.z - 1.4);
-          targetLook.set(living.x + 1.4, eyeH - 0.1, living.z + 1.5);
+          targetPos.set(living.x - 1.6, eyeH, living.z - 1.2);
+          targetLook.set(living.x + 1.4, eyeH - 0.08, living.z + 1.5);
+          break;
+        case 'balcony':
+          targetPos.set(balcony.x - 1.2, eyeH, balcony.z + 0.2);
+          targetLook.set(balcony.x + 1.5, eyeH - 0.1, balcony.z - 0.8);
           break;
         case 'master_bed':
           targetPos.set(master.x + 1.2, eyeH, master.z - 1.8);
-          targetLook.set(master.x - 0.4, eyeH - 0.15, master.z + 1.6);
+          targetLook.set(master.x - 0.4, eyeH - 0.12, master.z + 1.6);
           break;
         case 'bed2':
           targetPos.set(bed2.x - 1.0, eyeH, bed2.z - 1.8);
-          targetLook.set(bed2.x + 0.4, eyeH - 0.15, bed2.z + 1.6);
+          targetLook.set(bed2.x + 0.4, eyeH - 0.12, bed2.z + 1.6);
           break;
         case 'kitchen':
           targetPos.set(kitchen.x - 1.5, eyeH, kitchen.z + 0.2);
-          targetLook.set(kitchen.x + 1.5, eyeH - 0.15, kitchen.z);
+          targetLook.set(kitchen.x + 1.5, eyeH - 0.12, kitchen.z);
           break;
         case 'bath1':
-          targetPos.set(bath1.x - 1.1, eyeH, bath1.z);
-          targetLook.set(bath1.x + 1.1, eyeH - 0.15, bath1.z);
+          targetPos.set(bath1.x - 0.6, eyeH, bath1.z);
+          targetLook.set(bath1.x + 0.8, eyeH - 0.15, bath1.z);
+          break;
+        case 'bath2':
+          targetPos.set(bath2.x - 0.6, eyeH, bath2.z);
+          targetLook.set(bath2.x + 0.8, eyeH - 0.15, bath2.z);
           break;
       }
     } else {
@@ -877,6 +954,10 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
           targetPos.set(living.x - 3.8, 5.8, living.z + 4.4);
           targetLook.set(living.x + 0.6, 1.4, living.z);
           break;
+        case 'balcony':
+          targetPos.set(balcony.x + 3.2, 4.8, balcony.z - 3.6);
+          targetLook.set(balcony.x, 1.2, balcony.z);
+          break;
         case 'master_bed':
           targetPos.set(master.x + 3.6, 5.5, master.z - 3.6);
           targetLook.set(master.x, 1.2, master.z + 0.5);
@@ -892,6 +973,10 @@ export const ResidentialCanvas: React.FC<ResidentialCanvasProps> = ({
         case 'bath1':
           targetPos.set(bath1.x - 2.8, 5.0, bath1.z + 2.4);
           targetLook.set(bath1.x + 0.4, 1.2, bath1.z);
+          break;
+        case 'bath2':
+          targetPos.set(bath2.x + 2.8, 5.0, bath2.z + 2.4);
+          targetLook.set(bath2.x, 1.2, bath2.z);
           break;
       }
     }

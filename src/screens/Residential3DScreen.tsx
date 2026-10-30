@@ -23,7 +23,8 @@ import {
   ResidentialCanvas,
   CameraMode,
   CameraPreset,
-  MobileWalkInput
+  MobileWalkInput,
+  LightingSceneMode
 } from '../three/ResidentialCanvas';
 import { FloorPlanEditor } from '../components/cad/FloorPlanEditor';
 import { ProjectWizardModal } from '../components/cad/ProjectWizardModal';
@@ -31,15 +32,62 @@ import { BoqModal } from '../components/cad/BoqModal';
 import { exportProjectToDxf } from '../utils/residentialExporters';
 
 interface Residential3DScreenProps {
-  onBackHome: () => void;
+  onBackHome?: () => void;
+  onSelectTab?: (tab: any) => void;
+  onOpenConsultation?: (topic?: string) => void;
+  onSwitchToSubstation?: () => void;
 }
 
-const STORAGE_KEY = 'ananya_residential_designer_proj_v4_spacious';
+const STORAGE_KEY = 'ananya_residential_designer_proj_v5_photoreal';
+
+const INTERIOR_REFERENCE_GALLERY = [
+  {
+    src: '/assets/aistudio/image_d78ee79b.png',
+    title: 'Living Room & Fluted TV Unit',
+    room: 'living' as CameraPreset
+  },
+  {
+    src: '/assets/aistudio/image_4e78be16.png',
+    title: 'Living Lounge & Cove Ceiling',
+    room: 'living' as CameraPreset
+  },
+  {
+    src: '/assets/aistudio/image_898a8db2.png',
+    title: 'Master Bedroom & Study',
+    room: 'master_bed' as CameraPreset
+  },
+  {
+    src: '/assets/aistudio/image_3461912b.png',
+    title: 'Modular Kitchen & Hob',
+    room: 'kitchen' as CameraPreset
+  },
+  {
+    src: '/assets/aistudio/image_09d3b104.png',
+    title: 'Terrazzo Kitchen & Glass Units',
+    room: 'kitchen' as CameraPreset
+  },
+  {
+    src: '/assets/aistudio/image_78b8aaad.png',
+    title: 'Second Bedroom & Study Desk',
+    room: 'bed2' as CameraPreset
+  }
+];
 
 export type WorkspaceTab = '3d_twin' | 'floor_plan' | 'circuits';
 export type DockInspectorTab = 'layers' | 'db_exploded' | 'circuits' | 'specs';
 
-export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBackHome }) => {
+export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({
+  onBackHome,
+  onSelectTab
+}) => {
+  const handleReturnHome = () => {
+    if (onBackHome) {
+      onBackHome();
+    } else if (onSelectTab) {
+      onSelectTab('home');
+    }
+  };
+
   // 1. Load or Initialize Project
   const [project, setProject] = useState<ResidentialProject>(() => {
     try {
@@ -65,7 +113,9 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
   const [workspaceTab, setWorkspaceTab] = useState<WorkspaceTab>('3d_twin');
   const [viewMode, setViewMode] = useState<ViewMode3D>('finished');
   const [cameraMode, setCameraMode] = useState<CameraMode>('fpp');
-  const [cameraPreset, setCameraPreset] = useState<CameraPreset>('exterior_entry');
+  const [cameraPreset, setCameraPreset] = useState<CameraPreset>('living');
+  const [lightingScene, setLightingScene] = useState<LightingSceneMode>('daytime');
+  const [welcomePanel, setWelcomePanel] = useState<'main' | 'smart_controls' | 'how_to_navigate'>('main');
   const [ceilingVisible, setCeilingVisible] = useState<boolean>(true);
   const [dbDoorOpen, setDbDoorOpen] = useState<boolean>(true);
   const [dbExploded, setDbExploded] = useState<boolean>(false);
@@ -91,22 +141,22 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
 
   // Player Pose & Room Entry Banner States
   const [playerPose, setPlayerPose] = useState<PlayerPose>({
-    projectX: 2.5,
-    projectZ: -5.1,
-    yaw: Math.PI,
-    roomId: null,
-    roomName: 'Exterior Entrance Corridor'
+    projectX: 4.5,
+    projectZ: 3.2,
+    yaw: 0,
+    roomId: 'room_living',
+    roomName: 'Living & Dining Hall'
   });
   const [roomBanner, setRoomBanner] = useState<{
     name: string;
     subtitle: string;
     visible: boolean;
   }>({
-    name: 'Exterior Entrance Corridor',
-    subtitle: 'Main Entrance & Incoming Supply Zone',
+    name: 'Living & Dining Hall',
+    subtitle: 'Photorealistic 2 BHK Smart Home Interior',
     visible: false
   });
-  const lastRoomNameRef = useRef<string>('Exterior Entrance Corridor');
+  const lastRoomNameRef = useRef<string>('Living & Dining Hall');
 
   // Interactive Door States (id -> isOpen) — Default open so the user can walk freely through all rooms
   const [doorStates, setDoorStates] = useState<Record<string, boolean>>(() => {
@@ -272,7 +322,70 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
     return () => clearTimeout(timer);
   }, [playerPose.roomName, playerPose.roomId, isWalkthroughStarted, project.rooms, project.electricalPoints]);
 
-  // Keyboard shortcuts for [X] X-Ray Inspection Mode and [ESC] Pause Menu
+  // Smart Home Quick-Toggle States & Handlers (F = Fans, L = Lights, T = Smart TV, C = ACs)
+  const fansOn = useMemo(
+    () => project.electricalPoints.some((p) => p.type === 'ceiling_fan' && p.isOn),
+    [project.electricalPoints]
+  );
+  const lightsOn = useMemo(
+    () => project.electricalPoints.some((p) => p.type === 'downlight_led' && p.isOn),
+    [project.electricalPoints]
+  );
+  const tvOn = useMemo(
+    () => project.electricalPoints.find((p) => p.id === 'pt_living_socket1')?.isOn ?? true,
+    [project.electricalPoints]
+  );
+  const acsOn = useMemo(
+    () => project.electricalPoints.some((p) => p.id.includes('_ac') && p.isOn),
+    [project.electricalPoints]
+  );
+
+  const handleToggleAllFans = () => {
+    setProject((prev) => {
+      const anyOn = prev.electricalPoints.some((p) => p.type === 'ceiling_fan' && p.isOn);
+      return {
+        ...prev,
+        electricalPoints: prev.electricalPoints.map((pt) =>
+          pt.type === 'ceiling_fan' ? { ...pt, isOn: !anyOn } : pt
+        )
+      };
+    });
+  };
+
+  const handleToggleAllLights = () => {
+    setProject((prev) => {
+      const anyOn = prev.electricalPoints.some((p) => p.type === 'downlight_led' && p.isOn);
+      return {
+        ...prev,
+        electricalPoints: prev.electricalPoints.map((pt) =>
+          pt.type === 'downlight_led' ? { ...pt, isOn: !anyOn } : pt
+        )
+      };
+    });
+  };
+
+  const handleToggleSmartTv = () => {
+    setProject((prev) => ({
+      ...prev,
+      electricalPoints: prev.electricalPoints.map((pt) =>
+        pt.id === 'pt_living_socket1' ? { ...pt, isOn: !pt.isOn } : pt
+      )
+    }));
+  };
+
+  const handleToggleAllAcs = () => {
+    setProject((prev) => {
+      const anyOn = prev.electricalPoints.some((p) => p.id.includes('_ac') && p.isOn);
+      return {
+        ...prev,
+        electricalPoints: prev.electricalPoints.map((pt) =>
+          pt.id.includes('_ac') ? { ...pt, isOn: !anyOn } : pt
+        )
+      };
+    });
+  };
+
+  // Keyboard shortcuts for [F] Fans, [L] Lights, [T] TV, [C] AC, [X] X-Ray, and [ESC] Pause Menu
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (
@@ -283,7 +396,17 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
         return;
       }
 
-      if (e.code === 'KeyX' && workspaceTab === '3d_twin') {
+      if (workspaceTab !== '3d_twin') return;
+
+      if (e.code === 'KeyF') {
+        handleToggleAllFans();
+      } else if (e.code === 'KeyL') {
+        handleToggleAllLights();
+      } else if (e.code === 'KeyT') {
+        handleToggleSmartTv();
+      } else if (e.code === 'KeyC') {
+        handleToggleAllAcs();
+      } else if (e.code === 'KeyX') {
         setViewMode((prev) => (prev === 'cutaway' ? 'finished' : 'cutaway'));
       } else if (e.code === 'Escape' && cameraMode === 'fpp' && isWalkthroughStarted) {
         setIsWalkthroughPaused((prev) => !prev);
@@ -415,8 +538,11 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
   };
 
   // Start or Resume First-Person Walkthrough
-  const handleStartWalkthrough = () => {
+  const handleStartWalkthrough = (initialRoom?: CameraPreset) => {
     setCameraMode('fpp');
+    if (initialRoom) {
+      setCameraPreset(initialRoom);
+    }
     setIsWalkthroughStarted(true);
     setIsWalkthroughPaused(false);
     // Open all doors when entering walkthrough so the user can walk freely everywhere
@@ -478,7 +604,7 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
         {/* Left: Back Button + Brand Title + Template Switcher */}
         <div className="flex items-center gap-2.5 min-w-0">
           <button
-            onClick={onBackHome}
+            onClick={handleReturnHome}
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all border border-slate-700 cursor-pointer shrink-0"
             title="Return to Ananya Electrical Home"
           >
@@ -489,16 +615,16 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
           <div className="h-5 w-[1px] bg-slate-800 hidden sm:block" />
 
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-sky-400 shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
               <span className="material-symbols-outlined text-[17px]">apartment</span>
             </div>
             <div className="truncate">
               <div className="flex items-center gap-1.5">
                 <h1 className="text-xs sm:text-sm font-bold tracking-tight text-white truncate">
-                  2BHK Interior Twin — FPP Walkthrough
+                  ANANYA ELECTRICAL SOLUTIONS — 2 BHK Smart Home Tour
                 </h1>
                 <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded hidden md:inline-block">
-                  IS:732 CAD
+                  Photoreal 3D
                 </span>
               </div>
             </div>
@@ -558,7 +684,7 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
             }`}
           >
             <span className="material-symbols-outlined text-[15px]">directions_walk</span>
-            <span>3D FPP Twin</span>
+            <span>3D Home Tour</span>
           </button>
 
           <button
@@ -643,6 +769,7 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
               viewMode={viewMode}
               cameraMode={cameraMode}
               cameraPreset={cameraPreset}
+              lightingScene={lightingScene}
               ceilingVisible={ceilingVisible}
               dbDoorOpen={dbDoorOpen}
               dbExploded={dbExploded}
@@ -682,189 +809,266 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
             />
 
             {/* ===============================================================
-                OVERLAY A: "ENTER APARTMENT" START SCREEN OVERLAY
+                OVERLAY A: ANANYA ELECTRICAL SOLUTIONS WELCOME SCREEN OVERLAY
                =============================================================== */}
             {!isWalkthroughStarted && cameraMode === 'fpp' && (
-              <div className="absolute inset-0 z-30 bg-slate-950/75 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-                <div className="max-w-xl w-full bg-[#0B132B]/95 border border-sky-500/40 rounded-2xl shadow-2xl p-5 sm:p-6 text-slate-100 space-y-4 my-auto">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-2xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-400 shrink-0">
-                        <span className="material-symbols-outlined text-[28px]">sensor_door</span>
+              <div className="absolute inset-0 z-30 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+                <div className="max-w-3xl w-full bg-[#0B132B]/96 border border-amber-500/40 rounded-2xl shadow-2xl p-5 sm:p-7 text-slate-100 space-y-5 my-auto">
+                  {/* Brand Header */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/90 pb-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-amber-500/30 via-orange-500/20 to-sky-500/20 border border-amber-400/50 flex items-center justify-center text-amber-400 shrink-0 shadow-lg">
+                        <span className="material-symbols-outlined text-[30px]">bolt</span>
                       </div>
                       <div>
-                        <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono text-[10px] font-bold uppercase tracking-wider">
-                          Interactive First-Person Exploration
-                        </span>
-                        <h2 className="text-lg sm:text-xl font-bold text-white mt-1">
-                          Greenwood Heights — 2BHK Interior Twin
+                        <div className="text-[11px] font-mono font-extrabold uppercase tracking-[0.2em] text-amber-400">
+                          ANANYA ELECTRICAL SOLUTIONS
+                        </div>
+                        <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white mt-0.5">
+                          SMARTER HOMES. BETTER LIVING.
                         </h2>
-                        <p className="text-xs text-slate-400">
-                          {footprintMetrics.lengthFt} ft × {footprintMetrics.breadthFt} ft ({footprintMetrics.carpetAreaSqFt} sq.ft Carpet) • IS:732 Concealed Electrical Twin
+                        <p className="text-xs sm:text-sm text-slate-300 mt-0.5">
+                          Experience our fully furnished 2 BHK smart home.
                         </p>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Custom Apartment Length × Breadth Configurator on Start Screen */}
-                  <div className="bg-slate-900/95 border border-sky-500/30 rounded-xl p-3.5 space-y-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="flex items-center gap-1.5">
-                        <span className="material-symbols-outlined text-sky-400 text-[17px]">
-                          straighten
-                        </span>
-                        <span className="text-xs font-bold text-white uppercase tracking-wider">
-                          Custom 2BHK Dimensions (Length × Breadth)
-                        </span>
-                      </div>
-
-                      {/* Unit Toggle: Feet (ft) / Meters (m) */}
-                      <div className="flex items-center bg-slate-800 rounded-lg p-0.5 border border-slate-700 text-[10px] font-mono font-bold">
-                        <button
-                          onClick={() => setDimensionUnit('ft')}
-                          className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
-                            dimensionUnit === 'ft'
-                              ? 'bg-sky-500 text-slate-950'
-                              : 'text-slate-400 hover:text-white'
-                          }`}
-                        >
-                          Feet (ft)
-                        </button>
-                        <button
-                          onClick={() => setDimensionUnit('m')}
-                          className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
-                            dimensionUnit === 'm'
-                              ? 'bg-sky-500 text-slate-950'
-                              : 'text-slate-400 hover:text-white'
-                          }`}
-                        >
-                          Meters (m)
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      <div>
-                        <label className="text-[10px] text-slate-400 block mb-1 font-medium">
-                          Length / Depth ({dimensionUnit})
-                        </label>
-                        <input
-                          type="number"
-                          step={dimensionUnit === 'ft' ? '1' : '0.2'}
-                          min={dimensionUnit === 'ft' ? 26 : 8}
-                          max={dimensionUnit === 'ft' ? 160 : 50}
-                          value={customLengthInput}
-                          onChange={(e) => setCustomLengthInput(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-700 focus:border-sky-400 rounded-lg px-2.5 py-1.5 text-xs text-white font-mono font-bold focus:outline-none"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="text-[10px] text-slate-400 block mb-1 font-medium">
-                          Breadth / Width ({dimensionUnit})
-                        </label>
-                        <input
-                          type="number"
-                          step={dimensionUnit === 'ft' ? '1' : '0.2'}
-                          min={dimensionUnit === 'ft' ? 24 : 7.5}
-                          max={dimensionUnit === 'ft' ? 140 : 45}
-                          value={customBreadthInput}
-                          onChange={(e) => setCustomBreadthInput(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-700 focus:border-sky-400 rounded-lg px-2.5 py-1.5 text-xs text-white font-mono font-bold focus:outline-none"
-                        />
-                      </div>
-
-                      <div className="flex flex-col justify-end">
-                        <button
-                          onClick={handleApplyOverallDimensions}
-                          className="w-full py-1.5 px-3 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-1 transition-all cursor-pointer h-[30px]"
-                        >
-                          <span className="material-symbols-outlined text-[15px]">auto_fix_high</span>
-                          <span>Apply L × B</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Quick Preset Chips */}
-                    <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-                      {PLOT_DIMENSION_PRESETS.map((preset) => (
-                        <button
-                          key={preset.id}
-                          onClick={() => {
-                            const scaled = scaleResidentialProjectToDimensions(
-                              project,
-                              preset.breadthM,
-                              preset.lengthM,
-                              preset.ceilingHeightM
-                            );
-                            setProject(scaled);
-                          }}
-                          className="px-2 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-[10px] font-mono text-slate-300 hover:text-sky-300 transition-colors cursor-pointer"
-                        >
-                          {preset.label.split(' ')[0]}:{' '}
-                          {dimensionUnit === 'ft'
-                            ? `${preset.lengthFt}×${preset.breadthFt}ft`
-                            : `${preset.lengthM}×${preset.breadthM}m`}
-                        </button>
-                      ))}
+                    {/* Daytime / Evening Scene Selector */}
+                    <div className="flex items-center bg-slate-900 rounded-xl p-1 border border-slate-800 self-start sm:self-center">
                       <button
-                        onClick={() => setShowDimensionModal(true)}
-                        className="px-2 py-1 rounded-md bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-[10px] font-mono text-emerald-300 transition-colors cursor-pointer ml-auto"
+                        onClick={() => setLightingScene('daytime')}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${
+                          lightingScene === 'daytime'
+                            ? 'bg-amber-500 text-slate-950 shadow-sm'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
                       >
-                        Edit Individual Rooms →
+                        <span className="material-symbols-outlined text-[15px]">light_mode</span>
+                        <span>Daylight</span>
+                      </button>
+                      <button
+                        onClick={() => setLightingScene('evening')}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${
+                          lightingScene === 'evening'
+                            ? 'bg-indigo-500 text-white shadow-sm'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        <span className="material-symbols-outlined text-[15px]">nights_stay</span>
+                        <span>Evening</span>
                       </button>
                     </div>
                   </div>
 
-                  {/* Walkthrough Controls Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs">
-                    <div className="flex items-center gap-2.5">
-                      <span className="px-2 py-1 rounded bg-slate-800 border border-slate-700 font-mono font-bold text-sky-300 shrink-0">
-                        W A S D
-                      </span>
-                      <span className="text-slate-300">Walk &amp; Strafe (+ Shift Sprint)</span>
-                    </div>
-                    <div className="flex items-center gap-2.5">
-                      <span className="px-2 py-1 rounded bg-slate-800 border border-slate-700 font-mono font-bold text-sky-300 shrink-0">
-                        MOUSE
-                      </span>
-                      <span className="text-slate-300">360° Free Look (Pointer Lock)</span>
-                    </div>
-                    <div className="flex items-center gap-2.5">
-                      <span className="px-2 py-1 rounded bg-slate-800 border border-slate-700 font-mono font-bold text-amber-300 shrink-0">
-                        [E] / CLICK
-                      </span>
-                      <span className="text-slate-300">Open Doors, Toggle Switches &amp; DB</span>
-                    </div>
-                    <div className="flex items-center gap-2.5">
-                      <span className="px-2 py-1 rounded bg-slate-800 border border-slate-700 font-mono font-bold text-emerald-300 shrink-0">
-                        [X] / [ESC]
-                      </span>
-                      <span className="text-slate-300">X-Ray Wiring Mode / Pause Menu</span>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                  {/* Primary 3 Welcome Action Buttons Required by Spec */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     <button
-                      onClick={handleStartWalkthrough}
-                      className="flex-1 py-3 px-5 rounded-xl bg-gradient-to-r from-sky-500 to-emerald-500 hover:from-sky-400 hover:to-emerald-400 text-slate-950 font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-sky-500/20 transition-all cursor-pointer"
+                      onClick={() => handleStartWalkthrough('living')}
+                      className="py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-extrabold text-xs sm:text-sm tracking-wide uppercase flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 transition-all cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-[20px]">directions_walk</span>
-                      <span>Enter Apartment (Start Walkthrough)</span>
+                      <span>START HOME TOUR</span>
                     </button>
 
                     <button
-                      onClick={() => {
-                        setIsWalkthroughStarted(true);
-                        setCameraMode('orbit');
-                        setCameraPreset('overview');
-                      }}
-                      className="py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-xs flex items-center gap-1.5 transition-all cursor-pointer"
+                      onClick={() =>
+                        setWelcomePanel((prev) =>
+                          prev === 'smart_controls' ? 'main' : 'smart_controls'
+                        )
+                      }
+                      className={`py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm tracking-wide uppercase flex items-center justify-center gap-2 border transition-all cursor-pointer ${
+                        welcomePanel === 'smart_controls'
+                          ? 'bg-sky-500 text-slate-950 border-sky-400 shadow-lg shadow-sky-500/20'
+                          : 'bg-slate-900 hover:bg-slate-800 text-sky-300 border-sky-500/40'
+                      }`}
                     >
-                      <span className="material-symbols-outlined text-[18px]">3d_rotation</span>
-                      <span>3D Orbit Overview</span>
+                      <span className="material-symbols-outlined text-[19px]">home_iot_device</span>
+                      <span>SMART HOME CONTROLS</span>
                     </button>
+
+                    <button
+                      onClick={() =>
+                        setWelcomePanel((prev) =>
+                          prev === 'how_to_navigate' ? 'main' : 'how_to_navigate'
+                        )
+                      }
+                      className={`py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm tracking-wide uppercase flex items-center justify-center gap-2 border transition-all cursor-pointer ${
+                        welcomePanel === 'how_to_navigate'
+                          ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-lg shadow-emerald-500/20'
+                          : 'bg-slate-900 hover:bg-slate-800 text-emerald-300 border-emerald-500/40'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-[19px]">explore</span>
+                      <span>HOW TO NAVIGATE</span>
+                    </button>
+                  </div>
+
+                  {/* Dynamic Sub-Panel: SMART HOME CONTROLS */}
+                  {welcomePanel === 'smart_controls' && (
+                    <div className="bg-slate-900/95 border border-sky-500/40 rounded-xl p-4 space-y-3 animate-fade-in">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold uppercase tracking-wider text-sky-300">
+                          Interactive Smart Electrical Controls &amp; Shortcuts
+                        </span>
+                        <span className="text-[11px] font-mono text-amber-300">
+                          Live Load: {(totalConnectedWatts / 1000).toFixed(2)} kW ({estimatedCurrentAmps} A)
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+                        <button
+                          onClick={handleToggleAllFans}
+                          className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                            fansOn
+                              ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-200'
+                              : 'bg-slate-950 border-slate-800 text-slate-400'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between font-mono font-bold text-[11px]">
+                            <span>[F] KEY</span>
+                            <span>{fansOn ? 'ON' : 'OFF'}</span>
+                          </div>
+                          <div className="font-bold text-white mt-1">Ceiling Fans</div>
+                          <div className="text-[10px] text-slate-400">BLDC 3-Blade Fans</div>
+                        </button>
+
+                        <button
+                          onClick={handleToggleAllLights}
+                          className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                            lightsOn
+                              ? 'bg-amber-500/15 border-amber-500/50 text-amber-200'
+                              : 'bg-slate-950 border-slate-800 text-slate-400'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between font-mono font-bold text-[11px]">
+                            <span>[L] KEY</span>
+                            <span>{lightsOn ? 'ON' : 'OFF'}</span>
+                          </div>
+                          <div className="font-bold text-white mt-1">All Lights &amp; Cove</div>
+                          <div className="text-[10px] text-slate-400">COB, Cove &amp; Chandeliers</div>
+                        </button>
+
+                        <button
+                          onClick={handleToggleSmartTv}
+                          className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                            tvOn
+                              ? 'bg-sky-500/15 border-sky-500/50 text-sky-200'
+                              : 'bg-slate-950 border-slate-800 text-slate-400'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between font-mono font-bold text-[11px]">
+                            <span>[T] KEY</span>
+                            <span>{tvOn ? 'ON' : 'OFF'}</span>
+                          </div>
+                          <div className="font-bold text-white mt-1">65&quot; Smart OLED TV</div>
+                          <div className="text-[10px] text-slate-400">Fluted TV Unit Display</div>
+                        </button>
+
+                        <button
+                          onClick={handleToggleAllAcs}
+                          className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                            acsOn
+                              ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-200'
+                              : 'bg-slate-950 border-slate-800 text-slate-400'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between font-mono font-bold text-[11px]">
+                            <span>[C] KEY</span>
+                            <span>{acsOn ? '22°C ON' : 'OFF'}</span>
+                          </div>
+                          <div className="font-bold text-white mt-1">Split Inverter ACs</div>
+                          <div className="text-[10px] text-slate-400">Living &amp; Both Bedrooms</div>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Dynamic Sub-Panel: HOW TO NAVIGATE */}
+                  {welcomePanel === 'how_to_navigate' && (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 bg-slate-900/95 border border-emerald-500/40 rounded-xl p-3.5 text-xs animate-fade-in">
+                      <div className="flex items-center gap-2.5">
+                        <span className="px-2 py-1 rounded bg-slate-800 border border-slate-700 font-mono font-bold text-sky-300 shrink-0">
+                          W A S D
+                        </span>
+                        <span className="text-slate-300">Walk at Human Eye-Level (1.75m)</span>
+                      </div>
+                      <div className="flex items-center gap-2.5">
+                        <span className="px-2 py-1 rounded bg-slate-800 border border-slate-700 font-mono font-bold text-sky-300 shrink-0">
+                          MOUSE
+                        </span>
+                        <span className="text-slate-300">Smooth 360° Look Around</span>
+                      </div>
+                      <div className="flex items-center gap-2.5">
+                        <span className="px-2 py-1 rounded bg-slate-800 border border-slate-700 font-mono font-bold text-amber-300 shrink-0">
+                          F / L / T / C
+                        </span>
+                        <span className="text-slate-300">Toggle Fans, Lights, TV &amp; AC</span>
+                      </div>
+                      <div className="flex items-center gap-2.5">
+                        <span className="px-2 py-1 rounded bg-slate-800 border border-slate-700 font-mono font-bold text-emerald-300 shrink-0">
+                          [E] / CLICK
+                        </span>
+                        <span className="text-slate-300">Operate Switches, Doors &amp; DB</span>
+                      </div>
+                      <div className="flex items-center gap-2.5">
+                        <span className="px-2 py-1 rounded bg-slate-800 border border-slate-700 font-mono font-bold text-purple-300 shrink-0">
+                          [X] KEY
+                        </span>
+                        <span className="text-slate-300">X-Ray Concealed Conduit View</span>
+                      </div>
+                      <div className="flex items-center gap-2.5">
+                        <span className="px-2 py-1 rounded bg-slate-800 border border-slate-700 font-mono font-bold text-rose-300 shrink-0">
+                          [ESC] KEY
+                        </span>
+                        <span className="text-slate-300">Pause &amp; Room Teleport Menu</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Photorealistic Reference Inspiration Strip (Click any room card to spawn directly in that room) */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+                        Select a Room to Enter Directly (Recreated from Interior References):
+                      </span>
+                      <button
+                        onClick={() => {
+                          setIsWalkthroughStarted(true);
+                          setCameraMode('orbit');
+                          setCameraPreset('overview');
+                        }}
+                        className="text-xs font-semibold text-sky-400 hover:text-sky-300 flex items-center gap-1 cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-[15px]">3d_rotation</span>
+                        <span>3D Orbit Dollhouse View →</span>
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                      {INTERIOR_REFERENCE_GALLERY.map((item, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => handleStartWalkthrough(item.room)}
+                          className="group relative h-24 rounded-xl overflow-hidden border border-slate-700/80 hover:border-amber-400 transition-all text-left cursor-pointer"
+                        >
+                          <img
+                            src={item.src}
+                            alt={item.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent flex flex-col justify-end p-2">
+                            <span className="text-[11px] font-bold text-white leading-tight">
+                              {item.title}
+                            </span>
+                            <span className="text-[9px] font-mono text-amber-300 flex items-center gap-0.5 mt-0.5">
+                              <span>Enter Room</span>
+                              <span className="material-symbols-outlined text-[11px]">
+                                arrow_forward
+                              </span>
+                            </span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -926,10 +1130,12 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
                       {[
                         { id: 'foyer', label: 'Entrance Foyer & DB' },
                         { id: 'living', label: 'Living & Dining Hall' },
+                        { id: 'balcony', label: 'Sit-Out Balcony' },
                         { id: 'kitchen', label: 'Modular Kitchen' },
                         { id: 'master_bed', label: 'Master Bedroom' },
-                        { id: 'bed2', label: 'Guest Bedroom' },
-                        { id: 'bath1', label: 'Common Bathroom' }
+                        { id: 'bed2', label: 'Second Bedroom & Study' },
+                        { id: 'bath1', label: 'Common Bathroom' },
+                        { id: 'bath2', label: 'Master Bathroom' }
                       ].map((rm) => (
                         <button
                           key={rm.id}
@@ -1052,7 +1258,7 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
             )}
 
             {/* ===============================================================
-                OVERLAY E: TOP FLOATING HUD PILLS (CAMERA, ROOMS, X-RAY MODE)
+                OVERLAY E: TOP FLOATING HUD PILLS (CAMERA, ROOMS, SMART HOME, X-RAY)
                =============================================================== */}
             <div className="absolute top-3 left-3 right-3 flex flex-wrap items-center justify-between gap-2 pointer-events-none z-20">
               {/* Left Pill: FPP / Orbit + Room Waypoints + Doors + Pause */}
@@ -1064,7 +1270,7 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
                       setCameraMode('fpp');
                       setIsWalkthroughStarted(true);
                       if (cameraPreset === 'overview' || cameraPreset === 'top') {
-                        setCameraPreset('exterior_entry');
+                        setCameraPreset('living');
                       }
                     }}
                     className={`px-2.5 py-1 rounded-md text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${
@@ -1101,14 +1307,84 @@ export const Residential3DScreen: React.FC<Residential3DScreenProps> = ({ onBack
                   <option value="exterior_entry">Spawn: Outside Main Entrance</option>
                   <option value="foyer">Room: Entrance Foyer &amp; DB</option>
                   <option value="living">Room: Living &amp; Dining Hall</option>
+                  <option value="balcony">Room: Sit-Out Balcony</option>
                   <option value="kitchen">Room: Modular Kitchen</option>
                   <option value="master_bed">Room: Master Bedroom</option>
-                  <option value="bed2">Room: Guest Bedroom</option>
+                  <option value="bed2">Room: Second Bedroom &amp; Study</option>
                   <option value="bath1">Room: Common Bathroom</option>
+                  <option value="bath2">Room: Master Bathroom</option>
                   <option value="db">Inspect: 8-Way TPN Main DB</option>
                   <option value="overview">View: 3D Isometric Overview</option>
                   <option value="top">View: Top Plan</option>
                 </select>
+
+                {/* Smart Home Quick Shortcut Buttons: [F] Fan, [L] Lights, [T] TV, [C] AC */}
+                <div className="hidden md:flex items-center gap-1 bg-slate-900/95 px-1.5 py-0.5 rounded-lg border border-slate-800">
+                  <button
+                    onClick={handleToggleAllFans}
+                    className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold transition-all cursor-pointer ${
+                      fansOn
+                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                    title="Press [F] to Toggle Ceiling Fans"
+                  >
+                    [F] Fan
+                  </button>
+                  <button
+                    onClick={handleToggleAllLights}
+                    className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold transition-all cursor-pointer ${
+                      lightsOn
+                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                    title="Press [L] to Toggle All Lights & Cove LEDs"
+                  >
+                    [L] Lights
+                  </button>
+                  <button
+                    onClick={handleToggleSmartTv}
+                    className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold transition-all cursor-pointer ${
+                      tvOn
+                        ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                    title="Press [T] to Toggle 65-inch Smart OLED TV"
+                  >
+                    [T] TV
+                  </button>
+                  <button
+                    onClick={handleToggleAllAcs}
+                    className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold transition-all cursor-pointer ${
+                      acsOn
+                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                    title="Press [C] to Toggle Split Air Conditioners"
+                  >
+                    [C] AC
+                  </button>
+                </div>
+
+                {/* Daylight / Evening Lighting Scene Button */}
+                <button
+                  onClick={() =>
+                    setLightingScene((prev) => (prev === 'daytime' ? 'evening' : 'daytime'))
+                  }
+                  className={`px-2 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 border transition-all cursor-pointer ${
+                    lightingScene === 'evening'
+                      ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40'
+                      : 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                  }`}
+                  title="Switch Between Natural Daylight & Warm Evening Ambience"
+                >
+                  <span className="material-symbols-outlined text-[15px]">
+                    {lightingScene === 'evening' ? 'nights_stay' : 'light_mode'}
+                  </span>
+                  <span className="hidden sm:inline">
+                    {lightingScene === 'evening' ? 'Evening' : 'Daylight'}
+                  </span>
+                </button>
 
                 {/* Open/Close All Doors Button */}
                 <button

@@ -1,16 +1,16 @@
 import { ResidentialProject } from '../types/residentialDesigner';
 
 export const STANDARD_2BHK_PROJECT: ResidentialProject = {
-  id: 'proj_2bhk_modern_v3_spacious',
+  id: 'proj_2bhk_photoreal_v5',
   meta: {
-    projectName: 'Greenwood Heights Grand 2BHK Twin (Spacious Walkthrough Layout)',
+    projectName: 'Ananya Electrical Solutions — Photorealistic 2 BHK Smart Home',
     customerName: 'Shri R. Narasimha Rao',
-    location: 'Whitefield, Bengaluru, Karnataka',
-    contactPhone: '+91 98450 12345',
+    location: 'Sahakarnagar / Whitefield, Bengaluru',
+    contactPhone: '+91 9632025123',
     date: new Date().toISOString().split('T')[0],
     unit: 'meters',
-    plotWidth: 30.0,
-    plotLength: 26.0,
+    plotWidth: 32.0,
+    plotLength: 28.0,
     setbackFront: 3.5,
     setbackRear: 2.5,
     setbackLeft: 2.5,
@@ -19,7 +19,7 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
     exteriorWallThickness: 0.23,
     interiorWallThickness: 0.12,
     supplyPhase: '3-phase 415V',
-    sanctionedLoadKw: 7.5,
+    sanctionedLoadKw: 9.5,
     scope: {
       lightingAndFans: true,
       heavyAppliances: true,
@@ -42,6 +42,17 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
       color: '#E0F2FE'
     },
     {
+      id: 'room_balcony',
+      name: 'Sit-Out Balcony',
+      type: 'balcony',
+      x: -3.2,
+      z: 0.6,
+      width: 3.2,
+      length: 7.2,
+      ceilingHeight: 3.8,
+      color: '#DCFCE7'
+    },
+    {
       id: 'room_kitchen',
       name: 'Modular Kitchen',
       type: 'kitchen',
@@ -58,7 +69,7 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
       type: 'bathroom',
       x: 11.0,
       z: 5.4,
-      width: 4.8,
+      width: 6.4,
       length: 3.0,
       ceilingHeight: 3.8,
       color: '#CCFBF1'
@@ -75,8 +86,19 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
       color: '#EDE9FE'
     },
     {
+      id: 'room_bath2',
+      name: 'Master Attached Bathroom',
+      type: 'bathroom',
+      x: -3.2,
+      z: 10.6,
+      width: 3.2,
+      length: 5.4,
+      ceilingHeight: 3.8,
+      color: '#CCFBF1'
+    },
+    {
       id: 'room_bed2',
-      name: 'Guest / Kids Bedroom',
+      name: 'Second Bedroom & Study',
       type: 'bedroom_2',
       x: 8.4,
       z: 8.4,
@@ -123,6 +145,18 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
       label: 'Living & Dining Hall Door'
     },
     {
+      id: 'open_balcony_door',
+      roomId: 'room_living',
+      wallDirection: 'west',
+      type: 'door',
+      offset: 3.1,
+      width: 2.2,
+      height: 2.65,
+      sillHeight: 0,
+      swing: 'inside_left',
+      label: 'Balcony Sliding Glass Door'
+    },
+    {
       id: 'open_master_door',
       roomId: 'room_master_bed',
       wallDirection: 'north',
@@ -135,6 +169,18 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
       label: 'Master Bedroom Door'
     },
     {
+      id: 'open_bath2_door',
+      roomId: 'room_master_bed',
+      wallDirection: 'west',
+      type: 'door',
+      offset: 3.2,
+      width: 1.5,
+      height: 2.55,
+      sillHeight: 0,
+      swing: 'inside_right',
+      label: 'Master Attached Bathroom Door'
+    },
+    {
       id: 'open_bed2_door',
       roomId: 'room_bed2',
       wallDirection: 'north',
@@ -144,7 +190,7 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
       height: 2.6,
       sillHeight: 0,
       swing: 'inside_left',
-      label: 'Guest / Kids Bedroom Door'
+      label: 'Second Bedroom Door'
     },
     {
       id: 'open_kitchen_door',
@@ -173,12 +219,12 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
     {
       id: 'open_living_win',
       roomId: 'room_living',
-      wallDirection: 'west',
+      wallDirection: 'north',
       type: 'window',
-      offset: 2.4,
-      width: 3.6,
+      offset: 7.4,
+      width: 2.8,
       height: 1.8,
-      sillHeight: 0.9
+      sillHeight: 0.85
     },
     {
       id: 'open_master_win',
@@ -188,7 +234,7 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
       offset: 2.4,
       width: 3.2,
       height: 1.8,
-      sillHeight: 0.9
+      sillHeight: 0.85
     },
     {
       id: 'open_bed2_win',
@@ -198,7 +244,7 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
       offset: 2.2,
       width: 2.8,
       height: 1.7,
-      sillHeight: 0.95
+      sillHeight: 0.9
     },
     {
       id: 'open_kitchen_win',
@@ -208,7 +254,7 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
       offset: 1.5,
       width: 2.4,
       height: 1.4,
-      sillHeight: 1.1
+      sillHeight: 1.05
     }
   ],
   electricalPoints: [
@@ -531,7 +577,7 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
       id: 'pt_bath_sb',
       type: 'switch_board_6a',
       roomId: 'room_bath1',
-      name: 'Bathroom Entry Switchboard (Light, Exhaust & Geyser DP)',
+      name: 'Common Bathroom Entry Switchboard (Light, Exhaust & Geyser DP)',
       x: 11.18,
       y: 1.35,
       z: 5.8,
@@ -544,8 +590,8 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
       id: 'pt_bath_dl1',
       type: 'downlight_led',
       roomId: 'room_bath1',
-      name: 'Bathroom IP65 Moisture-Proof LED + Exhaust Fan',
-      x: 13.4,
+      name: 'Common Bathroom IP65 LED + Exhaust Fan',
+      x: 14.2,
       y: 3.72,
       z: 6.9,
       circuitId: 'c2_bedroom_fan',
@@ -557,14 +603,82 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
       id: 'pt_bath_geyser',
       type: 'geyser_point',
       roomId: 'room_bath1',
-      name: 'Bathroom 25L Storage Water Heater (20A DP Switch)',
-      x: 15.62,
+      name: 'Common Bathroom 25L Storage Water Heater (20A DP Switch)',
+      x: 17.22,
       y: 2.45,
       z: 6.9,
       circuitId: 'c6_bathroom_geyser',
       powerWatts: 2000,
       isOn: true,
       wallPlacement: 'east'
+    },
+    // Master Attached Bathroom Switchboard, Lighting, Exhaust & 25L Geyser
+    {
+      id: 'pt_bath2_sb',
+      type: 'switch_board_6a',
+      roomId: 'room_bath2',
+      name: 'Master Bathroom Smart Switchboard (Mirror LED, Exhaust & Geyser)',
+      x: -0.18,
+      y: 1.35,
+      z: 11.2,
+      circuitId: 'c2_bedroom_fan',
+      powerWatts: 0,
+      isOn: true,
+      wallPlacement: 'east'
+    },
+    {
+      id: 'pt_bath2_dl1',
+      type: 'downlight_led',
+      roomId: 'room_bath2',
+      name: 'Master Bathroom IP65 Warm LED + Exhaust Fan',
+      x: -1.6,
+      y: 3.72,
+      z: 13.3,
+      circuitId: 'c2_bedroom_fan',
+      powerWatts: 28,
+      isOn: true,
+      wallPlacement: 'ceiling'
+    },
+    {
+      id: 'pt_bath2_geyser',
+      type: 'geyser_point',
+      roomId: 'room_bath2',
+      name: 'Master Bathroom 25L Smart Water Heater (20A DP Switch)',
+      x: -3.02,
+      y: 2.45,
+      z: 13.3,
+      circuitId: 'c6_bathroom_geyser',
+      powerWatts: 2000,
+      isOn: true,
+      wallPlacement: 'west'
+    },
+    // Living Room 2.0T Split Inverter AC
+    {
+      id: 'pt_living_ac',
+      type: 'ac_isolator',
+      roomId: 'room_living',
+      name: 'Living Room 2.0 Ton Smart Split AC (25A DP Isolator)',
+      x: 3.2,
+      y: 2.95,
+      z: 8.22,
+      circuitId: 'c5_heavy_ac',
+      powerWatts: 1850,
+      isOn: true,
+      wallPlacement: 'south'
+    },
+    // Balcony Outdoor Warm Wall & Ceiling Lighting
+    {
+      id: 'pt_balcony_dl1',
+      type: 'downlight_led',
+      roomId: 'room_balcony',
+      name: 'Balcony IP65 Warm Outdoor Sconce & Ceiling Light',
+      x: -1.6,
+      y: 3.72,
+      z: 4.2,
+      circuitId: 'c1_living_lighting',
+      powerWatts: 18,
+      isOn: true,
+      wallPlacement: 'ceiling'
     },
     // External Chemical Earth Pit
     {
@@ -585,7 +699,7 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
     {
       id: 'c1_living_lighting',
       code: 'C1',
-      name: 'Living, Dining & Kitchen Lighting Circuit',
+      name: 'Living, Dining, Balcony & Kitchen Lighting Circuit',
       wireType: '2 × 1.5 sq.mm + 1 × 1.5 sq.mm PE FRLS Copper (IS:694)',
       phaseColor: '#3B82F6',
       neutralColor: '#1E293B',
@@ -599,16 +713,17 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
         'pt_living_dl3',
         'pt_living_dl4',
         'pt_living_fan',
+        'pt_balcony_dl1',
         'pt_kitchen_sb',
         'pt_kitchen_dl1'
       ],
       maxCapacityWatts: 1800,
-      description: 'Lighting & fan sub-circuit in 20mm concealed rigid PVC conduit feeding Living, Dining, and Kitchen luminaires.'
+      description: 'Lighting & fan sub-circuit in 20mm concealed rigid PVC conduit feeding Living, Dining, Balcony, and Kitchen luminaires.'
     },
     {
       id: 'c2_bedroom_fan',
       code: 'C2',
-      name: 'Bedrooms & Bathroom Lighting + Fan Circuit',
+      name: 'Bedrooms & Bathrooms Lighting + Fan Circuit',
       wireType: '2 × 1.5 sq.mm + 1 × 1.5 sq.mm PE FRLS Copper',
       phaseColor: '#0EA5E9',
       neutralColor: '#1E293B',
@@ -624,15 +739,17 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
         'pt_bed2_fan',
         'pt_bed2_dl1',
         'pt_bath_sb',
-        'pt_bath_dl1'
+        'pt_bath_dl1',
+        'pt_bath2_sb',
+        'pt_bath2_dl1'
       ],
       maxCapacityWatts: 1800,
-      description: 'Concealed ceiling and wall PVC conduit circuit supplying Master Bedroom, Guest Bedroom, and IP65 Bathroom lighting/exhaust.'
+      description: 'Concealed ceiling and wall PVC conduit circuit supplying Master Bedroom, Second Bedroom, and both IP65 Bathrooms.'
     },
     {
       id: 'c3_power_sockets',
       code: 'C3',
-      name: 'General 6A/16A Utility & Desk Sockets',
+      name: 'Smart TV, Bedside & Study Desk 6A/16A Sockets',
       wireType: '2 × 2.5 sq.mm + 1 × 1.5 sq.mm PE FRLS Copper',
       phaseColor: '#F59E0B',
       neutralColor: '#1E293B',
@@ -641,12 +758,12 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
       conduitSize: '25mm',
       connectedPointIds: ['pt_living_socket1', 'pt_master_socket', 'pt_bed2_socket'],
       maxCapacityWatts: 3680,
-      description: 'Shuttered 3-pin socket outlets for TV entertainment unit, bedside chargers, and study desks.'
+      description: 'Shuttered 3-pin socket outlets for 65" Smart TV entertainment unit, bedside lamps/chargers, and study desks.'
     },
     {
       id: 'c4_kitchen_power',
       code: 'C4',
-      name: 'Kitchen Heavy Appliances (Hob, Chimney, Fridge)',
+      name: 'Kitchen Heavy Appliances (Hob, Chimney, Fridge, Oven)',
       wireType: '2 × 4.0 sq.mm + 1 × 2.5 sq.mm PE FRLS Copper',
       phaseColor: '#EF4444',
       neutralColor: '#1E293B',
@@ -655,35 +772,35 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
       conduitSize: '25mm',
       connectedPointIds: ['pt_kitchen_socket1', 'pt_kitchen_socket2'],
       maxCapacityWatts: 4600,
-      description: 'Dedicated high-load kitchen circuit for simultaneous induction cooktop, auto-clean chimney, microwave, and refrigerator.'
+      description: 'Dedicated high-load kitchen circuit for built-in hob, auto-clean chimney, microwave, oven, and double-door refrigerator.'
     },
     {
       id: 'c5_heavy_ac',
       code: 'C5',
-      name: 'Split Air-Conditioning Circuit (Master & Guest)',
+      name: 'Smart Split Air-Conditioners (Living, Master & Second Bed)',
       wireType: '2 × 4.0 sq.mm + 1 × 2.5 sq.mm PE FRLS Copper',
       phaseColor: '#A855F7',
       neutralColor: '#1E293B',
       earthColor: '#10B981',
       mcbRating: '25A SP Type-C MCB (10kA)',
       conduitSize: '25mm',
-      connectedPointIds: ['pt_master_ac', 'pt_bed2_ac'],
-      maxCapacityWatts: 5200,
-      description: 'Direct homerun circuit from TPN DB to 20A rotary AC isolators with surge isolation.'
+      connectedPointIds: ['pt_living_ac', 'pt_master_ac', 'pt_bed2_ac'],
+      maxCapacityWatts: 6200,
+      description: 'Direct homerun circuit from TPN DB to 20A/25A rotary AC isolators with surge isolation.'
     },
     {
       id: 'c6_bathroom_geyser',
       code: 'C6',
-      name: 'Bathroom 25L Storage Water Heater (Geyser)',
+      name: 'Both Bathrooms 25L Storage Water Heaters (Geysers)',
       wireType: '2 × 4.0 sq.mm + 1 × 2.5 sq.mm PE FRLS Copper',
       phaseColor: '#EC4899',
       neutralColor: '#1E293B',
       earthColor: '#10B981',
       mcbRating: '20A 30mA RCBO (Type-A)',
       conduitSize: '25mm',
-      connectedPointIds: ['pt_bath_geyser'],
-      maxCapacityWatts: 4000,
-      description: 'Dedicated wet-zone heating circuit protected by a 30mA RCBO and double-pole indicator switch.'
+      connectedPointIds: ['pt_bath_geyser', 'pt_bath2_geyser'],
+      maxCapacityWatts: 4500,
+      description: 'Dedicated wet-zone heating circuit protected by a 30mA RCBO and double-pole indicator switches in both bathrooms.'
     },
     {
       id: 'c_earth_grid',
