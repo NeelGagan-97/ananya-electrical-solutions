@@ -87,7 +87,7 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
     },
     {
       q: 'How can I schedule an on-site electrical inspection or request a quotation?',
-      a: 'You can call or WhatsApp our primary engineering desk at +91 9743461955, call our 24/7 emergency breakdown hotline at +91 8660121438, email ananyaelectricalsolutions@gmail.com, or submit the engineering proposal form on this page.',
+      a: 'You can call or WhatsApp our primary engineering desk at +91 9632025123, call our 24/7 emergency breakdown hotline at +91 8660121438, email ananyaelectricalsolutions@gmail.com, or submit the engineering proposal form on this page.',
     },
   ];
 

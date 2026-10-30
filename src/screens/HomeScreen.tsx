@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { NavigationTab, EngineeringInquiry, ProjectItem } from '../types';
 import { ASSETS, SERVICES, PROJECTS, ESCOMS, ELECTRICAL_EQUIPMENT } from '../data/constants';
 import { ElectricalServicesSection } from '../components/ElectricalServicesSection';
+import { RealisticLightningBackground } from '../components/RealisticLightningBackground';
 import {
   BUSINESS_NAP,
   trackConversionEvent,
@@ -158,6 +159,180 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="absolute -top-24 left-1/4 w-[32rem] h-[32rem] bg-[#F59E0B]/15 rounded-full blur-3xl mix-blend-screen" />
           <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#0284C7]/25 rounded-full blur-3xl" />
           <div className="absolute bottom-0 right-10 w-96 h-96 bg-[#38BDF8]/15 rounded-full blur-3xl" />
+
+          {/* Thunder Sky Cloud Flash Illumination Overlays */}
+          <div
+            className="absolute inset-0 mix-blend-screen animate-thunder-flash-1"
+            style={{
+              background:
+                'radial-gradient(ellipse 65% 50% at 72% 18%, rgba(186, 230, 253, 0.5) 0%, rgba(56, 189, 248, 0.24) 42%, rgba(15, 23, 42, 0) 78%)'
+            }}
+          />
+          <div
+            className="absolute inset-0 mix-blend-screen animate-thunder-flash-2"
+            style={{
+              background:
+                'radial-gradient(ellipse 60% 45% at 32% 14%, rgba(224, 242, 254, 0.45) 0%, rgba(59, 130, 246, 0.22) 45%, rgba(15, 23, 42, 0) 75%)'
+            }}
+          />
+
+          {/* Procedural High-DPI Fractal Midpoint-Displacement Lightning & Cloud Plasma Engine */}
+          <RealisticLightningBackground />
+
+          {/* Atmospheric Turbulence-Displaced Fractal Lightning Channels */}
+          <svg
+            className="absolute inset-0 w-full h-full mix-blend-screen"
+            viewBox="0 0 1440 800"
+            preserveAspectRatio="xMidYMid slice"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <defs>
+              {/* High-frequency electrostatic plasma turbulence & multi-stage bloom filter */}
+              <filter id="realistic-lightning-plasma" x="-35%" y="-20%" width="170%" height="150%" colorInterpolationFilters="sRGB">
+                <feTurbulence
+                  type="fractalNoise"
+                  baseFrequency="0.045 0.065"
+                  numOctaves="4"
+                  seed="17"
+                  result="plasmaNoise"
+                />
+                <feDisplacementMap
+                  in="SourceGraphic"
+                  in2="plasmaNoise"
+                  scale="18"
+                  xChannelSelector="R"
+                  yChannelSelector="G"
+                  result="jaggedChannel"
+                />
+                <feGaussianBlur in="jaggedChannel" stdDeviation="14" result="wideBloom" />
+                <feGaussianBlur in="jaggedChannel" stdDeviation="4.5" result="midCorona" />
+                <feGaussianBlur in="jaggedChannel" stdDeviation="1" result="sharpCore" />
+                <feMerge>
+                  <feMergeNode in="wideBloom" />
+                  <feMergeNode in="midCorona" />
+                  <feMergeNode in="sharpCore" />
+                  <feMergeNode in="jaggedChannel" />
+                </feMerge>
+              </filter>
+
+              <linearGradient id="bolt-trunk-grad-1" x1="1040" y1="0" x2="890" y2="620" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+                <stop offset="55%" stopColor="#E0F2FE" stopOpacity="0.96" />
+                <stop offset="88%" stopColor="#7DD3FC" stopOpacity="0.75" />
+                <stop offset="100%" stopColor="#38BDF8" stopOpacity="0" />
+              </linearGradient>
+
+              <linearGradient id="bolt-trunk-grad-2" x1="465" y1="0" x2="340" y2="540" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+                <stop offset="50%" stopColor="#DBEAFE" stopOpacity="0.94" />
+                <stop offset="85%" stopColor="#60A5FA" stopOpacity="0.7" />
+                <stop offset="100%" stopColor="#3B82F6" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+
+            {/* Strike 1: Fractal Tortuous Cloud-to-Horizon Bolt on Upper-Right Transmission Sky */}
+            <g className="animate-lightning-bolt-1" filter="url(#realistic-lightning-plasma)">
+              {/* Outer Ionized Sheath */}
+              <path
+                d="M1048 -12 L1039 14 L1044 32 L1028 58 L1035 76 L1014 104 L1026 122 L1008 154 L996 178 L1005 198 L984 232 L992 254 L968 289 L976 312 L954 348 L962 372 L938 412 L945 436 L922 478 L928 504 L904 548 L892 595"
+                stroke="#38BDF8"
+                strokeWidth="5.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.55"
+              />
+              {/* Primary Tapering Forks */}
+              <path
+                d="M1028 58 L1002 82 L988 106 L962 128 L946 158 M1008 154 L1038 184 L1054 208 L1082 236 L1096 272 M984 232 L948 264 L932 296 L904 328 L886 364 M954 348 L992 384 L1008 418 L1034 452 M938 412 L896 448 L874 486 L848 524"
+                stroke="#7DD3FC"
+                strokeWidth="1.65"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.85"
+              />
+              {/* Fine Capillary Leader Streamers */}
+              <path
+                d="M988 106 L968 98 L948 108 M962 128 L954 152 L934 172 M1054 208 L1078 198 L1098 212 M932 296 L908 288 L888 304 M874 486 L852 478 L832 494"
+                stroke="#BAE6FD"
+                strokeWidth="0.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.7"
+              />
+              {/* Scorching White-Hot Return Stroke Core */}
+              <path
+                d="M1048 -12 L1039 14 L1044 32 L1028 58 L1035 76 L1014 104 L1026 122 L1008 154 L996 178 L1005 198 L984 232 L992 254 L968 289 L976 312 L954 348 L962 372 L938 412 L945 436 L922 478 L928 504 L904 548 L892 595"
+                stroke="url(#bolt-trunk-grad-1)"
+                strokeWidth="2.1"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </g>
+
+            {/* Strike 2: Multi-Branched Discharge on Upper-Left / Center-Left Horizon */}
+            <g className="animate-lightning-bolt-2" filter="url(#realistic-lightning-plasma)">
+              <path
+                d="M468 -14 L458 18 L464 38 L446 68 L452 88 L432 122 L440 144 L418 178 L426 202 L404 238 L412 262 L388 302 L396 326 L372 368 L378 394 L356 438 L342 488"
+                stroke="#60A5FA"
+                strokeWidth="5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.5"
+              />
+              <path
+                d="M446 68 L416 96 L398 124 L374 156 L356 188 M418 178 L452 212 L468 244 L496 278 L512 314 M404 238 L368 272 L348 306 L324 342 M372 368 L336 404 L314 442"
+                stroke="#93C5FD"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.82"
+              />
+              <path
+                d="M398 124 L376 118 L354 132 M468 244 L492 236 L514 252 M348 306 L322 298 L302 316"
+                stroke="#DBEAFE"
+                strokeWidth="0.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.65"
+              />
+              <path
+                d="M468 -14 L458 18 L464 38 L446 68 L452 88 L432 122 L440 144 L418 178 L426 202 L404 238 L412 262 L388 302 L396 326 L372 368 L378 394 L356 438 L342 488"
+                stroke="url(#bolt-trunk-grad-2)"
+                strokeWidth="1.95"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </g>
+
+            {/* Strike 3: High-Altitude Intracloud Anvil Crawler Across Center-Right Sky */}
+            <g className="animate-lightning-bolt-3" filter="url(#realistic-lightning-plasma)">
+              <path
+                d="M645 24 L678 36 L696 28 L728 48 L754 42 L788 64 L816 58 L848 82 L878 76 L912 104 L942 126 L976 158 L1004 196"
+                stroke="#38BDF8"
+                strokeWidth="4.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.48"
+              />
+              <path
+                d="M728 48 L756 22 L786 16 L818 28 M788 64 L764 98 L748 132 L724 168 M848 82 L884 56 L918 48 L948 64 M912 104 L892 142 L876 178"
+                stroke="#BAE6FD"
+                strokeWidth="1.35"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.78"
+              />
+              <path
+                d="M645 24 L678 36 L696 28 L728 48 L754 42 L788 64 L816 58 L848 82 L878 76 L912 104 L942 126 L976 158 L1004 196"
+                stroke="#F0F9FF"
+                strokeWidth="1.65"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </g>
+          </svg>
         </div>
 
         {/* Ambient Technical Grid Pattern */}
@@ -829,15 +1004,24 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-14">
-          <div className="text-center max-w-3xl mx-auto flex flex-col gap-3">
+          <div className="text-center max-w-6xl mx-auto flex flex-col gap-3">
             <span className="text-[14px] uppercase tracking-wider text-[#006398] font-bold">
               Turnkey Capabilities &amp; Certified Hardware
             </span>
             <h2 className="font-headline-lg text-[#0B192C] font-bold">
               Comprehensive Electrical Services &amp; Equipment
             </h2>
-            <p className="font-body-md text-[#44474c]">
-              Serving industrial manufacturing corridors, IT tech parks, pharmaceutical plants, commercial high-rises, and greenfield solar installations throughout Karnataka with Class-1 turnkey services and type-tested electrical equipment.
+            <p className="animate-services-paragraph">
+              <span className="block lg:whitespace-nowrap">
+                <span className="animate-sector-word" style={{ animationDelay: '0s' }}>
+                  Serving Industrial corridors, IT Parks, Commercial High-rises, Roof Top &amp; Greenfield solar and Pharmaceutical plants
+                </span>
+              </span>
+              <span className="block lg:whitespace-nowrap">
+                <span className="animate-sector-word" style={{ animationDelay: '0.8s' }}>
+                  across Karnataka with Class-1 turnkey electrical services and type-tested power equipment.
+                </span>
+              </span>
             </p>
           </div>
 
