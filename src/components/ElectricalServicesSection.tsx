@@ -272,7 +272,8 @@ export const ElectricalServicesSection: React.FC<ElectricalServicesSectionProps>
           {services.map((service) => (
             <article
               key={service.id}
-              className="bg-white/95 backdrop-blur-md rounded-xl border border-[#CBD5E1] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between group hover:-translate-y-0.5 h-full"
+              id={service.id}
+              className="bg-white/95 backdrop-blur-md rounded-xl border border-[#CBD5E1] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between group hover:-translate-y-0.5 h-full scroll-mt-28"
             >
               {/* Equipment & Service Image Header */}
               <div className="relative h-32 w-full overflow-hidden bg-[#0B192C]">

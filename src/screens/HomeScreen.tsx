@@ -503,7 +503,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 {
                   segment: 'Residential & Townships',
                   icon: 'home_work',
-                  scope: 'MCB/RCCB DBs, Wiring, Design Co-ordination, Aesthetic Integration, Co-Lights, Underground cabling & Smart Home Automation.',
+                  scope: 'Design Co-ordination, Wiring, Aesthetic Integration, Co-Lights, Underground cabling & Smart Home Automation.',
                   ctaTopic: 'Residential & Township Layout Electrification',
                 },
                 {
@@ -579,17 +579,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10 flex flex-col gap-8">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
             <div className="flex flex-col gap-3">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0284c7]/25 border border-[#38bdf8]/40 w-fit backdrop-blur-md">
-                <span className="material-symbols-outlined text-[16px] text-[#38bdf8]">3d_rotation</span>
-                <span className="text-[12px] font-mono uppercase tracking-wider text-[#38bdf8] font-bold">
-                  Interactive Engineering Digital Twins &amp; Equipment Simulators (WebGL 3D)
-                </span>
-              </div>
               <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-                Explore Our Interactive 3D Twins: Residential, Layout &amp; Substation Equipment
+                Explore Our Interactive 3D Models: Residential, Smart Home, Layout &amp; Substation
               </h2>
               <p className="text-slate-200 text-sm sm:text-base max-w-2xl leading-relaxed">
-                Step into real-time 3D engineering simulations. Inspect modern Indian 2BHK concealed conduit wiring, TPN distribution boards with RCCBs, township layout transformers, or 33kV substations with vacuum circuit breakers and solar arrays.
+                Step into real-time 3D engineering simulations. Inspect modern Indian concealed conduit wiring, Distribution Boards, Township Layout Transformers, or 66kV Substations with Solar Arrays.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3 shrink-0 w-full lg:w-auto">
@@ -625,33 +619,48 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 spec: 'ONAN Step-Down & Outdoor Switchyard',
                 image: ASSETS.pillarHighVoltage,
                 badge: 'Substation Equipment',
-                tab: 'twin-3d' as NavigationTab
+                tab: 'electrical' as NavigationTab,
+                sectionId: undefined as string | undefined
               },
               {
                 title: 'PCC / MCC & APFC Switchboards',
                 spec: 'Form-4b ACB Panels & Busduct Trunking',
                 image: ASSETS.project1,
                 badge: 'Industrial Panels',
-                tab: 'electrical' as NavigationTab
+                tab: 'electrical' as NavigationTab,
+                sectionId: undefined as string | undefined
               },
               {
                 title: 'Concealed Conduits & MCB/RCCB DB',
                 spec: 'FRLS Wiring, Smart Switches & Earth Pit',
                 image: ASSETS.project3,
                 badge: 'Residential Equipment',
-                tab: 'residential-3d' as NavigationTab
+                tab: 'home' as NavigationTab,
+                sectionId: 'home-wiring'
               },
               {
                 title: 'Township DTC & Feeder Pillars',
                 spec: '11kV Pole-Mounted DTC & UG XLPE Cables',
                 image: ASSETS.transmissionBg,
                 badge: 'Layout Infrastructure',
-                tab: 'residential-layout-3d' as NavigationTab
+                tab: 'home' as NavigationTab,
+                sectionId: 'layout-electrification'
               }
             ].map((item, idx) => (
               <div
                 key={idx}
-                onClick={() => onSelectTab(item.tab)}
+                onClick={() => {
+                  if (item.sectionId) {
+                    const targetEl =
+                      document.getElementById(item.sectionId) ||
+                      document.getElementById('electrical-services');
+                    if (targetEl) {
+                      targetEl.scrollIntoView({ behavior: 'smooth' });
+                      return;
+                    }
+                  }
+                  onSelectTab(item.tab);
+                }}
                 className="group relative rounded-xl overflow-hidden border border-slate-600/70 bg-[#0B192C]/80 backdrop-blur-md p-3 flex items-center gap-3.5 cursor-pointer hover:border-[#38bdf8] transition-all"
               >
                 <img
