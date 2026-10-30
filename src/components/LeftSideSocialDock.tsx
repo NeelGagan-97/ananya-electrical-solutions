@@ -4,8 +4,8 @@ import { BUSINESS_NAP, trackConversionEvent } from '../utils/seo';
 export const LeftSideSocialDock: React.FC = () => {
   const [showWhatsAppMenu, setShowWhatsAppMenu] = useState(false);
 
-  const phoneNumber = BUSINESS_NAP.whatsappNumber; // 919743461955
-  const displayPhone = BUSINESS_NAP.primaryPhone; // +91 9743461955
+  const phoneNumber = '919632025123';
+  const displayPhone = '+91 9632025123';
   const instagramHandle = 'ananyaelectricalsolutions';
   const instagramUrl = 'https://www.instagram.com/ananyaelectricalsolutions';
 
