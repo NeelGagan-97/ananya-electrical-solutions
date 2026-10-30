@@ -308,8 +308,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
 
             {/* Hero Visual Showcase: Video + Telemetry */}
-            <div className="lg:col-span-5 flex flex-col items-center lg:items-end justify-start gap-5 lg:-mt-28 xl:-mt-32">
-              <div className="w-full flex flex-col items-center lg:items-end justify-start -mt-4 lg:-mt-6 lg:-mr-16 xl:-mr-24 bg-transparent">
+            <div className="lg:col-span-5 flex flex-col items-center lg:items-end justify-start gap-5 lg:-mt-44 xl:-mt-48">
+              <div className="w-full flex flex-col items-center lg:items-end justify-start -mt-6 lg:-mt-10 xl:-mt-12 lg:mr-[calc(min(0px,(80rem-100vw)/2)-3rem)] bg-transparent">
                 <video
                   ref={logoVideoRef}
                   src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm"
@@ -318,11 +318,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   muted
                   playsInline
                   style={{ aspectRatio: '1.5 / 1.5' }}
-                  className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[440px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent lg:translate-x-12 xl:translate-x-16 [clip-path:inset(0_0_33%_0)] drop-shadow-[0_0_22px_rgba(56,189,248,0.65)]"
+                  className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent [clip-path:inset(0_0_31%_0)] drop-shadow-[0_0_22px_rgba(56,189,248,0.65)]"
                 />
                 {/* Custom Styled Brand Logo Lockup Synchronized with Video Reveal */}
                 <div
-                  className={`w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[440px] xl:max-w-[480px] flex flex-col items-center justify-center text-center -mt-28 sm:-mt-32 lg:-mt-36 xl:-mt-40 pb-2 lg:translate-x-12 xl:translate-x-16 select-none transition-all duration-500 ease-out ${
+                  className={`w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] flex flex-col items-center justify-center text-center -mt-24 sm:-mt-28 lg:-mt-30 xl:-mt-32 pb-2 select-none transition-all duration-500 ease-out ${
                     logoAnimPhase === 'charging'
                       ? 'opacity-0 translate-y-3 scale-90 blur-[5px]'
                       : 'opacity-100 translate-y-0 scale-100 blur-0'
