@@ -302,12 +302,12 @@ export default function App() {
       {/* Floating Direct Call & 24/7 Dispatch Bar */}
       <div className="fixed bottom-6 right-6 z-40 hidden sm:flex items-center gap-2">
         <a
-          href={`tel:${BUSINESS_NAP.primaryPhoneTel}`}
-          onClick={() => trackConversionEvent('phone_click', BUSINESS_NAP.primaryPhone, 'Floating Primary Call CTA')}
+          href="tel:+919632025123"
+          onClick={() => trackConversionEvent('phone_click', '+91 9632025123', 'Floating Primary Call CTA')}
           className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#0B192C] text-white text-[13px] font-bold shadow-xl hover:bg-[#006398] transition-all hover:scale-105 border border-slate-700"
         >
           <span className="material-symbols-outlined text-[18px] text-[#F59E0B]">call</span>
-          <span>Call {BUSINESS_NAP.primaryPhone}</span>
+          <span>Call +91 9632025123</span>
         </a>
       </div>
     </div>

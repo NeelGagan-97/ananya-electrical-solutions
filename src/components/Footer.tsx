@@ -162,11 +162,11 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenSeoAudit }) =
                 </span>
                 <div className="flex flex-col">
                   <a
-                    href={`tel:${BUSINESS_NAP.primaryPhoneTel}`}
-                    onClick={() => trackConversionEvent('phone_click', BUSINESS_NAP.primaryPhone, 'Footer Primary Phone')}
+                    href="tel:+919632025123"
+                    onClick={() => trackConversionEvent('phone_click', '+91 9632025123', 'Footer Primary Phone')}
                     className="hover:text-[#006398] transition-colors font-bold text-[#0B192C]"
                   >
-                    {BUSINESS_NAP.primaryPhone} (Primary / WhatsApp)
+                    +91 9632025123 (Primary / WhatsApp)
                   </a>
                   <a
                     href={`tel:${BUSINESS_NAP.secondaryPhoneTel}`}

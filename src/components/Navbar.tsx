@@ -401,13 +401,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Right CTA & Direct Call & Mobile Toggle */}
         <div className="flex items-center gap-2 shrink-0">
           <a
-            href={`tel:${BUSINESS_NAP.primaryPhoneTel}`}
-            onClick={() => trackConversionEvent('phone_click', BUSINESS_NAP.primaryPhone, 'Navbar Header Call')}
+            href="tel:+919632025123"
+            onClick={() => trackConversionEvent('phone_click', '+91 9632025123', 'Navbar Header Call')}
             className="hidden lg:inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-amber-50/80 hover:bg-amber-100/90 border border-amber-200/80 text-[#0B192C] hover:text-[#0284C7] text-[12px] font-bold tracking-wide transition-all group cursor-pointer shadow-xs leading-none shrink-0"
-            title={`Call ${BUSINESS_NAP.primaryPhone} or 24/7 Hotline ${BUSINESS_NAP.secondaryPhone}`}
+            title={`Call +91 9632025123 or 24/7 Hotline ${BUSINESS_NAP.secondaryPhone}`}
           >
             <span className="material-symbols-outlined text-[15px] text-[#D97706] group-hover:scale-110 transition-transform leading-none shrink-0">phone_in_talk</span>
-            <span className="leading-none whitespace-nowrap">{BUSINESS_NAP.primaryPhone}</span>
+            <span className="leading-none whitespace-nowrap">+91 9632025123</span>
           </a>
 
           <button

@@ -236,12 +236,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     <span>Get a Quote</span>
                   </button>
                   <a
-                    href={`tel:${BUSINESS_NAP.primaryPhoneTel}`}
-                    onClick={() => trackConversionEvent('phone_click', BUSINESS_NAP.primaryPhone, 'Hero Call Now CTA')}
+                    href="tel:+919632025123"
+                    onClick={() => trackConversionEvent('phone_click', '+91 9632025123', 'Hero Call Now CTA')}
                     className="inline-flex items-center justify-center h-12 px-5 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white text-[13.5px] font-bold shadow-lg shadow-sky-500/25 transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
                   >
                     <span className="material-symbols-outlined text-[19px] mr-1.5 leading-none shrink-0">call</span>
-                    <span>Call Now: {BUSINESS_NAP.primaryPhone}</span>
+                    <span>Call Now: +91 9632025123</span>
                   </a>
                   <a
                     href={`https://wa.me/${BUSINESS_NAP.whatsappNumber}?text=Hello%20Ananya%20Electrical%20Solutions%2C%20I%20would%20like%20to%20enquire%20about%20electrical%20contracting%20or%20solar%20installation%20in%20Bengaluru.`}
@@ -1532,11 +1532,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   <div className="flex flex-col">
                     <span className="text-[12px] text-slate-400 uppercase">Primary Engineering Desk &amp; WhatsApp</span>
                     <a
-                      href={`tel:${BUSINESS_NAP.primaryPhoneTel}`}
-                      onClick={() => trackConversionEvent('phone_click', BUSINESS_NAP.primaryPhone, 'Home Consultation Card')}
+                      href="tel:+919632025123"
+                      onClick={() => trackConversionEvent('phone_click', '+91 9632025123', 'Home Consultation Card')}
                       className="font-headline-sm text-[19px] text-white font-bold hover:text-[#5bb8fe] transition-colors"
                     >
-                      {BUSINESS_NAP.primaryPhone}
+                      +91 9632025123
                     </a>
                     <a
                       href={`tel:${BUSINESS_NAP.secondaryPhoneTel}`}
