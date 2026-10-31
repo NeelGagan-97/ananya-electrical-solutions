@@ -591,49 +591,49 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
 
         <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10 flex flex-col gap-8">
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-            <div className="flex flex-col gap-3">
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-                Explore Our Interactive 3D Models: Residential, Smart Home, Layout &amp; Substation
+          <div className="flex flex-col lg:flex-row items-start justify-between gap-8 lg:gap-12">
+            <div className="flex-1 flex flex-col justify-between gap-4 lg:py-1">
+              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-bold tracking-tight text-white leading-snug max-w-3xl">
+                Explore Our Interactive 3D Engineering Models: Residential Layout, 2BHK Interior, 33kV Substation, Rooftop Solar &amp; Smart Home Automation
               </h2>
-              <p className="text-slate-200 text-sm sm:text-base max-w-2xl leading-relaxed">
-                Step into real-time 3D engineering simulations. Inspect modern Indian concealed conduit wiring, Distribution Boards, Township Layout Transformers, or 66kV Substations with Solar Arrays.
+              <p className="text-slate-200 text-sm sm:text-[15.5px] max-w-3xl leading-relaxed text-left sm:text-justify">
+                Step into our real-time 3D engineering simulations built to visualize complete turnkey electrical execution before site mobilization. Inspect township road networks with 11kV DTRs and underground XLPE cable trenches, explore IS:732 compliant 2BHK concealed FRLS conduit routing and MCB/RCCB distribution boards, walk through a 33kV outdoor substation switchyard with a 1,250 kVA ONAN power transformer and VCB protection, analyze rooftop solar PV arrays with BESCOM bidirectional net-metering, or test automated smart home lighting, HVAC, curtain, and security scenes in real time.
               </p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 shrink-0 w-full lg:w-auto">
+            <div className="flex flex-col gap-2.5 shrink-0 w-full sm:max-w-md lg:w-[340px]">
               <button
                 onClick={() => onSelectTab('residential-layout-3d')}
-                className="w-full sm:w-auto h-12 px-5 rounded-xl bg-gradient-to-r from-[#F59E0B] to-[#D97706] hover:from-[#D97706] hover:to-[#F59E0B] text-[#2a1700] font-bold text-[13.5px] flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 transition-transform hover:scale-105 cursor-pointer border border-[#fbbf24]/60"
+                className="w-full h-11 px-5 rounded-xl bg-gradient-to-r from-[#F59E0B] to-[#D97706] hover:from-[#D97706] hover:to-[#F59E0B] text-[#2a1700] font-bold text-[13.5px] flex items-center justify-start gap-2.5 shadow-lg shadow-amber-500/25 transition-transform hover:scale-[1.02] cursor-pointer border border-[#fbbf24]/60"
               >
-                <span className="material-symbols-outlined text-[20px]">map</span>
+                <span className="material-symbols-outlined text-[20px] shrink-0">map</span>
                 <span>Residential Layout &amp; Infrastructure</span>
               </button>
               <button
                 onClick={() => onSelectTab('residential-3d')}
-                className="w-full sm:w-auto h-12 px-5 rounded-xl bg-gradient-to-r from-[#10b981] to-[#047857] hover:from-[#059669] hover:to-[#10b981] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 transition-transform hover:scale-105 cursor-pointer border border-[#34d399]/50"
+                className="w-full h-11 px-5 rounded-xl bg-gradient-to-r from-[#10b981] to-[#047857] hover:from-[#059669] hover:to-[#10b981] text-white font-bold text-[13.5px] flex items-center justify-start gap-2.5 shadow-lg shadow-emerald-500/25 transition-transform hover:scale-[1.02] cursor-pointer border border-[#34d399]/50"
               >
-                <span className="material-symbols-outlined text-[20px]">home</span>
+                <span className="material-symbols-outlined text-[20px] shrink-0">home</span>
                 <span>Residential 2BHK Interior</span>
               </button>
               <button
                 onClick={() => onSelectTab('twin-3d')}
-                className="w-full sm:w-auto h-12 px-5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#006398] hover:from-[#006398] hover:to-[#0284C7] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25 transition-transform hover:scale-105 cursor-pointer border border-[#38bdf8]/50"
+                className="w-full h-11 px-5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#006398] hover:from-[#006398] hover:to-[#0284C7] text-white font-bold text-[13.5px] flex items-center justify-start gap-2.5 shadow-lg shadow-cyan-500/25 transition-transform hover:scale-[1.02] cursor-pointer border border-[#38bdf8]/50"
               >
-                <span className="material-symbols-outlined text-[20px]">electric_meter</span>
+                <span className="material-symbols-outlined text-[20px] shrink-0">electric_meter</span>
                 <span>33kV Substation</span>
               </button>
               <button
                 onClick={() => onSelectTab('residential-solar-3d')}
-                className="w-full sm:w-auto h-12 px-5 rounded-xl bg-gradient-to-r from-[#f59e0b] to-[#ea580c] hover:from-[#ea580c] hover:to-[#f59e0b] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 shadow-lg shadow-orange-500/25 transition-transform hover:scale-105 cursor-pointer border border-amber-300/50"
+                className="w-full h-11 px-5 rounded-xl bg-gradient-to-r from-[#f59e0b] to-[#ea580c] hover:from-[#ea580c] hover:to-[#f59e0b] text-white font-bold text-[13.5px] flex items-center justify-start gap-2.5 shadow-lg shadow-orange-500/25 transition-transform hover:scale-[1.02] cursor-pointer border border-amber-300/50"
               >
-                <span className="material-symbols-outlined text-[20px]">solar_power</span>
+                <span className="material-symbols-outlined text-[20px] shrink-0">solar_power</span>
                 <span>Residential Solar Installation</span>
               </button>
               <button
                 onClick={() => onSelectTab('smart-home-3d')}
-                className="w-full sm:w-auto h-12 px-5 rounded-xl bg-gradient-to-r from-[#0d9488] to-[#0f766e] hover:from-[#0f766e] hover:to-[#0d9488] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 shadow-lg shadow-teal-500/25 transition-transform hover:scale-105 cursor-pointer border border-[#2dd4bf]/50"
+                className="w-full h-11 px-5 rounded-xl bg-gradient-to-r from-[#0d9488] to-[#0f766e] hover:from-[#0f766e] hover:to-[#0d9488] text-white font-bold text-[13.5px] flex items-center justify-start gap-2.5 shadow-lg shadow-teal-500/25 transition-transform hover:scale-[1.02] cursor-pointer border border-[#2dd4bf]/50"
               >
-                <span className="material-symbols-outlined text-[20px]">smart_toy</span>
+                <span className="material-symbols-outlined text-[20px] shrink-0">smart_toy</span>
                 <span>Smart Home Automation</span>
               </button>
             </div>
