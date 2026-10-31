@@ -60,11 +60,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => handleNavClick('home')}
             className="flex items-center gap-3 shrink-0 text-left cursor-pointer group"
           >
-            <div className="relative h-10 w-10 sm:h-11 sm:w-11 rounded-lg bg-[#0B192C] p-0.5 flex items-center justify-center overflow-hidden shadow-sm border border-[#38BDF8]/40 shrink-0 transition-transform group-hover:scale-105">
+            <div className="relative h-10 w-10 sm:h-11 sm:w-11 rounded-lg bg-black p-0.5 flex items-center justify-center overflow-hidden shadow-sm border border-[#38BDF8]/40 shrink-0 transition-transform group-hover:scale-105">
               <img
                 alt="Ananya Electrical Solutions Logo"
-                className="h-full w-full object-cover object-center scale-125 rounded-md"
-                src="/assets/aistudio/Remove_words_keep_logo_67dae8ff_2K_ddc42d7a.jpg"
+                className="h-full w-full object-cover object-center scale-110 rounded-md"
+                src="/assets/aistudio/give_me_only_the_round_2d2be0f6_2K_13a8ea3d.jpg"
               />
             </div>
             <div className="flex flex-col justify-center">
