@@ -23,8 +23,8 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenSeoAudit }) =
               <div className="relative h-10 w-10 sm:h-11 sm:w-11 rounded-lg bg-[#0B192C] p-0.5 flex items-center justify-center overflow-hidden shadow-sm border border-[#38BDF8]/40 shrink-0">
                 <img
                   alt="Ananya Electrical Solutions — Class 1 Electrical Contractor Bengaluru Logo"
-                  className="h-full w-full object-cover object-top scale-125 translate-y-1 rounded-md"
-                  src="/assets/aistudio/Screenshot_2026-10-24_213203_08863194.png"
+                  className="h-full w-full object-cover object-center scale-125 rounded-md"
+                  src="/assets/aistudio/Remove_words_keep_logo_67dae8ff_2K_ddc42d7a.jpg"
                 />
               </div>
               <div className="flex flex-col">
