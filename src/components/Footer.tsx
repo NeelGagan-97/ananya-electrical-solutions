@@ -22,7 +22,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenSeoAudit }) =
             <div className="flex items-center gap-3">
               <div className="relative h-10 w-10 sm:h-11 sm:w-11 rounded-lg bg-[#0B192C] p-0.5 flex items-center justify-center overflow-hidden shadow-sm border border-[#38BDF8]/40 shrink-0">
                 <img
-                  alt="Ananya Electrical Solutions — Super Grade Electrical Contractor Bengaluru Logo"
+                  alt="Ananya Electrical Solutions — Class 1 Electrical Contractor Bengaluru Logo"
                   className="h-full w-full object-cover object-top scale-125 translate-y-1 rounded-md"
                   src="/assets/aistudio/Screenshot_2026-10-24_213203_08863194.png"
                 />
@@ -37,12 +37,10 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenSeoAudit }) =
               </div>
             </div>
             <p className="text-[13px] text-[#44474c] max-w-sm leading-relaxed">
-              Government of Karnataka Licensed Super Grade Electrical Contractors and Turnkey Solar EPC Specialists headquartered in Sahakarnagar, Bengaluru. Delivering 11kV–110kV substations, HT/LT panels, BESCOM &amp; CEIG approvals, and industrial/commercial wiring across Karnataka.
+              Government of Karnataka Licensed Class 1 Electrical Contractors and Turnkey Solar EPC Specialists headquartered in Sahakarnagar, Bengaluru. Delivering 11kV–110kV substations, HT/LT panels, BESCOM &amp; CEIG approvals, and industrial/commercial wiring across Karnataka.
             </p>
             <div className="flex flex-wrap items-center gap-2 pt-1 text-[12px] text-[#001d31] font-semibold">
               <span>11kV / 33kV / 66kV / 110kV</span>
-              <span aria-hidden="true">·</span>
-              <span>Super Grade License</span>
               <span aria-hidden="true">·</span>
               <span>Class-1 PWD</span>
             </div>
@@ -207,7 +205,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenSeoAudit }) =
         <div className="pt-6 mt-4 bg-[#eff4ff] rounded-lg p-5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 text-[12.5px] text-[#44474c]">
           <div className="flex flex-wrap items-center gap-2.5">
             <span className="font-semibold text-[#0B192C]">Statutory Compliance:</span>
-            <span>Super Grade Electrical Contractor (Karnataka Electrical Inspectorate)</span>
+            <span>Class 1 Electrical Contractor (Karnataka Electrical Inspectorate)</span>
             <span className="text-[#CBD5E1]" aria-hidden="true">·</span>
             <span>Class-1 PWD Registered</span>
             <span className="text-[#CBD5E1]" aria-hidden="true">·</span>

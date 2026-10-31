@@ -474,10 +474,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
             <div className="shrink-0 flex flex-col sm:flex-row lg:flex-col gap-3 w-full lg:w-auto">
               <button
-                onClick={() => onOpenConsultation('Super Grade Contract')}
+                onClick={() => onOpenConsultation('Class 1 Contract')}
                 className="h-11 px-6 rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[14px] font-semibold inline-flex items-center justify-center transition-colors cursor-pointer"
               >
-                Engage Super Grade Team
+                Engage Class 1 Team
               </button>
               <span className="text-[12px] text-[#44474c] text-center font-medium">
                 Class-1 PWD &amp; Electrical Inspectorate Compliant
@@ -1094,7 +1094,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   </span>
                 </div>
                 <span className="px-3 py-1.5 rounded-lg bg-[#FEF3C7] text-[#2a1700] text-[12px] font-bold tracking-wider uppercase shrink-0">
-                  SUPER GRADE
+                  Class 1
                 </span>
               </div>
             </div>
@@ -1109,7 +1109,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   Precision Infrastructure Built on Trust and Rigor
                 </h2>
                 <p className="font-body-lg text-[#44474c] leading-relaxed">
-                  Founded in 2020, Ananya Electrical Solutions has swiftly become one of Karnataka&apos;s most trusted Super Grade electrical engineering partners. We bridge the critical gap between complex utility requirements and reliable industrial power systems.
+                  Founded in 2020, Ananya Electrical Solutions has swiftly become one of Karnataka&apos;s most trusted Class 1 electrical engineering partners. We bridge the critical gap between complex utility requirements and reliable industrial power systems.
                 </p>
               </div>
 
@@ -1120,7 +1120,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   </div>
                   <div className="flex flex-col gap-1">
                     <span className="font-headline-sm text-[15px] text-[#0B192C] font-bold leading-snug">
-                      Super Grade Certified
+                      Class 1 Certified
                     </span>
                     <span className="font-body-sm text-[#44474c] leading-relaxed">
                       Authorized for multi-megawatt high-voltage works throughout Karnataka state.
@@ -1531,13 +1531,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <div className="flex flex-col gap-4">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#FEF3C7] text-[#2a1700] text-[12px] uppercase font-bold w-fit">
                   <span className="material-symbols-outlined text-[14px] text-[#F59E0B]">bolt</span>
-                  Super Grade Contractor • Bengaluru
+                  Class 1 Contractor • Bengaluru
                 </div>
                 <h2 className="font-headline-lg text-white font-bold">
                   Request an Electrical or Solar Quote in Bengaluru
                 </h2>
                 <p className="font-body-md text-slate-300 leading-relaxed">
-                  Connect directly with our Super Grade electrical engineers at our Sahakarnagar headquarters. We handle BESCOM/KPTCL sanctions, CEIG approvals, HT/LT installations, and rooftop solar EPC across Karnataka.
+                  Connect directly with our Class 1 electrical engineers at our Sahakarnagar headquarters. We handle BESCOM/KPTCL sanctions, CEIG approvals, HT/LT installations, and rooftop solar EPC across Karnataka.
                 </p>
               </div>
 
@@ -1606,7 +1606,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <div className="p-4 rounded-xl bg-[#1E293B] text-white flex items-center gap-3 border border-slate-700">
                 <span className="material-symbols-outlined text-[#F59E0B] text-[24px]">verified</span>
                 <span className="font-body-sm text-slate-300">
-                  Government of Karnataka Licensed Super Grade &amp; Class-1 PWD Electrical Contractor.
+                  Government of Karnataka Licensed Class 1 PWD Electrical Contractor.
                 </span>
               </div>
             </div>
@@ -1797,7 +1797,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     <div className="flex items-center gap-2">
                       <span className="material-symbols-outlined text-emerald-600">check_circle</span>
                       <span>
-                        <strong>Inquiry Logged ({lastHomeInquiry.id}):</strong> Our Super Grade engineering team will contact you within 4 business hours. Click below to immediately transmit your structured enquiry to our engineering desk:
+                        <strong>Inquiry Logged ({lastHomeInquiry.id}):</strong> Our Class 1 engineering team will contact you within 4 business hours. Click below to immediately transmit your structured enquiry to our engineering desk:
                       </span>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -1889,7 +1889,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 Pan-Karnataka KIADB &amp; District Hubs
               </h3>
               <p className="text-[13px] text-[#44474c] leading-relaxed">
-                Statewide Super Grade execution and CEIG liaison in <strong>Mysuru, Tumakuru (Vasanthanarasapura), Hubballi-Dharwad, Belagavi, Mangaluru, Udupi, Ballari, Shivamogga, Hassan, and Kalaburagi</strong>.
+                Statewide Class 1 execution and CEIG liaison in <strong>Mysuru, Tumakuru (Vasanthanarasapura), Hubballi-Dharwad, Belagavi, Mangaluru, Udupi, Ballari, Shivamogga, Hassan, and Kalaburagi</strong>.
               </p>
             </div>
           </div>
