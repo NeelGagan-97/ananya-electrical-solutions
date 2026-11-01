@@ -979,7 +979,7 @@ export const FloorPlanEditor: React.FC<FloorPlanEditorProps> = ({
               className="w-full py-2 px-3 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
             >
               <span className="material-symbols-outlined text-[16px]">auto_fix_high</span>
-              <span>Scale 2BHK Twin to L × B</span>
+              <span>Scale 2BHK Model to L × B</span>
             </button>
 
             {/* Quick Plot Size Presets */}

@@ -14,7 +14,7 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
       role: 'Super Grade Electrical Licensing & CEIG / KPTCL Coordination',
       scope: '11kV – 110kV Substations • SLD Sanctions • CEIG Safety Certificates',
       desc: 'Handles Single Line Diagram (SLD) engineering, protection relay coordination, 11kV–110kV transformer and VCB switchyard erection, and direct statutory representation with the Karnataka Electrical Inspectorate (CEIG), KPTCL, and BESCOM.',
-      placeholderNote: '[Editable Owner Record: Super Grade License No. & Chief Supervisor Permit Ref]'
+      placeholderNote: 'Super Grade License Authority • CEIG Karnataka & Chief Supervisor Cell'
     },
     {
       code: 'DIV-02',
@@ -22,7 +22,7 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
       role: 'Commercial, Industrial & Residential Solar Power Systems',
       scope: 'Rooftop & Ground-Mount PV • String/Central Inverters • KERC Net-Metering',
       desc: 'Executes turnkey solar photovoltaic plants across Bengaluru and Karnataka including shadow-free 3D array layout, wind-rated HDG mounting structures, ACDB/DCDB protection, bidirectional metering, and BESCOM net-metering synchronization.',
-      placeholderNote: '[Editable Owner Record: Empanelment / Solar Division Supervisor Ref]'
+      placeholderNote: 'Solar EPC Technical Cell • KERC & DISCOM Grid Interconnection Engineers'
     },
     {
       code: 'DIV-03',
@@ -30,7 +30,7 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
       role: 'Pre-Commissioning Diagnostics, Industrial Wiring & Preventive AMC',
       scope: 'Megger & VLF Hi-Pot • Relay Injection • IS 3043 Earthing • 24/7 Dispatch',
       desc: 'Operates NABL-calibrated testing instruments for insulation resistance, primary/secondary injection, transformer oil BDV, FLIR thermal imaging, LOTO safety enforcement, and 24/7 emergency breakdown support.',
-      placeholderNote: '[Editable Owner Record: Calibration Certificate & Safety Officer Ref]'
+      placeholderNote: 'NABL-Calibrated HV Test Cell • Certified Relay & Diagnostic Field Engineers'
     }
   ];
 

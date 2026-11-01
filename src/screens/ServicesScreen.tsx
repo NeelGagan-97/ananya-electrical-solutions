@@ -91,21 +91,21 @@ export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultati
                   className="h-10 px-4 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white text-xs font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[16px] leading-none">map</span>
-                  <span>3D Residential Layout Twin</span>
+                  <span>3D Residential Layout Model</span>
                 </button>
                 <button
                   onClick={() => onSelectTab('residential-3d')}
                   className="h-10 px-4 rounded-lg bg-[#10b981] hover:bg-[#059669] text-white text-xs font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[16px] leading-none">home</span>
-                  <span>3D 2BHK Interior Twin</span>
+                  <span>3D 2BHK Interior Wiring</span>
                 </button>
                 <button
                   onClick={() => onSelectTab('twin-3d')}
                   className="h-10 px-4 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white border border-[#38bdf8]/50 text-xs font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[16px] text-[#38bdf8] leading-none">3d_rotation</span>
-                  <span>3D Industrial Substation Twin</span>
+                  <span>3D 33kV Substation Model</span>
                 </button>
               </div>
             )}

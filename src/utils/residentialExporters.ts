@@ -216,7 +216,7 @@ export function exportSceneToGltf(
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = `${safeName}_2BHK_BIM_Twin.glb`;
+          a.download = `${safeName}_2BHK_BIM_Model.glb`;
           document.body.appendChild(a);
           a.click();
           a.remove();
@@ -227,7 +227,7 @@ export function exportSceneToGltf(
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = `${safeName}_2BHK_BIM_Twin.gltf`;
+          a.download = `${safeName}_2BHK_BIM_Model.gltf`;
           document.body.appendChild(a);
           a.click();
           a.remove();

@@ -18,31 +18,46 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenSeoAudit }) =
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12">
           {/* Brand & Mission Statement */}
-          <div className="lg:col-span-2 flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="relative h-10 w-10 sm:h-11 sm:w-11 flex items-center justify-center shrink-0">
+          <div className="lg:col-span-2 flex flex-col gap-4 items-start">
+            <button
+              onClick={() => handleTabClick('home')}
+              className="flex items-center gap-2.5 sm:gap-3 shrink-0 text-left cursor-pointer group w-fit focus:outline-none"
+              title="Ananya Electrical Solutions - Home"
+            >
+              <div className="relative h-10 w-10 sm:h-11 sm:w-11 flex items-center justify-center shrink-0 transition-transform group-hover:scale-105">
                 <img
-                  alt="Ananya Electrical Solutions — Class 1 Electrical Contractor Bengaluru Logo"
+                  alt="Ananya Electrical Solutions Logo"
                   className="h-full w-full object-contain filter drop-shadow-[0_2px_8px_rgba(245,158,11,0.3)]"
                   src="/assets/aistudio/logo_round_transparent.png"
                 />
               </div>
-              <div className="flex flex-col">
-                <span className="font-['Orbitron'] text-[18px] sm:text-[20px] font-black uppercase tracking-[0.14em] bg-gradient-to-r from-[#0284C7] via-[#0B192C] to-[#D97706] bg-clip-text text-transparent leading-none">
+              <div className="flex flex-col justify-center">
+                <span className="font-['Montserrat'] text-[17px] sm:text-[19px] 2xl:text-[21px] font-black [font-weight:900] uppercase tracking-[0.06em] bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent leading-none">
                   ANANYA
                 </span>
-                <span className="font-['Chakra_Petch'] text-[11.5px] font-bold uppercase tracking-[0.22em] text-[#0284C7] mt-1 leading-none">
+                <span className="font-['Montserrat'] text-[9.5px] sm:text-[10.5px] 2xl:text-[11.5px] font-extrabold uppercase tracking-[0.18em] bg-[linear-gradient(90deg,#0284C7_0%,#38BDF8_26%,#F59E0B_46%,#EA580C_68%,#2563EB_84%,#0284C7_100%)] bg-[length:200%_auto] animate-brand-shimmer [animation-delay:0.35s] bg-clip-text text-transparent mt-1 leading-none whitespace-nowrap">
                   ELECTRICAL SOLUTIONS
                 </span>
               </div>
-            </div>
+            </button>
+
             <p className="text-[13px] text-[#44474c] max-w-sm leading-relaxed">
               Government of Karnataka Licensed Class 1 Electrical Contractors and Turnkey Solar EPC Specialists headquartered in Sahakarnagar, Bengaluru. Delivering 11kV–110kV substations, HT/LT panels, BESCOM &amp; CEIG approvals, and industrial/commercial wiring across Karnataka.
             </p>
-            <div className="flex flex-wrap items-center gap-2 pt-1 text-[12px] text-[#001d31] font-semibold">
-              <span>11kV / 33kV / 66kV / 110kV</span>
-              <span aria-hidden="true">·</span>
-              <span>Class-1 PWD</span>
+
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200/80 text-[11.5px] font-semibold text-slate-700">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0284C7]"></span>
+                <span>11kV – 110kV HT/EHT</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 border border-amber-200/80 text-[11.5px] font-semibold text-amber-900">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B]"></span>
+                <span>Class-1 PWD</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 border border-emerald-200/80 text-[11.5px] font-semibold text-emerald-900">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span>BESCOM &amp; CEIG Approved</span>
+              </span>
             </div>
           </div>
 

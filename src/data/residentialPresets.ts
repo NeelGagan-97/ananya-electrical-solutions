@@ -1200,7 +1200,7 @@ export const PLOT_DIMENSION_PRESETS: PlotDimensionPreset[] = [
   },
   {
     id: 'villa_palatial',
-    label: 'Palatial Villa 2BHK Twin',
+    label: 'Palatial Villa 2BHK Duplex',
     sublabel: '72 ft × 80 ft (22.0m × 24.4m)',
     breadthFt: 72,
     lengthFt: 80,
@@ -1232,7 +1232,7 @@ export const LUXURY_3BHK_PROJECT: ResidentialProject = (() => {
     id: 'proj_3bhk_luxury_spacious',
     meta: {
       ...scaled.meta,
-      projectName: 'Prestige Villa Grand 2BHK/3BHK Twin (21.5m × 24.0m)',
+      projectName: 'Prestige Villa Grand 2BHK/3BHK Duplex (21.5m × 24.0m)',
       customerName: 'Dr. Vikram Malhotra',
       location: 'Sadashivanagar, Bengaluru',
       sanctionedLoadKw: 12.0,
@@ -1257,7 +1257,7 @@ export const RESIDENTIAL_TEMPLATES = [
   {
     id: '3bhk_luxury',
     badge: '2BHK VILLA',
-    name: 'Prestige Villa Twin (71×79 ft)',
+    name: 'Prestige Villa Duplex (71×79 ft)',
     project: LUXURY_3BHK_PROJECT
   }
 ];

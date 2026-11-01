@@ -119,7 +119,7 @@ export const ElectricalScreen: React.FC<ElectricalScreenProps> = ({ onOpenConsul
                   className="h-11 px-4 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-white border border-[#38bdf8]/50 text-[13px] font-bold shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[18px] text-[#38bdf8] leading-none">3d_rotation</span>
-                  <span>Inspect in 3D Yard Twin</span>
+                  <span>Inspect in 3D Switchyard Model</span>
                 </button>
               )}
             </div>

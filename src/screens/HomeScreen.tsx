@@ -38,6 +38,49 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const logoVideoRef = useRef<HTMLVideoElement | null>(null);
   const [logoAnimPhase, setLogoAnimPhase] = useState<'charging' | 'surge' | 'energized'>('charging');
 
+  const ctaBlockRef = useRef<HTMLDivElement | null>(null);
+  const scopeCardsRef = useRef<HTMLDivElement | null>(null);
+  const [cardsTranslateY, setCardsTranslateY] = useState<number>(0);
+
+  useEffect(() => {
+    const updateAlignment = () => {
+      if (!ctaBlockRef.current || !scopeCardsRef.current) return;
+      if (window.innerWidth >= 1024) {
+        const prevTransform = scopeCardsRef.current.style.transform;
+        scopeCardsRef.current.style.transform = 'none';
+        const ctaRect = ctaBlockRef.current.getBoundingClientRect();
+        const cardsRect = scopeCardsRef.current.getBoundingClientRect();
+        const diff = Math.round(ctaRect.top - cardsRect.top);
+        scopeCardsRef.current.style.transform = prevTransform;
+        setCardsTranslateY(diff);
+      } else {
+        setCardsTranslateY(0);
+      }
+    };
+
+    updateAlignment();
+    window.addEventListener('resize', updateAlignment);
+
+    let ro: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined' && ctaBlockRef.current) {
+      ro = new ResizeObserver(() => updateAlignment());
+      ro.observe(ctaBlockRef.current);
+      if (scopeCardsRef.current && scopeCardsRef.current.parentElement) {
+        ro.observe(scopeCardsRef.current.parentElement);
+      }
+    }
+
+    const t1 = setTimeout(updateAlignment, 80);
+    const t2 = setTimeout(updateAlignment, 400);
+
+    return () => {
+      window.removeEventListener('resize', updateAlignment);
+      if (ro) ro.disconnect();
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [logoAnimPhase]);
+
   const handleImgFallback = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const target = e.currentTarget;
     if (!target.dataset.fallbackApplied) {
@@ -198,16 +241,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <div className="lg:col-span-7 flex flex-col gap-6">
               <div className="flex flex-col gap-3">
                 <h1 className="font-display-xl tracking-tight font-extrabold leading-tight drop-shadow-md bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent">
-                  Class 1 Electrical Contractor in Karnataka for HT/LT &amp; Solar
+                  Powering Karnataka with Reliable Electrical &amp; Solar Solutions
                 </h1>
               </div>
 
               <p className="font-body-lg text-slate-200 leading-relaxed max-w-2xl drop-shadow-sm">
-                Welcome to <strong className="text-white">Ananya Electrical Solutions</strong> — Government of Karnataka Licensed Class I Electrical Contractors headquartered in Sahakarnagar, Bengaluru. We deliver turnkey 11kV–110kV Substations, HT/LT Services, BESCOM &amp; CEIG statutory approvals, Industrial/Commercial/Residential wiring and Rooftop solar power plants across Bengaluru and Karnataka.
+                Welcome to <strong className="text-white">Ananya Electrical Solutions</strong> — Government of Karnataka Licensed Super Grade Electrical Contractors headquartered in Sahakarnagar, Bengaluru. We deliver turnkey 11kV–110kV Substations, HT/LT power transformers and switchgear panels, BESCOM &amp; CEIG statutory approvals, industrial plant wiring, and high-efficiency rooftop solar installations across Karnataka.
               </p>
 
               {/* Primary Lead Conversion CTAs: Get a Quote, Call Now, WhatsApp */}
-              <div className="flex flex-col gap-3 pt-2 max-w-2xl">
+              <div ref={ctaBlockRef} className="flex flex-col gap-3 pt-2 max-w-2xl transition-transform">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                   <button
                     onClick={() => {
@@ -251,10 +294,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   </button>
                   <button
                     onClick={() => onSelectTab('residential-layout-3d')}
-                    className="inline-flex items-center justify-center h-10 px-3 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white text-[12px] font-semibold transition-all cursor-pointer border border-[#38bdf8]/35 backdrop-blur-md whitespace-nowrap"
+                    className="flex items-center justify-center gap-1.5 min-h-[40px] h-full py-1.5 px-2 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white transition-all cursor-pointer border border-[#38bdf8]/35 backdrop-blur-md w-full min-w-0 overflow-hidden text-center"
                   >
-                    <span className="material-symbols-outlined text-[16px] mr-1.5 text-[#38bdf8] leading-none shrink-0">map</span>
-                    <span>Residential Layout &amp; Infrastructure</span>
+                    <span className="material-symbols-outlined text-[15px] text-[#38bdf8] leading-none shrink-0">map</span>
+                    <span className="text-[11px] sm:text-[11.5px] font-semibold leading-tight">
+                      Residential Layout &amp; Infrastructure
+                    </span>
                   </button>
                   <button
                     onClick={() => onSelectTab('residential-3d')}
@@ -394,7 +439,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </div>
 
               {/* Verified Engineering Scope Cards */}
-              <div className="grid grid-cols-2 gap-3 w-full items-stretch">
+              <div
+                ref={scopeCardsRef}
+                style={{ transform: cardsTranslateY ? `translateY(${cardsTranslateY}px)` : undefined }}
+                className="grid grid-cols-2 gap-3 w-full items-stretch transition-transform duration-200 ease-out"
+              >
                 <div className="p-4 rounded-xl bg-[#0B192C]/80 backdrop-blur-md text-white flex flex-col justify-between gap-1 border border-white/15 shadow-xl h-full">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[11px] text-slate-300 uppercase tracking-wider font-semibold">HT / EHT Grid Scope</span>
@@ -559,7 +608,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </section>
 
-      {/* ================= 3D DIGITAL TWIN SPOTLIGHT BANNER ================= */}
+      {/* ================= 3D ENGINEERING MODELS SPOTLIGHT BANNER ================= */}
       <section className="w-full bg-[#071120] text-white py-14 lg:py-16 relative overflow-hidden border-y border-[#334155]/80">
         {/* Multi-Panel Electrical Services & Equipment Background Collage */}
         <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">

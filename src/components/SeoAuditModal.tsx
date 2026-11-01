@@ -85,7 +85,7 @@ export const SeoAuditModal: React.FC<SeoAuditModalProps> = ({
                   Technical SEO &amp; Local Search Diagnostic
                 </span>
                 <span className="text-slate-400">·</span>
-                <span className="text-[11px] font-mono text-emerald-400">ananyaelectricalsolutions.in</span>
+                <span className="text-[11px] font-mono text-emerald-400">ananyaelectricalsolutions.com</span>
               </div>
               <h2 className="text-[17px] sm:text-[19px] font-bold text-white">
                 SEO Audit Report, Keyword Map, Schema.org &amp; Conversion Tracker
@@ -251,7 +251,7 @@ export const SeoAuditModal: React.FC<SeoAuditModalProps> = ({
                   <p className="text-[12.5px] text-[#44474c] leading-relaxed">
                     Configured <code className="font-mono text-[#0B192C]">wrangler.jsonc</code> (<code className="font-mono text-[#0B192C]">not_found_handling: &quot;single-page-application&quot;</code>), relative 301 aliases in <code className="font-mono text-[#0B192C]">public/_redirects</code>, and dynamic{' '}
                     <code className="font-mono text-[#0B192C]">&lt;link rel=&quot;canonical&quot;&gt;</code> tags pointing to{' '}
-                    <strong className="text-[#0B192C]">https://ananyaelectricalsolutions.in/</strong>.
+                    <strong className="text-[#0B192C]">https://ananyaelectricalsolutions.com/</strong>.
                   </p>
                   <div className="mt-auto pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-[12px]">
                     <span className="text-emerald-700 font-semibold">Geo Meta Tags: IN-KA (13.0623, 77.5871)</span>
@@ -333,10 +333,10 @@ export const SeoAuditModal: React.FC<SeoAuditModalProps> = ({
                 </div>
                 <ul className="flex flex-col gap-1.5 text-slate-300">
                   <li>
-                    1. <strong>Electrician &amp; LocalBusiness</strong> (@id: https://ananyaelectricalsolutions.in/#business) — Sahakarnagar HQ, +91 9743461955, GeoCoordinates (13.0623, 77.5871), OpeningHoursSpecification, AreaServed (Bengaluru &amp; Karnataka)
+                    1. <strong>Electrician &amp; LocalBusiness</strong> (@id: https://ananyaelectricalsolutions.com/#business) — Sahakarnagar HQ, +91 9743461955, GeoCoordinates (13.0623, 77.5871), OpeningHoursSpecification, AreaServed (Bengaluru &amp; Karnataka)
                   </li>
                   <li>
-                    2. <strong>WebSite</strong> (@id: https://ananyaelectricalsolutions.in/#website) — Publisher linked to Ananya Electrical Solutions
+                    2. <strong>WebSite</strong> (@id: https://ananyaelectricalsolutions.com/#website) — Publisher linked to Ananya Electrical Solutions
                   </li>
                   <li>
                     3. <strong>Service &amp; OfferCatalog</strong> — 6 Core Service Pillars (HT/LT Substations, Transformers &amp; Panels, BESCOM/CEIG Liaison, Industrial/Commercial Wiring, Earthing &amp; AMC, Rooftop Solar EPC)
@@ -409,7 +409,7 @@ export const SeoAuditModal: React.FC<SeoAuditModalProps> = ({
         {/* Footer */}
         <div className="bg-[#F8FAFC] px-6 py-3.5 border-t border-[#E2E8F0] flex items-center justify-between text-[12px] text-[#44474c]">
           <span>
-            Canonical Production Domain: <strong className="text-[#0B192C]">https://ananyaelectricalsolutions.in/</strong>
+            Canonical Production Domain: <strong className="text-[#0B192C]">https://ananyaelectricalsolutions.com/</strong>
           </span>
           <button
             onClick={onClose}

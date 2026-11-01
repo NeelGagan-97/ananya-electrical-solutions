@@ -105,7 +105,7 @@ export const ProjectWizardModal: React.FC<ProjectWizardModalProps> = ({
             </div>
             <div>
               <div className="text-base font-bold text-white">Create New Residential Electrical Project</div>
-              <div className="text-xs text-slate-400">Ananya Smart 3D Parametric CAD & Digital Twin Setup</div>
+              <div className="text-xs text-slate-400">Ananya Smart 3D Parametric CAD & Simulation Setup</div>
             </div>
           </div>
           <button
@@ -388,7 +388,7 @@ export const ProjectWizardModal: React.FC<ProjectWizardModalProps> = ({
               className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs transition-all flex items-center gap-2 shadow-lg"
             >
               <span className="material-symbols-outlined text-[18px]">view_in_ar</span>
-              <span>Generate 3D Digital Twin & CAD</span>
+              <span>Generate 3D Model & CAD</span>
             </button>
           )}
         </div>

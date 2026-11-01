@@ -94,7 +94,7 @@ export const LayoutProjectWizard: React.FC<LayoutProjectWizardProps> = ({
             </div>
             <div>
               <div className="text-base font-bold text-white">Residential Layout &amp; Infrastructure Setup</div>
-              <div className="text-xs text-slate-400">Ananya 3D Digital Twin • Planning &amp; Electrical Grid Design</div>
+              <div className="text-xs text-slate-400">Ananya 3D Layout Simulation • Planning &amp; Electrical Grid Design</div>
             </div>
           </div>
           <button onClick={onClose} className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer">
@@ -336,7 +336,7 @@ export const LayoutProjectWizard: React.FC<LayoutProjectWizardProps> = ({
               className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg cursor-pointer"
             >
               <span className="material-symbols-outlined text-[18px]">view_in_ar</span>
-              <span>Generate 3D Layout Digital Twin &amp; CAD</span>
+              <span>Generate 3D Layout Simulation &amp; CAD</span>
             </button>
           )}
         </div>

@@ -20,7 +20,7 @@ export const BUSINESS_NAP = {
   secondaryPhone: '+91 8660121438',
   secondaryPhoneTel: '+918660121438',
   email: 'ananyaelectricalsolutions@gmail.com',
-  canonicalDomain: 'https://ananyaelectricalsolutions.in',
+  canonicalDomain: 'https://ananyaelectricalsolutions.com',
   stagingDomain: 'https://ananya-electrical-solutions.neelgaganat97.workers.dev',
   googleMapsEmbedUrl:
     'https://www.google.com/maps?q=13.063471473522608,77.59142761283867&z=17&output=embed',
@@ -92,7 +92,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
   home: {
     tab: 'home',
     path: '/',
-    canonicalUrl: 'https://ananyaelectricalsolutions.in/',
+    canonicalUrl: 'https://ananyaelectricalsolutions.com/',
     title: 'Electrical Contractor in Bengaluru | Super Grade HT/LT & Solar EPC | Ananya Electrical Solutions',
     description:
       'Government Licensed Super Grade Electrical Contractor in Sahakarnagar, Bengaluru. Turnkey 11kV–110kV substations, HT/LT panels, BESCOM & CEIG approvals, industrial wiring, and rooftop solar across Karnataka. Call +91 9743461955.',
@@ -111,7 +111,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
   services: {
     tab: 'services',
     path: '/services',
-    canonicalUrl: 'https://ananyaelectricalsolutions.in/services',
+    canonicalUrl: 'https://ananyaelectricalsolutions.com/services',
     title: 'Electrical Installation & Maintenance Services in Bengaluru | HT/LT, Panels, CEIG & AMC',
     description:
       'Complete electrical contracting services in Bengaluru & Karnataka: 11kV/33kV substations, PCC/MCC control panels, BESCOM/CEIG liaison, industrial XLPE cabling, chemical earthing, and 24/7 AMC.',
@@ -133,7 +133,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
   electrical: {
     tab: 'electrical',
     path: '/ht-lt-electrical-works',
-    canonicalUrl: 'https://ananyaelectricalsolutions.in/ht-lt-electrical-works',
+    canonicalUrl: 'https://ananyaelectricalsolutions.com/ht-lt-electrical-works',
     title: 'HT/LT Electrical Contractor in Bangalore | 11kV–110kV Substations, VCB & Switchgear Panels',
     description:
       'Turnkey HT/LT electrical engineering in Bengaluru & Karnataka: 11kV/33kV/66kV/110kV substations, power transformers, VCB/ACB switchgear, busducts, APFC panels, and KPTCL/BESCOM approvals.',
@@ -156,7 +156,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
   'solar-solutions': {
     tab: 'solar-solutions',
     path: '/solar-power-solutions',
-    canonicalUrl: 'https://ananyaelectricalsolutions.in/solar-power-solutions',
+    canonicalUrl: 'https://ananyaelectricalsolutions.com/solar-power-solutions',
     title: 'Solar Installation Services in Bengaluru | Commercial & Industrial Rooftop Solar EPC Karnataka',
     description:
       'Turnkey rooftop and ground-mount solar power installation in Bengaluru & Karnataka. Tier-1 bifacial PV modules, BESCOM/KERC net metering approvals, and high-ROI C&I solar plants.',
@@ -179,7 +179,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
   'projects-gallery': {
     tab: 'projects-gallery',
     path: '/projects-gallery',
-    canonicalUrl: 'https://ananyaelectricalsolutions.in/projects-gallery',
+    canonicalUrl: 'https://ananyaelectricalsolutions.com/projects-gallery',
     title: 'Executed Electrical & Solar Projects in Bengaluru & Karnataka | Ananya Electrical Solutions',
     description:
       'Explore commissioned 33kV/66kV substations, industrial LT/HT panels, cleanroom electrification, and MW-scale rooftop solar EPC projects across Peenya, Bommasandra, Hosakote, and Mysuru.',
@@ -200,7 +200,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
   'about-us': {
     tab: 'about-us',
     path: '/about-us',
-    canonicalUrl: 'https://ananyaelectricalsolutions.in/about-us',
+    canonicalUrl: 'https://ananyaelectricalsolutions.com/about-us',
     title: 'About Ananya Electrical Solutions | Govt. Licensed Super Grade Electrical Contractor Karnataka',
     description:
       'Learn about Ananya Electrical Solutions, a Government of Karnataka Licensed Super Grade & Class-1 PWD Electrical Contractor headquartered in Sahakarnagar, Bengaluru serving all 31 districts.',
@@ -221,7 +221,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
   'contact-us': {
     tab: 'contact-us',
     path: '/contact-us',
-    canonicalUrl: 'https://ananyaelectricalsolutions.in/contact-us',
+    canonicalUrl: 'https://ananyaelectricalsolutions.com/contact-us',
     title: 'Contact Ananya Electrical Solutions | Sahakarnagar, Bengaluru | Call +91 9743461955',
     description:
       'Contact Ananya Electrical Solutions at 59, Opp Bank of India, G-Block, Sahakarnagar Main Road, Bengaluru 560092. Call +91 9743461955 or email ananyaelectricalsolutions@gmail.com for quotes & 24/7 support.',
@@ -242,7 +242,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
   'residential-3d': {
     tab: 'residential-3d',
     path: '/3d-2bhk',
-    canonicalUrl: 'https://ananyaelectricalsolutions.in/3d-2bhk',
+    canonicalUrl: 'https://ananyaelectricalsolutions.com/3d-2bhk',
     title: 'Residential 2BHK Interior | 3D IS:732 Wiring Simulator Bengaluru | Ananya Electrical Solutions',
     description:
       'Interactive 3D Residential 2BHK Interior electrical wiring model in Bengaluru. Inspect IS:732 concealed FRLS conduit routing, MCB/RCCB distribution boards, earthing, and custom room dimensions.',
@@ -264,7 +264,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
   'twin-3d': {
     tab: 'twin-3d',
     path: '/3d-transformer',
-    canonicalUrl: 'https://ananyaelectricalsolutions.in/3d-transformer',
+    canonicalUrl: 'https://ananyaelectricalsolutions.com/3d-transformer',
     title: '33kV Substation | 3D Power Transformer & VCB Switchyard Model | Ananya Electrical Bengaluru',
     description:
       'Explore our interactive 33kV Substation 3D engineering model. Inspect ONAN power transformers, outdoor VCB switchgear, lightning arresters, CT/PT metering, and earth-mat protection.',
@@ -285,7 +285,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
   'residential-solar-3d': {
     tab: 'residential-solar-3d',
     path: '/3d-residential-solar',
-    canonicalUrl: 'https://ananyaelectricalsolutions.in/3d-residential-solar',
+    canonicalUrl: 'https://ananyaelectricalsolutions.com/3d-residential-solar',
     title: 'Residential Solar Installation | 3D Rooftop Solar & BESCOM Net-Metering Model | Bengaluru',
     description:
       'Interactive 3D Residential Solar Installation model on a G+1 Indian RCC house. Inspect 3kWp–10kWp rooftop PV arrays, DCDB/ACDB, string inverter, earthing pits, and BESCOM bi-directional net metering.',
@@ -307,7 +307,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
   'residential-layout-3d': {
     tab: 'residential-layout-3d',
     path: '/3d-layout',
-    canonicalUrl: 'https://ananyaelectricalsolutions.in/3d-layout',
+    canonicalUrl: 'https://ananyaelectricalsolutions.com/3d-layout',
     title: 'Residential Layout & Infrastructure | 3D Underground XLPE Cabling Model | Bengaluru',
     description:
       'Interactive 3D Residential Layout & Infrastructure electrification planner. Design 11kV DTR poles, underground armored XLPE cable trenches, feeder pillars, street lighting, and BESCOM BOQ estimates.',
@@ -328,7 +328,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
   'smart-home-3d': {
     tab: 'smart-home-3d',
     path: '/3d-smart-home',
-    canonicalUrl: 'https://ananyaelectricalsolutions.in/3d-smart-home',
+    canonicalUrl: 'https://ananyaelectricalsolutions.com/3d-smart-home',
     title: 'Smart Home Automation | 3D Building & Home Automation Model in Bengaluru',
     description:
       'Interactive 3D Smart Home Automation simulator by Ananya Electrical Solutions Bengaluru. Experience DALI/KNX smart lighting, HVAC controls, motorized curtains, and energy telemetry.',
@@ -420,7 +420,7 @@ export function applyRouteSeo(tab: NavigationTab) {
     [meta.primaryKeyword, ...meta.secondaryKeywords].join(', ')
   );
 
-  // 3. Canonical Link Tag (Always points to preferred production domain https://ananyaelectricalsolutions.in)
+  // 3. Canonical Link Tag (Always points to preferred production domain https://ananyaelectricalsolutions.com)
   let canonicalEl = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
   if (!canonicalEl) {
     canonicalEl = document.createElement('link');
@@ -572,7 +572,7 @@ export function buildMailtoInquiryUrl(inquiry: Partial<EngineeringInquiry>): str
     `${inquiry.loadDetails || 'Please contact us to discuss site requirements.'}`,
     ``,
     `---`,
-    `Dispatched via ananyaelectricalsolutions.in`,
+    `Dispatched via ananyaelectricalsolutions.com`,
   ];
   return `mailto:${BUSINESS_NAP.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
     bodyLines.join('\n')
