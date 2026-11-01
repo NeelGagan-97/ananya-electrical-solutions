@@ -20,11 +20,11 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenSeoAudit }) =
           {/* Brand & Mission Statement */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <div className="relative h-10 w-10 sm:h-11 sm:w-11 rounded-lg bg-[#0B192C] p-0.5 flex items-center justify-center overflow-hidden shadow-sm border border-[#38BDF8]/40 shrink-0">
+              <div className="relative h-10 w-10 sm:h-11 sm:w-11 flex items-center justify-center shrink-0">
                 <img
                   alt="Ananya Electrical Solutions — Class 1 Electrical Contractor Bengaluru Logo"
-                  className="h-full w-full object-cover object-center scale-125 rounded-md"
-                  src="/assets/aistudio/Remove_words_keep_logo_67dae8ff_2K_ddc42d7a.jpg"
+                  className="h-full w-full object-contain filter drop-shadow-[0_2px_8px_rgba(245,158,11,0.3)]"
+                  src="/assets/aistudio/logo_round_transparent.png"
                 />
               </div>
               <div className="flex flex-col">

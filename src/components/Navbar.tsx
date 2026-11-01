@@ -53,35 +53,33 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-[#FFFFFF]/95 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.06)] border-b border-[#E2E8F0]">
-      <div className="w-full h-20 px-3 sm:px-5 lg:px-6 2xl:px-8 flex items-center justify-between gap-2 lg:gap-3 2xl:gap-6 max-w-[1920px] mx-auto">
+      <div className="w-full h-20 px-3 sm:px-5 lg:px-6 2xl:px-8 flex items-center justify-between gap-3 2xl:gap-6 max-w-[1920px] mx-auto">
         {/* Brand Zone */}
         <div className="flex items-center shrink-0">
           <button
             onClick={() => handleNavClick('home')}
-            className="flex items-center gap-2 sm:gap-2.5 2xl:gap-3 shrink-0 text-left cursor-pointer group"
+            className="flex items-center gap-2.5 sm:gap-3 shrink-0 text-left cursor-pointer group"
           >
-            <div className="relative h-9 w-9 sm:h-10 sm:w-10 2xl:h-11 2xl:w-11 rounded-lg bg-black p-0.5 flex items-center justify-center overflow-hidden shadow-sm border border-[#38BDF8]/40 shrink-0 transition-transform group-hover:scale-105">
+            <div className="relative h-10 w-10 sm:h-11 sm:w-11 flex items-center justify-center shrink-0 transition-transform group-hover:scale-105">
               <img
                 alt="Ananya Electrical Solutions Logo"
-                className="h-full w-full object-cover object-center scale-110 rounded-md"
-                src="/assets/aistudio/give_me_only_the_round_2d2be0f6_2K_13a8ea3d.jpg"
+                className="h-full w-full object-contain filter drop-shadow-[0_2px_8px_rgba(245,158,11,0.3)]"
+                src="/assets/aistudio/logo_round_transparent.png"
               />
             </div>
             <div className="flex flex-col justify-center">
-              <div className="flex items-baseline gap-1 sm:gap-1.5">
-                <span className="font-['Montserrat'] text-[15px] sm:text-[17px] 2xl:text-[20px] font-black [font-weight:900] uppercase tracking-[0.04em] sm:tracking-[0.06em] bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent leading-tight whitespace-nowrap">
-                  ANANYA
-                </span>
-                <span className="font-['Montserrat'] text-[14px] sm:text-[16px] 2xl:text-[20px] font-black [font-weight:900] uppercase tracking-[0.04em] sm:tracking-[0.06em] bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent leading-tight whitespace-nowrap">
-                  ELECTRICAL SOLUTIONS
-                </span>
-              </div>
+              <span className="font-['Montserrat'] text-[17px] sm:text-[19px] 2xl:text-[21px] font-black [font-weight:900] uppercase tracking-[0.06em] bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent leading-none">
+                ANANYA
+              </span>
+              <span className="font-['Montserrat'] text-[9.5px] sm:text-[10.5px] 2xl:text-[11.5px] font-extrabold uppercase tracking-[0.18em] text-[#0284c7] mt-1 leading-none whitespace-nowrap">
+                ELECTRICAL SOLUTIONS
+              </span>
             </div>
           </button>
         </div>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden xl:flex items-center justify-center gap-0.5 2xl:gap-1 shrink min-w-0">
+        <nav className="hidden xl:flex items-center justify-center gap-1 2xl:gap-2 shrink-0">
           {/* 3D Model Dropdown */}
           <div
             className="relative"
