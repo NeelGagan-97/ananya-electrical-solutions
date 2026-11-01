@@ -220,7 +220,7 @@ export const FloorPlanEditor: React.FC<FloorPlanEditorProps> = ({
           break;
         case 'place_earth_pit':
           type = 'earth_pit';
-          name = 'IS:3043 Chemical Earth Pit';
+          name = 'IS:3043 Maintenance-Free Earth Pit';
           power = 0;
           circuitId = 'c_earth_grid';
           heightY = 0.05;
@@ -471,7 +471,7 @@ export const FloorPlanEditor: React.FC<FloorPlanEditorProps> = ({
             className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors ${
               activeTool === 'place_earth_pit' ? 'bg-emerald-600 text-white font-bold' : 'bg-slate-800 text-emerald-300 hover:bg-slate-700'
             }`}
-            title="Place IS:3043 Chemical Earth Pit"
+            title="Place IS:3043 Earth Pit"
           >
             <span className="material-symbols-outlined text-[16px]">grounding</span>
             <span>+ Earth Pit</span>

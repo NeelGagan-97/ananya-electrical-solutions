@@ -138,10 +138,10 @@ export const GREENFIELD_ENCLAVE_PROJECT: ResidentialLayoutProject = {
       status: 'proposed_new',
       connectedPlotIds: []
     },
-    // Chemical Earth Pit for Substation Neutral & Body
+    // Earth Pit for Substation Neutral & Body
     {
       id: 'earth_pit_sub',
-      name: 'Substation Dedicated Chemical Earth Electrode Grid (< 0.5 Ω)',
+      name: 'Substation Dedicated Earth Electrode Grid (< 0.5 Ω)',
       type: 'earth_pit_grid',
       x: 3,
       z: 57,

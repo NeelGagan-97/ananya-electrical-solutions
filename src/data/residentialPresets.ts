@@ -680,12 +680,12 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
       isOn: true,
       wallPlacement: 'ceiling'
     },
-    // External Chemical Earth Pit
+    // External Earth Pit
     {
       id: 'pt_earth_pit',
       type: 'earth_pit',
       roomId: 'room_foyer',
-      name: 'IS:3043 Chemical Copper-Bonded Earth Electrode Pit',
+      name: 'IS:3043 Copper-Bonded Earth Electrode Pit',
       x: -2.2,
       y: 0.05,
       z: -2.4,
@@ -805,7 +805,7 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
     {
       id: 'c_earth_grid',
       code: 'PE',
-      name: 'Protective Earth & Chemical Grounding Grid',
+      name: 'Protective Earth & Grounding Grid',
       wireType: '8 SWG Copper Conductor / 4.0 sq.mm Green-Yellow PE',
       phaseColor: '#10B981',
       neutralColor: '#10B981',
@@ -814,7 +814,7 @@ export const STANDARD_2BHK_PROJECT: ResidentialProject = {
       conduitSize: '25mm',
       connectedPointIds: ['pt_main_db', 'pt_earth_pit'],
       maxCapacityWatts: 12000,
-      description: 'Continuous protective earth loop bonded to Main DB earth busbar and IS:3043 outdoor chemical earth pit (< 0.85 Ω).'
+      description: 'Continuous protective earth loop bonded to Main DB earth busbar and IS:3043 outdoor earth pit (< 0.85 Ω).'
     }
   ]
 };

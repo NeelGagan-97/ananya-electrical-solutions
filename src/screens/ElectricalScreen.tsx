@@ -352,7 +352,7 @@ export const ElectricalScreen: React.FC<ElectricalScreenProps> = ({ onOpenConsul
                   Recommended HT Feeder Cable
                 </span>
                 <span className="text-[16px] font-bold text-[#0B192C]">{htCable}</span>
-                <span className="text-[12px] text-slate-500">Chemical earthing pits: {earthPits} nos</span>
+                <span className="text-[12px] text-slate-500">Dedicated earthing pits: {earthPits} nos</span>
               </div>
             </div>
           </div>

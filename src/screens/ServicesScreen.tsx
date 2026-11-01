@@ -422,7 +422,7 @@ export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultati
               {
                 num: '06',
                 title: 'Preventive Maintenance (AMC), Thermal Audits & Earthing',
-                scope: '24/7 emergency breakdown dispatch across Bengaluru & Karnataka, quarterly transformer oil filtration, VCB/ACB breaker servicing, FLIR infrared thermography audits, and IS 3043 chemical copper/GI earthing pits.',
+                scope: '24/7 emergency breakdown dispatch across Bengaluru & Karnataka, quarterly transformer oil filtration, VCB/ACB breaker servicing, FLIR infrared thermography audits, and IS 3043 maintenance-free copper/GI earthing pits.',
                 standards: 'IS 3043, ISO 45001 Safety Protocol, LOTO Procedures',
                 tab: 'contact-us' as NavigationTab,
                 tabLabel: 'Schedule Facility AMC Audit',

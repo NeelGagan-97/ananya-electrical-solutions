@@ -53,9 +53,9 @@ export const ElectricalServicesSection: React.FC<ElectricalServicesSectionProps>
       iconName: 'shield',
       image: ASSETS.aboutExecution,
       description:
-        'Reliable chemical earthing and lightning grounding solutions engineered to protect people, sensitive appliances, and industrial machinery from earth faults.',
+        'Reliable electrical earthing and lightning grounding solutions engineered to protect people, sensitive appliances, and industrial machinery from earth faults.',
       features: [
-        'Maintenance-free copper/GI chemical earth pits',
+        'Maintenance-free copper/GI electrical earth pits',
         'Substation & transformer double earthing grids',
         'Earthing strip continuity & grid integrity checks',
         'Digital earth resistance testing (< 1 Ohm target)',
@@ -237,7 +237,7 @@ export const ElectricalServicesSection: React.FC<ElectricalServicesSectionProps>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-14">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
           <div className="flex flex-col gap-3 max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#e5eeff] text-[#006398] text-[12px] font-bold uppercase tracking-wider w-fit border border-[#CBD5E1] shadow-xs">
               <span className="material-symbols-outlined text-[16px] text-[#0284C7]">electrical_services</span>
@@ -250,19 +250,19 @@ export const ElectricalServicesSection: React.FC<ElectricalServicesSectionProps>
               Our Electrical Services &amp; Equipment Solutions
             </h2>
             <p className="font-body-lg text-[#44474c] leading-relaxed">
-              Complete electrical contracting and certified equipment installations—from safe home wiring, chemical earthing, and smart automation to LT switchboards, DG backup systems, EV chargers, and layout electrification.
+              Complete electrical contracting and certified equipment installations—from safe home wiring, dedicated electrical earthing, and smart automation to LT switchboards, DG backup systems, EV chargers, and layout electrification.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 text-[13px] text-slate-600 bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-xl border border-[#CBD5E1] shadow-xs">
-            <span className="flex items-center gap-1.5 font-semibold text-[#0B192C]">
-              <span className="material-symbols-outlined text-emerald-600 text-[18px]">verified</span>
-              Certified Wiremen
+          <div className="inline-flex items-center flex-nowrap whitespace-nowrap gap-2 sm:gap-3 text-[12px] sm:text-[13px] text-slate-600 bg-white/90 backdrop-blur-md px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-[#CBD5E1] shadow-xs shrink-0 self-start md:mt-[38px]">
+            <span className="inline-flex items-center gap-1.5 font-semibold text-[#0B192C] shrink-0">
+              <span className="material-symbols-outlined text-emerald-600 text-[18px] leading-none shrink-0">verified</span>
+              <span>Certified Wiremen</span>
             </span>
-            <span className="text-slate-300">•</span>
-            <span className="flex items-center gap-1.5 font-semibold text-[#0B192C]">
-              <span className="material-symbols-outlined text-[#0284C7] text-[18px]">verified_user</span>
-              IS / IEC Compliant Equipment
+            <span className="text-slate-300 shrink-0 select-none">•</span>
+            <span className="inline-flex items-center gap-1.5 font-semibold text-[#0B192C] shrink-0">
+              <span className="material-symbols-outlined text-[#0284C7] text-[18px] leading-none shrink-0">verified_user</span>
+              <span>IS / IEC Compliant Equipment</span>
             </span>
           </div>
         </div>

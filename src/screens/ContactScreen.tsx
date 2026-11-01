@@ -418,7 +418,7 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
                   <option value="HT / LT Switchgear Panels">HT / LT Distribution Panels (PCC, MCC, APFC, VCB, ACB)</option>
                   <option value="Statutory CEIG & BESCOM Approvals">BESCOM / KPTCL Liaison &amp; CEIG Statutory Approvals</option>
                   <option value="Commercial & Industrial Wiring">Commercial, Industrial &amp; Residential Turnkey Wiring</option>
-                  <option value="Earthing, Energy Audit & AMC">Chemical Earthing, Lightning Protection &amp; 24/7 AMC</option>
+                  <option value="Earthing, Energy Audit & AMC">Earthing Systems, Lightning Protection &amp; 24/7 AMC</option>
                   <option value="Solar EPC Turnkey">Turnkey Rooftop / Ground-Mount Solar EPC &amp; Net Metering</option>
                 </select>
               </div>

@@ -1207,7 +1207,7 @@ export const ResidentialSolar3DScreen: React.FC<ResidentialSolar3DScreenProps> =
                       <td className="p-2.5 font-mono text-amber-400">07</td>
                       <td className="p-2.5 font-bold text-white">Earthing &amp; Lightning Protection</td>
                       <td className="p-2.5 text-slate-300">
-                        3 Separate Chemical Earth Pits (DC, AC, LA) + Rooftop ESE/Franklin Arrestor
+                        3 Separate Dedicated Earth Pits (DC, AC, LA) + Rooftop ESE/Franklin Arrestor
                       </td>
                       <td className="p-2.5 font-mono text-emerald-300">3 Pits + 1 LA</td>
                     </tr>

@@ -79,7 +79,7 @@ const COMPONENT_SPECS: Record<string, ComponentSpec> = {
       { label: 'CT Ratio & Class', value: '25-50/5-5A, Accuracy Class 0.2s' },
       { label: 'PT Ratio & Burden', value: '33000/√3 / 110/√3 V, 50VA Cl 0.2' },
       { label: 'Arrestor Type', value: 'Gapless Metal Oxide (ZnO) 30kV' },
-      { label: 'Earth Resistance', value: '< 1.0 Ohm (Chemical Earth Pit)' },
+      { label: 'Earth Resistance', value: '< 1.0 Ohm (Maintenance-Free Earth Pit)' },
       { label: 'Enclosure', value: 'Double-padlocked tamper-evident box' }
     ]
   }

@@ -422,7 +422,7 @@ export const SOLAR_EQUIPMENT_COMPONENTS: SolarEquipmentComponent[] = [
   {
     id: 'earthing_system',
     index: 14,
-    name: '3-Pit Chemical Earthing System (DC, AC & LA)',
+    name: '3-Pit Dedicated Earthing System (DC, AC & LA)',
     shortLabel: '14. Earthing Electrodes (3 Pits)',
     category: 'Safety & Earthing',
     purpose: 'Provides three dedicated low-resistance fault-current dissipation paths into the earth: Pit-1 for DC Module Frames & DC SPD, Pit-2 for Inverter/ACDB/MDB Body, and Pit-3 isolated for the Lightning Arrestor.',
@@ -588,7 +588,7 @@ export const BESCOM_NET_METERING_STEPS: BescomProcessStep[] = [
     phase: 'PHASE 05 • ROOFTOP & ELECTRICAL INSTALLATION',
     title: 'Mechanical Erection, DC/AC Cabling, DCDB/ACDB & 3-Pit Earthing',
     authority: 'Ananya Licensed Supervisory & Wireman Team',
-    description: 'Erect elevated GI mounting frames at 14° south tilt with waterproofing pedestals, wire UV-resistant EN 50618 DC strings, install DCDB, Inverter, ACDB, Lightning Arrestor, and 3 separate chemical earth pits.',
+    description: 'Erect elevated GI mounting frames at 14° south tilt with waterproofing pedestals, wire UV-resistant EN 50618 DC strings, install DCDB, Inverter, ACDB, Lightning Arrestor, and 3 separate dedicated earth pits.',
     deliverables: ['Rooftop PV Array & Conduit Routing', 'DCDB / Inverter / ACDB Termination', '3 Independent Earth Pits (DC, AC, LA)'],
     statutoryRef: 'IS 732, IS 3043 (Earthing) & IS/IEC 62305 (Lightning)',
   },

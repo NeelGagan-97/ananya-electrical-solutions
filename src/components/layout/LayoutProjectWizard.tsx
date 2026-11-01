@@ -303,7 +303,7 @@ export const LayoutProjectWizard: React.FC<LayoutProjectWizardProps> = ({
                   </div>
                   <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800 flex items-center gap-2">
                     <span className="material-symbols-outlined text-emerald-400 text-[18px]">verified</span>
-                    <span>IS:3043 Chemical Earth Grid (&lt; 0.5 Ω)</span>
+                    <span>IS:3043 Dedicated Earth Grid (&lt; 0.5 Ω)</span>
                   </div>
                 </div>
               </div>

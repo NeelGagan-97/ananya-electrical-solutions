@@ -114,7 +114,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
     canonicalUrl: 'https://ananyaelectricalsolutions.com/services',
     title: 'Electrical Installation & Maintenance Services in Bengaluru | HT/LT, Panels, CEIG & AMC',
     description:
-      'Complete electrical contracting services in Bengaluru & Karnataka: 11kV/33kV substations, PCC/MCC control panels, BESCOM/CEIG liaison, industrial XLPE cabling, chemical earthing, and 24/7 AMC.',
+      'Complete electrical contracting services in Bengaluru & Karnataka: 11kV/33kV substations, PCC/MCC control panels, BESCOM/CEIG liaison, industrial XLPE cabling, electrical earthing systems, and 24/7 AMC.',
     h1: 'Electrical Installation, Testing & Maintenance Services in Bengaluru, Karnataka',
     primaryKeyword: 'Electrical installation services Bengaluru',
     secondaryKeywords: [

@@ -647,7 +647,7 @@ export const SmartHomeCanvas: React.FC<SmartHomeCanvasProps> = ({
     ceilingSlab.visible = stateRef.current.ceilingVisible;
     homeGroup.add(ceilingSlab);
 
-    // External IS:3043 Chemical Earth Pit Chamber (outside left wall, matching ResidentialCanvas)
+    // External IS:3043 Earth Pit Chamber (outside left wall, matching ResidentialCanvas)
     const earthPitGroup = new THREE.Group();
     earthPitGroup.position.set(-6.55, 0.05, 1.8);
     const pitBox = new THREE.Mesh(

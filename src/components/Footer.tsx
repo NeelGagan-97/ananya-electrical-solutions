@@ -89,7 +89,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenSeoAudit }) =
               </li>
               <li className="hover:text-[#006398] transition-colors">
                 <button onClick={() => handleTabClick('services')} className="text-left cursor-pointer hover:underline">
-                  Chemical Earthing, Audits &amp; 24/7 AMC
+                  Earthing Systems, Audits &amp; 24/7 AMC
                 </button>
               </li>
               <li className="hover:text-[#006398] transition-colors">

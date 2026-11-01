@@ -169,7 +169,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       icon: 'construction',
       image: ASSETS.pillarHighVoltage,
       equipmentTag: 'Power Transformers, 11kV/33kV VCBs, PCC/MCC & XLPE Trays',
-      desc: 'Deployment of transformers, heavy XLPE cabling, HT/LT switchgear panels, solar arrays, and chemical earth pits adhering strictly to CPWD and CEA standards.',
+      desc: 'Deployment of transformers, heavy XLPE cabling, HT/LT switchgear panels, solar arrays, and dedicated earth pits adhering strictly to CPWD and CEA standards.',
       deliverables: ['Transformer positioning', 'Busduct joint torquing', 'Cable termination & glanding', 'Solar array tilt alignment']
     },
     {
@@ -1119,8 +1119,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <div className="relative flex-1 min-h-[320px] rounded-2xl overflow-hidden shadow-lg border border-[#CBD5E1] flex flex-col justify-end">
                 <img
                   className="absolute inset-0 w-full h-full object-cover"
-                  alt="Electrical engineers in reflective vests and hard hats inspecting high-power breaker equipment"
-                  src={ASSETS.aboutExecution}
+                  alt="Female electrical engineer wearing safety gear inspecting industrial distribution panel with a digital multimeter"
+                  src={ASSETS.engineerPanelInspection}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C]/90 via-[#0B192C]/25 to-transparent"></div>
                 <div className="relative z-10 p-5 text-white flex flex-col gap-0.5">

@@ -522,7 +522,7 @@ export function generateLayout3DTwin(
       pit.position.y = 0.05;
       itemGrp.add(pit);
     } else if (item.type === 'earth_pit_grid') {
-      // Chemical Earthing Electrode Pit (Section 7.D)
+      // Dedicated Earthing Electrode Pit (Section 7.D)
       const epGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.08, 16);
       const epMat = new THREE.MeshStandardMaterial({ map: earthPitTex, roughness: 0.7 });
       disposables.push(epGeo, epMat);

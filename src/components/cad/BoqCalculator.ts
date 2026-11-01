@@ -213,7 +213,7 @@ export function calculateProjectBoq(project: ResidentialProject): {
       id: 'earth_chem',
       category: 'Earthing & Grounding',
       itemCode: 'EARTH-IS3043',
-      description: 'IS:3043 Chemical Earth Electrode (17.2mm × 2m Pure Copper Bonded) + 25kg Bentonite',
+      description: 'IS:3043 Copper-Bonded Earth Electrode (17.2mm × 2m) + 25kg Bentonite Backfill',
       makeBrand: 'Ananya TrueEarth / Ashlok',
       quantity: 1,
       unit: 'set',

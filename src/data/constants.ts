@@ -13,6 +13,7 @@ export const ASSETS = {
   pillarSolar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBJf2xIuHfI8H2wvPaxCYBRCHfspcK1BdHdLjgujCCF2XN2-fiwSy4U_ggSPHq5Yxttd35KOMynef7TSDzDF3sxFJkwyI0EkbsTfu4sHVlQw_x_YofNCyPSGC6_F1GTkbW5dk70UjzEdOFsi3L8p6u54k7kHEkYXKHihWJQElUUiRSWBnveDp9ZbADQPzVt7z2e68bHdifcFgQJdVceKw_GEd1ONsAlg83Qa_GJc5I-knW2fe0AXbsblA',
   pillarTesting: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAKRpnBJy6YM4IT-Wk8nEvyIdUqT6nK38LMXTZgYMAzUZgq-FvfBwpC7a3nupPTc1jz7kwJPjnYRai8H0znZm3Eg4boEZvGYw-XzjXK-gFWnG8o_01bT7cSnJwynxQT54KK8z8twaF5eGqGzR1KeMIKaGwFY3frqzPc4c3hj5k2Yx1yax9HRqPHLa5a15d71tQlBwwqFuBjswwFwo7ojloro1BxQUVSImH6g1kr6dM4S06Mx-9hTLY7hA',
   aboutExecution: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAEfqWL1ze8ak0SxXdMk-pb7pa-fOI3STbWD7BAi2s1ULDHHOkjxbodQOLozgy8koPOmNWi5tLl9-s31IhDjBmKZrYPIktBz6BNvYxIbDv4i53hMHqoZBik3sSR0tsIIgf09FLZIcH4lrhtDm2QDQk2YSnNjmxwXkKjji8o5gE6a-IdJOqBjgUhADtpNtNhsdiS4W4f4TE_D8KbdmKA52ZfHpPdlAIDZdq0BwaLGcWl48S5XQAOllPWUQ',
+  engineerPanelInspection: '/assets/aistudio/Woman_inspecting_electrical_pane__a71a6fc5_2K_c5e80cd6.jpg',
   project1: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBGbniEgbwvh57ZotZe9A7-lzAgrBC0ohAc-4sl2WVaeY30d7Ukt5hD0YOjyBBYIISSsKtD7N9sXMcUzqFcvS4qdDxwLvrgoDPHftgzLueH4sCAE3LJaHQOJxf8eY0GI1Bbwasf2j9fnnexfOYqIUNuLGxp6rshRJpaddupXnXd0v38meLsbWS_-WWPx0OWwEnmRddulTyKCVphWg5LV7LSW-AnUkrL_mnCXhb68ev8SbQLLUHL8cBS5g',
   project2: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCH_HDGMeWgC6INJ8Ly_Wh1nXfUaaN1FfjGWSw_eb5G9vVmNoS1AXP_h4rQy4voVKsNIUrG3ficlaW_UP8CdUps83CV2TDW1d0BTVx6xZOm9iD4m168OJ7J6gYQsAjboUSpDF5sJmNk-2ir8OFzN1xQmNnSBRUG417NIU9N9W5VL0mgxF3Bnk6bdYdasAsf8RVD4u5TGS3CojCXmMvjNosEvUm6KLl9Cd6bIDRzVQ1sAz9L26fi-UGYaA',
   project3: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDXD44vMawXW-gTyaPPzZEh15Hr5nmBSOzgnhIDlduxYo4hPsZc1QRcM9SkxKnJPYq8kJvWPTrYP1pgj6-7lPtr61tp19SJTSlRmVxNLad5p6FB5jFwHjYYspK2pw9vfwpH9dBVWbgKKyTzryDzB9Vx4mindVaSzNXx2f5B4C7JyjNx8AYQyu7CWLbxSmcB3nSvQc67--YgbenLDelW2CiVMQq9krpd3QLrD-sdBL98skhfz1jU9z41ww',
@@ -218,18 +219,18 @@ export const SERVICES: ServiceItem[] = [
     ]
   },
   {
-    id: 'lightning-chemical-earthing',
-    title: 'Chemical Earthing & Lightning Protection Systems',
+    id: 'lightning-earthing-protection',
+    title: 'Earthing Systems & Lightning Protection',
     category: 'maintenance',
     badge: 'IS 3043 Safety Grid',
     voltageClass: 'IS 3043 / IEC 62305',
     standards: 'IS 3043 / IEC 62305 / NFC 17-102',
     targetSegments: ['Substations', 'Factories & Warehouses', 'Solar Plants', 'Apartments & Homes'],
-    description: 'Substation copper/GI flat-strip earth mats, maintenance-free copper-bonded chemical earthing electrodes, Early Streamer Emission (ESE) lightning arresters, and Type 1+2 Surge Protection Devices (SPD).',
+    description: 'Substation copper/GI flat-strip earth mats, maintenance-free copper-bonded earthing electrodes, Early Streamer Emission (ESE) lightning arresters, and Type 1+2 Surge Protection Devices (SPD).',
     icon: 'shield',
     image: ASSETS.aboutExecution,
     specs: [
-      'Copper-Bonded & GI Chemical Earth Electrodes (< 1 Ohm Target)',
+      'Copper-Bonded & GI Earth Electrodes (< 1 Ohm Target)',
       'Substation Underground GI / Copper Strip Earth Mat Grids',
       'Early Streamer Emission (ESE) & Franklin Lightning Arresters',
       'Dedicated Separate Earthing for Transformer Neutral, Body & Ups/Inverters'
@@ -395,7 +396,7 @@ export const PROJECTS: ProjectItem[] = [
       'Preparation of Single Line Diagram (SLD) & substation layout CAD drawings',
       'Erection of DP/4P yard structure, GOAB isolator, lightning arresters & HT metering cubicle',
       'Installation & commissioning of step-down transformer, indoor VCB panel & LT PCC/MCC board',
-      'Chemical earthing grid (<1 Ohm), Megger/Hi-Pot testing & CEIG final energization approval'
+      'Dedicated earthing grid (<1 Ohm), Megger/Hi-Pot testing & CEIG final energization approval'
     ],
     clientReferencePlaceholder: '[Editable Owner Record: Add Verified Client Name, PO Ref & Sanctioned kVA]',
     isPlaceholderEditable: true
@@ -474,7 +475,7 @@ export const PROJECTS: ProjectItem[] = [
     title: 'Residential 2BHK/3BHK Villa & Commercial Interior Wiring',
     category: 'commercial',
     tag: 'IS:732 Wiring & Automation',
-    description: 'Precision concealed FRLS/ZHFR conduit wiring, TPN MCB/RCCB distribution boards, surge protection, chemical earthing, and smart lighting automation for homes and offices.',
+    description: 'Precision concealed FRLS/ZHFR conduit wiring, TPN MCB/RCCB distribution boards, surge protection, electrical earthing systems, and smart lighting automation for homes and offices.',
     location: 'Sahakarnagar & Across Bengaluru',
     status: 'Verified Scope Category',
     image: ASSETS.residentialWiring2Bhk,

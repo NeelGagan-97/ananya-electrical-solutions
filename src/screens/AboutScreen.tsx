@@ -72,8 +72,8 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onOpenConsultation }) 
       icon: 'lock'
     },
     {
-      title: 'IS 3043 Dual-Grid Chemical Earthing',
-      desc: 'Dedicated maintenance-free copper-bonded and GI chemical earthing electrodes with bentonite backfill, ensuring earth grid resistance below 1 Ohm for substations and neutral grounding.',
+      title: 'IS 3043 Dual-Grid Electrical Earthing',
+      desc: 'Dedicated maintenance-free copper-bonded and GI earthing electrodes with bentonite backfill, ensuring earth grid resistance below 1 Ohm for substations and neutral grounding.',
       icon: 'shield'
     },
     {

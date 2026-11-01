@@ -349,7 +349,7 @@ export const ProjectWizardModal: React.FC<ProjectWizardModalProps> = ({
                   </label>
                   <label className="flex items-center gap-2 bg-slate-900 p-2.5 rounded-lg border border-slate-800 cursor-pointer">
                     <input type="checkbox" checked={scopeEarth} onChange={(e) => setScopeEarth(e.target.checked)} className="rounded" />
-                    <span>IS:3043 Chemical Earth Pit (&lt; 1.0 Ohm)</span>
+                    <span>IS:3043 Maintenance-Free Earth Pit (&lt; 1.0 Ohm)</span>
                   </label>
                   <label className="flex items-center gap-2 bg-slate-900 p-2.5 rounded-lg border border-slate-800 cursor-pointer">
                     <input type="checkbox" checked={scopeSolar} onChange={(e) => setScopeSolar(e.target.checked)} className="rounded" />

@@ -176,7 +176,7 @@ export function calculateLayoutBoq(project: ResidentialLayoutProject): {
       id: 'earth_chem_rod',
       category: 'Earthing & Grounding' as any,
       itemCode: 'EARTH-IS3043-GRID',
-      description: 'IS:3043 Chemical Earthing Kit (17.2mm x 3m Pure Copper Bonded Steel Electrode + 25kg Carbonaceous Compound) with CI chamber cover',
+      description: 'IS:3043 Maintenance-Free Copper-Bonded Earthing Kit (17.2mm x 3m Pure Copper Bonded Steel Electrode + Carbonaceous Compound) with CI chamber cover',
       makeBrand: 'Ananya TrueEarth / Ashlok',
       quantity: pillarCount + 4,
       unit: 'set',
