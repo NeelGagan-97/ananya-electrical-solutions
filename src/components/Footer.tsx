@@ -136,17 +136,6 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenSeoAudit }) =
                   Contact &amp; Quote Request
                 </button>
               </li>
-              {onOpenSeoAudit && (
-                <li className="pt-1">
-                  <button
-                    onClick={onOpenSeoAudit}
-                    className="text-left text-[12px] font-semibold text-[#0284C7] hover:underline cursor-pointer flex items-center gap-1"
-                  >
-                    <span className="material-symbols-outlined text-[15px]">travel_explore</span>
-                    <span>SEO Audit &amp; Keyword Map</span>
-                  </button>
-                </li>
-              )}
             </ul>
           </div>
 
