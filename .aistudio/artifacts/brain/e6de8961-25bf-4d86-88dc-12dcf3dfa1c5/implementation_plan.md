@@ -1,161 +1,167 @@
-# Comprehensive Website Audit & Improvement Plan — Ananya Electrical Solutions
+# Ananya Electrical Solutions – Complete Enquiry Forms Module
 
-An end-to-end audit and strategic engineering overhaul for **Ananya Electrical Solutions** (https://ananyaelectricalsolutions.com/), elevating the web platform into an authoritative, high-performance, conversion-optimized digital presence for Super Grade HT/LT Electrical Contracting and Solar EPC in Karnataka.
-
----
-
-## User Review & Critical Decisions
+A complete collection of 15 production-grade, responsive, and functional enquiry forms built as modular, reusable components for **Ananya Electrical Solutions** (Bengaluru). The system preserves 100% of the existing website's look, feel, pages, and animations while providing seamless modal and inline access, strict client-side validation, simulated file upload handling with progress and size indicators, reference code generation, local repository persistence, and WhatsApp/Email/Call conversion handoffs.
 
 > [!IMPORTANT]
-> Based on your Phase 1 inputs, the following foundational decisions are confirmed and guide this implementation:
-
-- **Confirmed Decision 1 (Lead Generation)**: Instant WhatsApp direct dispatch combined with structured local inquiry storage (`localStorage` backup + quick status indicator in the top navbar).
-- **Confirmed Decision 2 (Visual Theme & Hero)**: High-trust corporate electrical engineering aesthetic (deep navy `#0B192C`, crisp white cards, electric azure `#0284C7`, energy amber `#F59E0B`) with high-voltage accent lighting and realistic transmission line atmosphere, featuring the suggested headline: *"Powering Karnataka with Reliable Electrical & Solar Solutions."*
-- **Confirmed Decision 3 (3D Engineering Models)**: Retain all 5 interactive 3D engineering models (33kV Substation, Rooftop Solar Net-Metering, 2BHK Interior Wiring, Residential Layout CAD, Smart Home Automation) prominently in the header menu and dedicated homepage showcase.
-- **Confirmed Decision 4 (Domain Alignment)**: Complete migration to the primary production domain `https://ananyaelectricalsolutions.com/` across all canonical tags, JSON-LD schemas, OpenGraph/Twitter cards, sitemap, and robots.txt (eliminating outdated `.in` references and preventing `workers.dev` leaks).
-
----
-
-## 1. Audit Summary: Problems, Severity & Proposed Solutions
-
-| Area | Current Issue | Severity | Proposed Solution |
-| :--- | :--- | :--- | :--- |
-| **Domain & SEO Canonicalization** | `src/utils/seo.ts` and `index.html` still reference `ananyaelectricalsolutions.in` while production domain is `ananyaelectricalsolutions.com`. | **High** | Update all canonical URLs, OpenGraph `og:url`, Twitter cards, and Schema.org `@id`/`url` to `https://ananyaelectricalsolutions.com/`. |
-| **Sitemap XML Syntax** | `public/sitemap.xml` has a leading blank line, lacks the mandatory `<?xml version="1.0" encoding="UTF-8"?>` declaration, and omits the `/3d-residential-solar` route. | **High** | Add proper XML declaration at line 1, clean up whitespace, and include all 12 valid production routes. |
-| **Terminology Consistency** | The word "Twin" remains in several secondary screens (`ServicesScreen.tsx`, `ElectricalScreen.tsx`, `LayoutProjectWizard.tsx`, `ProjectWizardModal.tsx`). | **Medium** | Standardize user-facing text to "3D Model / 3D Layout Simulation / 3D Switchyard Model" in alignment with client branding rules. |
-| **Homepage Hero Headline & Copy** | Headline currently reads generic "Class 1 Electrical Contractor..." rather than the targeted value proposition requested. | **Medium** | Update hero headline to *"Powering Karnataka with Reliable Electrical & Solar Solutions"*, supported by Super Grade credentials and key services. |
-| **Form Lead Capture & Verification** | Form submissions currently record locally and offer an optional WhatsApp button; some users may close before clicking WhatsApp. | **Medium** | Enhance enquiry submissions across Homepage, Contact Screen, and Consultation Modal to automatically trigger the pre-filled WhatsApp engineering message while saving state in local storage. |
-| **Target Keywords Integration** | Required target keywords (*"Electrical Contractor in Bangalore"*, *"HT LT Electrical Contractor Karnataka"*, *"Industrial Electrical Works Bangalore"*, *"Solar EPC Company Bangalore"*, *"Transformer Installation Contractor"*) are partially fragmented. | **Medium** | Integrate high-intent target keywords naturally into semantic headings (`h1`, `h2`), service cards, metadata descriptions, and breadcrumbs without keyword stuffing. |
-| **Bundle Size & Chunk Loading** | Three.js interactive models are dynamically imported via `React.lazy`, but vendor chunks can be further tuned for lightning-fast First Contentful Paint (< 1.2s). | **Low** | Verify Vite Rollup `manualChunks` separation for Three.js, Lucide, and React runtime so the initial HTML/JS landing payload remains minimal. |
-| **Cloudflare Workers SPA Routing** | Deep linking on nested routes requires strict fallback handling. | **Verified** | Existing `wrangler.jsonc` specifies `not_found_handling: "single-page-application"` and `public/_redirects` handles alias redirects cleanly without worker redirect loops. |
+> **Confirmed Choices from Phase 1:**
+> - **Form Access & Presentation**: Contextual modal popups triggered by service buttons and a discreet, high-utility floating enquiry launcher + full support for inline form embedding.
+> - **Data Persistence & Submissions**: LocalStorage repository (`aes_enquiries_repository_v1`) tracking unique reference codes, timestamps, submission categories, and lifecycle statuses, coupled with instant WhatsApp/Email handoff.
+> - **File Attachments & Upload Processing**: Client-side validation enforcing file type restrictions (PDF, JPG, PNG, DOCX, XLSX, CSV, and PDF-only for resumes) and max 10MB per file with animated simulated progress bars and size tracking.
+> - **Website Invariance**: The existing landing page, 3D interactive models, navigation bar, footer, and service screens remain strictly preserved and unaffected.
 
 ---
 
-## 2. Architecture & System Flow
+## 1. Overview & Core Concept
+
+- **What It Delivers**: A standalone, comprehensive suite of 15 dedicated engineering enquiry forms tailored to Ananya Electrical Solutions' electrical contracting verticals (from residential wiring and rooftop solar to 11kV–110kV HT/LT substations, industrial power distribution, safety audits, vendor onboarding, and emergency dispatch).
+- **Target Audience / Personas**:
+  - Residential homeowners and apartment RWAs needing wiring, earthing, or rooftop solar.
+  - Industrial plant heads, factory engineers, and facility managers requesting substation commissioning, HT/LT panels, or AMCs.
+  - Architects, builders, and electrical consultants requiring BOQ pricing, SLD reviews, and electrical layouts.
+  - Vendors/suppliers seeking registration, job applicants seeking engineering roles, and existing clients filing service tickets.
+- **Key Value**: Replaces generic static contact fields with domain-accurate electrical engineering questionnaires that collect precise technical parameters (voltage class, transformer capacity, connected load in kW/kVA, rooftop area, SLD diagrams, BOQ sheets) before engineering dispatch, significantly reducing back-and-forth consultation time.
+
+---
+
+## 2. User Experience & Visual Design
+
+### Key User Flows
+
+```
+[Service CTA / Floating Launcher]
+               │
+               ▼
+   [Responsive Modal Container] ── (Backdrop Blur & Smooth Fade-In)
+               │
+               ▼
+     [Domain Form Header] ─────── Dark Navy (#0B192C) with Subtitle & Close Button
+               │
+               ▼
+   [Two-Column Form Fields] ───── Validated inputs, custom select, multi-select tags,
+               │                  conditional fields, file uploader with progress
+               ▼
+     [Interactive Validation] ─── Immediate feedback on Indian mobile, email, file size
+               │
+               ▼
+     [Submission Action] ──────── Loading state, duplicate prevention, reference ID generation
+               │
+               ▼
+   [Success Confirmation] ─────── Unique Ref No. (e.g., AES-RES-202611-8421), Status,
+                                  Direct 1-Click WhatsApp handoff, Call +91 9632025123
+```
+
+### Visual Identity & Theme Alignment
+
+All forms strictly adopt the existing Ananya Electrical Solutions brand tokens defined in `src/index.css`:
+- **Header & Modals**: Dark Navy (`#0B192C` / `bg-navy-deep`) with subtle border accents (`#1E293B` / `#334155`).
+- **Form Surface**: Clean white (`#FFFFFF`) and light-grey/ice (`#F8FAFC` / `#EFF4FF`) backgrounds.
+- **Primary Buttons & Actions**: High-contrast Electric Blue (`#2563EB` / `#0284C7`) with smooth hover state (`#1D4ED8`) and focus rings.
+- **Emergency Action**: Urgent Amber/Crimson accents (`#DC2626` / `#F59E0B`) with prominent safety warnings advising customers to stay clear of live equipment.
+- **Typography**: Display titles in Plus Jakarta Sans (`var(--font-display)`), inputs and labels in Inter (`var(--font-body)`), and reference numbers/technical specs in JetBrains Mono (`var(--font-mono)`).
+- **Form Inputs**: Rounded-lg inputs (`border border-slate-300 focus:border-[#0284C7] focus:ring-2 focus:ring-[#0284C7]/20 transition-all text-slate-900 bg-white`).
+
+---
+
+## 3. The 15 Enquiry Forms Specifications
+
+| # | Form Component | Purpose & Target Segment | Key Fields & Controls |
+|---|---|---|---|
+| **01** | `ResidentialElectricalForm` | Homeowners & villas | Full Name, Mobile, Email, Property Type, Location, Size, Required Services (Multi-select), Site Visit Date, Notes, Image Upload, Consent. |
+| **02** | `IndustrialCommercialForm` | Factories, IT parks, warehouses | Company, Contact Person, Designation, Phone, Email, GST, Facility Type, Connected Load (kW/kVA), Voltage Level (LT/HT/Both), Required Services, Scope, BOQ/Drawings Upload, Start Date. |
+| **03** | `HtLtWorksForm` | Substations & high-voltage lines | Org Name, Contact, Phone, Email, Category (Substation/Panel/Line), Voltage Level (11kV–33kV/415V), Transformer Capacity, Number of Transformers, SLD Upload, BOQ Upload. |
+| **04** | `SolarRooftopForm` | Residential & commercial solar EPC | Name/Org, Phone, Email, Installation Type, Connection Phase (1-Ph/3-Ph), Monthly Bill (₹), Monthly kWh, Rooftop Area (sq ft), Preferred Capacity, System Type (On-grid/Off-grid/Hybrid), Battery Backup, Bill Upload, Roof Images. |
+| **05** | `MaintenanceAmcForm` | Annual maintenance contracts | Company, Contact, Phone, Email, Facility Type, Equipment Available (Multi-select), Number of Panels, Transformer kVA, Maintenance Type (Preventive/Breakdown/AMC), Frequency, Existing AMC (Y/N), Preferred Date. |
+| **06** | `InspectionSafetyAuditForm` | Compliance & statutory audits | Organization, Contact, Phone, Email, Site Location, Facility Type, Inspection Categories (Earthing Resistance, Load, Thermal, HT/LT), Voltage Class, Last Inspection Date, Preferred Date, Report Upload. |
+| **07** | `EngineeringDesignForm` | SLD, layout, load calculations | Client/Org, Contact, Phone, Email, Location, Project Stage (Planning/Design/Execution), Required Consultancy (Multi-select), Voltage Level, Drawings Upload, Target Delivery Date. |
+| **08** | `VendorRegistrationForm` | Suppliers & subcontractors | Company, Contact, Phone, Email, GST, Address, Business Category, Products/Services, Experience Years, Service Regions, Website, Company Profile & GST Certificate Upload. |
+| **09** | `RequestSiteVisitForm` | Field engineers on-site visits | Name, Phone, Email, Location, Facility Type, Service Required, Preferred Visit Date, Time Slot (9-12, 12-3, 3-6), Description, Site Photos. |
+| **10** | `BoqQuotationRequestForm` | Direct pricing for bill of quantities | Company/Name, Contact, Phone, Email, Location, Category, Quotation Type (Material/Labour/Turnkey), Budget Range, Required Date, BOQ Spreadsheet Upload (XLSX/CSV/PDF), Technical Specs. |
+| **11** | `ElectricalEmergencyForm` | Critical faults & breakdowns | Name, Phone, Location, Facility Type, Emergency Type (Power Failure, Short Circuit, Panel Fault, Fire/Overheating), Severity (Critical/Urgent/Normal), Safety Notice Banner, Photos. |
+| **12** | `RequestCallbackForm` | Quick inbound consultation | Full Name, Phone, Email, Service of Interest, Preferred Callback Window (Morning/Afternoon/Evening), Requirement Note. |
+| **13** | `ProjectFeedbackForm` | Post-commissioning customer review | Customer Name, Phone, Project Category, Location, 1–5 Star Rating (Overall, Work Quality, Timeliness, Communication), Testimonials, Suggestions, Publishing Permission Checkbox. |
+| **14** | `CareersJobApplicationForm` | Engineering & technician hiring | Full Name, Phone, Email, Location, Position Applied, Experience Level, Educational Qualifications, Technical Skills, Notice Period, Expected CTC, Resume Upload (PDF only, required). |
+| **15** | `CustomerComplaintForm` | Post-service issue ticketing | Customer Name, Phone, Email, Work Reference No, Location, Issue Category, Complaint Priority (Critical/High/Normal), Occurrence Date, Issue Description, Supporting Photos, Preferred Channel. |
+
+---
+
+## 4. Technical Architecture & Component Hierarchy
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│                        User & Search Crawlers                          │
-└────────────────────────────────────┬───────────────────────────────────┘
-                                     │
-                                     ▼
+│                        App.tsx Integration                             │
+├───────────────────────────────────┬────────────────────────────────────┤
+│ Existing Site (Unmodified Pages) │ Floating Quick-Enquiry Launcher    │
+│ Navbar Service Triggers           │ Contextual Button Handlers         │
+└─────────────────┬─────────────────┴──────────────────┬─────────────────┘
+                  │                                    │
+                  ▼                                    ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│             Cloudflare Workers Static Assets (Single-Page App)         │
-│  • Domain: https://ananyaelectricalsolutions.com/                      │
-│  • Assets: ./dist  |  not_found_handling: single-page-application      │
-│  • _redirects: clean 301 alias preservation                            │
-└────────────────────────────────────┬───────────────────────────────────┘
-                                     │
-                                     ▼
+│             EnquiryModalContainer.tsx (Accessible Dialog)             │
+│  - Backdrop with blur & escape listener                                │
+│  - Dark Navy Header with Dynamic Title & Icon                          │
+│  - Scrollable Form Canvas (Single on mobile, Two-column on desktop)    │
+│  - Cancel Button + Primary Action Button                               │
+│  - Inline Error Notices & Submission Loading State                     │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+                  ┌─────────────────┴─────────────────┐
+                  ▼                                   ▼
+┌───────────────────────────────────┐ ┌──────────────────────────────────┐
+│        Active Form Component      │ │      Success Confirmation View   │
+│  (1 of 15 Domain Specific Forms)  │ │  - Unique Reference Badge        │
+│  - Form 1: Residential Wiring     │ │  - Summary of Submitted Data     │
+│  - Form 2: Industrial / Comm.     │ │  - Direct WhatsApp Pre-filled CTA│
+│  - Form 3: HT/LT Substations      │ │  - Direct Phone Call CTA         │
+│  - Form 4: Solar Rooftop EPC      │ │  - New Request / Close Options   │
+│  - Form 5 to 15...                │ └──────────────────────────────────┘
+└─────────────────┬─────────────────┘
+                  │
+                  ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│                       React 19 + Vite Frontend                         │
-│  ┌─────────────────────────┐  ┌─────────────────────────────────────┐  │
-│  │   SEO & Routing Layer   │  │        Top Navigation Bar           │  │
-│  │ • Clean Path Resolution │  │ • Transparent Circular Emblem       │  │
-│  │ • Dynamic Canonical Url │  │ • Animated Stacked Brand Typography │  │
-│  │ • Schema.org JSON-LD    │  │ • 5-Option 3D Model Dropdown        │  │
-│  │ • Breadcrumb Structured │  │ • Direct Call & Instant Quote CTA   │  │
-│  └─────────────────────────┘  └─────────────────────────────────────┘  │
-│                                    │                                   │
-│  ┌─────────────────────────────────┴────────────────────────────────┐  │
-│  │                        Page Routing                              │  │
-│  │  ├── / (Homepage with Electrical & Solar EPC Focus)              │  │
-│  │  ├── /services (12 Industrial/Commercial/Residential Services)   │  │
-│  │  ├── /ht-lt-electrical-works (Transformers, VCB, CEIG Liaison)   │  │
-│  │  ├── /solar-power-solutions (Rooftop, Hybrid, Net Metering)      │  │
-│  │  ├── /projects-gallery (Verified Karnataka Engineering Works)    │  │
-│  │  ├── /about-us (Super Grade Licenses, Safety Accreditations)    │  │
-│  │  ├── /contact-us (Direct Call, WhatsApp, Location Map, Form)     │  │
-│  │  └── /3d-* (Lazy-loaded 3D Switchyard, Solar, 2BHK, Layout)      │  │
-│  └─────────────────────────────────┬────────────────────────────────┘  │
-│                                    │                                   │
-│  ┌─────────────────────────────────┴────────────────────────────────┐  │
-│  │                 Lead Conversion & Data Management                │  │
-│  │ • Verified Indian Phone Validation (+91 / 10 digits)             │  │
-│  │ • Immediate Structured WhatsApp Payload Generation               │  │
-│  │ • LocalStorage Inquiry Persistence + Navbar Badge Indicator     │  │
-│  └──────────────────────────────────────────────────────────────────┘  │
+│              Reusable Form Controls & Utilities (/components/forms)    │
+│  ├── FormInput.tsx          (Floating label / validated text input)    │
+│  ├── FormSelect.tsx         (Styled native/custom dropdown)            │
+│  ├── FormMultiSelect.tsx    (Tag-based multi-selection)                │
+│  ├── FormTextarea.tsx       (Clean responsive textarea with counter)   │
+│  ├── FormCheckbox.tsx       (Accessible checkbox with consent link)    │
+│  ├── StarRating.tsx         (Interactive 1-5 rating for feedback)      │
+│  ├── FileUploadField.tsx    (Drag-drop, progress, size check, preview) │
+│  ├── validation.ts          (Indian phone regex, email, GST, limits)   │
+│  └── enquirySubmissionService.ts (Storage, ref generation, WhatsApp)   │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 3. Detailed Page-by-Page Improvement Plan
+## 5. Implementation Steps & Verification
 
-### A. Homepage (`src/screens/HomeScreen.tsx`)
-- **Hero Section**:
-  - Update main headline to: *"Powering Karnataka with Reliable Electrical & Solar Solutions."*
-  - Refine sub-copy highlighting Super Grade licensing, 11kV–110kV substations, HT/LT panels, BESCOM/CEIG approvals, and turnkey solar EPC.
-  - Maintain the atmospheric transmission line backdrop and high-voltage electrical accent lighting.
-  - CTAs: Primary "Get Free Estimate / Quote", Secondary "Call +91 9632025123", Tertiary "WhatsApp Direct".
-- **Credentials & Badges**:
-  - Emphasize Government of Karnataka Super Grade Licensed Contractor, Class-1 PWD, 5+ years operational track record.
-- **Target Sectors**:
-  - Clean cards for Industrial & Manufacturing, Commercial & IT Parks, Residential Townships, Institutional & Healthcare, Solar & Clean Energy.
-- **3D Engineering Showcase**:
-  - Keep the full-width stacked showcase connecting to all 5 interactive 3D simulations.
-- **Testimonials & Social Proof**:
-  - Authentic, strictly verified industrial & commercial client project feedback without synthetic reviews.
+1. **Core Utilities & Types**:
+   - Create `src/components/forms/types.ts` defining comprehensive interfaces for each form, submission payload, and status pipeline.
+   - Create `src/components/forms/validation.ts` with battle-tested validators for Indian phone numbers (`+91` format), emails, GST numbers, file types, and size thresholds.
+   - Create `src/components/forms/enquirySubmissionService.ts` managing LocalStorage persistence, reference ID formatting (`AES-[CODE]-[TIMESTAMP]-[RAND]`), and pre-filled WhatsApp/Email dispatch links.
 
-### B. Core Services (`src/screens/ServicesScreen.tsx` & `src/components/ElectricalServicesSection.tsx`)
-- Audit all service cards for clear, descriptive copy:
-  - 11kV–110kV Substations & Transformers
-  - HT/LT Switchgear & Form-4b Panels (PCC, MCC, APFC, VCB)
-  - Industrial Cable Trays & Armored XLPE Laying
-  - Commercial & Residential Concealed FRLS Conduit Wiring
-  - BESCOM / KPTCL Power Sanction & CEIG Drawing Clearances
-  - IS 3043 Chemical Earthing & ESE Lightning Protection
-  - Turnkey Rooftop Solar EPC & Bidirectional Net Metering
-  - 24/7 Breakdown Dispatch & Preventive Maintenance AMC
-- Eliminate any remaining references to the term "Twin".
+2. **Atomic Reusable Field Components**:
+   - `FormInput`: Label, required asterisk, prefix icons, inline error, helper text.
+   - `FormSelect`: Accessible dropdown with default placeholder and error borders.
+   - `FormMultiSelect`: Interactive pill-selection buttons with active styling.
+   - `FormTextarea`: Character counter and auto-resizing height.
+   - `FileUploadField`: Handles drag & drop, file size enforcement ($\le 10\text{MB}$), file format validation (PDF/JPG/PNG/DOCX/XLSX/CSV), upload simulation with percentage bar, file removal, and metadata display.
+   - `StarRatingField`: Accessible star selector for feedback.
+   - `FormCheckbox`: Legal consent checkbox with clear wording.
 
-### C. HT/LT Electrical Works (`src/screens/ElectricalScreen.tsx`)
-- Detailed technical breakdowns of:
-  - Power & Distribution Transformers (ONAN & Dry-type up to 33kV)
-  - Vacuum Circuit Breakers (VCBs) & Ring Main Units (RMUs)
-  - Busduct trunking & harmonic-filtered APFC banks
-  - Statutory CEIG safety compliance protocols
+3. **15 Dedicated Form Implementations**:
+   - Implement `Form01_ResidentialService.tsx` through `Form15_CustomerComplaint.tsx` in `src/components/forms/items/`.
+   - Each form implements exact field specifications, required field validations, conditional displays, and clean two-column grid layouts.
 
-### D. Solar Power Solutions (`src/screens/SolarScreen.tsx`)
-- Comprehensive coverage of:
-  - Residential rooftop solar (3kW to 15kW) with PM Surya Ghar subsidy guidance
-  - Commercial & Industrial (C&I) rooftop solar plants (25kW to 500kW+)
-  - BESCOM bidirectional net metering 10-step statutory process
-  - Hybrid BESS energy storage integration
+4. **Container & Launcher**:
+   - `EnquiryModalContainer.tsx`: Handles backdrop, modal keyboard navigation, focus trap, and seamless transition to the success confirmation state.
+   - `EnquiryFormsLauncher.tsx`: Discreet, accessible launcher button allowing direct access to any of the 15 forms organized by category (Residential, Industrial, Infrastructure, Solar, Support, Corporate).
+   - `EnquiryFormsCatalog.tsx`: Clean inline showcase component allowing embeddability on any service or dedicated page.
 
-### E. About Us (`src/screens/AboutScreen.tsx`)
-- Organization history, licensed contractor credentials, safety and quality assurance policy (Zero Deviation), and team engineering leadership.
+5. **Existing App Integration**:
+   - Connect modal triggers in `App.tsx` so existing service consultation buttons directly map to their corresponding dedicated form (e.g., Residential $\to$ Form 1, Solar $\to$ Form 4, HT/LT $\to$ Form 3, Inspection $\to$ Form 6, AMC $\to$ Form 5).
+   - Ensure the rest of the application remains untouched and completely stable.
 
-### F. Contact Us (`src/screens/ContactScreen.tsx`)
-- Direct phone call links with click-to-call tracking (`+91 9632025123` and `+91 8660121438`).
-- Instant WhatsApp enquiry link with pre-formatted quote details.
-- Verified physical Google Maps location link (59, Opp Bank of India, G-Block, Sahakarnagar Main Road, Bengaluru 560092).
-- Validated proposal request form with instant confirmation modal and persistent inquiry record.
-
----
-
-## 4. SEO & Canonical Domain Implementation Plan
-
-1. **Update Production Domain (`src/utils/seo.ts`)**:
-   - Change `canonicalDomain` from `.in` to `https://ananyaelectricalsolutions.com`.
-   - Update all per-route canonical URLs in `SEO_ROUTE_CONFIG`.
-2. **Update Root HTML (`index.html`)**:
-   - Change canonical `<link rel="canonical" href="https://ananyaelectricalsolutions.com/" />`.
-   - Update OpenGraph `og:url` and Twitter card metadata.
-   - Update Schema.org `@id`, `url`, and service offerings to `ananyaelectricalsolutions.com`.
-3. **Fix XML Sitemap (`public/sitemap.xml`)**:
-   - Ensure `<?xml version="1.0" encoding="UTF-8"?>` is line 1 with no preceding blank lines.
-   - List all 12 valid production URLs with domain `https://ananyaelectricalsolutions.com/`.
-4. **Fix Robots.txt (`public/robots.txt`)**:
-   - Ensure clean sitemap directive pointing to `https://ananyaelectricalsolutions.com/sitemap.xml`.
-
----
-
-## 5. Performance, Accessibility & Cloudflare Deployment Verification
-
-- **Code Splitting**: Ensure Three.js, Lucide icons, and heavy interactive 3D modals remain code-split so initial bundle size stays light.
-- **Image Formats & Dimensions**: Transparent PNG favicon and WebP/optimized local assets with zero external CDN dependencies.
-- **WCAG Accessibility**: High contrast text ratios, descriptive `alt` tags on all images, skip-to-content keyboard support.
-- **Verification Commands**:
-  - `npm run lint` (`tsc --noEmit`) to verify zero TypeScript errors.
-  - `npm run build` (`vite build`) to verify clean production distribution.
+6. **Build & Quality Check**:
+   - Run `compile_applet` and verify zero TypeScript or bundler errors.
+   - Verify responsiveness across mobile (375px) and desktop (1440px) viewports.

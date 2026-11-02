@@ -420,9 +420,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 </div>
               </div>
 
-              {/* Status Below Video Aligned Directly Below ANANYA ELECTRICAL SOLUTIONS */}
-              <div className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] flex items-center justify-center lg:mr-[calc(min(0px,(80rem-100vw)/2)-3rem)]">
-                <div className="inline-flex flex-wrap items-center justify-center gap-4 sm:gap-5 text-center px-4 py-1.5 rounded-full bg-[#0B192C]/85 backdrop-blur-md border border-white/15 shadow-lg">
+              {/* Status Below Video Aligned Directly to Centre of Div 2 and 3 */}
+              <div className="w-full flex items-center justify-center self-center">
+                <div className="inline-flex flex-wrap items-center justify-center gap-4 sm:gap-5 text-center px-4 py-1.5 rounded-full bg-[#0B192C]/85 backdrop-blur-md border border-white/15 shadow-lg mx-auto">
                   <span className="inline-flex items-center gap-1.5 text-[13px] sm:text-[14px] font-bold text-white tracking-wider uppercase leading-none">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
                     <span>BESCOM</span>

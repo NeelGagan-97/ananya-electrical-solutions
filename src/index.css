@@ -393,3 +393,20 @@
   will-change: opacity, filter;
 }
 
+@keyframes neonPulseGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.5)) drop-shadow(0 0 28px rgba(239, 68, 68, 0.4));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 28px rgba(56, 189, 248, 0.85)) drop-shadow(0 0 52px rgba(239, 68, 68, 0.7));
+    transform: scale(1.028);
+  }
+}
+
+.animate-neon-pulse {
+  animation: neonPulseGlow 3.6s ease-in-out infinite;
+  will-change: transform, filter;
+}
+
+

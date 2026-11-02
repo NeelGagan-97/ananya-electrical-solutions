@@ -3,6 +3,7 @@ import { NavigationTab, EngineeringInquiry } from './types';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ConsultationModal } from './components/ConsultationModal';
+import { EnquiryModalHost, EnquiryHubLauncher, BaseEnquirySubmission } from './components/forms';
 import { LeftSideSocialDock } from './components/LeftSideSocialDock';
 import { HomeScreen } from './screens/HomeScreen';
 import { ElectricalScreen } from './screens/ElectricalScreen';
@@ -97,6 +98,20 @@ export default function App() {
     } catch (e) {
       console.warn('Unable to write to localStorage', e);
     }
+  };
+
+  const handleFormSubmitted = (submission: BaseEnquirySubmission) => {
+    handleSaveInquiry({
+      id: submission.referenceNumber,
+      name: submission.customerName,
+      phone: submission.contactNumber,
+      email: submission.email,
+      category: submission.formTitle,
+      location: submission.location || '',
+      loadDetails: typeof submission.data === 'object' ? JSON.stringify(submission.data) : '',
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      complianceConfirmed: submission.consentGiven,
+    });
   };
 
   const is3DWorkspace =
@@ -302,6 +317,12 @@ export default function App() {
         initialService={modalServiceTopic}
         onSaveInquiry={handleSaveInquiry}
       />
+
+      {/* Complete AES Enquiry Forms Module (15 Forms) Modal Host */}
+      <EnquiryModalHost onFormSubmitted={handleFormSubmitted} />
+
+      {/* Floating AES Enquiry Forms Hub (15 Forms Catalog) */}
+      <EnquiryHubLauncher />
 
       {/* Technical SEO, Keyword Map, GBP & Conversion Audit Modal */}
       {seoAuditModalOpen && (
