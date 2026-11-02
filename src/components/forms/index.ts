@@ -21,7 +21,7 @@ export {
   openAesEnquiryModal,
   FORMS_REGISTRY,
 } from './EnquiryModalHost';
-export { EnquiryHubLauncher } from './EnquiryHubLauncher';
+export { EnquiryHubLauncher, openAesEnquiryHub } from './EnquiryHubLauncher';
 
 // Individual Forms (1 to 15)
 export { ResidentialServiceForm } from './items/ResidentialServiceForm';

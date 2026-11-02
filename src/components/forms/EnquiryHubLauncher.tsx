@@ -1,11 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FORMS_REGISTRY, openAesEnquiryModal, FormMetadataConfig } from './EnquiryModalHost';
 import { FormId } from './types';
+
+export const openAesEnquiryHub = () => {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('aes-open-enquiry-hub'));
+  }
+};
 
 export const EnquiryHubLauncher: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    const handleOpen = () => setDrawerOpen(true);
+    window.addEventListener('aes-open-enquiry-hub', handleOpen);
+    return () => window.removeEventListener('aes-open-enquiry-hub', handleOpen);
+  }, []);
 
   const formsList: FormMetadataConfig[] = Object.values(FORMS_REGISTRY);
 
@@ -41,16 +53,16 @@ export const EnquiryHubLauncher: React.FC = () => {
           type="button"
           onClick={() => setDrawerOpen(true)}
           title="Open Ananya Electrical Solutions Enquiry Forms Hub"
-          className="group flex items-center gap-2.5 px-3.5 py-2.5 rounded-full bg-[#0B192C] text-white text-[12.5px] font-semibold shadow-2xl hover:bg-[#006398] border border-cyan-500/30 hover:border-cyan-400 transition-all hover:scale-105 cursor-pointer backdrop-blur-md"
+          className="group flex items-center gap-2.5 px-3.5 py-2.5 rounded-full bg-white text-[#0284C7] hover:bg-[#e0f2fe] border-2 border-[#0284C7] text-[12.5px] font-bold shadow-xl hover:shadow-2xl transition-all hover:scale-105 cursor-pointer backdrop-blur-md"
         >
           <div className="w-6 h-6 rounded-full bg-[#0284C7] text-white flex items-center justify-center text-[12px] font-mono font-bold shadow-xs">
             15
           </div>
-          <span className="hidden sm:inline font-medium tracking-wide">
+          <span className="hidden sm:inline font-bold tracking-wide text-[#0284C7]">
             Enquiry Forms Module
           </span>
-          <span className="sm:hidden font-medium">Forms (15)</span>
-          <span className="material-symbols-outlined text-[18px] text-[#38BDF8] group-hover:rotate-45 transition-transform">
+          <span className="sm:hidden font-bold text-[#0284C7]">Forms (15)</span>
+          <span className="material-symbols-outlined text-[18px] text-[#0284C7] group-hover:rotate-45 transition-transform">
             open_in_new
           </span>
         </button>

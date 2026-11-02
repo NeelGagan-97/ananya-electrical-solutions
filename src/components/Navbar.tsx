@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavigationTab } from '../types';
 import { BUSINESS_NAP, trackConversionEvent } from '../utils/seo';
+import { openAesEnquiryHub } from './forms';
 
 interface NavbarProps {
   currentTab: NavigationTab;
@@ -21,10 +22,16 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
 
-  const remainingNavLinks: { tab: NavigationTab; label: string; icon: string }[] = [
+  const remainingNavLinks: {
+    tab?: NavigationTab;
+    label: string;
+    icon: string;
+    isEnquiryHub?: boolean;
+  }[] = [
     { tab: 'projects-gallery', label: 'Projects Gallery', icon: 'photo_library' },
     { tab: 'about-us', label: 'About Us', icon: 'domain' },
     { tab: 'contact-us', label: 'Contact Us', icon: 'contact_support' },
+    { label: 'Enquiry Forms', icon: 'format_list_bulleted', isEnquiryHub: true },
   ];
 
   const handleNavClick = (tab: NavigationTab, sectionId?: string) => {
@@ -401,11 +408,17 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Remaining Navigation Links */}
           {remainingNavLinks.map((item) => {
-            const isActive = currentTab === item.tab;
+            const isActive = Boolean(item.tab && currentTab === item.tab);
             return (
               <button
-                key={`${item.tab}-${item.label}`}
-                onClick={() => handleNavClick(item.tab)}
+                key={`${item.tab || 'action'}-${item.label}`}
+                onClick={() => {
+                  if (item.isEnquiryHub) {
+                    openAesEnquiryHub();
+                  } else if (item.tab) {
+                    handleNavClick(item.tab);
+                  }
+                }}
                 className={`h-9 px-2 2xl:px-3 text-[12px] 2xl:text-[13px] font-semibold transition-all rounded-lg whitespace-nowrap cursor-pointer inline-flex items-center justify-center gap-1 leading-none ${
                   isActive
                     ? 'bg-[#dce9ff] text-[#0b1c30] font-bold shadow-xs'
@@ -697,18 +710,28 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* Remaining Nav Links */}
             {remainingNavLinks.map((item) => {
-              const isActive = currentTab === item.tab;
+              const isActive = Boolean(item.tab && currentTab === item.tab);
               return (
                 <button
-                  key={`${item.tab}-${item.label}`}
-                  onClick={() => handleNavClick(item.tab)}
+                  key={`${item.tab || 'action'}-${item.label}`}
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (item.isEnquiryHub) {
+                      openAesEnquiryHub();
+                    } else if (item.tab) {
+                      handleNavClick(item.tab);
+                    }
+                  }}
                   className={`flex items-center justify-between px-4 py-2.5 rounded-lg text-left text-[15px] font-semibold transition-colors cursor-pointer ${
                     isActive
                       ? 'bg-[#dce9ff] text-[#0B192C] font-bold'
-                      : 'text-[#44474c] hover:bg-[#f8f9ff]'
+                      : 'text-[#0284c7] hover:bg-[#e0f2fe]'
                   }`}
                 >
-                  <span>{item.label}</span>
+                  <div className="flex items-center gap-2.5">
+                    <span className="material-symbols-outlined text-[18px] text-[#0284C7]">{item.icon}</span>
+                    <span>{item.label}</span>
+                  </div>
                   {isActive && <span className="material-symbols-outlined text-[16px] text-[#0284C7]">check</span>}
                 </button>
               );
