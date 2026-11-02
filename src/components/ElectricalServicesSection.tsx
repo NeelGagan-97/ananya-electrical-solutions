@@ -1,5 +1,17 @@
 import React from 'react';
 import { ASSETS } from '../data/constants';
+import { openAesEnquiryModal, FormId } from './forms';
+
+const CARD_TO_FORM_MAP: Record<string, FormId> = {
+  'home-wiring': 'residential-service',
+  'earthing-grounding': 'safety-audit',
+  'home-automation': 'residential-service',
+  'layout-electrification': 'ht-lt-works',
+  'lt-db-switchgear': 'industrial-commercial',
+  'dg-ups-power-backup': 'industrial-commercial',
+  'rooftop-solar-ev': 'solar-rooftop',
+  'industrial-cabling-lighting': 'industrial-commercial',
+};
 
 interface ElectricalServicesSectionProps {
   onEnquire: (serviceName: string) => void;
@@ -269,80 +281,88 @@ export const ElectricalServicesSection: React.FC<ElectricalServicesSectionProps>
 
         {/* 8 Responsive Service & Equipment Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
-          {services.map((service) => (
-            <article
-              key={service.id}
-              id={service.id}
-              className="bg-white/95 backdrop-blur-md rounded-xl border border-[#CBD5E1] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between group hover:-translate-y-0.5 h-full scroll-mt-28"
-            >
-              {/* Equipment & Service Image Header */}
-              <div className="relative h-32 w-full overflow-hidden bg-[#0B192C]">
-                <img
-                  src={service.image}
-                  alt={service.title}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C]/85 via-[#0B192C]/25 to-transparent"></div>
-                <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2">
-                  <div
-                    className="w-7 h-7 rounded-md flex items-center justify-center shrink-0 bg-white/95 shadow-sm"
-                    style={{ color: service.accentColor }}
-                  >
-                    <span className="material-symbols-outlined text-[17px] leading-none">{service.iconName}</span>
-                  </div>
-                  <span className={`px-2 py-0.5 rounded text-[9.5px] font-bold uppercase tracking-wider border leading-none shadow-xs ${service.badgeColor}`}>
-                    {service.categoryTag}
-                  </span>
-                </div>
-                <div className="absolute bottom-2 left-2.5 right-2.5 flex flex-wrap gap-1">
-                  {service.equipmentUsed.map((eq, i) => (
-                    <span
-                      key={i}
-                      className="text-[9.5px] font-mono font-semibold px-1.5 py-0.5 rounded bg-[#0B192C]/85 text-[#38bdf8] border border-sky-400/30 backdrop-blur-xs"
+          {services.map((service) => {
+            const formId = CARD_TO_FORM_MAP[service.id] || 'residential-service';
+            return (
+              <article
+                key={service.id}
+                id={service.id}
+                onClick={() => openAesEnquiryModal(formId)}
+                className="bg-white/95 backdrop-blur-md rounded-xl border border-[#CBD5E1] hover:border-[#0284C7] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between group hover:-translate-y-0.5 h-full scroll-mt-28 cursor-pointer"
+              >
+                {/* Equipment & Service Image Header */}
+                <div className="relative h-32 w-full overflow-hidden bg-[#0B192C]">
+                  <img
+                    src={service.image}
+                    alt={service.title}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C]/85 via-[#0B192C]/25 to-transparent"></div>
+                  <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2">
+                    <div
+                      className="w-7 h-7 rounded-md flex items-center justify-center shrink-0 bg-white/95 shadow-sm"
+                      style={{ color: service.accentColor }}
                     >
-                      {eq}
+                      <span className="material-symbols-outlined text-[17px] leading-none">{service.iconName}</span>
+                    </div>
+                    <span className={`px-2 py-0.5 rounded text-[9.5px] font-bold uppercase tracking-wider border leading-none shadow-xs ${service.badgeColor}`}>
+                      {service.categoryTag}
                     </span>
-                  ))}
+                  </div>
+                  <div className="absolute bottom-2 left-2.5 right-2.5 flex flex-wrap gap-1">
+                    {service.equipmentUsed.map((eq, i) => (
+                      <span
+                        key={i}
+                        className="text-[9.5px] font-mono font-semibold px-1.5 py-0.5 rounded bg-[#0B192C]/85 text-[#38bdf8] border border-sky-400/30 backdrop-blur-xs"
+                      >
+                        {eq}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <div className="p-3.5 flex flex-col flex-1 justify-between gap-2.5">
-                <div className="flex flex-col flex-1 gap-2">
-                  {/* Service Heading & Description */}
-                  <div className="flex flex-col gap-1">
-                    <h3 className="text-[15px] text-[#0B192C] font-bold tracking-tight group-hover:text-[#0284C7] transition-colors leading-tight line-clamp-1">
-                      {service.title}
-                    </h3>
-                    <p className="text-[#44474c] leading-snug text-[11.5px] line-clamp-2">
-                      {service.description}
-                    </p>
+                <div className="p-3.5 flex flex-col flex-1 justify-between gap-2.5">
+                  <div className="flex flex-col flex-1 gap-2">
+                    {/* Service Heading & Description */}
+                    <div className="flex flex-col gap-1">
+                      <h3 className="text-[15px] text-[#0B192C] font-bold tracking-tight group-hover:text-[#0284C7] transition-colors leading-tight line-clamp-1">
+                        {service.title}
+                      </h3>
+                      <p className="text-[#44474c] leading-snug text-[11.5px] line-clamp-2">
+                        {service.description}
+                      </p>
+                    </div>
+
+                    {/* Optional Standards Note */}
+                    {service.disclaimer && (
+                      <p className="text-[10px] text-slate-500 italic bg-[#F8FAFC] px-2 py-1 rounded border border-[#E2E8F0] mt-auto line-clamp-1">
+                        {service.disclaimer}
+                      </p>
+                    )}
                   </div>
 
-                  {/* Optional Standards Note */}
-                  {service.disclaimer && (
-                    <p className="text-[10px] text-slate-500 italic bg-[#F8FAFC] px-2 py-1 rounded border border-[#E2E8F0] mt-auto line-clamp-1">
-                      {service.disclaimer}
-                    </p>
-                  )}
+                  {/* Action Button */}
+                  <div className="pt-2 border-t border-[#E2E8F0]">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openAesEnquiryModal(formId);
+                        onEnquire(service.serviceKey);
+                      }}
+                      className="w-full h-8 px-2.5 rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[11.5px] font-semibold shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer group-hover:shadow-md whitespace-nowrap"
+                    >
+                      <span>{service.ctaLabel}</span>
+                      <span className="material-symbols-outlined text-[13px] leading-none transition-transform group-hover:translate-x-0.5">
+                        open_in_new
+                      </span>
+                    </button>
+                  </div>
                 </div>
-
-                {/* Action Button */}
-                <div className="pt-2 border-t border-[#E2E8F0]">
-                  <button
-                    type="button"
-                    onClick={() => onEnquire(service.serviceKey)}
-                    className="w-full h-8 px-2.5 rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[11.5px] font-semibold shadow-sm transition-all flex items-center justify-center gap-1 cursor-pointer group-hover:shadow-md whitespace-nowrap"
-                  >
-                    <span>{service.ctaLabel}</span>
-                    <span className="material-symbols-outlined text-[14px] leading-none transition-transform group-hover:translate-x-0.5">
-                      arrow_forward
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
 
         {/* Bottom Reassurance Banner */}

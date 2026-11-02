@@ -3,12 +3,44 @@ import { NavigationTab, EngineeringInquiry, ProjectItem } from '../types';
 import { ASSETS, SERVICES, PROJECTS, ESCOMS, ELECTRICAL_EQUIPMENT } from '../data/constants';
 import { ElectricalServicesSection } from '../components/ElectricalServicesSection';
 import { RealisticLightningBackground } from '../components/RealisticLightningBackground';
+import { openAesEnquiryModal, FormId } from '../components/forms';
 import {
   BUSINESS_NAP,
   trackConversionEvent,
   buildWhatsAppInquiryUrl,
   buildMailtoInquiryUrl,
 } from '../utils/seo';
+
+const SERVICE_TO_FORM_MAP: Record<string, FormId> = {
+  'industrial-automation': 'industrial-commercial',
+  'substations-transformers': 'ht-lt-works',
+  'cable-trays-xlpe-cabling': 'ht-lt-works',
+  'testing-commissioning': 'safety-audit',
+  'statutory-liaison': 'design-consultancy',
+  'industrial-amc': 'maintenance-amc',
+  'energy-audits-apfc': 'safety-audit',
+  'vcb-acb-switchgear': 'ht-lt-works',
+  'dg-sync-ups-backup': 'industrial-commercial',
+  'lightning-earthing-protection': 'safety-audit',
+};
+
+const EQUIPMENT_TO_FORM_MAP: Record<string, FormId> = {
+  'eq-power-transformers': 'ht-lt-works',
+  'eq-vcb-rmu-switchgear': 'ht-lt-works',
+  'eq-pcc-mcc-panels': 'industrial-commercial',
+  'eq-sandwich-busduct': 'industrial-commercial',
+  'eq-apfc-harmonic': 'safety-audit',
+  'eq-solar-inverters-pv': 'solar-rooftop',
+  'eq-testing-diagnostics': 'safety-audit',
+  'eq-substation-yard-hardware': 'ht-lt-works',
+};
+
+const STAGE_TO_FORM_MAP: Record<string, FormId> = {
+  'STAGE 01': 'site-visit',
+  'STAGE 02': 'design-consultancy',
+  'STAGE 03': 'ht-lt-works',
+  'STAGE 04': 'maintenance-amc',
+};
 
 interface HomeScreenProps {
   onSelectTab: (tab: NavigationTab) => void;
@@ -789,8 +821,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Pillar 1: High Voltage */}
             <div
-              onClick={() => onSelectTab('electrical')}
-              className="flex flex-col bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer border border-[#E2E8F0]"
+              onClick={() => openAesEnquiryModal('ht-lt-works')}
+              className="flex flex-col bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer border border-[#E2E8F0] hover:border-[#0284C7]"
             >
               <div className="h-52 w-full overflow-hidden relative">
                 <img
@@ -828,13 +860,29 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     Factory Electrification &amp; Cable Trays
                   </li>
                 </ul>
+                <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-between mt-auto">
+                  <span className="text-[11.5px] font-mono font-bold text-[#0284C7] bg-[#e5eeff] px-2 py-0.5 rounded">
+                    Form 03 • HT/LT Works
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openAesEnquiryModal('ht-lt-works');
+                    }}
+                    className="h-8 px-3 rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[11.5px] font-bold inline-flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                  >
+                    <span>Enquiry Form</span>
+                    <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+                  </button>
+                </div>
               </div>
             </div>
 
             {/* Pillar 2: Clean Solar */}
             <div
-              onClick={() => onSelectTab('solar-solutions')}
-              className="flex flex-col bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer border border-[#E2E8F0]"
+              onClick={() => openAesEnquiryModal('solar-rooftop')}
+              className="flex flex-col bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer border border-[#E2E8F0] hover:border-[#F59E0B]"
             >
               <div className="h-52 w-full overflow-hidden relative">
                 <img
@@ -872,13 +920,29 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     BESCOM / Discom Net Metering Sanctions
                   </li>
                 </ul>
+                <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-between mt-auto">
+                  <span className="text-[11.5px] font-mono font-bold text-[#D97706] bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                    Form 04 • Solar Rooftop
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openAesEnquiryModal('solar-rooftop');
+                    }}
+                    className="h-8 px-3 rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[11.5px] font-bold inline-flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                  >
+                    <span>Enquiry Form</span>
+                    <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+                  </button>
+                </div>
               </div>
             </div>
 
             {/* Pillar 3: Design, Testing & Commissioning */}
             <div
-              onClick={() => onSelectTab('services')}
-              className="flex flex-col bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer border border-[#E2E8F0]"
+              onClick={() => openAesEnquiryModal('safety-audit')}
+              className="flex flex-col bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer border border-[#E2E8F0] hover:border-[#0284C7]"
             >
               <div className="h-52 w-full overflow-hidden relative">
                 <img
@@ -916,6 +980,22 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     Power Factor Optimization (APFC Panels)
                   </li>
                 </ul>
+                <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-between mt-auto">
+                  <span className="text-[11.5px] font-mono font-bold text-[#006398] bg-[#e5eeff] px-2 py-0.5 rounded">
+                    Form 06 • Safety Audit
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openAesEnquiryModal('safety-audit');
+                    }}
+                    className="h-8 px-3 rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[11.5px] font-bold inline-flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                  >
+                    <span>Enquiry Form</span>
+                    <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -967,57 +1047,69 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           {/* 9 Turnkey Engineering Services Grid with Equipment Photos */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {SERVICES.slice(0, 9).map((service) => (
-              <div
-                key={service.id}
-                className="rounded-xl bg-white/95 backdrop-blur-md shadow-sm hover:shadow-lg transition-all flex flex-col justify-between overflow-hidden group hover:-translate-y-0.5 border border-[#CBD5E1]"
-              >
-                {/* Visual Equipment Banner */}
-                <div className="relative h-32 w-full overflow-hidden bg-[#0B192C]">
-                  <img
-                    src={service.image || ASSETS.pillarHighVoltage}
-                    alt={service.title}
-                    loading="lazy"
-                    onError={handleImgFallback}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C]/90 via-[#0B192C]/30 to-transparent"></div>
-                  <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2">
-                    <span className="px-2 py-0.5 rounded bg-[#0B192C]/85 text-[#38bdf8] text-[10px] font-mono font-bold border border-sky-400/30 backdrop-blur-xs">
-                      {service.voltageClass || '11kV / 415V'}
-                    </span>
-                    <span className="px-2 py-0.5 rounded bg-[#FEF3C7] text-[#2a1700] text-[10px] uppercase font-bold">
-                      {service.badge}
-                    </span>
-                  </div>
-                  <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-white text-[#0B192C] flex items-center justify-center shrink-0 shadow-md group-hover:bg-[#0284C7] group-hover:text-white transition-colors">
-                      <span className="material-symbols-outlined text-[18px]">{service.icon}</span>
+            {SERVICES.slice(0, 9).map((service) => {
+              const formId = SERVICE_TO_FORM_MAP[service.id] || 'industrial-commercial';
+              return (
+                <div
+                  key={service.id}
+                  onClick={() => openAesEnquiryModal(formId)}
+                  className="rounded-xl bg-white/95 backdrop-blur-md shadow-sm hover:shadow-lg transition-all flex flex-col justify-between overflow-hidden group hover:-translate-y-0.5 border border-[#CBD5E1] hover:border-[#0284C7] cursor-pointer"
+                >
+                  {/* Visual Equipment Banner */}
+                  <div className="relative h-32 w-full overflow-hidden bg-[#0B192C]">
+                    <img
+                      src={service.image || ASSETS.pillarHighVoltage}
+                      alt={service.title}
+                      loading="lazy"
+                      onError={handleImgFallback}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C]/90 via-[#0B192C]/30 to-transparent"></div>
+                    <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2">
+                      <span className="px-2 py-0.5 rounded bg-[#0B192C]/85 text-[#38bdf8] text-[10px] font-mono font-bold border border-sky-400/30 backdrop-blur-xs">
+                        {service.voltageClass || '11kV / 415V'}
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-[#FEF3C7] text-[#2a1700] text-[10px] uppercase font-bold">
+                        {service.badge}
+                      </span>
                     </div>
-                    <h3 className="text-[15px] text-white font-bold leading-tight line-clamp-1">
-                      {service.title}
-                    </h3>
+                    <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-white text-[#0B192C] flex items-center justify-center shrink-0 shadow-md group-hover:bg-[#0284C7] group-hover:text-white transition-colors">
+                        <span className="material-symbols-outlined text-[18px]">{service.icon}</span>
+                      </div>
+                      <h3 className="text-[15px] text-white font-bold leading-tight line-clamp-1">
+                        {service.title}
+                      </h3>
+                    </div>
                   </div>
-                </div>
 
-                <div className="p-3.5 flex flex-col flex-1 justify-between gap-2.5">
-                  <div className="flex flex-col gap-1.5">
-                    <p className="text-[12px] text-[#44474c] leading-snug line-clamp-2">
-                      {service.description}
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-end pt-2 border-t border-[#E2E8F0]">
-                    <button
-                      onClick={() => onOpenConsultation(service.title)}
-                      className="text-[12px] text-[#006398] hover:text-[#0B192C] font-bold flex items-center gap-1 cursor-pointer"
-                    >
-                      Inquire <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
-                    </button>
+                  <div className="p-3.5 flex flex-col flex-1 justify-between gap-2.5">
+                    <div className="flex flex-col gap-1.5">
+                      <p className="text-[12px] text-[#44474c] leading-snug line-clamp-2">
+                        {service.description}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between pt-2 border-t border-[#E2E8F0]">
+                      <span className="text-[10px] font-mono font-bold text-[#0284C7] bg-[#e5eeff] px-1.5 py-0.5 rounded">
+                        Form {formId === 'ht-lt-works' ? '03' : formId === 'safety-audit' ? '06' : formId === 'design-consultancy' ? '07' : formId === 'maintenance-amc' ? '05' : '02'}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openAesEnquiryModal(formId);
+                        }}
+                        className="px-2.5 py-1 rounded-md bg-[#0284C7]/10 hover:bg-[#0284C7] text-[#0284C7] hover:text-white text-[12px] font-bold flex items-center gap-1 cursor-pointer transition-colors shadow-xs"
+                      >
+                        <span>Enquiry Form</span>
+                        <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Dedicated Heavy Electrical Equipment & Hardware Supply Showcase */}
@@ -1048,59 +1140,71 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   </p>
                 </div>
                 <button
-                  onClick={() => onSelectTab('services')}
+                  onClick={() => openAesEnquiryModal('boq-quotation')}
                   className="shrink-0 h-11 px-5 rounded-xl bg-[#0284C7] hover:bg-[#0369a1] text-white text-[13px] font-bold flex items-center gap-2 cursor-pointer shadow-md transition-colors w-fit"
                 >
-                  <span>View All 12 Services &amp; Specs</span>
-                  <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                  <span>BOQ Quotation Form</span>
+                  <span className="material-symbols-outlined text-[18px]">open_in_new</span>
                 </button>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-                {ELECTRICAL_EQUIPMENT.map((item) => (
-                  <div
-                    key={item.id}
-                    className="rounded-xl bg-[#1E293B]/90 backdrop-blur-md border border-slate-700 hover:border-[#38bdf8] overflow-hidden flex flex-col justify-between group transition-all"
-                  >
-                    <div className="relative h-28 w-full overflow-hidden">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        loading="lazy"
-                        onError={handleImgFallback}
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C] via-[#0B192C]/25 to-transparent"></div>
-                      <span className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-[#0B192C]/90 text-[#F59E0B] text-[9.5px] font-mono font-bold uppercase border border-amber-400/30">
-                        {item.category}
-                      </span>
-                      <span className="absolute bottom-1.5 left-2 right-2 text-[10px] font-mono text-[#38bdf8] font-bold truncate">
-                        {item.voltageRating} • {item.capacityRange}
-                      </span>
-                    </div>
-
-                    <div className="p-3 flex flex-col flex-1 justify-between gap-2">
-                      <div className="flex flex-col gap-1">
-                        <h4 className="text-[13px] font-bold text-white leading-tight group-hover:text-[#5bb8fe] transition-colors line-clamp-1">
-                          {item.name}
-                        </h4>
-                        <p className="text-[11px] text-slate-300 leading-snug line-clamp-2">
-                          {item.description}
-                        </p>
+                {ELECTRICAL_EQUIPMENT.map((item) => {
+                  const formId = EQUIPMENT_TO_FORM_MAP[item.id] || 'boq-quotation';
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => openAesEnquiryModal(formId)}
+                      className="rounded-xl bg-[#1E293B]/90 backdrop-blur-md border border-slate-700 hover:border-[#38bdf8] overflow-hidden flex flex-col justify-between group transition-all cursor-pointer"
+                    >
+                      <div className="relative h-28 w-full overflow-hidden">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          loading="lazy"
+                          onError={handleImgFallback}
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C] via-[#0B192C]/25 to-transparent"></div>
+                        <span className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-[#0B192C]/90 text-[#F59E0B] text-[9.5px] font-mono font-bold uppercase border border-amber-400/30">
+                          {item.category}
+                        </span>
+                        <span className="absolute bottom-1.5 left-2 right-2 text-[10px] font-mono text-[#38bdf8] font-bold truncate">
+                          {item.voltageRating} • {item.capacityRange}
+                        </span>
                       </div>
 
-                      <div className="pt-2 border-t border-slate-700/80 flex items-center justify-end">
-                        <button
-                          onClick={() => onOpenConsultation(item.name)}
-                          className="text-[11px] font-bold text-[#38bdf8] hover:text-white flex items-center gap-0.5 cursor-pointer"
-                        >
-                          Quote <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
-                        </button>
+                      <div className="p-3 flex flex-col flex-1 justify-between gap-2">
+                        <div className="flex flex-col gap-1">
+                          <h4 className="text-[13px] font-bold text-white leading-tight group-hover:text-[#5bb8fe] transition-colors line-clamp-1">
+                            {item.name}
+                          </h4>
+                          <p className="text-[11px] text-slate-300 leading-snug line-clamp-2">
+                            {item.description}
+                          </p>
+                        </div>
+
+                        <div className="pt-2 border-t border-slate-700/80 flex items-center justify-between">
+                          <span className="text-[10px] font-mono text-[#F59E0B]">
+                            {formId === 'ht-lt-works' ? 'Form 03' : formId === 'solar-rooftop' ? 'Form 04' : formId === 'safety-audit' ? 'Form 06' : 'Form 02'}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openAesEnquiryModal(formId);
+                            }}
+                            className="px-2 py-0.5 rounded bg-[#0284C7]/20 hover:bg-[#0284C7] text-[11px] font-bold text-[#38bdf8] hover:text-white flex items-center gap-1 cursor-pointer transition-colors"
+                          >
+                            <span>Enquiry Form</span>
+                            <span className="material-symbols-outlined text-[13px]">open_in_new</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -1292,67 +1396,97 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {stages.map((stage, idx) => (
-              <div
-                key={stage.num}
-                onClick={() => setActiveStage(activeStage === idx ? null : idx)}
-                className={`rounded-xl bg-[#1E293B]/90 backdrop-blur-md text-white flex flex-col overflow-hidden relative border transition-all cursor-pointer group ${
-                  activeStage === idx
-                    ? 'border-[#38bdf8] ring-2 ring-[#0284C7]/40 shadow-xl'
-                    : 'border-slate-700/90 hover:border-[#38bdf8]/70'
-                }`}
-              >
-                {/* Stage Equipment & Service Image Header */}
-                <div className="relative h-28 w-full overflow-hidden bg-[#0B192C]">
-                  <img
-                    src={stage.image}
-                    alt={stage.title}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1E293B] via-[#0B192C]/40 to-transparent"></div>
-                  <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between">
-                    <span className="px-2 py-0.5 rounded bg-[#0B192C]/90 text-[#F59E0B] text-[10px] font-mono font-bold border border-amber-400/30">
-                      {stage.num}
-                    </span>
-                    <div className="w-7 h-7 rounded-md bg-[#0B192C]/85 border border-slate-600 flex items-center justify-center text-[#38bdf8]">
-                      <span className="material-symbols-outlined text-[16px]">{stage.icon}</span>
+            {stages.map((stage, idx) => {
+              const formId = STAGE_TO_FORM_MAP[stage.num] || 'site-visit';
+              const formBadge =
+                idx === 0
+                  ? 'Form 09 • Site Visit'
+                  : idx === 1
+                  ? 'Form 07 • Design / SLD'
+                  : idx === 2
+                  ? 'Form 03 • HT/LT Works'
+                  : 'Form 05 • AMC';
+              return (
+                <div
+                  key={stage.num}
+                  onClick={() => openAesEnquiryModal(formId)}
+                  className={`rounded-xl bg-[#1E293B]/90 backdrop-blur-md text-white flex flex-col overflow-hidden relative border transition-all cursor-pointer group hover:border-[#38bdf8] ${
+                    activeStage === idx
+                      ? 'border-[#38bdf8] ring-2 ring-[#0284C7]/40 shadow-xl'
+                      : 'border-slate-700/90'
+                  }`}
+                >
+                  {/* Stage Equipment & Service Image Header */}
+                  <div className="relative h-28 w-full overflow-hidden bg-[#0B192C]">
+                    <img
+                      src={stage.image}
+                      alt={stage.title}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1E293B] via-[#0B192C]/40 to-transparent"></div>
+                    <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between">
+                      <span className="px-2 py-0.5 rounded bg-[#0B192C]/90 text-[#F59E0B] text-[10px] font-mono font-bold border border-amber-400/30">
+                        {stage.num}
+                      </span>
+                      <div className="w-7 h-7 rounded-md bg-[#0B192C]/85 border border-slate-600 flex items-center justify-center text-[#38bdf8]">
+                        <span className="material-symbols-outlined text-[16px]">{stage.icon}</span>
+                      </div>
+                    </div>
+                    <div className="absolute bottom-1.5 left-2.5 right-2.5">
+                      <span className="text-[10px] font-mono text-[#38bdf8] font-semibold line-clamp-1">
+                        {stage.equipmentTag}
+                      </span>
                     </div>
                   </div>
-                  <div className="absolute bottom-1.5 left-2.5 right-2.5">
-                    <span className="text-[10px] font-mono text-[#38bdf8] font-semibold line-clamp-1">
-                      {stage.equipmentTag}
-                    </span>
-                  </div>
-                </div>
 
-                <div className="p-3.5 flex flex-col gap-2 flex-1">
-                  <h3 className="text-[15px] font-bold text-white group-hover:text-[#5bb8fe] transition-colors leading-snug">
-                    {stage.title}
-                  </h3>
-                  <p className="text-[11.5px] text-slate-300 leading-snug line-clamp-2">
-                    {stage.desc}
-                  </p>
+                  <div className="p-3.5 flex flex-col gap-2 flex-1 justify-between">
+                    <div className="flex flex-col gap-2">
+                      <h3 className="text-[15px] font-bold text-white group-hover:text-[#5bb8fe] transition-colors leading-snug">
+                        {stage.title}
+                      </h3>
+                      <p className="text-[11.5px] text-slate-300 leading-snug line-clamp-2">
+                        {stage.desc}
+                      </p>
 
-                  {/* Expanded deliverables breakdown */}
-                  <div className="pt-2 border-t border-slate-700/80 mt-auto">
-                    <span className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold block mb-1">
-                      Key Deliverables &amp; Hardware:
-                    </span>
-                    <div className="flex flex-wrap gap-1">
-                      {stage.deliverables.map((item, dIdx) => (
-                        <span
-                          key={dIdx}
-                          className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800/90 text-slate-200 border border-slate-600/80"
-                        >
-                          {item}
+                      {/* Deliverables breakdown */}
+                      <div className="pt-2 border-t border-slate-700/80">
+                        <span className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold block mb-1">
+                          Key Deliverables &amp; Hardware:
                         </span>
-                      ))}
+                        <div className="flex flex-wrap gap-1">
+                          {stage.deliverables.map((item, dIdx) => (
+                            <span
+                              key={dIdx}
+                              className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800/90 text-slate-200 border border-slate-600/80"
+                            >
+                              {item}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-2.5 border-t border-slate-700/80 flex items-center justify-between mt-auto">
+                      <span className="text-[10.5px] font-mono font-bold text-[#F59E0B]">
+                        {formBadge}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openAesEnquiryModal(formId);
+                        }}
+                        className="px-2 py-0.5 rounded bg-[#0284C7]/20 hover:bg-[#0284C7] text-[#38bdf8] hover:text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                      >
+                        <span>Enquiry Form</span>
+                        <span className="material-symbols-outlined text-[13px]">open_in_new</span>
+                      </button>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Field Service & Testing Equipment Showcase Bar Inside Section 8 */}
