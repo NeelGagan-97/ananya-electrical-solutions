@@ -1192,16 +1192,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 </div>
               </div>
 
-              <div className="p-5 rounded-2xl bg-[#e5eeff] flex items-center justify-between gap-4 border border-[#CBD5E1]/60 shrink-0">
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-[11px] text-[#44474c] uppercase font-bold tracking-wider">
+              <div className="p-5 rounded-2xl bg-[#e5eeff] flex items-end justify-between gap-4 border border-[#CBD5E1]/60 shrink-0">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[11px] text-[#44474c] uppercase font-bold tracking-wider leading-none">
                     Licensing Authority
                   </span>
-                  <span className="font-headline-sm text-[17px] font-bold text-[#0B192C]">
+                  <span className="font-headline-sm text-[17px] font-bold text-[#0B192C] leading-tight">
                     Electrical Inspectorate, Karnataka
                   </span>
                 </div>
-                <span className="px-3 py-1.5 rounded-lg bg-[#FEF3C7] text-[#2a1700] text-[12px] font-bold tracking-wider uppercase shrink-0">
+                <span className="px-3 py-1.5 rounded-lg bg-[#FEF3C7] text-[#2a1700] text-[12px] font-bold tracking-wider uppercase shrink-0 self-end mb-0.5 leading-none inline-flex items-center justify-center">
                   Class 1
                 </span>
               </div>
