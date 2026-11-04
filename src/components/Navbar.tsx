@@ -60,14 +60,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-[#FFFFFF]/95 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.06)] border-b border-[#E2E8F0]">
-      <div className="w-full h-20 px-3 sm:px-5 lg:px-6 2xl:px-8 flex items-center justify-between gap-3 2xl:gap-6 max-w-[1920px] mx-auto">
+      <div className="w-full h-20 px-2.5 sm:px-4 lg:px-5 xl:px-3 2xl:px-6 flex items-center justify-between gap-1.5 sm:gap-2 xl:gap-2 2xl:gap-4 max-w-[1920px] mx-auto min-w-0">
         {/* Brand Zone */}
         <div className="flex items-center shrink-0">
           <button
             onClick={() => handleNavClick('home')}
-            className="flex items-center gap-2.5 sm:gap-3 shrink-0 text-left cursor-pointer group"
+            className="flex items-center gap-2 sm:gap-2.5 shrink-0 text-left cursor-pointer group"
           >
-            <div className="relative h-10 w-10 sm:h-11 sm:w-11 flex items-center justify-center shrink-0 transition-transform group-hover:scale-105">
+            <div className="relative h-9 w-9 sm:h-10 sm:w-10 2xl:h-11 2xl:w-11 flex items-center justify-center shrink-0 transition-transform group-hover:scale-105">
               <img
                 alt="Ananya Electrical Solutions Logo"
                 className="h-full w-full object-contain filter drop-shadow-[0_2px_8px_rgba(245,158,11,0.3)]"
@@ -75,10 +75,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               />
             </div>
             <div className="flex flex-col justify-center">
-              <span className="font-['Montserrat'] text-[17px] sm:text-[19px] 2xl:text-[21px] font-black [font-weight:900] uppercase tracking-[0.06em] bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent leading-none">
+              <span className="font-['Montserrat'] text-[16px] sm:text-[18px] 2xl:text-[20px] font-black [font-weight:900] uppercase tracking-[0.05em] bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent leading-none">
                 ANANYA
               </span>
-              <span className="font-['Montserrat'] text-[9.5px] sm:text-[10.5px] 2xl:text-[11.5px] font-extrabold uppercase tracking-[0.18em] bg-[linear-gradient(90deg,#0284C7_0%,#38BDF8_26%,#F59E0B_46%,#EA580C_68%,#2563EB_84%,#0284C7_100%)] bg-[length:200%_auto] animate-brand-shimmer [animation-delay:0.35s] bg-clip-text text-transparent mt-1 leading-none whitespace-nowrap">
+              <span className="font-['Montserrat'] text-[9px] sm:text-[10px] 2xl:text-[11px] font-extrabold uppercase tracking-[0.16em] bg-[linear-gradient(90deg,#0284C7_0%,#38BDF8_26%,#F59E0B_46%,#EA580C_68%,#2563EB_84%,#0284C7_100%)] bg-[length:200%_auto] animate-brand-shimmer [animation-delay:0.35s] bg-clip-text text-transparent mt-0.5 leading-none whitespace-nowrap">
                 ELECTRICAL SOLUTIONS
               </span>
             </div>
@@ -86,7 +86,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden xl:flex items-center justify-center gap-1 2xl:gap-2 shrink-0">
+        <nav className="hidden xl:flex items-center justify-center gap-0.5 xl:gap-1 2xl:gap-1.5 shrink-0">
           {/* 3D Model Dropdown */}
           <div
             className="relative"
@@ -95,7 +95,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <button
               onClick={() => setModelDropdownOpen(!modelDropdownOpen)}
-              className={`h-9 px-2 2xl:px-3 text-[12px] 2xl:text-[13px] font-semibold transition-all rounded-lg whitespace-nowrap cursor-pointer inline-flex items-center justify-center gap-1 leading-none ${
+              className={`h-9 px-1.5 xl:px-2 2xl:px-2.5 text-[11.5px] xl:text-[12px] 2xl:text-[12.5px] font-semibold transition-all rounded-lg whitespace-nowrap cursor-pointer inline-flex items-center justify-center gap-1 leading-none ${
                 currentTab === 'residential-layout-3d' ||
                 currentTab === 'residential-3d' ||
                 currentTab === 'twin-3d' ||
@@ -105,9 +105,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                   : 'text-[#0284c7] hover:bg-[#e0f2fe] font-bold'
               }`}
             >
-              <span className="material-symbols-outlined text-[15px] text-[#0284c7] leading-none shrink-0">3d_rotation</span>
+              <span className="material-symbols-outlined text-[14px] 2xl:text-[15px] text-[#0284c7] leading-none shrink-0">3d_rotation</span>
               <span className="leading-none">3D Model</span>
-              <span className="material-symbols-outlined text-[15px] text-[#0284c7] leading-none shrink-0 transition-transform duration-200">
+              <span className="material-symbols-outlined text-[14px] 2xl:text-[15px] text-[#0284c7] leading-none shrink-0 transition-transform duration-200">
                 {modelDropdownOpen ? 'expand_less' : 'expand_more'}
               </span>
             </button>
@@ -279,15 +279,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <button
               onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
-              className={`h-9 px-2 2xl:px-3 text-[12px] 2xl:text-[13px] font-semibold transition-all rounded-lg whitespace-nowrap cursor-pointer inline-flex items-center justify-center gap-1 leading-none ${
+              className={`h-9 px-1.5 xl:px-2 2xl:px-2.5 text-[11.5px] xl:text-[12px] 2xl:text-[12.5px] font-semibold transition-all rounded-lg whitespace-nowrap cursor-pointer inline-flex items-center justify-center gap-1 leading-none ${
                 currentTab === 'services' || currentTab === 'electrical' || currentTab === 'solar-solutions'
                   ? 'bg-[#dce9ff] text-[#0b1c30] font-bold shadow-xs'
                   : 'text-[#0284c7] hover:bg-[#e0f2fe] font-bold'
               }`}
             >
-              <span className="material-symbols-outlined text-[15px] text-[#0284c7] leading-none shrink-0">electrical_services</span>
+              <span className="material-symbols-outlined text-[14px] 2xl:text-[15px] text-[#0284c7] leading-none shrink-0">electrical_services</span>
               <span className="leading-none">Services</span>
-              <span className="material-symbols-outlined text-[15px] text-[#0284c7] leading-none shrink-0 transition-transform duration-200">
+              <span className="material-symbols-outlined text-[14px] 2xl:text-[15px] text-[#0284c7] leading-none shrink-0 transition-transform duration-200">
                 {servicesDropdownOpen ? 'expand_less' : 'expand_more'}
               </span>
             </button>
@@ -419,13 +419,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                     handleNavClick(item.tab);
                   }
                 }}
-                className={`h-9 px-2 2xl:px-3 text-[12px] 2xl:text-[13px] font-semibold transition-all rounded-lg whitespace-nowrap cursor-pointer inline-flex items-center justify-center gap-1 leading-none ${
+                className={`h-9 px-1.5 xl:px-2 2xl:px-2.5 text-[11.5px] xl:text-[12px] 2xl:text-[12.5px] font-semibold transition-all rounded-lg whitespace-nowrap cursor-pointer inline-flex items-center justify-center gap-1 leading-none ${
                   isActive
                     ? 'bg-[#dce9ff] text-[#0b1c30] font-bold shadow-xs'
                     : 'text-[#0284c7] hover:bg-[#e0f2fe] font-bold'
                 }`}
               >
-                <span className="material-symbols-outlined text-[15px] text-[#0284c7] leading-none shrink-0">{item.icon}</span>
+                <span className="material-symbols-outlined text-[14px] 2xl:text-[15px] text-[#0284c7] leading-none shrink-0">{item.icon}</span>
                 <span className="leading-none">{item.label}</span>
               </button>
             );
@@ -433,24 +433,25 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Right CTA & Direct Call & Mobile Toggle */}
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div className="flex items-center gap-1 sm:gap-1.5 xl:gap-2 shrink-0">
           <a
             href="tel:+919632025123"
             onClick={() => trackConversionEvent('phone_click', '+91 9632025123', 'Navbar Header Call')}
-            className="hidden lg:inline-flex items-center gap-1.5 h-9 px-2 2xl:px-3 rounded-lg bg-amber-50/80 hover:bg-amber-100/90 border border-amber-200/80 text-[#0B192C] hover:text-[#0284C7] text-[11.5px] 2xl:text-[12px] font-bold tracking-wide transition-all group cursor-pointer shadow-xs leading-none shrink-0"
+            className="hidden lg:inline-flex items-center gap-1 xl:gap-1.5 h-9 px-2 xl:px-2.5 rounded-lg bg-amber-50/80 hover:bg-amber-100/90 border border-amber-200/80 text-[#0B192C] hover:text-[#0284C7] text-[11px] xl:text-[11.5px] 2xl:text-[12px] font-bold tracking-wide transition-all group cursor-pointer shadow-xs leading-none shrink-0"
             title={`Call +91 9632025123 or 24/7 Hotline ${BUSINESS_NAP.secondaryPhone}`}
           >
-            <span className="material-symbols-outlined text-[15px] text-[#D97706] group-hover:scale-110 transition-transform leading-none shrink-0">phone_in_talk</span>
+            <span className="material-symbols-outlined text-[14px] xl:text-[15px] text-[#D97706] group-hover:scale-110 transition-transform leading-none shrink-0">phone_in_talk</span>
             <span className="leading-none whitespace-nowrap">+91 9632025123</span>
           </a>
 
           <button
             onClick={() => onOpenConsultation()}
-            className="inline-flex items-center justify-center h-9 px-2.5 sm:px-3 2xl:px-3.5 rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[12px] 2xl:text-[13px] font-semibold shadow-[0_4px_20px_-2px_rgba(11,25,44,0.12)] hover:shadow-[0_12px_28px_-4px_rgba(2,132,199,0.25)] transition-all cursor-pointer whitespace-nowrap leading-none shrink-0"
+            className="inline-flex items-center justify-center h-9 px-2 sm:px-2.5 xl:px-3 2xl:px-3.5 rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[11.5px] xl:text-[12px] 2xl:text-[12.5px] font-semibold shadow-[0_4px_20px_-2px_rgba(11,25,44,0.12)] hover:shadow-[0_12px_28px_-4px_rgba(2,132,199,0.25)] transition-all cursor-pointer whitespace-nowrap leading-none shrink-0"
           >
-            <span className="material-symbols-outlined text-[15px] mr-1 leading-none shrink-0">request_quote</span>
-            <span className="hidden 2xl:inline leading-none">Get a Consultation / Quote</span>
-            <span className="hidden sm:inline 2xl:hidden leading-none">Get Quote</span>
+            <span className="material-symbols-outlined text-[14px] xl:text-[15px] mr-1 leading-none shrink-0">request_quote</span>
+            <span className="hidden min-[1680px]:inline leading-none">Get a Consultation / Quote</span>
+            <span className="hidden xl:inline min-[1680px]:hidden leading-none">Get Quote</span>
+            <span className="hidden sm:inline xl:hidden leading-none">Get Quote</span>
             <span className="sm:hidden leading-none">Quote</span>
           </button>
 

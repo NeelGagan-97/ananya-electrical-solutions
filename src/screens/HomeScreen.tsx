@@ -70,48 +70,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const logoVideoRef = useRef<HTMLVideoElement | null>(null);
   const [logoAnimPhase, setLogoAnimPhase] = useState<'charging' | 'surge' | 'energized'>('charging');
 
-  const ctaBlockRef = useRef<HTMLDivElement | null>(null);
-  const scopeCardsRef = useRef<HTMLDivElement | null>(null);
-  const [cardsTranslateY, setCardsTranslateY] = useState<number>(0);
 
-  useEffect(() => {
-    const updateAlignment = () => {
-      if (!ctaBlockRef.current || !scopeCardsRef.current) return;
-      if (window.innerWidth >= 1024) {
-        const prevTransform = scopeCardsRef.current.style.transform;
-        scopeCardsRef.current.style.transform = 'none';
-        const ctaRect = ctaBlockRef.current.getBoundingClientRect();
-        const cardsRect = scopeCardsRef.current.getBoundingClientRect();
-        const diff = Math.round(ctaRect.top - cardsRect.top);
-        scopeCardsRef.current.style.transform = prevTransform;
-        setCardsTranslateY(diff);
-      } else {
-        setCardsTranslateY(0);
-      }
-    };
-
-    updateAlignment();
-    window.addEventListener('resize', updateAlignment);
-
-    let ro: ResizeObserver | null = null;
-    if (typeof ResizeObserver !== 'undefined' && ctaBlockRef.current) {
-      ro = new ResizeObserver(() => updateAlignment());
-      ro.observe(ctaBlockRef.current);
-      if (scopeCardsRef.current && scopeCardsRef.current.parentElement) {
-        ro.observe(scopeCardsRef.current.parentElement);
-      }
-    }
-
-    const t1 = setTimeout(updateAlignment, 80);
-    const t2 = setTimeout(updateAlignment, 400);
-
-    return () => {
-      window.removeEventListener('resize', updateAlignment);
-      if (ro) ro.disconnect();
-      clearTimeout(t1);
-      clearTimeout(t2);
-    };
-  }, [logoAnimPhase]);
 
   const handleImgFallback = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const target = e.currentTarget;
@@ -282,7 +241,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </p>
 
               {/* Primary Lead Conversion CTAs: Get a Quote, Call Now, WhatsApp */}
-              <div ref={ctaBlockRef} className="flex flex-col gap-3 pt-2 max-w-2xl transition-transform">
+              <div className="flex flex-col gap-3 pt-2 max-w-2xl">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                   <button
                     onClick={() => {
@@ -471,11 +430,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </div>
 
               {/* Verified Engineering Scope Cards */}
-              <div
-                ref={scopeCardsRef}
-                style={{ transform: cardsTranslateY ? `translateY(${cardsTranslateY}px)` : undefined }}
-                className="grid grid-cols-2 gap-3 w-full items-stretch transition-transform duration-200 ease-out"
-              >
+              <div className="grid grid-cols-2 gap-3 w-full items-stretch">
                 <div className="p-4 rounded-xl bg-[#0B192C]/80 backdrop-blur-md text-white flex flex-col justify-between gap-1 border border-white/15 shadow-xl h-full">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[11px] text-slate-300 uppercase tracking-wider font-semibold">HT / EHT Grid Scope</span>
