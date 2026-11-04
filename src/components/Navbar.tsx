@@ -455,19 +455,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="sm:hidden leading-none">Quote</span>
           </button>
 
-          {/* Quick status / saved inquiries button */}
-          <button
-            onClick={() => handleNavClick('contact-us')}
-            title={inquiryCount > 0 ? `${inquiryCount} active engineering inquiries` : "View Inquiries & Contact"}
-            className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#0B192C] text-white inline-flex items-center justify-center shrink-0 cursor-pointer hover:bg-[#0284C7] transition-colors leading-none"
-          >
-            <span className="material-symbols-outlined text-[16px] sm:text-[17px] leading-none shrink-0">person</span>
-            {inquiryCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#F59E0B] text-[#0B192C] rounded-full text-[10px] font-bold flex items-center justify-center">
-                {inquiryCount}
-              </span>
-            )}
-          </button>
 
           {/* Mobile hamburger button */}
           <button

@@ -52,18 +52,11 @@ export const EnquiryHubLauncher: React.FC = () => {
         <button
           type="button"
           onClick={() => setDrawerOpen(true)}
-          title="Open Ananya Electrical Solutions Enquiry Forms Hub"
-          className="group flex items-center gap-2.5 px-3.5 py-2.5 rounded-full bg-white text-[#0284C7] hover:bg-[#e0f2fe] border-2 border-[#0284C7] text-[12.5px] font-bold shadow-xl hover:shadow-2xl transition-all hover:scale-105 cursor-pointer backdrop-blur-md"
+          title="Open Ananya Electrical Solutions Enquiry Forms"
+          className="flex items-center px-4 py-2.5 rounded-full bg-white text-[#0284C7] hover:bg-[#e0f2fe] border-2 border-[#0284C7] text-[13px] font-bold shadow-xl hover:shadow-2xl transition-all hover:scale-105 cursor-pointer backdrop-blur-md leading-none"
         >
-          <div className="w-6 h-6 rounded-full bg-[#0284C7] text-white flex items-center justify-center text-[12px] font-mono font-bold shadow-xs">
-            15
-          </div>
-          <span className="hidden sm:inline font-bold tracking-wide text-[#0284C7]">
-            Enquiry Forms Module
-          </span>
-          <span className="sm:hidden font-bold text-[#0284C7]">Forms (15)</span>
-          <span className="material-symbols-outlined text-[18px] text-[#0284C7] group-hover:rotate-45 transition-transform">
-            open_in_new
+          <span className="font-bold tracking-wide text-[#0284C7] leading-none">
+            Enquiry Forms
           </span>
         </button>
       </div>
