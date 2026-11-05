@@ -68,9 +68,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [activeStage, setActiveStage] = useState<number | null>(null);
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const logoVideoRef = useRef<HTMLVideoElement | null>(null);
-  const [logoAnimPhase, setLogoAnimPhase] = useState<'charging' | 'surge' | 'energized'>('charging');
-
-
+  const [logoAnimPhase, setLogoAnimPhase] = useState<'charging' | 'surge' | 'energized'>('energized');
 
   const handleImgFallback = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const target = e.currentTarget;
@@ -80,26 +78,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     }
   };
 
-  useEffect(() => {
-    let rafId: number;
-    const syncWithVideo = () => {
-      const vid = logoVideoRef.current;
-      if (vid && !vid.paused) {
-        const t = vid.currentTime;
-        const dur = vid.duration || 8.0;
-        if (t < 1.85 || t > dur - 0.35) {
-          setLogoAnimPhase(prev => (prev !== 'charging' ? 'charging' : prev));
-        } else if (t >= 1.85 && t < 2.45) {
-          setLogoAnimPhase(prev => (prev !== 'surge' ? 'surge' : prev));
-        } else {
-          setLogoAnimPhase(prev => (prev !== 'energized' ? 'energized' : prev));
-        }
-      }
-      rafId = requestAnimationFrame(syncWithVideo);
-    };
-    rafId = requestAnimationFrame(syncWithVideo);
-    return () => cancelAnimationFrame(rafId);
-  }, []);
+  const handleVideoTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    const vid = e.currentTarget;
+    if (!vid) return;
+    const t = vid.currentTime;
+    const dur = vid.duration || 8.0;
+    if (t < 1.85 || t > dur - 0.35) {
+      setLogoAnimPhase(prev => (prev !== 'charging' ? 'charging' : prev));
+    } else if (t >= 1.85 && t < 2.45) {
+      setLogoAnimPhase(prev => (prev !== 'surge' ? 'surge' : prev));
+    } else {
+      setLogoAnimPhase(prev => (prev !== 'energized' ? 'energized' : prev));
+    }
+  };
 
   const filteredProjects = projectFilter === 'all'
     ? PROJECTS.slice(0, 3)
@@ -180,11 +171,26 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <section className="relative w-full bg-[#071120] text-white overflow-hidden py-16 lg:py-24">
         {/* Background Image & Cinematic Atmospheric Layers */}
         <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
-          <img
-            src="/assets/aistudio/Electrical_transmission_lines_on__2K_20261025145912_944acc49.jpg"
-            alt="High-voltage electrical transmission lines across golden-hour hills"
-            className="w-full h-full object-cover object-center scale-[1.03] brightness-95 contrast-110 saturate-110"
-          />
+          <picture>
+            <source
+              type="image/webp"
+              media="(max-width: 768px)"
+              srcSet="/assets/aistudio/Electrical_transmission_lines_hero_mobile.webp"
+            />
+            <source
+              type="image/webp"
+              srcSet="/assets/aistudio/Electrical_transmission_lines_hero.webp"
+            />
+            <img
+              src="/assets/aistudio/Electrical_transmission_lines_hero.webp"
+              alt="High-voltage electrical transmission lines across golden-hour hills"
+              fetchPriority="high"
+              decoding="async"
+              width={1920}
+              height={1080}
+              className="w-full h-full object-cover object-center scale-[1.03] brightness-95 contrast-110 saturate-110"
+            />
+          </picture>
           {/* Directional Readability Gradient: Rich Navy on Left, Clearer Tower Showcase on Right */}
           <div className="absolute inset-0 bg-gradient-to-r from-[#060f1e]/92 via-[#0B192C]/75 to-[#0B192C]/40" />
           {/* Top & Bottom Vignette for Seamless Section Framing */}
@@ -347,14 +353,26 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <div className="w-full flex flex-col items-center lg:items-end justify-start -mt-6 lg:-mt-10 xl:-mt-12 lg:mr-[calc(min(0px,(80rem-100vw)/2)-3rem)] bg-transparent">
                 <video
                   ref={logoVideoRef}
-                  src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm"
                   autoPlay
                   loop
                   muted
                   playsInline
+                  preload="metadata"
+                  poster="/assets/aistudio/hero_logo_poster.webp"
+                  onTimeUpdate={handleVideoTimeUpdate}
                   style={{ aspectRatio: '1.5 / 1.5' }}
                   className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent [clip-path:inset(0_0_31%_0)] brightness-90 drop-shadow-[0_0_14px_rgba(56,189,248,0.42)]"
-                />
+                >
+                  <source
+                    src="/assets/aistudio/Animated_electrical_logo_reveal_mobile.webm"
+                    type="video/webm"
+                    media="(max-width: 768px)"
+                  />
+                  <source
+                    src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm"
+                    type="video/webm"
+                  />
+                </video>
                 {/* Custom Styled Brand Logo Lockup Synchronized with Video Reveal */}
                 <div
                   className={`w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] flex flex-col items-center justify-center text-center -mt-24 sm:-mt-28 lg:-mt-30 xl:-mt-32 pb-2 select-none transition-all duration-500 ease-out ${
@@ -600,19 +618,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {/* Multi-Panel Electrical Services & Equipment Background Collage */}
         <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-3 w-full h-full opacity-45">
-            <img
+            <img loading="lazy" decoding="async"
               src={ASSETS.pillarHighVoltage}
               alt="33kV Electrical Substation & Power Transformer Equipment"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover object-center scale-105 brightness-95 contrast-110"
             />
-            <img
+            <img loading="lazy" decoding="async"
               src={ASSETS.project1}
               alt="HT/LT Switchgear Panels & Busbar Trunking Equipment"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover object-center scale-105 brightness-95 contrast-110 hidden md:block"
             />
-            <img
+            <img loading="lazy" decoding="async"
               src={ASSETS.transmissionBg}
               alt="High-Voltage Transmission Lines & Grid Infrastructure"
               referrerPolicy="no-referrer"
@@ -727,7 +745,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 }}
                 className="group relative rounded-xl overflow-hidden border border-slate-600/70 bg-[#0B192C]/80 backdrop-blur-md p-3 flex items-center gap-3.5 cursor-pointer hover:border-[#38bdf8] transition-all"
               >
-                <img
+                <img loading="lazy" decoding="async"
                   src={item.image}
                   alt={item.title}
                   referrerPolicy="no-referrer"
@@ -752,7 +770,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <section className="w-full bg-[#f8f9ff] py-20 relative overflow-hidden">
         {/* Subtle Electrical Infrastructure Background Layer */}
         <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
-          <img
+          <img loading="lazy" decoding="async"
             src={ASSETS.transmissionBg}
             alt="Electrical transmission background"
             referrerPolicy="no-referrer"
@@ -780,7 +798,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               className="flex flex-col bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer border border-[#E2E8F0] hover:border-[#0284C7]"
             >
               <div className="h-52 w-full overflow-hidden relative">
-                <img
+                <img loading="lazy" decoding="async"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   alt="High voltage electrical substation switchyard"
                   src={ASSETS.pillarHighVoltage}
@@ -840,7 +858,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               className="flex flex-col bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer border border-[#E2E8F0] hover:border-[#F59E0B]"
             >
               <div className="h-52 w-full overflow-hidden relative">
-                <img
+                <img loading="lazy" decoding="async"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   alt="Industrial factory rooftop covered with solar panels"
                   src={ASSETS.pillarSolar}
@@ -900,7 +918,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               className="flex flex-col bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer border border-[#E2E8F0] hover:border-[#0284C7]"
             >
               <div className="h-52 w-full overflow-hidden relative">
-                <img
+                <img loading="lazy" decoding="async"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   alt="Certified electrical engineer reviewing single line diagrams"
                   src={ASSETS.pillarTesting}
@@ -962,13 +980,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {/* Background Electrical Services & Equipment Collage */}
         <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 w-full h-full opacity-20">
-            <img
+            <img loading="lazy" decoding="async"
               src={ASSETS.project1}
               alt="Industrial HT/LT switchboard room background"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover object-center"
             />
-            <img
+            <img loading="lazy" decoding="async"
               src={ASSETS.pillarHighVoltage}
               alt="High voltage substation transformer yard background"
               referrerPolicy="no-referrer"
@@ -1012,10 +1030,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 >
                   {/* Visual Equipment Banner */}
                   <div className="relative h-32 w-full overflow-hidden bg-[#0B192C]">
-                    <img
+                    <img loading="lazy" decoding="async"
                       src={service.image || ASSETS.pillarHighVoltage}
                       alt={service.title}
-                      loading="lazy"
                       onError={handleImgFallback}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -1071,7 +1088,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="rounded-3xl bg-[#0B192C] text-white p-8 lg:p-10 relative overflow-hidden border border-slate-700 shadow-xl">
             {/* Background Equipment Image Layer inside the Catalog Box */}
             <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 src={ASSETS.transmissionBg}
                 alt="Electrical substation equipment background"
                 referrerPolicy="no-referrer"
@@ -1113,10 +1130,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                       className="rounded-xl bg-[#1E293B]/90 backdrop-blur-md border border-slate-700 hover:border-[#38bdf8] overflow-hidden flex flex-col justify-between group transition-all cursor-pointer"
                     >
                       <div className="relative h-28 w-full overflow-hidden">
-                        <img
+                        <img loading="lazy" decoding="async"
                           src={item.image}
                           alt={item.name}
-                          loading="lazy"
                           onError={handleImgFallback}
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -1176,7 +1192,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             {/* Visual Collage */}
             <div className="lg:col-span-5 flex flex-col justify-between gap-4">
               <div className="relative flex-1 min-h-[320px] rounded-2xl overflow-hidden shadow-lg border border-[#CBD5E1] flex flex-col justify-end">
-                <img
+                <img loading="lazy" decoding="async"
                   className="absolute inset-0 w-full h-full object-cover"
                   alt="Female electrical engineer wearing safety gear inspecting industrial distribution panel with a digital multimeter"
                   src={ASSETS.engineerPanelInspection}
@@ -1303,25 +1319,25 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {/* Full-Bleed Multi-Panel Electrical Services & Equipment Background Images */}
         <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full h-full opacity-40">
-            <img
+            <img loading="lazy" decoding="async"
               src={ASSETS.pillarHighVoltage}
               alt="33kV substation switchyard background"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover object-center scale-105"
             />
-            <img
+            <img loading="lazy" decoding="async"
               src={ASSETS.project1}
               alt="HT/LT PCC and MCC switchgear panels background"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover object-center scale-105 hidden md:block"
             />
-            <img
+            <img loading="lazy" decoding="async"
               src={ASSETS.project3}
               alt="Industrial heavy cable trays and XLPE feeders background"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover object-center scale-105 hidden lg:block"
             />
-            <img
+            <img loading="lazy" decoding="async"
               src={ASSETS.aboutExecution}
               alt="Electrical testing and commissioning engineers background"
               referrerPolicy="no-referrer"
@@ -1373,7 +1389,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 >
                   {/* Stage Equipment & Service Image Header */}
                   <div className="relative h-28 w-full overflow-hidden bg-[#0B192C]">
-                    <img
+                    <img loading="lazy" decoding="async"
                       src={stage.image}
                       alt={stage.title}
                       referrerPolicy="no-referrer"
@@ -1484,7 +1500,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   className="rounded-xl overflow-hidden border border-slate-700 bg-[#1E293B]/90 hover:border-[#38bdf8] transition-all cursor-pointer group flex flex-col"
                 >
                   <div className="h-20 w-full overflow-hidden relative">
-                    <img
+                    <img loading="lazy" decoding="async"
                       src={eq.img}
                       alt={eq.name}
                       referrerPolicy="no-referrer"
@@ -1542,7 +1558,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 className="rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-lg transition-all flex flex-col border border-[#E2E8F0] cursor-pointer group"
               >
                 <div className="h-48 w-full overflow-hidden relative">
-                  <img
+                  <img loading="lazy" decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     alt={project.title}
                     src={project.image}
@@ -1592,7 +1608,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B192C]/80 backdrop-blur-sm">
           <div className="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl border border-[#CBD5E1]">
             <div className="relative h-56 sm:h-64">
-              <img src={selectedProject.image} alt={selectedProject.title} className="w-full h-full object-cover" />
+              <img loading="lazy" decoding="async" src={selectedProject.image} alt={selectedProject.title} className="w-full h-full object-cover" />
               <button
                 onClick={() => setSelectedProject(null)}
                 className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black transition-colors"

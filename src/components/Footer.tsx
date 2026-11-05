@@ -205,23 +205,18 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenSeoAudit }) =
           </div>
         </div>
 
-        {/* Bottom Bar with Compliance Notice & Sitemap Links */}
-        <div className="pt-6 mt-4 bg-[#eff4ff] rounded-lg p-5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 text-[12.5px] text-[#44474c]">
-          <div className="flex flex-wrap items-center gap-2.5">
+        {/* Bottom Bar with Compliance Notice & Copyright in 2 Lines */}
+        <div className="mt-5 bg-[#eff4ff] rounded-lg p-4 sm:p-5 flex flex-col gap-2.5 text-[12.5px] text-[#44474c] border border-[#dbeafe]">
+          {/* Line 1: Statutory Compliance Spans */}
+          <div className="flex flex-wrap items-center gap-2">
             <span className="font-semibold text-[#0B192C]">Statutory Compliance:</span>
             <span>Class 1 Electrical Contractor (Karnataka Electrical Inspectorate)</span>
-            <span className="text-[#CBD5E1]" aria-hidden="true">·</span>
+            <span className="text-[#94A3B8]" aria-hidden="true">·</span>
             <span>Class-1 PWD Registered</span>
-            <span className="text-[#CBD5E1]" aria-hidden="true">·</span>
-            <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="text-[#0284C7] hover:underline font-medium">
-              XML Sitemap
-            </a>
-            <span className="text-[#CBD5E1]" aria-hidden="true">·</span>
-            <a href="/robots.txt" target="_blank" rel="noopener noreferrer" className="text-[#0284C7] hover:underline font-medium">
-              Robots.txt
-            </a>
           </div>
-          <div className="text-left lg:text-right">
+
+          {/* Line 2: Copyright Notice */}
+          <div className="text-left text-[#555a64] text-[12px]">
             © {new Date().getFullYear()} Ananya Electrical Solutions, Bengaluru. All rights reserved.
           </div>
         </div>

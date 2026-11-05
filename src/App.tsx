@@ -1,17 +1,11 @@
 import React, { useState, useEffect, Suspense } from 'react';
+import { Phone } from 'lucide-react';
 import { NavigationTab, EngineeringInquiry } from './types';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
-import { ConsultationModal } from './components/ConsultationModal';
 import { EnquiryModalHost, EnquiryHubLauncher, BaseEnquirySubmission } from './components/forms';
 import { LeftSideSocialDock } from './components/LeftSideSocialDock';
 import { HomeScreen } from './screens/HomeScreen';
-import { ElectricalScreen } from './screens/ElectricalScreen';
-import { SolarScreen } from './screens/SolarScreen';
-import { ServicesScreen } from './screens/ServicesScreen';
-import { ProjectsGalleryScreen } from './screens/ProjectsGalleryScreen';
-import { AboutScreen } from './screens/AboutScreen';
-import { ContactScreen } from './screens/ContactScreen';
 import {
   BUSINESS_NAP,
   SEO_ROUTE_CONFIG,
@@ -21,6 +15,31 @@ import {
   applyRouteSeo,
   trackConversionEvent,
 } from './utils/seo';
+
+// Code-split secondary screens to keep initial landing bundle ultralight
+const ElectricalScreen = React.lazy(() =>
+  import('./screens/ElectricalScreen').then((m) => ({ default: m.ElectricalScreen }))
+);
+const SolarScreen = React.lazy(() =>
+  import('./screens/SolarScreen').then((m) => ({ default: m.SolarScreen }))
+);
+const ServicesScreen = React.lazy(() =>
+  import('./screens/ServicesScreen').then((m) => ({ default: m.ServicesScreen }))
+);
+const ProjectsGalleryScreen = React.lazy(() =>
+  import('./screens/ProjectsGalleryScreen').then((m) => ({ default: m.ProjectsGalleryScreen }))
+);
+const AboutScreen = React.lazy(() =>
+  import('./screens/AboutScreen').then((m) => ({ default: m.AboutScreen }))
+);
+const ContactScreen = React.lazy(() =>
+  import('./screens/ContactScreen').then((m) => ({ default: m.ContactScreen }))
+);
+
+// Code-split modals
+const ConsultationModal = React.lazy(() =>
+  import('./components/ConsultationModal').then((m) => ({ default: m.ConsultationModal }))
+);
 
 // Code-split heavy Three.js 3D Engineering Models & SEO Audit Modal for fast initial page load
 const Substation3DScreen = React.lazy(() =>
@@ -259,43 +278,55 @@ export default function App() {
         )}
 
         {currentTab === 'electrical' && (
-          <ElectricalScreen
-            onSelectTab={handleSelectTab}
-            onOpenConsultation={handleOpenConsultation}
-          />
+          <Suspense fallback={fallbackLoader}>
+            <ElectricalScreen
+              onSelectTab={handleSelectTab}
+              onOpenConsultation={handleOpenConsultation}
+            />
+          </Suspense>
         )}
 
         {currentTab === 'solar-solutions' && (
-          <SolarScreen
-            onSelectTab={handleSelectTab}
-            onOpenConsultation={handleOpenConsultation}
-          />
+          <Suspense fallback={fallbackLoader}>
+            <SolarScreen
+              onSelectTab={handleSelectTab}
+              onOpenConsultation={handleOpenConsultation}
+            />
+          </Suspense>
         )}
 
         {currentTab === 'services' && (
-          <ServicesScreen
-            onSelectTab={handleSelectTab}
-            onOpenConsultation={handleOpenConsultation}
-          />
+          <Suspense fallback={fallbackLoader}>
+            <ServicesScreen
+              onSelectTab={handleSelectTab}
+              onOpenConsultation={handleOpenConsultation}
+            />
+          </Suspense>
         )}
 
         {currentTab === 'projects-gallery' && (
-          <ProjectsGalleryScreen
-            onOpenConsultation={handleOpenConsultation}
-          />
+          <Suspense fallback={fallbackLoader}>
+            <ProjectsGalleryScreen
+              onOpenConsultation={handleOpenConsultation}
+            />
+          </Suspense>
         )}
 
         {currentTab === 'about-us' && (
-          <AboutScreen
-            onOpenConsultation={handleOpenConsultation}
-          />
+          <Suspense fallback={fallbackLoader}>
+            <AboutScreen
+              onOpenConsultation={handleOpenConsultation}
+            />
+          </Suspense>
         )}
 
         {currentTab === 'contact-us' && (
-          <ContactScreen
-            inquiries={inquiries}
-            onSaveInquiry={handleSaveInquiry}
-          />
+          <Suspense fallback={fallbackLoader}>
+            <ContactScreen
+              inquiries={inquiries}
+              onSaveInquiry={handleSaveInquiry}
+            />
+          </Suspense>
         )}
       </main>
 
@@ -310,13 +341,17 @@ export default function App() {
           />
         )}
 
-      {/* Global Consultation / Proposal Modal */}
-      <ConsultationModal
-        isOpen={consultationModalOpen}
-        onClose={() => setConsultationModalOpen(false)}
-        initialService={modalServiceTopic}
-        onSaveInquiry={handleSaveInquiry}
-      />
+      {/* Global Consultation / Proposal Modal (Deferred / Code-split) */}
+      {consultationModalOpen && (
+        <Suspense fallback={null}>
+          <ConsultationModal
+            isOpen={consultationModalOpen}
+            onClose={() => setConsultationModalOpen(false)}
+            initialService={modalServiceTopic}
+            onSaveInquiry={handleSaveInquiry}
+          />
+        </Suspense>
+      )}
 
       {/* Complete AES Enquiry Forms Module (15 Forms) Modal Host */}
       <EnquiryModalHost onFormSubmitted={handleFormSubmitted} />
@@ -343,7 +378,7 @@ export default function App() {
           onClick={() => trackConversionEvent('phone_click', '+91 9632025123', 'Floating Primary Call CTA')}
           className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#0B192C] text-white text-[13px] font-bold shadow-xl hover:bg-[#006398] transition-all hover:scale-105 border border-slate-700"
         >
-          <span className="material-symbols-outlined text-[18px] text-[#F59E0B]">call</span>
+          <Phone className="w-4.5 h-4.5 text-[#F59E0B]" />
           <span>Call +91 9632025123</span>
         </a>
       </div>

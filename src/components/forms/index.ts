@@ -22,20 +22,3 @@ export {
   FORMS_REGISTRY,
 } from './EnquiryModalHost';
 export { EnquiryHubLauncher, openAesEnquiryHub } from './EnquiryHubLauncher';
-
-// Individual Forms (1 to 15)
-export { ResidentialServiceForm } from './items/ResidentialServiceForm';
-export { IndustrialCommercialForm } from './items/IndustrialCommercialForm';
-export { HtLtElectricalWorksForm } from './items/HtLtElectricalWorksForm';
-export { SolarRooftopForm } from './items/SolarRooftopForm';
-export { ElectricalMaintenanceAmcForm } from './items/ElectricalMaintenanceAmcForm';
-export { ElectricalInspectionAuditForm } from './items/ElectricalInspectionAuditForm';
-export { EngineeringDesignConsultancyForm } from './items/EngineeringDesignConsultancyForm';
-export { VendorRegistrationForm } from './items/VendorRegistrationForm';
-export { RequestSiteVisitForm } from './items/RequestSiteVisitForm';
-export { BoqQuotationRequestForm } from './items/BoqQuotationRequestForm';
-export { ElectricalEmergencySupportForm } from './items/ElectricalEmergencySupportForm';
-export { RequestCallbackForm } from './items/RequestCallbackForm';
-export { ProjectFeedbackForm } from './items/ProjectFeedbackForm';
-export { CareersJobApplicationForm } from './items/CareersJobApplicationForm';
-export { CustomerComplaintSupportForm } from './items/CustomerComplaintSupportForm';

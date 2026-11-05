@@ -2,22 +2,54 @@ import React, { useState, useEffect } from 'react';
 import { FormId, BaseEnquirySubmission } from './types';
 import { FormModal } from './FormModal';
 
-// Form Item Imports
-import { ResidentialServiceForm } from './items/ResidentialServiceForm';
-import { IndustrialCommercialForm } from './items/IndustrialCommercialForm';
-import { HtLtElectricalWorksForm } from './items/HtLtElectricalWorksForm';
-import { SolarRooftopForm } from './items/SolarRooftopForm';
-import { ElectricalMaintenanceAmcForm } from './items/ElectricalMaintenanceAmcForm';
-import { ElectricalInspectionAuditForm } from './items/ElectricalInspectionAuditForm';
-import { EngineeringDesignConsultancyForm } from './items/EngineeringDesignConsultancyForm';
-import { VendorRegistrationForm } from './items/VendorRegistrationForm';
-import { RequestSiteVisitForm } from './items/RequestSiteVisitForm';
-import { BoqQuotationRequestForm } from './items/BoqQuotationRequestForm';
-import { ElectricalEmergencySupportForm } from './items/ElectricalEmergencySupportForm';
-import { RequestCallbackForm } from './items/RequestCallbackForm';
-import { ProjectFeedbackForm } from './items/ProjectFeedbackForm';
-import { CareersJobApplicationForm } from './items/CareersJobApplicationForm';
-import { CustomerComplaintSupportForm } from './items/CustomerComplaintSupportForm';
+import { Suspense } from 'react';
+
+// Code-split form item components so none of the 15 heavy forms are in the initial bundle
+const ResidentialServiceForm = React.lazy(() =>
+  import('./items/ResidentialServiceForm').then((m) => ({ default: m.ResidentialServiceForm }))
+);
+const IndustrialCommercialForm = React.lazy(() =>
+  import('./items/IndustrialCommercialForm').then((m) => ({ default: m.IndustrialCommercialForm }))
+);
+const HtLtElectricalWorksForm = React.lazy(() =>
+  import('./items/HtLtElectricalWorksForm').then((m) => ({ default: m.HtLtElectricalWorksForm }))
+);
+const SolarRooftopForm = React.lazy(() =>
+  import('./items/SolarRooftopForm').then((m) => ({ default: m.SolarRooftopForm }))
+);
+const ElectricalMaintenanceAmcForm = React.lazy(() =>
+  import('./items/ElectricalMaintenanceAmcForm').then((m) => ({ default: m.ElectricalMaintenanceAmcForm }))
+);
+const ElectricalInspectionAuditForm = React.lazy(() =>
+  import('./items/ElectricalInspectionAuditForm').then((m) => ({ default: m.ElectricalInspectionAuditForm }))
+);
+const EngineeringDesignConsultancyForm = React.lazy(() =>
+  import('./items/EngineeringDesignConsultancyForm').then((m) => ({ default: m.EngineeringDesignConsultancyForm }))
+);
+const VendorRegistrationForm = React.lazy(() =>
+  import('./items/VendorRegistrationForm').then((m) => ({ default: m.VendorRegistrationForm }))
+);
+const RequestSiteVisitForm = React.lazy(() =>
+  import('./items/RequestSiteVisitForm').then((m) => ({ default: m.RequestSiteVisitForm }))
+);
+const BoqQuotationRequestForm = React.lazy(() =>
+  import('./items/BoqQuotationRequestForm').then((m) => ({ default: m.BoqQuotationRequestForm }))
+);
+const ElectricalEmergencySupportForm = React.lazy(() =>
+  import('./items/ElectricalEmergencySupportForm').then((m) => ({ default: m.ElectricalEmergencySupportForm }))
+);
+const RequestCallbackForm = React.lazy(() =>
+  import('./items/RequestCallbackForm').then((m) => ({ default: m.RequestCallbackForm }))
+);
+const ProjectFeedbackForm = React.lazy(() =>
+  import('./items/ProjectFeedbackForm').then((m) => ({ default: m.ProjectFeedbackForm }))
+);
+const CareersJobApplicationForm = React.lazy(() =>
+  import('./items/CareersJobApplicationForm').then((m) => ({ default: m.CareersJobApplicationForm }))
+);
+const CustomerComplaintSupportForm = React.lazy(() =>
+  import('./items/CustomerComplaintSupportForm').then((m) => ({ default: m.CustomerComplaintSupportForm }))
+);
 
 export interface FormMetadataConfig {
   id: FormId;
@@ -272,7 +304,16 @@ export const EnquiryModalHost: React.FC<EnquiryModalHostProps> = ({ onFormSubmit
       description={config.description}
       icon={config.icon}
     >
-      {renderActiveForm()}
+      <Suspense
+        fallback={
+          <div className="py-12 flex flex-col items-center justify-center gap-3">
+            <div className="w-8 h-8 rounded-full border-3 border-[#0284C7] border-t-transparent animate-spin" />
+            <span className="text-[13px] text-[#006398] font-semibold">Loading form...</span>
+          </div>
+        }
+      >
+        {renderActiveForm()}
+      </Suspense>
     </FormModal>
   );
 };

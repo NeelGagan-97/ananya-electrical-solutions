@@ -215,19 +215,19 @@ export const ElectricalServicesSection: React.FC<ElectricalServicesSectionProps>
       {/* Layered Background Images of Electrical Services & Equipment */}
       <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-3 w-full h-full opacity-25">
-          <img
+          <img loading="lazy" decoding="async"
             src={ASSETS.project3}
             alt="Industrial cable tray and electrical wiring background"
             referrerPolicy="no-referrer"
             className="w-full h-full object-cover object-center"
           />
-          <img
+          <img loading="lazy" decoding="async"
             src={ASSETS.project1}
             alt="Electrical switchgear and distribution panels background"
             referrerPolicy="no-referrer"
             className="w-full h-full object-cover object-center hidden lg:block"
           />
-          <img
+          <img loading="lazy" decoding="async"
             src={ASSETS.pillarTesting}
             alt="Electrical engineering control room and relay testing background"
             referrerPolicy="no-referrer"
@@ -292,7 +292,7 @@ export const ElectricalServicesSection: React.FC<ElectricalServicesSectionProps>
               >
                 {/* Equipment & Service Image Header */}
                 <div className="relative h-32 w-full overflow-hidden bg-[#0B192C]">
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={service.image}
                     alt={service.title}
                     referrerPolicy="no-referrer"

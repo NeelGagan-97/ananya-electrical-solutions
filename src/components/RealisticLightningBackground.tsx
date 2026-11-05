@@ -17,7 +17,7 @@ interface BoltSegment {
   widthStart: number;
   widthEnd: number;
   alpha: number;
-  progress: number; // 0 at cloud origin, 1 at terminal tip
+  progress: number;
   beadSeed: number;
 }
 
@@ -92,7 +92,6 @@ function subdivideFractalPoints(
       const nx = -dy / len;
       const ny = dx / len;
 
-      // Occasional sharp electrostatic kink like real stepped leaders
       const kinkBoost = Math.random() < 0.16 ? 1.55 : 1.0;
       const displace = gaussianRandom() * offset * kinkBoost;
       const alongJitter = (Math.random() - 0.5) * offset * 0.24;
@@ -164,16 +163,17 @@ function generateRealisticBolt(
   height: number,
   now: number,
   id: number,
+  isMobile: boolean,
   forcedSlot?: 'right-tower' | 'left-horizon' | 'center-ridge' | 'anvil-spider'
 ): ActiveBolt {
   const roll = Math.random();
   const slot: 'right-tower' | 'left-horizon' | 'center-ridge' | 'anvil-spider' =
     forcedSlot ??
-    (roll < 0.34
+    (roll < 0.38
       ? 'right-tower'
-      : roll < 0.62
+      : roll < 0.70
         ? 'left-horizon'
-        : roll < 0.8
+        : roll < 0.88
           ? 'center-ridge'
           : 'anvil-spider');
 
@@ -209,7 +209,6 @@ function generateRealisticBolt(
       y: height * (0.58 + Math.random() * 0.26),
     };
   } else {
-    // High-altitude dendritic anvil spider lightning crawling across the upper cloud deck
     const leftToRight = Math.random() > 0.45;
     origin = {
       x: width * (leftToRight ? 0.18 + Math.random() * 0.22 : 0.62 + Math.random() * 0.24),
@@ -222,11 +221,13 @@ function generateRealisticBolt(
   }
 
   const mainLength = Math.hypot(target.x - origin.x, target.y - origin.y);
-  // 7 generations = 128 ultra-detailed fractal segments along the main return channel
+
+  // Device-aware fractal depth: 5 generations (32 pts) on mobile, 6 generations (64 pts) on desktop
+  const trunkGenerations = isMobile ? 5 : 6;
   const mainPoints = subdivideFractalPoints(
     origin,
     target,
-    7,
+    trunkGenerations,
     mainLength * (isSpider ? 0.14 : 0.165),
     0.535
   );
@@ -234,37 +235,38 @@ function generateRealisticBolt(
   const branches: BoltBranch[] = [];
 
   // Tier 0: Main return-stroke channel
-  const mainBaseWidth = isSpider ? 2.15 : 3.05;
-  const mainTipWidth = isSpider ? 0.45 : 0.85;
+  const mainBaseWidth = isSpider ? 2.15 : (isMobile ? 2.6 : 3.05);
+  const mainTipWidth = isSpider ? 0.45 : 0.75;
   branches.push({
     tier: 0,
     segments: buildBranchSegments(mainPoints, mainBaseWidth, mainTipWidth, 1.0, 0, 1),
   });
 
-  // Tier 1: Primary dendritic forks splitting off the main trunk
-  const numPrimaryForks = isSpider
-    ? 6 + Math.floor(Math.random() * 4)
-    : 6 + Math.floor(Math.random() * 5);
+  // Tier 1: Primary forks
+  const numPrimaryForks = isMobile
+    ? (isSpider ? 2 : 2)
+    : (isSpider ? 4 : 4 + Math.floor(Math.random() * 2));
 
   const mainAngle = Math.atan2(target.y - origin.y, target.x - origin.x);
 
   for (let f = 0; f < numPrimaryForks; f++) {
-    const fracMin = 0.07 + (f / numPrimaryForks) * 0.74;
-    const frac = Math.min(0.89, fracMin + Math.random() * (0.65 / numPrimaryForks));
-    const idx = Math.max(3, Math.min(mainPoints.length - 5, Math.floor(frac * mainPoints.length)));
+    const fracMin = 0.1 + (f / numPrimaryForks) * 0.7;
+    const frac = Math.min(0.85, fracMin + Math.random() * (0.5 / numPrimaryForks));
+    const idx = Math.max(2, Math.min(mainPoints.length - 3, Math.floor(frac * mainPoints.length)));
     const forkOrigin = mainPoints[idx];
 
     const side = f % 2 === 0 ? 1 : -1;
     const spreadAngle =
-      mainAngle + side * (0.28 + Math.random() * 0.54) + (Math.random() - 0.5) * 0.16;
-    const forkLen = mainLength * (0.25 + Math.random() * 0.3) * (1 - frac * 0.32);
+      mainAngle + side * (0.28 + Math.random() * 0.5) + (Math.random() - 0.5) * 0.15;
+    const forkLen = mainLength * (0.24 + Math.random() * 0.26) * (1 - frac * 0.32);
 
     const forkTarget: Point = {
       x: forkOrigin.x + Math.cos(spreadAngle) * forkLen,
       y: forkOrigin.y + Math.sin(spreadAngle) * forkLen,
     };
 
-    const forkPoints = subdivideFractalPoints(forkOrigin, forkTarget, 5, forkLen * 0.18, 0.54);
+    const forkGens = isMobile ? 3 : 4;
+    const forkPoints = subdivideFractalPoints(forkOrigin, forkTarget, forkGens, forkLen * 0.18, 0.54);
     const forkStartWidth = mainBaseWidth * (1 - frac * 0.42) * 0.62;
     const forkEndProgress = Math.min(1, frac + 0.3);
 
@@ -280,22 +282,21 @@ function generateRealisticBolt(
       ),
     });
 
-    // Tier 2: Secondary sub-branches
-    const subBranchCount = 2 + Math.floor(Math.random() * 2);
-    for (let s = 0; s < subBranchCount; s++) {
-      const sFrac = 0.18 + Math.random() * 0.62;
+    // Tier 2: Secondary sub-branches (Desktop only)
+    if (!isMobile) {
+      const sFrac = 0.35 + Math.random() * 0.4;
       const sIdx = Math.max(1, Math.min(forkPoints.length - 2, Math.floor(sFrac * forkPoints.length)));
       const subOrigin = forkPoints[sIdx];
-      const subSide = Math.random() > 0.32 ? side : -side;
-      const subAngle = spreadAngle + subSide * (0.26 + Math.random() * 0.5);
-      const subLen = forkLen * (0.34 + Math.random() * 0.36);
+      const subSide = Math.random() > 0.4 ? side : -side;
+      const subAngle = spreadAngle + subSide * (0.28 + Math.random() * 0.45);
+      const subLen = forkLen * (0.35 + Math.random() * 0.35);
 
       const subTarget: Point = {
         x: subOrigin.x + Math.cos(subAngle) * subLen,
         y: subOrigin.y + Math.sin(subAngle) * subLen,
       };
 
-      const subPoints = subdivideFractalPoints(subOrigin, subTarget, 4, subLen * 0.2, 0.55);
+      const subPoints = subdivideFractalPoints(subOrigin, subTarget, 3, subLen * 0.2, 0.55);
       const subProgressStart = frac + (forkEndProgress - frac) * sFrac;
 
       branches.push({
@@ -309,70 +310,46 @@ function generateRealisticBolt(
           Math.min(1, subProgressStart + 0.16)
         ),
       });
-
-      // Tier 3: Hair-thin capillary streamers
-      if (subPoints.length > 4) {
-        const tIdx = Math.floor(subPoints.length * (0.35 + Math.random() * 0.45));
-        const twigOrigin = subPoints[tIdx];
-        const twigAngle = subAngle + (Math.random() > 0.5 ? 1 : -1) * (0.32 + Math.random() * 0.52);
-        const twigLen = subLen * (0.4 + Math.random() * 0.34);
-        const twigTarget: Point = {
-          x: twigOrigin.x + Math.cos(twigAngle) * twigLen,
-          y: twigOrigin.y + Math.sin(twigAngle) * twigLen,
-        };
-        const twigPoints = subdivideFractalPoints(twigOrigin, twigTarget, 3, twigLen * 0.22, 0.55);
-        branches.push({
-          tier: 3,
-          segments: buildBranchSegments(
-            twigPoints,
-            0.58,
-            0.09,
-            0.52,
-            subProgressStart + 0.04,
-            Math.min(1, subProgressStart + 0.18)
-          ),
-        });
-      }
     }
   }
 
-  // Direct fine capillary corona streamers along the main trunk
-  const directTwigs = 6 + Math.floor(Math.random() * 5);
-  for (let t = 0; t < directTwigs; t++) {
-    const tFrac = 0.06 + Math.random() * 0.82;
-    const tIdx = Math.floor(tFrac * (mainPoints.length - 2));
-    const twigOrigin = mainPoints[tIdx];
-    const twigSide = Math.random() > 0.5 ? 1 : -1;
-    const twigAngle = mainAngle + twigSide * (0.42 + Math.random() * 0.68);
-    const twigLen = mainLength * (0.065 + Math.random() * 0.095);
-    const twigTarget: Point = {
-      x: twigOrigin.x + Math.cos(twigAngle) * twigLen,
-      y: twigOrigin.y + Math.sin(twigAngle) * twigLen,
-    };
-    const twigPoints = subdivideFractalPoints(twigOrigin, twigTarget, 3, twigLen * 0.22, 0.54);
-    branches.push({
-      tier: 3,
-      segments: buildBranchSegments(
-        twigPoints,
-        0.78,
-        0.1,
-        0.58,
-        tFrac,
-        Math.min(1, tFrac + 0.09)
-      ),
-    });
+  // Tier 3 Direct fine twigs (Desktop only, limit to 2)
+  if (!isMobile) {
+    for (let t = 0; t < 2; t++) {
+      const tFrac = 0.15 + t * 0.45 + Math.random() * 0.15;
+      const tIdx = Math.floor(tFrac * (mainPoints.length - 2));
+      const twigOrigin = mainPoints[tIdx];
+      const twigSide = t % 2 === 0 ? 1 : -1;
+      const twigAngle = mainAngle + twigSide * (0.42 + Math.random() * 0.6);
+      const twigLen = mainLength * (0.07 + Math.random() * 0.08);
+      const twigTarget: Point = {
+        x: twigOrigin.x + Math.cos(twigAngle) * twigLen,
+        y: twigOrigin.y + Math.sin(twigAngle) * twigLen,
+      };
+      const twigPoints = subdivideFractalPoints(twigOrigin, twigTarget, 3, twigLen * 0.22, 0.54);
+      branches.push({
+        tier: 3,
+        segments: buildBranchSegments(
+          twigPoints,
+          0.7,
+          0.1,
+          0.55,
+          tFrac,
+          Math.min(1, tFrac + 0.09)
+        ),
+      });
+    }
   }
 
-  const leaderDuration = isSpider ? 105 : 70 + Math.random() * 25;
-  const sustainedDuration = isSpider ? 240 + Math.random() * 140 : 280 + Math.random() * 220;
+  const leaderDuration = isSpider ? 100 : (isMobile ? 80 : 70 + Math.random() * 25);
+  const sustainedDuration = isSpider ? 220 : (isMobile ? 200 : 260 + Math.random() * 160);
 
-  // 2 to 5 rapid dart-leader restrikes for authentic stroboscopic high-voltage thunder flicker
-  const restrikeCount = isSpider ? 2 + Math.floor(Math.random() * 2) : 2 + Math.floor(Math.random() * 4);
+  const restrikeCount = isMobile ? 1 : (isSpider ? 2 : 2 + Math.floor(Math.random() * 2));
   const restrikeTimes: number[] = [];
-  let cursor = leaderDuration + 85 + Math.random() * 45;
+  let cursor = leaderDuration + 85;
   for (let r = 0; r < restrikeCount; r++) {
     restrikeTimes.push(cursor);
-    cursor += 55 + Math.random() * 75;
+    cursor += 70 + Math.random() * 60;
   }
 
   const hueRoll = Math.random();
@@ -393,7 +370,7 @@ function generateRealisticBolt(
     createdAt: now,
     leaderDuration,
     sustainedDuration,
-    totalDuration: Math.max(cursor + 340, leaderDuration + sustainedDuration + 360),
+    totalDuration: Math.max(cursor + 280, leaderDuration + sustainedDuration + 300),
     restrikeTimes,
     hueType,
     boltType: isSpider ? 'anvil-spider' : 'cloud-to-ground',
@@ -407,30 +384,50 @@ export const RealisticLightningBackground: React.FC = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+
+    // Check prefers-reduced-motion
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+      return;
+    }
+
+    const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
+    let isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || (navigator.maxTouchPoints > 1 && window.innerWidth < 1024));
     let animationFrameId = 0;
+    let isVisible = true;
+    let isInViewport = true;
     let width = 0;
     let height = 0;
     let dpr = 1;
     let boltCounter = 1;
+    let lastRenderTime = 0;
     const activeBolts: ActiveBolt[] = [];
     const activeSparks: IonizedSpark[] = [];
 
-    // Continuous rolling cumulonimbus storm cells so the sky is perpetually alive
-    const stormCells: StormCell[] = [
-      { xFrac: 0.74, yFrac: 0.14, rxFrac: 0.38, ryFrac: 0.26, phase: 0.2, speed: 0.0023, surgeEnergy: 0.35, hue: '125, 211, 252' },
-      { xFrac: 0.28, yFrac: 0.12, rxFrac: 0.34, ryFrac: 0.24, phase: 2.1, speed: 0.0019, surgeEnergy: 0.25, hue: '96, 165, 250' },
-      { xFrac: 0.52, yFrac: 0.09, rxFrac: 0.42, ryFrac: 0.22, phase: 4.0, speed: 0.0027, surgeEnergy: 0.3, hue: '165, 180, 252' },
-      { xFrac: 0.84, yFrac: 0.28, rxFrac: 0.28, ryFrac: 0.22, phase: 1.3, speed: 0.0031, surgeEnergy: 0.2, hue: '56, 189, 248' },
-    ];
+    // Subtle background storm cells (1 on mobile, 2 on desktop)
+    const stormCells: StormCell[] = isMobile
+      ? [
+          { xFrac: 0.65, yFrac: 0.14, rxFrac: 0.42, ryFrac: 0.28, phase: 0.2, speed: 0.0016, surgeEnergy: 0.3, hue: '125, 211, 252' },
+        ]
+      : [
+          { xFrac: 0.74, yFrac: 0.14, rxFrac: 0.38, ryFrac: 0.26, phase: 0.2, speed: 0.002, surgeEnergy: 0.32, hue: '125, 211, 252' },
+          { xFrac: 0.32, yFrac: 0.12, rxFrac: 0.36, ryFrac: 0.24, phase: 2.1, speed: 0.0018, surgeEnergy: 0.25, hue: '96, 165, 250' },
+        ];
 
     const updateSize = () => {
       const rect = canvas.getBoundingClientRect();
       width = Math.max(320, rect.width);
       height = Math.max(320, rect.height);
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      isMobile = width < 768 || (typeof window !== 'undefined' && window.innerWidth < 768);
+
+      // Mobile devices get dpr = 1 to preserve CPU/GPU fillrate; desktop capped at 1.5
+      dpr = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -443,14 +440,12 @@ export const RealisticLightningBackground: React.FC = () => {
     });
     resizeObserver.observe(canvas);
 
-    // Seed immediate overlapping strikes so continuous thunder is visible from frame 1
+    // Initial strike
     const initialNow = performance.now();
-    activeBolts.push(generateRealisticBolt(width, height, initialNow - 20, boltCounter++, 'right-tower'));
-    activeBolts.push(generateRealisticBolt(width, height, initialNow + 260, boltCounter++, 'anvil-spider'));
-    activeBolts.push(generateRealisticBolt(width, height, initialNow + 640, boltCounter++, 'left-horizon'));
+    activeBolts.push(generateRealisticBolt(width, height, initialNow - 30, boltCounter++, isMobile, 'right-tower'));
 
-    let nextPrimaryStrikeAt = initialNow + 980;
-    let nextCrawlerAt = initialNow + 520;
+    let nextPrimaryStrikeAt = initialNow + (isMobile ? 2200 : 980);
+    let nextCrawlerAt = initialNow + (isMobile ? 3800 : 1600);
     let lastSlot: 'right-tower' | 'left-horizon' | 'center-ridge' = 'right-tower';
 
     const getPalette = (hueType: ActiveBolt['hueType']) => {
@@ -487,29 +482,47 @@ export const RealisticLightningBackground: React.FC = () => {
     };
 
     const spawnBeadSparks = (bolt: ActiveBolt, palette: ReturnType<typeof getPalette>) => {
+      if (isMobile) return; // Skip sparks on mobile
       const trunk = bolt.branches[0];
       if (!trunk) return;
-      for (let i = 0; i < trunk.segments.length; i += 5) {
-        if (Math.random() > 0.55) continue;
+      const maxSparksToAdd = 6;
+      let count = 0;
+      for (let i = 0; i < trunk.segments.length; i += 7) {
+        if (count >= maxSparksToAdd || Math.random() > 0.45) continue;
         const seg = trunk.segments[i];
         activeSparks.push({
           x: (seg.x1 + seg.x2) * 0.5 + (Math.random() - 0.5) * 4,
           y: (seg.y1 + seg.y2) * 0.5 + (Math.random() - 0.5) * 4,
-          vx: (Math.random() - 0.45) * 0.45,
-          vy: -0.15 - Math.random() * 0.35,
-          radius: 0.9 + Math.random() * 1.4,
-          alpha: 0.75 + Math.random() * 0.25,
-          decay: 0.018 + Math.random() * 0.022,
+          vx: (Math.random() - 0.45) * 0.4,
+          vy: -0.15 - Math.random() * 0.3,
+          radius: 0.9 + Math.random() * 1.2,
+          alpha: 0.7 + Math.random() * 0.25,
+          decay: 0.02 + Math.random() * 0.02,
           color: palette.midCorona,
         });
+        count++;
       }
     };
 
     const renderFrame = (now: number) => {
+      if (!isVisible || !isInViewport) {
+        return;
+      }
+
+      // Frame-rate throttling: ~25 FPS (40ms) on mobile, 60 FPS (16ms) on desktop
+      const targetInterval = isMobile ? 38 : 16;
+      if (now - lastRenderTime < targetInterval) {
+        animationFrameId = requestAnimationFrame(renderFrame);
+        return;
+      }
+      lastRenderTime = now;
+
       ctx.clearRect(0, 0, width, height);
 
-      // 1. Continuous Cloud-to-Ground / Ridge Strike Scheduler (Overlapping cadence: 650ms - 1350ms)
-      if (now >= nextPrimaryStrikeAt) {
+      const maxBolts = isMobile ? 1 : 3;
+
+      // 1. Strike Scheduler
+      if (now >= nextPrimaryStrikeAt && activeBolts.length < maxBolts) {
         const slots: Array<'right-tower' | 'left-horizon' | 'center-ridge'> = [
           'right-tower',
           'left-horizon',
@@ -519,71 +532,48 @@ export const RealisticLightningBackground: React.FC = () => {
         const chosenSlot = available[Math.floor(Math.random() * available.length)];
         lastSlot = chosenSlot;
 
-        const newBolt = generateRealisticBolt(width, height, now, boltCounter++, chosenSlot);
+        const newBolt = generateRealisticBolt(width, height, now, boltCounter++, isMobile, chosenSlot);
         activeBolts.push(newBolt);
 
-        // Boost nearest storm cell's internal sheet-lightning surge
         for (const cell of stormCells) {
           const dist = Math.abs(cell.xFrac * width - newBolt.origin.x);
           if (dist < width * 0.35) {
-            cell.surgeEnergy = Math.min(1, cell.surgeEnergy + 0.65);
+            cell.surgeEnergy = Math.min(0.9, cell.surgeEnergy + 0.5);
           }
         }
 
-        // 52% chance of a conjugate sympathetic fork or secondary bolt 110ms-260ms later
-        if (Math.random() < 0.52) {
-          const conjugateSlot =
-            Math.random() < 0.5
-              ? 'anvil-spider'
-              : available[Math.floor(Math.random() * available.length)];
-          activeBolts.push(
-            generateRealisticBolt(
-              width,
-              height,
-              now + 110 + Math.random() * 150,
-              boltCounter++,
-              conjugateSlot
-            )
-          );
-        }
-
-        nextPrimaryStrikeAt = now + 680 + Math.random() * 680;
+        nextPrimaryStrikeAt = now + (isMobile ? 2200 + Math.random() * 1400 : 900 + Math.random() * 850);
       }
 
-      // 2. Continuous High-Altitude Anvil Spider / Intracloud Crawler Scheduler
-      if (now >= nextCrawlerAt) {
-        if (activeBolts.length < 5) {
-          activeBolts.push(generateRealisticBolt(width, height, now, boltCounter++, 'anvil-spider'));
-          const randomCell = stormCells[Math.floor(Math.random() * stormCells.length)];
-          randomCell.surgeEnergy = Math.min(1, randomCell.surgeEnergy + 0.5);
+      // 2. High-Altitude Anvil Crawler Scheduler
+      if (now >= nextCrawlerAt && activeBolts.length < maxBolts) {
+        activeBolts.push(generateRealisticBolt(width, height, now, boltCounter++, isMobile, 'anvil-spider'));
+        if (stormCells.length > 0) {
+          stormCells[0].surgeEnergy = Math.min(0.8, stormCells[0].surgeEnergy + 0.4);
         }
-        nextCrawlerAt = now + 540 + Math.random() * 620;
+        nextCrawlerAt = now + (isMobile ? 3600 + Math.random() * 2000 : 1600 + Math.random() * 1200);
       }
 
-      // 3. Render Continuous Rolling Cumulonimbus Sheet-Lightning Cells
+      // 3. Render Cumulonimbus Sheet-Lightning Cells
       ctx.save();
       ctx.globalCompositeOperation = 'screen';
       for (const cell of stormCells) {
-        cell.surgeEnergy *= 0.94;
-        // Occasional spontaneous in-cloud sheet flicker
-        if (Math.random() < 0.035) {
-          cell.surgeEnergy = Math.min(0.85, cell.surgeEnergy + 0.22 + Math.random() * 0.25);
+        cell.surgeEnergy *= 0.92;
+        if (Math.random() < 0.02) {
+          cell.surgeEnergy = Math.min(0.75, cell.surgeEnergy + 0.2 + Math.random() * 0.2);
         }
 
         const wave1 = Math.sin(now * cell.speed + cell.phase);
-        const wave2 = Math.sin(now * (cell.speed * 2.3) - cell.phase * 1.4);
-        const basePulse = Math.max(0, (wave1 * 0.5 + wave2 * 0.5 + 0.65) * 0.085);
-        const cellAlpha = Math.min(0.46, basePulse + cell.surgeEnergy * 0.28);
+        const cellAlpha = Math.min(0.42, 0.04 + cell.surgeEnergy * 0.25);
 
-        if (cellAlpha > 0.01) {
-          const cx = (cell.xFrac + Math.sin(now * 0.0004 + cell.phase) * 0.04) * width;
+        if (cellAlpha > 0.015) {
+          const cx = cell.xFrac * width;
           const cy = cell.yFrac * height;
           const radius = Math.max(width * cell.rxFrac, height * cell.ryFrac);
 
           const grad = ctx.createRadialGradient(cx, cy, 4, cx, cy, radius);
-          grad.addColorStop(0, `rgba(240, 249, 255, ${cellAlpha * 0.95})`);
-          grad.addColorStop(0.32, `rgba(${cell.hue}, ${cellAlpha * 0.58})`);
-          grad.addColorStop(0.68, `rgba(56, 189, 248, ${cellAlpha * 0.18})`);
+          grad.addColorStop(0, `rgba(240, 249, 255, ${cellAlpha * 0.9})`);
+          grad.addColorStop(0.35, `rgba(${cell.hue}, ${cellAlpha * 0.5})`);
           grad.addColorStop(1, 'rgba(15, 23, 42, 0)');
 
           ctx.fillStyle = grad;
@@ -599,10 +589,6 @@ export const RealisticLightningBackground: React.FC = () => {
         }
       }
 
-      ctx.save();
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-
       let globalSkyFlash = 0;
 
       for (const bolt of activeBolts) {
@@ -611,45 +597,39 @@ export const RealisticLightningBackground: React.FC = () => {
 
         const palette = getPalette(bolt.hueType);
         const leaderProgress = Math.min(1, age / bolt.leaderDuration);
-        const isReturnStroke = age >= bolt.leaderDuration && age <= bolt.leaderDuration + 105;
+        const isReturnStroke = age >= bolt.leaderDuration && age <= bolt.leaderDuration + 90;
 
         let trunkIntensity = 0;
         let branchIntensity = 0;
         let isBeadDecayPhase = false;
 
         if (age < bolt.leaderDuration) {
-          // Stepped leader descending from cloud deck
           trunkIntensity = 0.45 + 0.25 * leaderProgress;
-          branchIntensity = 0.38;
+          branchIntensity = 0.35;
         } else {
           const postLeaderAge = age - bolt.leaderDuration;
-
-          // Sustained continuing-current arc + exponential decay
           const continuingCurrent =
             postLeaderAge < bolt.sustainedDuration
-              ? 0.58 * (1 - (postLeaderAge / bolt.sustainedDuration) * 0.45)
+              ? 0.55 * (1 - (postLeaderAge / bolt.sustainedDuration) * 0.45)
               : 0;
-          const initialSurge = Math.exp(-postLeaderAge / 135);
+          const initialSurge = Math.exp(-postLeaderAge / 130);
           trunkIntensity = Math.max(initialSurge, continuingCurrent);
-          branchIntensity = Math.exp(-postLeaderAge / 88);
+          branchIntensity = Math.exp(-postLeaderAge / 85);
 
-          // High-frequency turbulent plasma flicker during continuing current
           if (postLeaderAge < bolt.sustainedDuration) {
-            const hfFlicker = 0.82 + 0.18 * Math.sin(now * 0.085 + bolt.id * 3.1);
+            const hfFlicker = 0.85 + 0.15 * Math.sin(now * 0.08 + bolt.id * 3.1);
             trunkIntensity *= hfFlicker;
           }
 
-          // Dart-leader restrikes surging down the main ionized channel
           for (const rTime of bolt.restrikeTimes) {
             const dt = age - rTime;
-            if (dt >= 0 && dt < 95) {
-              const pulse = Math.exp(-dt / 34) * 0.98;
+            if (dt >= 0 && dt < 90) {
+              const pulse = Math.exp(-dt / 32) * 0.95;
               trunkIntensity = Math.max(trunkIntensity, pulse);
-              branchIntensity = Math.max(branchIntensity, pulse * 0.36);
+              branchIntensity = Math.max(branchIntensity, pulse * 0.35);
             }
           }
 
-          // Bead-lightning breakup during late decay
           if (postLeaderAge > bolt.sustainedDuration * 0.72) {
             isBeadDecayPhase = true;
             if (!bolt.sparksSpawned) {
@@ -659,34 +639,33 @@ export const RealisticLightningBackground: React.FC = () => {
           }
         }
 
-        const boltSkyAlpha = Math.min(1, trunkIntensity) * (isReturnStroke ? 0.44 : 0.25);
+        const boltSkyAlpha = Math.min(1, trunkIntensity) * (isReturnStroke ? 0.42 : 0.22);
         globalSkyFlash = Math.max(globalSkyFlash, boltSkyAlpha);
 
-        // Synchronized volumetric cloud-origin illumination + horizon ground-strike reflection
-        if (boltSkyAlpha > 0.015) {
+        // Volumetric cloud illumination
+        if (boltSkyAlpha > 0.02) {
           ctx.save();
           ctx.globalCompositeOperation = 'screen';
 
-          const cloudRadius = Math.max(width, height) * (bolt.boltType === 'anvil-spider' ? 0.5 : 0.58);
+          const cloudRadius = Math.max(width, height) * 0.48;
           const cloudGrad = ctx.createRadialGradient(
             bolt.origin.x,
             Math.max(18, bolt.origin.y + 36),
             6,
             bolt.origin.x,
-            Math.max(36, bolt.origin.y + 82),
+            Math.max(36, bolt.origin.y + 80),
             cloudRadius
           );
-          cloudGrad.addColorStop(0, `rgba(${palette.core}, ${boltSkyAlpha * 0.96})`);
-          cloudGrad.addColorStop(0.24, `rgba(${palette.midCorona}, ${boltSkyAlpha * 0.68})`);
-          cloudGrad.addColorStop(0.58, `rgba(${palette.cloudTint}, ${boltSkyAlpha * 0.26})`);
+          cloudGrad.addColorStop(0, `rgba(${palette.core}, ${boltSkyAlpha * 0.9})`);
+          cloudGrad.addColorStop(0.3, `rgba(${palette.midCorona}, ${boltSkyAlpha * 0.6})`);
           cloudGrad.addColorStop(1, `rgba(${palette.cloudTint}, 0)`);
 
           ctx.fillStyle = cloudGrad;
           ctx.fillRect(0, 0, width, height);
 
-          // Horizon / transmission tower ground-strike backscatter when leader reaches target
-          if (bolt.boltType === 'cloud-to-ground' && leaderProgress >= 0.98) {
-            const groundRadius = Math.max(width, height) * 0.28;
+          // Ground reflection on desktop
+          if (!isMobile && bolt.boltType === 'cloud-to-ground' && leaderProgress >= 0.98) {
+            const groundRadius = Math.max(width, height) * 0.25;
             const groundGrad = ctx.createRadialGradient(
               bolt.target.x,
               bolt.target.y,
@@ -695,8 +674,7 @@ export const RealisticLightningBackground: React.FC = () => {
               bolt.target.y,
               groundRadius
             );
-            groundGrad.addColorStop(0, `rgba(${palette.core}, ${boltSkyAlpha * 0.65})`);
-            groundGrad.addColorStop(0.35, `rgba(${palette.midCorona}, ${boltSkyAlpha * 0.35})`);
+            groundGrad.addColorStop(0, `rgba(${palette.core}, ${boltSkyAlpha * 0.6})`);
             groundGrad.addColorStop(1, `rgba(${palette.outerGlow}, 0)`);
 
             ctx.fillStyle = groundGrad;
@@ -706,78 +684,91 @@ export const RealisticLightningBackground: React.FC = () => {
           ctx.restore();
         }
 
-        // Render writhing fractal branches with 3-pass plasma bloom
+        // Render fractal branches with BATCHED path operations
         ctx.save();
         ctx.globalCompositeOperation = 'lighter';
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
 
-        // Magnetic pinch / acoustic writhing amplitude increases slightly over the bolt's life
-        const writheAmp = age > bolt.leaderDuration ? Math.min(3.2, (age - bolt.leaderDuration) * 0.0048) : 0.35;
+        const writheAmp = age > bolt.leaderDuration ? Math.min(2.8, (age - bolt.leaderDuration) * 0.004) : 0.3;
 
         for (const branch of bolt.branches) {
           const tierMultiplier =
             branch.tier === 0
               ? trunkIntensity
               : branch.tier === 1
-                ? Math.max(branchIntensity, trunkIntensity * 0.42)
-                : branch.tier === 2
-                  ? branchIntensity * 0.86
-                  : branchIntensity * 0.68;
+                ? Math.max(branchIntensity, trunkIntensity * 0.4)
+                : branchIntensity * 0.75;
 
-          if (tierMultiplier <= 0.018) continue;
+          if (tierMultiplier <= 0.02) continue;
+
+          // Collect valid segments and compute transformed endpoints
+          const segsToDraw: Array<{ sx1: number; sy1: number; sx2: number; sy2: number; width: number; alpha: number }> = [];
 
           for (const seg of branch.segments) {
             if (seg.progress > leaderProgress) continue;
-
-            // During bead-lightning decay, break the channel into glowing plasma beads
-            if (isBeadDecayPhase && branch.tier === 0 && seg.beadSeed < 0.32) {
-              continue;
-            }
+            if (isBeadDecayPhase && branch.tier === 0 && seg.beadSeed < 0.3) continue;
 
             const segAlpha = Math.min(1, seg.alpha * tierMultiplier);
-            if (segAlpha <= 0.015) continue;
+            if (segAlpha <= 0.02) continue;
 
             const avgWidth = (seg.widthStart + seg.widthEnd) * 0.5;
+            const j1 = Math.sin(now * 0.03 + seg.phase1) * writheAmp * (branch.tier === 0 ? 1 : 0.6);
+            const j2 = Math.sin(now * 0.03 + seg.phase2) * writheAmp * (branch.tier === 0 ? 1 : 0.6);
 
-            // Continuous magnetohydrodynamic plasma jitter along the channel normal
-            const j1 = Math.sin(now * 0.032 + seg.phase1) * writheAmp * (branch.tier === 0 ? 1 : 0.6);
-            const j2 = Math.sin(now * 0.032 + seg.phase2) * writheAmp * (branch.tier === 0 ? 1 : 0.6);
+            segsToDraw.push({
+              sx1: seg.x1 + seg.nx * j1,
+              sy1: seg.y1 + seg.ny * j1,
+              sx2: seg.x2 + seg.nx * j2,
+              sy2: seg.y2 + seg.ny * j2,
+              width: avgWidth,
+              alpha: segAlpha,
+            });
+          }
 
-            const sx1 = seg.x1 + seg.nx * j1;
-            const sy1 = seg.y1 + seg.ny * j1;
-            const sx2 = seg.x2 + seg.nx * j2;
-            const sy2 = seg.y2 + seg.ny * j2;
+          if (segsToDraw.length === 0) continue;
 
-            // Pass 1: Wide atmospheric plasma sheath
+          const branchAvgWidth = segsToDraw[0].width;
+          const branchAvgAlpha = segsToDraw[0].alpha;
+
+          // Pass 1: Outer glow (Desktop only to conserve mobile GPU fillrate)
+          if (!isMobile) {
             ctx.beginPath();
-            ctx.moveTo(sx1, sy1);
-            ctx.lineTo(sx2, sy2);
-            ctx.strokeStyle = `rgba(${palette.outerGlow}, ${segAlpha * 0.3})`;
-            ctx.lineWidth = avgWidth * (branch.tier === 0 ? 6.8 : 4.4);
-            ctx.stroke();
-
-            // Pass 2: High-voltage ionized corona
-            ctx.beginPath();
-            ctx.moveTo(sx1, sy1);
-            ctx.lineTo(sx2, sy2);
-            ctx.strokeStyle = `rgba(${palette.midCorona}, ${segAlpha * 0.72})`;
-            ctx.lineWidth = avgWidth * (branch.tier === 0 ? 2.7 : 1.95);
-            ctx.stroke();
-
-            // Pass 3: Scorching white-hot return-stroke core
-            ctx.beginPath();
-            ctx.moveTo(sx1, sy1);
-            ctx.lineTo(sx2, sy2);
-            ctx.strokeStyle = `rgba(${palette.core}, ${Math.min(1, segAlpha * 1.18)})`;
-            ctx.lineWidth = Math.max(0.35, avgWidth * 0.94);
+            for (const s of segsToDraw) {
+              ctx.moveTo(s.sx1, s.sy1);
+              ctx.lineTo(s.sx2, s.sy2);
+            }
+            ctx.strokeStyle = `rgba(${palette.outerGlow}, ${branchAvgAlpha * 0.28})`;
+            ctx.lineWidth = branchAvgWidth * (branch.tier === 0 ? 6.2 : 4.0);
             ctx.stroke();
           }
+
+          // Pass 2: High-voltage ionized corona (Batched single stroke call)
+          ctx.beginPath();
+          for (const s of segsToDraw) {
+            ctx.moveTo(s.sx1, s.sy1);
+            ctx.lineTo(s.sx2, s.sy2);
+          }
+          ctx.strokeStyle = `rgba(${palette.midCorona}, ${branchAvgAlpha * 0.7})`;
+          ctx.lineWidth = branchAvgWidth * (branch.tier === 0 ? 2.5 : 1.8);
+          ctx.stroke();
+
+          // Pass 3: Scorching white-hot return-stroke core (Batched single stroke call)
+          ctx.beginPath();
+          for (const s of segsToDraw) {
+            ctx.moveTo(s.sx1, s.sy1);
+            ctx.lineTo(s.sx2, s.sy2);
+          }
+          ctx.strokeStyle = `rgba(${palette.core}, ${Math.min(1, branchAvgAlpha * 1.15)})`;
+          ctx.lineWidth = Math.max(0.4, branchAvgWidth * 0.9);
+          ctx.stroke();
         }
 
         ctx.restore();
       }
 
-      // 4. Render drifting ionized plasma sparks & bead-lightning embers
-      if (activeSparks.length > 0) {
+      // 4. Render drifting sparks (Desktop only)
+      if (!isMobile && activeSparks.length > 0) {
         ctx.save();
         ctx.globalCompositeOperation = 'lighter';
         for (let i = activeSparks.length - 1; i >= 0; i--) {
@@ -792,36 +783,68 @@ export const RealisticLightningBackground: React.FC = () => {
           }
 
           ctx.beginPath();
-          ctx.arc(sp.x, sp.y, sp.radius * 2.4, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${sp.color}, ${sp.alpha * 0.32})`;
+          ctx.arc(sp.x, sp.y, sp.radius * 2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${sp.color}, ${sp.alpha * 0.3})`;
           ctx.fill();
 
           ctx.beginPath();
-          ctx.arc(sp.x, sp.y, sp.radius * 0.85, 0, Math.PI * 2);
+          ctx.arc(sp.x, sp.y, sp.radius * 0.7, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(255, 255, 255, ${sp.alpha})`;
           ctx.fill();
         }
         ctx.restore();
       }
 
-      // 5. Subtle whole-sky atmospheric sheet-flash reflection during intense return strokes (dimmed)
-      if (globalSkyFlash > 0.28) {
+      // 5. Whole-sky sheet-flash
+      if (globalSkyFlash > 0.3) {
         ctx.save();
         ctx.globalCompositeOperation = 'screen';
-        ctx.fillStyle = `rgba(186, 230, 253, ${(globalSkyFlash - 0.28) * 0.08})`;
+        ctx.fillStyle = `rgba(186, 230, 253, ${(globalSkyFlash - 0.3) * 0.07})`;
         ctx.fillRect(0, 0, width, height);
         ctx.restore();
       }
 
-      ctx.restore();
       animationFrameId = requestAnimationFrame(renderFrame);
     };
 
+    // Pause when canvas leaves viewport using IntersectionObserver
+    const intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        isInViewport = entry.isIntersecting;
+        if (isInViewport && isVisible) {
+          cancelAnimationFrame(animationFrameId);
+          lastRenderTime = performance.now();
+          animationFrameId = requestAnimationFrame(renderFrame);
+        } else {
+          cancelAnimationFrame(animationFrameId);
+        }
+      },
+      { threshold: 0.05 }
+    );
+    intersectionObserver.observe(canvas);
+
+    // Pause when browser tab is inactive / hidden
+    const handleVisibilityChange = () => {
+      isVisible = document.visibilityState === 'visible';
+      if (isVisible && isInViewport) {
+        cancelAnimationFrame(animationFrameId);
+        lastRenderTime = performance.now();
+        animationFrameId = requestAnimationFrame(renderFrame);
+      } else {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Start animation loop
     animationFrameId = requestAnimationFrame(renderFrame);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
       resizeObserver.disconnect();
+      intersectionObserver.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
