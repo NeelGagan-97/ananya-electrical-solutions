@@ -57,7 +57,7 @@ export default {
       };
     }).HTMLRewriter;
 
-    return new Rewriter()
+    const transformed = new Rewriter()
       .on("title", {
         element(element) {
           element.setInnerContent(metadata.title);
@@ -99,5 +99,15 @@ export default {
         },
       })
       .transform(response);
+
+    // Explicitly declare UTF-8 so non-ASCII metadata (such as curly apostrophes)
+    // is decoded correctly by browsers, crawlers, and command-line clients.
+    const headers = new Headers(transformed.headers);
+    headers.set("Content-Type", "text/html; charset=utf-8");
+    return new Response(transformed.body, {
+      status: transformed.status,
+      statusText: transformed.statusText,
+      headers,
+    });
   },
 };
