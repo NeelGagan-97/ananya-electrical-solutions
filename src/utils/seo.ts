@@ -93,7 +93,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
     tab: 'home',
     path: '/',
     canonicalUrl: 'https://ananyaelectricalsolutions.com/',
-    title: 'Electrical Contractor in Bengaluru | Super Grade HT/LT & Solar EPC | Ananya Electrical Solutions',
+    title: 'Ananya Electrical Solutions | Electrical Contractor in Bengaluru',
     description:
       'Government Licensed Super Grade Electrical Contractor in Sahakarnagar, Bengaluru. Turnkey 11kV–110kV substations, HT/LT panels, BESCOM & CEIG approvals, industrial wiring, and rooftop solar across Karnataka. Call +91 9743461955.',
     h1: 'Super Grade Electrical Contractor in Bengaluru for HT/LT Substations, Industrial Wiring & Solar EPC',

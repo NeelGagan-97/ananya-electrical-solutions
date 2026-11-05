@@ -175,7 +175,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <source
               type="image/webp"
               media="(max-width: 768px)"
-              srcSet="/assets/aistudio/Electrical_transmission_lines_hero_mobile.webp"
+              srcSet="/assets/aistudio/Electrical_transmission_lines_hero_mobile_480.webp 480w, /assets/aistudio/Electrical_transmission_lines_hero_mobile.webp 768w"
+              sizes="100vw"
             />
             <source
               type="image/webp"

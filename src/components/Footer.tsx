@@ -25,11 +25,25 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenSeoAudit }) =
               title="Ananya Electrical Solutions - Home"
             >
               <div className="relative h-10 w-10 sm:h-11 sm:w-11 flex items-center justify-center shrink-0 transition-transform group-hover:scale-105">
-                <img
-                  alt="Ananya Electrical Solutions Logo"
-                  className="h-full w-full object-contain filter drop-shadow-[0_2px_8px_rgba(245,158,11,0.3)]"
-                  src="/assets/aistudio/logo_round_transparent.png"
-                />
+                <picture>
+                  <source
+                    type="image/avif"
+                    srcSet="/assets/aistudio/logo_round_transparent_96.avif 1x, /assets/aistudio/logo_round_transparent.avif 2x"
+                  />
+                  <source
+                    type="image/webp"
+                    srcSet="/assets/aistudio/logo_round_transparent_96.webp 1x, /assets/aistudio/logo_round_transparent.webp 2x"
+                  />
+                  <img
+                    alt="Ananya Electrical Solutions Logo"
+                    className="h-full w-full object-contain filter drop-shadow-[0_2px_8px_rgba(245,158,11,0.3)]"
+                    src="/assets/aistudio/logo_round_transparent.webp"
+                    width={44}
+                    height={44}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </div>
               <div className="flex flex-col justify-center">
                 <span className="font-['Montserrat'] text-[17px] sm:text-[19px] 2xl:text-[21px] font-black [font-weight:900] uppercase tracking-[0.06em] bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent leading-none">
