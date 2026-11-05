@@ -1,7 +1,7 @@
 import { ServiceItem, ProjectItem, ElectricalEquipmentItem } from '../types';
 
 export const ASSETS = {
-  logo: '/assets/aistudio/logo_ananya_opt.webp',
+  logo: '/assets/aistudio/logo_round_transparent.png',
   logoEmblem: '/assets/aistudio/Screenshot_2026-10-24_213203_08863194.png',
   transmissionBg: '/assets/aistudio/Electrical_transmission_lines_hero.webp',
   residentialWiring2Bhk: '/assets/aistudio/residential_2bhk_opt.webp',
