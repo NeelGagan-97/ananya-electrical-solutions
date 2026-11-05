@@ -31,8 +31,8 @@ export default {
       return env.ASSETS.fetch(request);
     }
 
-    // Fetch the existing SPA shell; the Worker adds route metadata before
-    // returning HTML, while React continues to render the page normally.
+    // Fetch the existing SPA shell; inject route-specific metadata into the
+    // initial HTML response so crawlers receive the correct canonical URL.
     const shellUrl = new URL("/index.html", url);
     const shellRequest = new Request(shellUrl.toString(), {
       method: request.method,
