@@ -26,21 +26,78 @@
   --color-tertiary-container: #2a1700;
   --color-on-primary: #ffffff;
 
-  --font-display: "Plus Jakarta Sans", sans-serif;
-  --font-body: "Inter", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
-  --font-brand: "Orbitron", "Plus Jakarta Sans", sans-serif;
-  --font-brand-sub: "Chakra Petch", "Plus Jakarta Sans", sans-serif;
+  --font-display: "Plus Jakarta Sans", "Plus Jakarta Sans Fallback", Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Inter", "Inter Fallback", Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-brand: "Montserrat", "Montserrat Fallback", Arial, sans-serif;
+  --font-brand-sub: "Chakra Petch", "Plus Jakarta Sans", "Plus Jakarta Sans Fallback", Arial, sans-serif;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Metric-Compatible Fallback Fonts to Prevent Cumulative Layout Shift (CLS)  */
+/* Computed from Capsize metrics to match Plus Jakarta Sans, Inter, Montserrat */
+/* -------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Plus Jakarta Sans Fallback';
+  src: local('Arial'), local('Roboto'), local('Helvetica Neue'), local('sans-serif');
+  ascent-override: 103.8%;
+  descent-override: 22.2%;
+  line-gap-override: 0%;
+  size-adjust: 103.36%;
+}
+
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial'), local('Roboto'), local('Helvetica Neue'), local('sans-serif');
+  ascent-override: 90.49%;
+  descent-override: 22.56%;
+  line-gap-override: 0%;
+  size-adjust: 107.4%;
+}
+
+@font-face {
+  font-family: 'Montserrat Fallback';
+  src: local('Arial'), local('Roboto'), local('Helvetica Neue'), local('sans-serif');
+  ascent-override: 96.8%;
+  descent-override: 25.1%;
+  line-gap-override: 0%;
+  size-adjust: 100.5%;
 }
 
 @layer base {
   body {
     font-family: var(--font-body);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
+}
+
+.font-brand-title {
+  font-family: var(--font-brand);
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'liga';
 }
 
 .font-display-xl {

@@ -46,10 +46,10 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenSeoAudit }) =
                 </picture>
               </div>
               <div className="flex flex-col justify-center">
-                <span className="font-['Montserrat'] text-[17px] sm:text-[19px] 2xl:text-[21px] font-black [font-weight:900] uppercase tracking-[0.06em] bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent leading-none">
+                <span className="font-['Montserrat','Montserrat_Fallback',sans-serif] text-[17px] sm:text-[19px] 2xl:text-[21px] font-black [font-weight:900] uppercase tracking-[0.06em] bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent leading-none">
                   ANANYA
                 </span>
-                <span className="font-['Montserrat'] text-[9.5px] sm:text-[10.5px] 2xl:text-[11.5px] font-extrabold uppercase tracking-[0.18em] bg-[linear-gradient(90deg,#0284C7_0%,#38BDF8_26%,#F59E0B_46%,#EA580C_68%,#2563EB_84%,#0284C7_100%)] bg-[length:200%_auto] animate-brand-shimmer [animation-delay:0.35s] bg-clip-text text-transparent mt-1 leading-none whitespace-nowrap">
+                <span className="font-['Montserrat','Montserrat_Fallback',sans-serif] text-[9.5px] sm:text-[10.5px] 2xl:text-[11.5px] font-extrabold uppercase tracking-[0.18em] bg-[linear-gradient(90deg,#0284C7_0%,#38BDF8_26%,#F59E0B_46%,#EA580C_68%,#2563EB_84%,#0284C7_100%)] bg-[length:200%_auto] animate-brand-shimmer [animation-delay:0.35s] bg-clip-text text-transparent mt-1 leading-none whitespace-nowrap">
                   ELECTRICAL SOLUTIONS
                 </span>
               </div>

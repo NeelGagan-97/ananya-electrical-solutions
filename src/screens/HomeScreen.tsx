@@ -238,12 +238,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             <div className="lg:col-span-7 flex flex-col gap-6">
               <div className="flex flex-col gap-3">
-                <h1 className="font-display-xl tracking-tight font-extrabold leading-tight drop-shadow-md bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent">
+                <h1 className="font-display-xl tracking-tight font-extrabold drop-shadow-md bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent">
                   Powering Karnataka with Reliable Electrical &amp; Solar Solutions
                 </h1>
               </div>
 
-              <p className="font-body-lg text-slate-200 leading-relaxed max-w-2xl drop-shadow-sm">
+              <p className="font-body-lg text-slate-200 max-w-2xl drop-shadow-sm">
                 Welcome to <strong className="text-white">Ananya Electrical Solutions</strong> — Government of Karnataka Licensed Super Grade Electrical Contractors headquartered in Sahakarnagar, Bengaluru. We deliver turnkey 11kV–110kV Substations, HT/LT power transformers and switchgear panels, BESCOM &amp; CEIG statutory approvals, industrial plant wiring, and high-efficiency rooftop solar installations across Karnataka.
               </p>
 
@@ -383,7 +383,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   }`}
                 >
                   <span
-                    className={`font-['Cinzel'] text-[30px] sm:text-[36px] lg:text-[40px] font-black uppercase leading-none bg-[linear-gradient(90deg,#FB923C_0%,#F97316_24%,#F59E0B_44%,#EF4444_64%,#38BDF8_82%,#F97316_100%)] bg-clip-text text-transparent transition-all duration-500 ${
+                    className={`font-['Cinzel',serif] text-[30px] sm:text-[36px] lg:text-[40px] font-black uppercase leading-none bg-[linear-gradient(90deg,#FB923C_0%,#F97316_24%,#F59E0B_44%,#EF4444_64%,#38BDF8_82%,#F97316_100%)] bg-clip-text text-transparent transition-all duration-500 ${
                       logoAnimPhase === 'charging'
                         ? 'tracking-[0.34em] scale-95'
                         : logoAnimPhase === 'surge'
@@ -407,7 +407,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                         logoAnimPhase === 'energized' ? 'w-7 opacity-100' : 'w-1 opacity-0'
                       }`}
                     />
-                    <span className="font-['Montserrat'] text-[11px] sm:text-[12.5px] lg:text-[13.5px] font-extrabold uppercase tracking-[0.28em] bg-[linear-gradient(90deg,#FDBA74_0%,#FB923C_34%,#F97316_56%,#F87171_78%,#38BDF8_100%)] bg-clip-text text-transparent animate-sub-pulse whitespace-nowrap">
+                    <span className="font-['Montserrat','Montserrat_Fallback',sans-serif] text-[11px] sm:text-[12.5px] lg:text-[13.5px] font-extrabold uppercase tracking-[0.28em] bg-[linear-gradient(90deg,#FDBA74_0%,#FB923C_34%,#F97316_56%,#F87171_78%,#38BDF8_100%)] bg-clip-text text-transparent animate-sub-pulse whitespace-nowrap">
                       ELECTRICAL SOLUTIONS
                     </span>
                     <span
@@ -417,7 +417,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     />
                   </div>
                   <span
-                    className={`mt-1.5 font-['Montserrat'] text-[10.5px] sm:text-[12px] lg:text-[13px] font-bold italic tracking-[0.16em] bg-[linear-gradient(90deg,#FB923C_0%,#F97316_24%,#F59E0B_44%,#EF4444_64%,#38BDF8_82%,#F97316_100%)] bg-clip-text text-transparent transition-all duration-500 ${
+                    className={`mt-1.5 font-['Montserrat','Montserrat_Fallback',sans-serif] text-[10.5px] sm:text-[12px] lg:text-[13px] font-bold italic tracking-[0.16em] bg-[linear-gradient(90deg,#FB923C_0%,#F97316_24%,#F59E0B_44%,#EF4444_64%,#38BDF8_82%,#F97316_100%)] bg-clip-text text-transparent transition-all duration-500 ${
                       logoAnimPhase === 'charging'
                         ? 'opacity-0 translate-y-2 scale-90'
                         : logoAnimPhase === 'surge'
