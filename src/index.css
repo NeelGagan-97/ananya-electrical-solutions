@@ -40,7 +40,18 @@
 
 @font-face {
   font-family: 'Plus Jakarta Sans Fallback';
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Arial'), local('Roboto Bold'), local('Roboto-Bold'), local('Roboto'), local('Helvetica Neue Bold'), local('sans-serif');
+  font-weight: 700 800;
+  ascent-override: 104%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+  size-adjust: 108%;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans Fallback';
   src: local('Arial'), local('Roboto'), local('Helvetica Neue'), local('sans-serif');
+  font-weight: 400 600;
   ascent-override: 103.8%;
   descent-override: 22.2%;
   line-gap-override: 0%;
@@ -88,7 +99,9 @@
   font-family: 'Material Symbols Outlined', sans-serif;
   font-weight: normal;
   font-style: normal;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   line-height: 1;
   text-transform: none;
   letter-spacing: normal;
@@ -98,6 +111,15 @@
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-feature-settings: 'liga';
+  width: 1em;
+  height: 1em;
+  max-width: 1em;
+  max-height: 1em;
+  overflow: hidden;
+  text-align: center;
+  vertical-align: middle;
+  flex-shrink: 0;
+  user-select: none;
 }
 
 .font-display-xl {

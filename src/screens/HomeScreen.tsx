@@ -238,112 +238,112 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             <div className="lg:col-span-7 flex flex-col gap-6">
               <div className="flex flex-col gap-3">
-                <h1 className="font-display-xl tracking-tight font-extrabold drop-shadow-md bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent">
+                <h1 className="font-display-xl tracking-tight font-extrabold drop-shadow-md bg-[linear-gradient(90deg,#EA580C_0%,#F97316_26%,#F59E0B_44%,#DC2626_64%,#2563EB_82%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent [text-wrap:balance]">
                   Powering Karnataka with Reliable Electrical &amp; Solar Solutions
                 </h1>
               </div>
 
-              <p className="font-body-lg text-slate-200 max-w-2xl drop-shadow-sm">
+              <p className="font-body-lg text-slate-200 max-w-2xl drop-shadow-sm [text-wrap:pretty]">
                 Welcome to <strong className="text-white">Ananya Electrical Solutions</strong> — Government of Karnataka Licensed Super Grade Electrical Contractors headquartered in Sahakarnagar, Bengaluru. We deliver turnkey 11kV–110kV Substations, HT/LT power transformers and switchgear panels, BESCOM &amp; CEIG statutory approvals, industrial plant wiring, and high-efficiency rooftop solar installations across Karnataka.
               </p>
 
               {/* Primary Lead Conversion CTAs: Get a Quote, Call Now, WhatsApp */}
-              <div className="flex flex-col gap-3 pt-2 max-w-2xl">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <div className="flex flex-col gap-3 pt-2 max-w-2xl w-full min-w-0 min-h-[148px] sm:min-h-[152px]">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 w-full min-w-0">
                   <button
                     onClick={() => {
                       const el = document.getElementById('consultation');
                       if (el) el.scrollIntoView({ behavior: 'smooth' });
                       else onOpenConsultation();
                     }}
-                    className="inline-flex items-center justify-center h-12 px-5 rounded-lg bg-[#F59E0B] hover:bg-[#D97706] text-[#2a1700] text-[13.5px] font-extrabold shadow-lg shadow-amber-500/25 transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
+                    className="inline-flex items-center justify-center h-12 min-h-[48px] max-h-[48px] px-4 sm:px-3 lg:px-5 rounded-lg bg-[#F59E0B] hover:bg-[#D97706] text-[#2a1700] text-[13.5px] font-extrabold shadow-lg shadow-amber-500/25 transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap overflow-hidden"
                   >
-                    <span className="material-symbols-outlined text-[19px] mr-1.5 leading-none shrink-0">request_quote</span>
+                    <span className="material-symbols-outlined text-[19px] w-[19px] h-[19px] min-w-[19px] max-w-[19px] overflow-hidden mr-1.5 leading-none shrink-0 inline-flex items-center justify-center">request_quote</span>
                     <span>Get a Quote</span>
                   </button>
                   <a
                     href="tel:+919632025123"
                     onClick={() => trackConversionEvent('phone_click', '+91 9632025123', 'Hero Call Now CTA')}
-                    className="inline-flex items-center justify-center h-12 px-5 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white text-[13.5px] font-bold shadow-lg shadow-sky-500/25 transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
+                    className="inline-flex items-center justify-center h-12 min-h-[48px] max-h-[48px] px-3 sm:px-2 md:px-3 lg:px-4 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white text-[13px] sm:text-[12.5px] lg:text-[13.5px] font-bold shadow-lg shadow-sky-500/25 transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap overflow-hidden"
                   >
-                    <span className="material-symbols-outlined text-[19px] mr-1.5 leading-none shrink-0">call</span>
-                    <span>Call Now: +91 9632025123</span>
+                    <span className="material-symbols-outlined text-[19px] w-[19px] h-[19px] min-w-[19px] max-w-[19px] overflow-hidden mr-1.5 leading-none shrink-0 inline-flex items-center justify-center">call</span>
+                    <span className="truncate">Call: +91 9632025123</span>
                   </a>
                   <a
                     href={`https://wa.me/${BUSINESS_NAP.whatsappNumber}?text=Hello%20Ananya%20Electrical%20Solutions%2C%20I%20would%20like%20to%20enquire%20about%20electrical%20contracting%20or%20solar%20installation%20in%20Bengaluru.`}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => trackConversionEvent('whatsapp_click', BUSINESS_NAP.primaryPhone, 'Hero WhatsApp CTA')}
-                    className="inline-flex items-center justify-center h-12 px-5 rounded-lg bg-[#25D366] hover:bg-[#1ebe5d] text-slate-950 text-[13.5px] font-extrabold shadow-lg shadow-emerald-500/25 transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
+                    className="inline-flex items-center justify-center h-12 min-h-[48px] max-h-[48px] px-4 sm:px-3 lg:px-5 rounded-lg bg-[#25D366] hover:bg-[#1ebe5d] text-slate-950 text-[13.5px] font-extrabold shadow-lg shadow-emerald-500/25 transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap overflow-hidden"
                   >
-                    <span className="material-symbols-outlined text-[19px] mr-1.5 leading-none shrink-0">chat</span>
+                    <span className="material-symbols-outlined text-[19px] w-[19px] h-[19px] min-w-[19px] max-w-[19px] overflow-hidden mr-1.5 leading-none shrink-0 inline-flex items-center justify-center">chat</span>
                     <span>WhatsApp Us</span>
                   </a>
                 </div>
 
                 {/* Interactive 3D Engineering Models & Services Bar */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 w-full min-w-0">
                   <button
                     onClick={() => onSelectTab('services')}
-                    className="inline-flex items-center justify-center h-10 px-3 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white text-[12px] font-bold transition-all cursor-pointer border border-white/20 backdrop-blur-md whitespace-nowrap"
+                    className="inline-flex items-center justify-center h-10 min-h-[40px] max-h-[40px] px-2.5 sm:px-3 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white text-[12px] font-bold transition-all cursor-pointer border border-white/20 backdrop-blur-md whitespace-nowrap overflow-hidden"
                   >
-                    <span className="material-symbols-outlined text-[16px] mr-1.5 text-[#38bdf8] leading-none shrink-0">precision_manufacturing</span>
+                    <span className="material-symbols-outlined text-[16px] w-[16px] h-[16px] min-w-[16px] max-w-[16px] overflow-hidden mr-1.5 text-[#38bdf8] leading-none shrink-0 inline-flex items-center justify-center">precision_manufacturing</span>
                     <span>All 12 Services</span>
                   </button>
                   <button
                     onClick={() => onSelectTab('residential-layout-3d')}
-                    className="flex items-center justify-center gap-1.5 min-h-[40px] h-full py-1.5 px-2 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white transition-all cursor-pointer border border-[#38bdf8]/35 backdrop-blur-md w-full min-w-0 overflow-hidden text-center"
+                    className="inline-flex items-center justify-center h-10 min-h-[40px] max-h-[40px] px-2.5 sm:px-3 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white text-[12px] font-semibold transition-all cursor-pointer border border-[#38bdf8]/35 backdrop-blur-md whitespace-nowrap overflow-hidden"
+                    title="Residential Layout & Infrastructure"
                   >
-                    <span className="material-symbols-outlined text-[15px] text-[#38bdf8] leading-none shrink-0">map</span>
-                    <span className="text-[11px] sm:text-[11.5px] font-semibold leading-tight">
-                      Residential Layout &amp; Infrastructure
-                    </span>
+                    <span className="material-symbols-outlined text-[15px] w-[15px] h-[15px] min-w-[15px] max-w-[15px] overflow-hidden mr-1.5 text-[#38bdf8] leading-none shrink-0 inline-flex items-center justify-center">map</span>
+                    <span className="truncate">Residential Layout Infra</span>
                   </button>
                   <button
                     onClick={() => onSelectTab('residential-3d')}
-                    className="inline-flex items-center justify-center h-10 px-3 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white text-[12px] font-semibold transition-all cursor-pointer border border-[#34d399]/35 backdrop-blur-md whitespace-nowrap"
+                    className="inline-flex items-center justify-center h-10 min-h-[40px] max-h-[40px] px-2.5 sm:px-3 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white text-[12px] font-semibold transition-all cursor-pointer border border-[#34d399]/35 backdrop-blur-md whitespace-nowrap overflow-hidden"
                   >
-                    <span className="material-symbols-outlined text-[16px] mr-1.5 text-[#34d399] leading-none shrink-0">home</span>
-                    <span>Residential 2BHK Interior</span>
+                    <span className="material-symbols-outlined text-[16px] w-[16px] h-[16px] min-w-[16px] max-w-[16px] overflow-hidden mr-1.5 text-[#34d399] leading-none shrink-0 inline-flex items-center justify-center">home</span>
+                    <span>Residential 2BHK</span>
                   </button>
                   <button
                     onClick={() => onSelectTab('twin-3d')}
-                    className="inline-flex items-center justify-center h-10 px-3 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white text-[12px] font-semibold transition-all cursor-pointer border border-[#fde047]/35 backdrop-blur-md whitespace-nowrap"
+                    className="inline-flex items-center justify-center h-10 min-h-[40px] max-h-[40px] px-2.5 sm:px-3 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white text-[12px] font-semibold transition-all cursor-pointer border border-[#fde047]/35 backdrop-blur-md whitespace-nowrap overflow-hidden"
                   >
-                    <span className="material-symbols-outlined text-[16px] mr-1.5 text-[#F59E0B] leading-none shrink-0">electric_meter</span>
+                    <span className="material-symbols-outlined text-[16px] w-[16px] h-[16px] min-w-[16px] max-w-[16px] overflow-hidden mr-1.5 text-[#F59E0B] leading-none shrink-0 inline-flex items-center justify-center">electric_meter</span>
                     <span>33kV Substation</span>
                   </button>
                   <button
                     onClick={() => onSelectTab('residential-solar-3d')}
-                    className="inline-flex items-center justify-center h-10 px-3 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white text-[12px] font-semibold transition-all cursor-pointer border border-amber-400/40 backdrop-blur-md whitespace-nowrap"
+                    className="inline-flex items-center justify-center h-10 min-h-[40px] max-h-[40px] px-2.5 sm:px-3 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white text-[12px] font-semibold transition-all cursor-pointer border border-amber-400/40 backdrop-blur-md whitespace-nowrap overflow-hidden"
+                    title="Residential Solar Installation"
                   >
-                    <span className="material-symbols-outlined text-[16px] mr-1.5 text-amber-400 leading-none shrink-0">solar_power</span>
-                    <span>Residential Solar Installation</span>
+                    <span className="material-symbols-outlined text-[16px] w-[16px] h-[16px] min-w-[16px] max-w-[16px] overflow-hidden mr-1.5 text-amber-400 leading-none shrink-0 inline-flex items-center justify-center">solar_power</span>
+                    <span>Residential Solar EPC</span>
                   </button>
                   <button
                     onClick={() => onSelectTab('smart-home-3d')}
-                    className="inline-flex items-center justify-center h-10 px-3 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white text-[12px] font-semibold transition-all cursor-pointer border border-teal-400/35 backdrop-blur-md whitespace-nowrap"
+                    className="inline-flex items-center justify-center h-10 min-h-[40px] max-h-[40px] px-2.5 sm:px-3 rounded-lg bg-[#0f1f36]/90 hover:bg-[#1E293B] text-white text-[12px] font-semibold transition-all cursor-pointer border border-teal-400/35 backdrop-blur-md whitespace-nowrap overflow-hidden"
                   >
-                    <span className="material-symbols-outlined text-[16px] mr-1.5 text-teal-400 leading-none shrink-0">smart_toy</span>
+                    <span className="material-symbols-outlined text-[16px] w-[16px] h-[16px] min-w-[16px] max-w-[16px] overflow-hidden mr-1.5 text-teal-400 leading-none shrink-0 inline-flex items-center justify-center">smart_toy</span>
                     <span>Smart Home Automation</span>
                   </button>
                 </div>
               </div>
 
               {/* Micro Spec Tags */}
-              <div className="flex flex-wrap items-center gap-3 pt-2 text-slate-200 text-[12px] font-medium drop-shadow-sm">
+              <div className="flex flex-wrap items-center gap-3 pt-2 text-slate-200 text-[12px] font-medium drop-shadow-sm min-h-[32px]">
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[16px] text-[#38BDF8] leading-none">offline_bolt</span>
+                  <span className="material-symbols-outlined text-[16px] w-[16px] h-[16px] min-w-[16px] max-w-[16px] overflow-hidden text-[#38BDF8] leading-none shrink-0 inline-flex items-center justify-center">offline_bolt</span>
                   <span>11kV – 110kV Transmission</span>
                 </span>
                 <span className="text-slate-400">•</span>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[16px] text-[#F59E0B] leading-none">solar_power</span>
+                  <span className="material-symbols-outlined text-[16px] w-[16px] h-[16px] min-w-[16px] max-w-[16px] overflow-hidden text-[#F59E0B] leading-none shrink-0 inline-flex items-center justify-center">solar_power</span>
                   <span>Net-Metered Solar EPC</span>
                 </span>
                 <span className="text-slate-400">•</span>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[16px] text-emerald-400 leading-none">gavel</span>
+                  <span className="material-symbols-outlined text-[16px] w-[16px] h-[16px] min-w-[16px] max-w-[16px] overflow-hidden text-emerald-400 leading-none shrink-0 inline-flex items-center justify-center">gavel</span>
                   <span>KPTCL &amp; BESCOM Approved</span>
                 </span>
               </div>
