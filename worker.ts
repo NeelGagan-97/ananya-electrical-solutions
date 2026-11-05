@@ -1,5 +1,7 @@
 interface Env {
-  ASSETS: Fetcher;
+  ASSETS: {
+    fetch(request: Request): Promise<Response>;
+  };
 }
 
 const ROUTE_METADATA: Record<string, { title: string; description: string; canonical: string }> = {
@@ -22,25 +24,40 @@ function isStaticAsset(pathname: string): boolean {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    const pathname = url.pathname.replace(/\/+$/, "") || "/";
 
-    // Let static files (JS, CSS, images, fonts, sitemap, robots, icons) use
-    // Cloudflare's asset delivery path without HTML transformation.
-    if (isStaticAsset(url.pathname)) {
+    // Keep static files on Cloudflare's asset delivery path.
+    if (isStaticAsset(pathname)) {
       return env.ASSETS.fetch(request);
     }
 
-    // Preserve the existing React SPA fallback while selecting the correct
-    // route metadata before the HTML reaches crawlers and social previews.
+    // Fetch the existing SPA shell; the Worker adds route metadata before
+    // returning HTML, while React continues to render the page normally.
     const shellUrl = new URL("/index.html", url);
-    const shellRequest = new Request(shellUrl.toString(), request);
+    const shellRequest = new Request(shellUrl.toString(), {
+      method: request.method,
+      headers: request.headers,
+    });
     const response = await env.ASSETS.fetch(shellRequest);
 
-    if (!response.ok || !ROUTE_METADATA[url.pathname]) {
+    const metadata = ROUTE_METADATA[pathname];
+    if (!response.ok || !metadata || request.method === "HEAD") {
       return response;
     }
 
-    const metadata = ROUTE_METADATA[url.pathname];
-    return new HTMLRewriter()
+    const Rewriter = (globalThis as unknown as {
+      HTMLRewriter: new () => {
+        on(selector: string, handlers: {
+          element(element: {
+            setInnerContent(value: string): void;
+            setAttribute(name: string, value: string): void;
+          }): void;
+        }): any;
+        transform(response: Response): Response;
+      };
+    }).HTMLRewriter;
+
+    return new Rewriter()
       .on("title", {
         element(element) {
           element.setInnerContent(metadata.title);
@@ -83,4 +100,4 @@ export default {
       })
       .transform(response);
   },
-} satisfies ExportedHandler<Env>;
+};
