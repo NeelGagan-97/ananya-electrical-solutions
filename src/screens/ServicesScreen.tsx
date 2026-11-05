@@ -76,13 +76,13 @@ export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultati
           <div className="lg:col-span-8 flex flex-col gap-4">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0284C7]/20 text-[#5bb8fe] text-[12px] font-semibold w-fit border border-[#0284C7]/30 leading-none">
               <span className="material-symbols-outlined text-[16px] leading-none">build_circle</span>
-              <span>Turnkey Electrical Contracting • Sahakarnagar, Bengaluru</span>
+              <span>Turnkey Electrical Contracting • Serving Karnataka</span>
             </div>
             <h1 className="font-display-xl text-white font-extrabold tracking-tight">
-              Electrical Installation, Testing &amp; Maintenance Services in Bengaluru, Karnataka
+              Electrical Installation, Testing &amp; Maintenance Services Across Karnataka
             </h1>
             <p className="font-body-lg text-slate-300 max-w-2xl leading-relaxed">
-              From Single Line Diagram (SLD) engineering, 11kV–110kV substations, and PCC/MCC control panels to industrial/commercial wiring, CEIG safety clearances, BESCOM approvals, and 24/7 preventative AMC across Bengaluru and Karnataka.
+              Headquartered in Bengaluru, Ananya Electrical Solutions supports electrical projects across major cities and towns in Karnataka, covering SLD engineering, HT/LT substations, PCC/MCC panels, industrial and commercial wiring, testing, statutory coordination, maintenance and solar EPC.
             </p>
             {onSelectTab && (
               <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -355,7 +355,7 @@ export const ServicesScreen: React.FC<ServicesScreenProps> = ({ onOpenConsultati
                 Comprehensive Technical Service Guide
               </span>
               <h2 className="font-headline-md text-[#0B192C] font-bold">
-                7 Confirmed Electrical &amp; Solar Engineering Pillars in Bengaluru &amp; Karnataka
+                7 Electrical &amp; Solar Engineering Pillars Serving Karnataka
               </h2>
             </div>
             <div className="flex flex-wrap items-center gap-2">
