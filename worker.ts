@@ -6,7 +6,7 @@ interface Env {
 
 const ROUTE_METADATA: Record<string, { title: string; description: string; canonical: string }> = {
   "/": {
-    title: "Ananya Electrical Solutions | Electrical & Solar Contractor Karnataka",
+    title: "Ananya Electrical Solutions",
     description: "Government-licensed Super Grade electrical contractor headquartered in Bengaluru, serving major cities and towns across Karnataka. HT/LT substations, industrial wiring, BESCOM & CEIG approvals, and rooftop solar.",
     canonical: "https://ananyaelectricalsolutions.com/",
   },
