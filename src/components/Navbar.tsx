@@ -99,6 +99,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             onMouseLeave={() => setModelDropdownOpen(false)}
           >
             <button
+              aria-expanded={modelDropdownOpen}
+              aria-haspopup="true"
               onClick={() => setModelDropdownOpen(!modelDropdownOpen)}
               className={`h-9 px-1.5 xl:px-2 2xl:px-2.5 text-[11.5px] xl:text-[12px] 2xl:text-[12.5px] font-semibold transition-all rounded-lg whitespace-nowrap cursor-pointer inline-flex items-center justify-center gap-1 leading-none ${
                 currentTab === 'residential-layout-3d' ||
@@ -502,6 +504,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* 3D Model Section */}
             <div className="border border-[#CBD5E1] rounded-xl overflow-hidden bg-[#F8FAFC]">
               <button
+                aria-expanded={mobileModelOpen}
                 onClick={() => setMobileModelOpen(!mobileModelOpen)}
                 className="w-full flex items-center justify-between px-4 py-2.5 text-left text-[15px] font-bold text-[#0284c7] bg-[#f0f9ff] cursor-pointer"
               >
@@ -631,6 +634,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Services Section */}
             <div className="border border-[#CBD5E1] rounded-xl overflow-hidden bg-[#F8FAFC]">
               <button
+                aria-expanded={mobileServicesOpen}
                 onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
                 className="w-full flex items-center justify-between px-4 py-2.5 text-left text-[15px] font-bold text-[#0284c7] bg-[#f0f9ff] cursor-pointer"
               >

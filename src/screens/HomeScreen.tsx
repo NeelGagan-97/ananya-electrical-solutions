@@ -70,6 +70,35 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const logoVideoRef = useRef<HTMLVideoElement | null>(null);
   const [logoAnimPhase, setLogoAnimPhase] = useState<'charging' | 'surge' | 'energized'>('energized');
 
+  useEffect(() => {
+    const video = logoVideoRef.current;
+    if (!video) return;
+
+    const skipFirstHalfSecond = () => {
+      try {
+        if (video.currentTime < 0.5) {
+          video.currentTime = 0.5;
+        }
+      } catch {
+        // Browser playback may delay seeking until active
+      }
+    };
+
+    if (video.readyState >= 1) {
+      skipFirstHalfSecond();
+    }
+
+    video.addEventListener('loadedmetadata', skipFirstHalfSecond);
+    video.addEventListener('canplay', skipFirstHalfSecond);
+    video.addEventListener('play', skipFirstHalfSecond);
+
+    return () => {
+      video.removeEventListener('loadedmetadata', skipFirstHalfSecond);
+      video.removeEventListener('canplay', skipFirstHalfSecond);
+      video.removeEventListener('play', skipFirstHalfSecond);
+    };
+  }, []);
+
   const handleImgFallback = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const target = e.currentTarget;
     if (!target.dataset.fallbackApplied) {
@@ -81,6 +110,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const handleVideoTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
     const vid = e.currentTarget;
     if (!vid) return;
+    if (vid.currentTime < 0.5) {
+      vid.currentTime = 0.5;
+    }
     const t = vid.currentTime;
     const dur = vid.duration || 8.0;
     if (t < 1.85 || t > dur - 0.35) {
@@ -360,17 +392,27 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   playsInline
                   preload="metadata"
                   poster="/assets/aistudio/hero_logo_poster.webp"
+                  onLoadedMetadata={(e) => {
+                    if (e.currentTarget.currentTime < 0.5) {
+                      e.currentTarget.currentTime = 0.5;
+                    }
+                  }}
+                  onPlay={(e) => {
+                    if (e.currentTarget.currentTime < 0.5) {
+                      e.currentTarget.currentTime = 0.5;
+                    }
+                  }}
                   onTimeUpdate={handleVideoTimeUpdate}
                   style={{ aspectRatio: '1.5 / 1.5' }}
                   className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent [clip-path:inset(0_0_31%_0)] brightness-90 drop-shadow-[0_0_14px_rgba(56,189,248,0.42)]"
                 >
                   <source
-                    src="/assets/aistudio/Animated_electrical_logo_reveal_mobile.webm"
+                    src="/assets/aistudio/Animated_electrical_logo_reveal_mobile.webm#t=0.5"
                     type="video/webm"
                     media="(max-width: 768px)"
                   />
                   <source
-                    src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm"
+                    src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm#t=0.5"
                     type="video/webm"
                   />
                 </video>
