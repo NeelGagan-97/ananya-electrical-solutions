@@ -108,12 +108,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="consultation-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B192C]/80 backdrop-blur-sm animate-in fade-in duration-200"
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B192C]/80 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden border border-[#CBD5E1]">
         {/* Header */}
         <div className="bg-[#0B192C] px-6 py-5 text-white flex items-center justify-between">
@@ -128,7 +123,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 </span>
                 <span className="text-[12px] text-slate-300">Sahakarnagar HQ, Bengaluru</span>
               </div>
-              <h3 id="consultation-modal-title" className="font-display text-[18px] sm:text-[20px] font-bold">
+              <h3 className="font-display text-[18px] sm:text-[20px] font-bold">
                 Request Engineering Proposal &amp; Site Quote
               </h3>
             </div>
