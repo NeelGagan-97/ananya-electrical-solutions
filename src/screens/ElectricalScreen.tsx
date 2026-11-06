@@ -228,14 +228,12 @@ export const ElectricalScreen: React.FC<ElectricalScreenProps> = ({ onOpenConsul
             <div className="lg:col-span-5 flex flex-col gap-5">
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center">
-                  <label htmlFor="calc-load-kw" className="text-[13px] font-semibold text-[#0B192C]">
+                  <label className="text-[13px] font-semibold text-[#0B192C]">
                     Connected Industrial Load (kW)
                   </label>
                   <span className="font-mono text-[14px] font-bold text-[#0284C7]">{loadKw} kW</span>
                 </div>
                 <input
-                  id="calc-load-kw"
-                  aria-label="Connected Industrial Load in kW"
                   type="range"
                   min="100"
                   max="5000"
@@ -253,14 +251,12 @@ export const ElectricalScreen: React.FC<ElectricalScreenProps> = ({ onOpenConsul
 
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center">
-                  <label htmlFor="calc-power-factor" className="text-[13px] font-semibold text-[#0B192C]">
+                  <label className="text-[13px] font-semibold text-[#0B192C]">
                     Facility Operating Power Factor (cos φ)
                   </label>
                   <span className="font-mono text-[14px] font-bold text-[#0284C7]">{powerFactor.toFixed(2)}</span>
                 </div>
                 <input
-                  id="calc-power-factor"
-                  aria-label="Facility Operating Power Factor"
                   type="range"
                   min="0.80"
                   max="0.99"

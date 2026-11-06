@@ -53,7 +53,6 @@ export const EnquiryHubLauncher: React.FC = () => {
           type="button"
           onClick={() => setDrawerOpen(true)}
           title="Open Ananya Electrical Solutions Enquiry Forms"
-          aria-label="Open Ananya Electrical Solutions Enquiry Forms"
           className="flex items-center px-4 py-2.5 rounded-full bg-white text-[#0284C7] hover:bg-[#e0f2fe] border-2 border-[#0284C7] text-[13px] font-bold shadow-xl hover:shadow-2xl transition-all hover:scale-105 cursor-pointer backdrop-blur-md leading-none"
         >
           <span className="font-bold tracking-wide text-[#0284C7] leading-none">
@@ -67,7 +66,6 @@ export const EnquiryHubLauncher: React.FC = () => {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="AES Enquiry Forms Hub"
           className="fixed inset-0 z-50 flex justify-end bg-[#0B192C]/70 backdrop-blur-xs animate-fadeIn"
           onClick={(e) => {
             if (e.target === e.currentTarget) setDrawerOpen(false);
@@ -96,7 +94,6 @@ export const EnquiryHubLauncher: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setDrawerOpen(false)}
-                aria-label="Close Enquiry Forms drawer"
                 className="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px]">close</span>
@@ -111,8 +108,6 @@ export const EnquiryHubLauncher: React.FC = () => {
                 </span>
                 <input
                   type="text"
-                  id="enquiry-search-input"
-                  aria-label="Search enquiry forms by name or scope"
                   placeholder="Search form by name or scope (e.g. Solar, HT, BOQ, Safety, AMC)..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}

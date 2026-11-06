@@ -225,9 +225,9 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
     tab: 'contact-us',
     path: '/contact-us',
     canonicalUrl: 'https://ananyaelectricalsolutions.com/contact-us',
-    title: 'Contact Ananya Electrical Solutions | Sahakarnagar, Bengaluru | Call +91 9632025123',
+    title: 'Contact Ananya Electrical Solutions | Sahakarnagar, Bengaluru | Call +91 9743461955',
     description:
-      'Contact Ananya Electrical Solutions at 59, Opp Bank of India, G-Block, Sahakarnagar Main Road, Bengaluru 560092. Call +91 9632025123 or email ananyaelectricalsolutions@gmail.com for quotes & 24/7 support.',
+      'Contact Ananya Electrical Solutions at 59, Opp Bank of India, G-Block, Sahakarnagar Main Road, Bengaluru 560092. Call +91 9743461955 or email ananyaelectricalsolutions@gmail.com for quotes & 24/7 support.',
     h1: 'Contact Ananya Electrical Solutions — Sahakarnagar Headquarters, Bengaluru',
     primaryKeyword: 'Electrical contractor contact Sahakarnagar Bengaluru',
     secondaryKeywords: [

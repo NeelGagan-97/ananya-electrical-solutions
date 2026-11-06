@@ -141,7 +141,7 @@ export const SolarScreen: React.FC<SolarScreenProps> = ({ onOpenConsultation, on
             <div className="lg:col-span-5 flex flex-col gap-5">
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center">
-                  <label htmlFor="calc-solar-bill" className="text-[13px] font-semibold text-[#0B192C]">
+                  <label className="text-[13px] font-semibold text-[#0B192C]">
                     Monthly Electricity Bill (₹)
                   </label>
                   <span className="font-mono text-[14px] font-bold text-[#F59E0B]">
@@ -149,8 +149,6 @@ export const SolarScreen: React.FC<SolarScreenProps> = ({ onOpenConsultation, on
                   </span>
                 </div>
                 <input
-                  id="calc-solar-bill"
-                  aria-label="Monthly Electricity Bill in Rupees"
                   type="range"
                   min="30000"
                   max="1000000"
@@ -168,7 +166,7 @@ export const SolarScreen: React.FC<SolarScreenProps> = ({ onOpenConsultation, on
 
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center">
-                  <label htmlFor="calc-solar-roof" className="text-[13px] font-semibold text-[#0B192C]">
+                  <label className="text-[13px] font-semibold text-[#0B192C]">
                     Usable Roof Area (sq. ft)
                   </label>
                   <span className="font-mono text-[14px] font-bold text-[#0284C7]">
@@ -176,8 +174,6 @@ export const SolarScreen: React.FC<SolarScreenProps> = ({ onOpenConsultation, on
                   </span>
                 </div>
                 <input
-                  id="calc-solar-roof"
-                  aria-label="Usable Roof Area in square feet"
                   type="range"
                   min="1000"
                   max="50000"

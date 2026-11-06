@@ -350,11 +350,10 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label htmlFor="contact-name" className="text-[13px] font-semibold text-[#0B192C]">
+                  <label className="text-[13px] font-semibold text-[#0B192C]">
                     Contact Person / Organization <span className="text-red-500">*</span>
                   </label>
                   <input
-                    id="contact-name"
                     type="text"
                     required
                     value={name}
@@ -364,11 +363,10 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label htmlFor="contact-phone" className="text-[13px] font-semibold text-[#0B192C]">
+                  <label className="text-[13px] font-semibold text-[#0B192C]">
                     Mobile Phone (+91) <span className="text-red-500">*</span>
                   </label>
                   <input
-                    id="contact-phone"
                     type="tel"
                     required
                     value={phone}
@@ -381,11 +379,10 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label htmlFor="contact-email" className="text-[13px] font-semibold text-[#0B192C]">
+                  <label className="text-[13px] font-semibold text-[#0B192C]">
                     Official Email
                   </label>
                   <input
-                    id="contact-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -394,11 +391,10 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label htmlFor="contact-location" className="text-[13px] font-semibold text-[#0B192C]">
+                  <label className="text-[13px] font-semibold text-[#0B192C]">
                     Site Location in Bengaluru / Karnataka <span className="text-red-500">*</span>
                   </label>
                   <input
-                    id="contact-location"
                     type="text"
                     required
                     value={location}
@@ -410,11 +406,10 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="contact-category" className="text-[13px] font-semibold text-[#0B192C]">
+                <label className="text-[13px] font-semibold text-[#0B192C]">
                   Required Electrical or Solar Service <span className="text-red-500">*</span>
                 </label>
                 <select
-                  id="contact-category"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   className="h-11 px-4 rounded-lg bg-[#F8FAFC] border border-[#CBD5E1] text-[14px] text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:bg-white cursor-pointer"
@@ -429,11 +424,10 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="contact-load-details" className="text-[13px] font-semibold text-[#0B192C]">
+                <label className="text-[13px] font-semibold text-[#0B192C]">
                   Connected Load or Project Scope Details
                 </label>
                 <textarea
-                  id="contact-load-details"
                   rows={4}
                   value={loadDetails}
                   onChange={(e) => setLoadDetails(e.target.value)}
