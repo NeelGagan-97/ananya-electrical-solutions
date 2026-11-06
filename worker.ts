@@ -15,6 +15,16 @@ const ROUTE_METADATA: Record<string, { title: string; description: string; canon
     description: "Explore Ananya Electrical Solutions’ electrical engineering services across Karnataka, headquartered in Bengaluru. HT/LT substations, PCC/MCC panels, industrial cabling, testing, earthing, statutory coordination and solar EPC.",
     canonical: "https://ananyaelectricalsolutions.com/services",
   },
+  "/ht-lt-electrical-works": {
+    title: "HT/LT Electrical Contractor in Bangalore | 11kV–110kV Substations, VCB & Switchgear Panels",
+    description: "Turnkey HT/LT electrical engineering in Bengaluru & Karnataka: 11kV/33kV/66kV/110kV substations, power transformers, VCB/ACB switchgear, busducts, APFC panels, and KPTCL/BESCOM approvals.",
+    canonical: "https://ananyaelectricalsolutions.com/ht-lt-electrical-works",
+  },
+  "/solar-power-solutions": {
+    title: "Solar Installation Services in Bengaluru | Commercial & Industrial Rooftop Solar EPC Karnataka",
+    description: "Turnkey rooftop and ground-mount solar power installation in Bengaluru & Karnataka. Tier-1 bifacial PV modules, BESCOM/KERC net metering approvals, and high-ROI C&I solar plants.",
+    canonical: "https://ananyaelectricalsolutions.com/solar-power-solutions",
+  },
 };
 
 function isStaticAsset(pathname: string): boolean {
