@@ -275,13 +275,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Services Dropdown */}
-          <div
-            className="relative"
-            onMouseEnter={() => setServicesDropdownOpen(true)}
-            onMouseLeave={() => setServicesDropdownOpen(false)}
-          >
+          <div className="relative">
             <button
-              onClick={() => setServicesDropdownOpen(true)}
+              aria-expanded={servicesDropdownOpen}
+              aria-haspopup="true"
+              onClick={() => setServicesDropdownOpen((open) => !open)}
               className={`h-9 px-1.5 xl:px-2 2xl:px-2.5 text-[11.5px] xl:text-[12px] 2xl:text-[12.5px] font-semibold transition-all rounded-lg whitespace-nowrap cursor-pointer inline-flex items-center justify-center gap-1 leading-none ${
                 currentTab === 'services' || currentTab === 'electrical' || currentTab === 'solar-solutions'
                   ? 'bg-[#dce9ff] text-[#0b1c30] font-bold shadow-xs'
