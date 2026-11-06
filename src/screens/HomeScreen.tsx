@@ -1612,7 +1612,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <img loading="lazy" decoding="async" src={selectedProject.image} alt={selectedProject.title} className="w-full h-full object-cover" />
               <button
                 onClick={() => setSelectedProject(null)}
-                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black transition-colors"
+                aria-label="Close project details"
+                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black transition-colors cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
@@ -1872,12 +1873,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[14px] text-[#0B192C] font-semibold">
+                    <span className="text-[14px] text-[#0B192C] font-semibold" id="channel-group-label">
                       Preferred Instant Response Channel
-                    </label>
-                    <div className="grid grid-cols-2 gap-2 h-11">
+                    </span>
+                    <div className="grid grid-cols-2 gap-2 h-11" role="radiogroup" aria-labelledby="channel-group-label">
                       <button
                         type="button"
+                        role="radio"
+                        aria-checked={preferredChannel === 'whatsapp'}
+                        aria-label="Preferred channel WhatsApp"
                         onClick={() => setPreferredChannel('whatsapp')}
                         className={`rounded border text-[12.5px] font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors ${
                           preferredChannel === 'whatsapp'
@@ -1890,6 +1894,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                       </button>
                       <button
                         type="button"
+                        role="radio"
+                        aria-checked={preferredChannel === 'email'}
+                        aria-label="Preferred channel Email"
                         onClick={() => setPreferredChannel('email')}
                         className={`rounded border text-[12.5px] font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors ${
                           preferredChannel === 'email'

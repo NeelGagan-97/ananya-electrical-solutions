@@ -65,6 +65,8 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center shrink-0">
           <button
             onClick={() => handleNavClick('home')}
+            aria-label="Ananya Electrical Solutions Homepage"
+            title="Ananya Electrical Solutions Homepage"
             className="flex items-center gap-2 sm:gap-2.5 shrink-0 text-left cursor-pointer group"
           >
             <div className="relative h-9 w-9 sm:h-10 sm:w-10 2xl:h-11 2xl:w-11 flex items-center justify-center shrink-0 transition-transform group-hover:scale-105">
@@ -470,6 +472,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="xl:hidden w-9 h-9 inline-flex items-center justify-center rounded-lg text-[#0B192C] hover:bg-[#e5eeff] transition-colors shrink-0"
             aria-label="Toggle Navigation Menu"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation-menu"
           >
             <span className="material-symbols-outlined text-[24px] leading-none">
               {mobileMenuOpen ? 'close' : 'menu'}
@@ -480,7 +484,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="xl:hidden bg-white border-b border-[#E2E8F0] px-4 pt-2 pb-6 shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
+        <div id="mobile-navigation-menu" className="xl:hidden bg-white border-b border-[#E2E8F0] px-4 pt-2 pb-6 shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
           <nav className="flex flex-col gap-1.5 mb-4">
             {/* Home Link */}
             <button
