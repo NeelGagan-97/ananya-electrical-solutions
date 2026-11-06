@@ -25,6 +25,16 @@ const ROUTE_METADATA: Record<string, { title: string; description: string; canon
     description: "Turnkey rooftop and ground-mount solar power installation in Bengaluru & Karnataka. Tier-1 bifacial PV modules, BESCOM/KERC net metering approvals, and high-ROI C&I solar plants.",
     canonical: "https://ananyaelectricalsolutions.com/solar-power-solutions",
   },
+  "/about-us": {
+    title: "About Ananya Electrical Solutions | Govt. Licensed Super Grade Electrical Contractor Karnataka",
+    description: "Learn about Ananya Electrical Solutions, a Government of Karnataka Licensed Super Grade & Class-1 PWD Electrical Contractor headquartered in Sahakarnagar, Bengaluru serving all 31 districts.",
+    canonical: "https://ananyaelectricalsolutions.com/about-us",
+  },
+  "/contact-us": {
+    title: "Contact Ananya Electrical Solutions | Sahakarnagar, Bengaluru | Call +91 9632025123",
+    description: "Contact Ananya Electrical Solutions at 59, Opp Bank of India, G-Block, Sahakarnagar Main Road, Bengaluru 560092. Call +91 9632025123 or email ananyaelectricalsolutions@gmail.com for quotes & 24/7 support.",
+    canonical: "https://ananyaelectricalsolutions.com/contact-us",
+  },
 };
 
 function isStaticAsset(pathname: string): boolean {
