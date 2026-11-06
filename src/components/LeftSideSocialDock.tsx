@@ -80,7 +80,8 @@ export const LeftSideSocialDock: React.FC = () => {
               </div>
               <button
                 onClick={() => setShowWhatsAppMenu(false)}
-                className="w-6 h-6 rounded-full hover:bg-slate-100 text-slate-500 flex items-center justify-center text-[14px]"
+                aria-label="Close WhatsApp Quick Menu"
+                className="w-7 h-7 rounded-full hover:bg-slate-100 text-slate-500 flex items-center justify-center text-[14px] cursor-pointer"
               >
                 ✕
               </button>

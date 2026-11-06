@@ -108,7 +108,12 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B192C]/80 backdrop-blur-sm animate-in fade-in duration-200">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="consultation-modal-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B192C]/80 backdrop-blur-sm animate-in fade-in duration-200"
+    >
       <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden border border-[#CBD5E1]">
         {/* Header */}
         <div className="bg-[#0B192C] px-6 py-5 text-white flex items-center justify-between">
@@ -123,13 +128,14 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 </span>
                 <span className="text-[12px] text-slate-300">Sahakarnagar HQ, Bengaluru</span>
               </div>
-              <h3 className="font-display text-[18px] sm:text-[20px] font-bold">
+              <h3 id="consultation-modal-title" className="font-display text-[18px] sm:text-[20px] font-bold">
                 Request Engineering Proposal &amp; Site Quote
               </h3>
             </div>
           </div>
           <button
             onClick={onClose}
+            aria-label="Close consultation modal"
             className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
           >
             <span className="material-symbols-outlined text-[18px]">close</span>
@@ -223,10 +229,11 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-[#0B192C]">
+                  <label htmlFor="consultation-name" className="text-[13px] font-semibold text-[#0B192C]">
                     Your Name / Organization <span className="text-red-500">*</span>
                   </label>
                   <input
+                    id="consultation-name"
                     type="text"
                     required
                     value={name}
@@ -236,15 +243,16 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-[#0B192C]">
+                  <label htmlFor="consultation-phone" className="text-[13px] font-semibold text-[#0B192C]">
                     Contact Phone Number <span className="text-red-500">*</span>
                   </label>
                   <input
+                    id="consultation-phone"
                     type="tel"
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+91 97434 61955"
+                    placeholder="+91 96320 25123"
                     className="h-11 px-3.5 rounded-lg bg-[#F8FAFC] border border-[#CBD5E1] text-[14px] text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:bg-white"
                   />
                 </div>
@@ -252,10 +260,11 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-[#0B192C]">
+                  <label htmlFor="consultation-category" className="text-[13px] font-semibold text-[#0B192C]">
                     Project Category <span className="text-red-500">*</span>
                   </label>
                   <select
+                    id="consultation-category"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                     className="h-11 px-3.5 rounded-lg bg-[#F8FAFC] border border-[#CBD5E1] text-[14px] text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:bg-white cursor-pointer"
@@ -283,10 +292,11 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-[#0B192C]">
+                  <label htmlFor="consultation-location" className="text-[13px] font-semibold text-[#0B192C]">
                     Project Location in Bengaluru / Karnataka <span className="text-red-500">*</span>
                   </label>
                   <input
+                    id="consultation-location"
                     type="text"
                     required
                     value={location}
@@ -299,10 +309,11 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5 sm:col-span-2">
-                  <label className="text-[13px] font-semibold text-[#0B192C]">
+                  <label htmlFor="consultation-email" className="text-[13px] font-semibold text-[#0B192C]">
                     Official Email (Optional for Formal PDF Quotation)
                   </label>
                   <input
+                    id="consultation-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -313,10 +324,11 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-[13px] font-semibold text-[#0B192C]">
+                <label htmlFor="consultation-notes" className="text-[13px] font-semibold text-[#0B192C]">
                   Project Scope &amp; Connected Load Details
                 </label>
                 <textarea
+                  id="consultation-notes"
                   rows={3}
                   value={loadDetails}
                   onChange={(e) => setLoadDetails(e.target.value)}

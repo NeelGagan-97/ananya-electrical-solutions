@@ -82,10 +82,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     const vid = e.currentTarget;
     if (!vid) return;
     const t = vid.currentTime;
-    const dur = vid.duration || 8.0;
-    if (t < 1.85 || t > dur - 0.35) {
-      setLogoAnimPhase(prev => (prev !== 'charging' ? 'charging' : prev));
-    } else if (t >= 1.85 && t < 2.45) {
+    const dur = vid.duration || 4.35;
+    if (t < 0.7 || t > dur - 0.25) {
       setLogoAnimPhase(prev => (prev !== 'surge' ? 'surge' : prev));
     } else {
       setLogoAnimPhase(prev => (prev !== 'energized' ? 'energized' : prev));
@@ -168,7 +166,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   return (
     <div className="flex flex-col w-full">
       {/* ================= HERO SECTION ================= */}
-      <section className="relative w-full bg-[#071120] text-white overflow-hidden py-16 lg:py-24">
+      <section className="relative w-full bg-[#071120] text-white overflow-hidden py-16 lg:py-24 isolation-auto">
         {/* Background Image & Cinematic Atmospheric Layers */}
         <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
           <picture>
@@ -362,7 +360,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   poster="/assets/aistudio/hero_logo_poster.webp"
                   onTimeUpdate={handleVideoTimeUpdate}
                   style={{ aspectRatio: '1.5 / 1.5' }}
-                  className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent [clip-path:inset(0_0_31%_0)] brightness-90 drop-shadow-[0_0_14px_rgba(56,189,248,0.42)]"
+                  className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent mix-blend-screen [mask-image:radial-gradient(circle_at_50%_40%,black_36%,transparent_72%)] [-webkit-mask-image:radial-gradient(circle_at_50%_40%,black_36%,transparent_72%)] brightness-100 drop-shadow-[0_0_20px_rgba(56,189,248,0.5)] pointer-events-none select-none"
                 >
                   <source
                     src="/assets/aistudio/Animated_electrical_logo_reveal_mobile.webm"
@@ -1612,7 +1610,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <img loading="lazy" decoding="async" src={selectedProject.image} alt={selectedProject.title} className="w-full h-full object-cover" />
               <button
                 onClick={() => setSelectedProject(null)}
-                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black transition-colors"
+                aria-label="Close project details"
+                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black transition-colors cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
@@ -1872,12 +1871,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[14px] text-[#0B192C] font-semibold">
+                    <span className="text-[14px] text-[#0B192C] font-semibold" id="channel-group-label">
                       Preferred Instant Response Channel
-                    </label>
-                    <div className="grid grid-cols-2 gap-2 h-11">
+                    </span>
+                    <div className="grid grid-cols-2 gap-2 h-11" role="radiogroup" aria-labelledby="channel-group-label">
                       <button
                         type="button"
+                        role="radio"
+                        aria-checked={preferredChannel === 'whatsapp'}
+                        aria-label="Preferred channel WhatsApp"
                         onClick={() => setPreferredChannel('whatsapp')}
                         className={`rounded border text-[12.5px] font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors ${
                           preferredChannel === 'whatsapp'
@@ -1890,6 +1892,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                       </button>
                       <button
                         type="button"
+                        role="radio"
+                        aria-checked={preferredChannel === 'email'}
+                        aria-label="Preferred channel Email"
                         onClick={() => setPreferredChannel('email')}
                         className={`rounded border text-[12.5px] font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors ${
                           preferredChannel === 'email'

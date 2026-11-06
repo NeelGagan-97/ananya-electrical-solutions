@@ -124,6 +124,7 @@ export const FileUploadField: React.FC<FileUploadFieldProps> = ({
         <input
           ref={inputRef}
           type="file"
+          aria-label={label}
           multiple={multiple}
           accept={presetConfig.extensions.join(',')}
           className="hidden"

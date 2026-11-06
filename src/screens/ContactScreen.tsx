@@ -350,10 +350,11 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-[#0B192C]">
+                  <label htmlFor="contact-name" className="text-[13px] font-semibold text-[#0B192C]">
                     Contact Person / Organization <span className="text-red-500">*</span>
                   </label>
                   <input
+                    id="contact-name"
                     type="text"
                     required
                     value={name}
@@ -363,10 +364,11 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-[#0B192C]">
+                  <label htmlFor="contact-phone" className="text-[13px] font-semibold text-[#0B192C]">
                     Mobile Phone (+91) <span className="text-red-500">*</span>
                   </label>
                   <input
+                    id="contact-phone"
                     type="tel"
                     required
                     value={phone}
@@ -379,10 +381,11 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-[#0B192C]">
+                  <label htmlFor="contact-email" className="text-[13px] font-semibold text-[#0B192C]">
                     Official Email
                   </label>
                   <input
+                    id="contact-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -391,10 +394,11 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-[#0B192C]">
+                  <label htmlFor="contact-location" className="text-[13px] font-semibold text-[#0B192C]">
                     Site Location in Bengaluru / Karnataka <span className="text-red-500">*</span>
                   </label>
                   <input
+                    id="contact-location"
                     type="text"
                     required
                     value={location}
@@ -406,10 +410,11 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-[13px] font-semibold text-[#0B192C]">
+                <label htmlFor="contact-category" className="text-[13px] font-semibold text-[#0B192C]">
                   Required Electrical or Solar Service <span className="text-red-500">*</span>
                 </label>
                 <select
+                  id="contact-category"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   className="h-11 px-4 rounded-lg bg-[#F8FAFC] border border-[#CBD5E1] text-[14px] text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:bg-white cursor-pointer"
@@ -424,10 +429,11 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-[13px] font-semibold text-[#0B192C]">
+                <label htmlFor="contact-load-details" className="text-[13px] font-semibold text-[#0B192C]">
                   Connected Load or Project Scope Details
                 </label>
                 <textarea
+                  id="contact-load-details"
                   rows={4}
                   value={loadDetails}
                   onChange={(e) => setLoadDetails(e.target.value)}
@@ -437,12 +443,15 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-[13px] font-semibold text-[#0B192C]">
+                <span id="contact-channel-label" className="text-[13px] font-semibold text-[#0B192C]">
                   Preferred Instant Dispatch Channel
-                </label>
-                <div className="grid grid-cols-2 gap-3">
+                </span>
+                <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-labelledby="contact-channel-label">
                   <button
                     type="button"
+                    role="radio"
+                    aria-checked={preferredChannel === 'whatsapp'}
+                    aria-label={`Dispatch inquiry via WhatsApp ${BUSINESS_NAP.primaryPhone}`}
                     onClick={() => setPreferredChannel('whatsapp')}
                     className={`h-10 rounded-lg border text-[13px] font-bold flex items-center justify-center gap-2 cursor-pointer transition-colors ${
                       preferredChannel === 'whatsapp'
@@ -455,6 +464,9 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
                   </button>
                   <button
                     type="button"
+                    role="radio"
+                    aria-checked={preferredChannel === 'email'}
+                    aria-label="Dispatch inquiry via Official Email"
                     onClick={() => setPreferredChannel('email')}
                     className={`h-10 rounded-lg border text-[13px] font-bold flex items-center justify-center gap-2 cursor-pointer transition-colors ${
                       preferredChannel === 'email'
@@ -587,6 +599,8 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
                   className="bg-white rounded-xl border border-[#CBD5E1] overflow-hidden transition-all"
                 >
                   <button
+                    aria-expanded={isOpen}
+                    aria-controls={`faq-answer-${index}`}
                     onClick={() => setActiveFaq(isOpen ? null : index)}
                     className="w-full p-5 text-left flex items-center justify-between gap-4 cursor-pointer hover:bg-[#f8f9ff]"
                   >
@@ -596,7 +610,10 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
                     </span>
                   </button>
                   {isOpen && (
-                    <div className="px-5 pb-5 pt-1 text-[14px] text-[#44474c] leading-relaxed border-t border-[#E2E8F0]">
+                    <div
+                      id={`faq-answer-${index}`}
+                      className="px-5 pb-5 pt-1 text-[14px] text-[#44474c] leading-relaxed border-t border-[#E2E8F0]"
+                    >
                       {faq.a}
                     </div>
                   )}

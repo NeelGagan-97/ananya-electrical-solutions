@@ -1,0 +1,40 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "Ananya Electrical Solutions",
+    "identifier": "https://ananyaelectricalsolutions.com",
+    "documentationUrl": "https://ananyaelectricalsolutions.com/llms.txt"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:ananyaelectricalsolutions.com:service:ht-lt-substations",
+      "displayName": "HT/LT Substations & Switchgear Works",
+      "type": "text/markdown",
+      "url": "https://ananyaelectricalsolutions.com/ht-lt-electrical-works"
+    },
+    {
+      "identifier": "urn:air:ananyaelectricalsolutions.com:service:solar-epc",
+      "displayName": "Commercial & Industrial Rooftop Solar EPC",
+      "type": "text/markdown",
+      "url": "https://ananyaelectricalsolutions.com/solar-power-solutions"
+    },
+    {
+      "identifier": "urn:air:ananyaelectricalsolutions.com:service:electrical-contracting",
+      "displayName": "Turnkey Electrical Installation & Maintenance",
+      "type": "text/markdown",
+      "url": "https://ananyaelectricalsolutions.com/services"
+    },
+    {
+      "identifier": "urn:air:ananyaelectricalsolutions.com:company:about-us",
+      "displayName": "About Ananya Electrical Solutions (Govt. Licensed Super Grade)",
+      "type": "text/markdown",
+      "url": "https://ananyaelectricalsolutions.com/about-us"
+    },
+    {
+      "identifier": "urn:air:ananyaelectricalsolutions.com:contact:enquiry",
+      "displayName": "Contact Desk & Engineering Proposal Request",
+      "type": "text/markdown",
+      "url": "https://ananyaelectricalsolutions.com/contact-us"
+    }
+  ]
+}
