@@ -77,19 +77,8 @@ function isStaticAsset(pathname: string): boolean {
 }
 
 function isContentHashedAsset(pathname: string): boolean {
-  // Vite build emits fingerprinted JS/CSS chunks directly in /assets/ with 8-character hashes.
-  // Static public assets under /assets/aistudio/ are NOT fingerprinted and must NEVER be treated as immutable.
-  return /^\/assets\/[^/]+-[a-zA-Z0-9_-]{8}\.(?:js|css)(?:\.map)?$/.test(pathname);
-}
-
-function isAlwaysFreshAsset(pathname: string): boolean {
-  return (
-    pathname === "/robots.txt" ||
-    pathname === "/sitemap.xml" ||
-    pathname === "/llms.txt" ||
-    pathname === "/llms-full.txt" ||
-    pathname.startsWith("/.well-known/")
-  );
+  // Vite build emits assets under /assets/ with 8+ char hashes (e.g., index-Bc2VxBhO.js, index-C1234567.css)
+  return pathname.startsWith("/assets/") && /[-.][a-zA-Z0-9_-]{8,}\.(?:js|css|webp|png|jpg|svg|woff2)$/.test(pathname);
 }
 
 export default {
@@ -106,13 +95,10 @@ export default {
 
       const headers = new Headers(assetResponse.headers);
       if (isContentHashedAsset(pathname)) {
-        // Immutable cache exclusively for fingerprinted Vite production bundles
+        // Immutable cache for fingerprinted Vite production bundles
         headers.set("Cache-Control", "public, max-age=31536000, immutable");
-      } else if (isAlwaysFreshAsset(pathname)) {
-        // Always fresh with revalidation for search engine crawlers, AI catalog, and sitemaps
-        headers.set("Cache-Control", "public, max-age=0, must-revalidate");
       } else {
-        // Standard caching with revalidation for non-hashed public static assets (images, fonts, icons)
+        // Standard caching with revalidation for non-hashed public assets (icons, robots.txt, manifests)
         headers.set("Cache-Control", "public, max-age=3600, stale-while-revalidate=86400");
       }
       headers.set("X-Content-Type-Options", "nosniff");

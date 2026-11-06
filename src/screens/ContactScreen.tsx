@@ -443,15 +443,12 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <span id="contact-channel-label" className="text-[13px] font-semibold text-[#0B192C]">
+                <label className="text-[13px] font-semibold text-[#0B192C]">
                   Preferred Instant Dispatch Channel
-                </span>
-                <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-labelledby="contact-channel-label">
+                </label>
+                <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
-                    role="radio"
-                    aria-checked={preferredChannel === 'whatsapp'}
-                    aria-label={`Dispatch inquiry via WhatsApp ${BUSINESS_NAP.primaryPhone}`}
                     onClick={() => setPreferredChannel('whatsapp')}
                     className={`h-10 rounded-lg border text-[13px] font-bold flex items-center justify-center gap-2 cursor-pointer transition-colors ${
                       preferredChannel === 'whatsapp'
@@ -464,9 +461,6 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
                   </button>
                   <button
                     type="button"
-                    role="radio"
-                    aria-checked={preferredChannel === 'email'}
-                    aria-label="Dispatch inquiry via Official Email"
                     onClick={() => setPreferredChannel('email')}
                     className={`h-10 rounded-lg border text-[13px] font-bold flex items-center justify-center gap-2 cursor-pointer transition-colors ${
                       preferredChannel === 'email'
@@ -599,8 +593,6 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
                   className="bg-white rounded-xl border border-[#CBD5E1] overflow-hidden transition-all"
                 >
                   <button
-                    aria-expanded={isOpen}
-                    aria-controls={`faq-answer-${index}`}
                     onClick={() => setActiveFaq(isOpen ? null : index)}
                     className="w-full p-5 text-left flex items-center justify-between gap-4 cursor-pointer hover:bg-[#f8f9ff]"
                   >
@@ -610,10 +602,7 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
                     </span>
                   </button>
                   {isOpen && (
-                    <div
-                      id={`faq-answer-${index}`}
-                      className="px-5 pb-5 pt-1 text-[14px] text-[#44474c] leading-relaxed border-t border-[#E2E8F0]"
-                    >
+                    <div className="px-5 pb-5 pt-1 text-[14px] text-[#44474c] leading-relaxed border-t border-[#E2E8F0]">
                       {faq.a}
                     </div>
                   )}

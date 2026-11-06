@@ -82,8 +82,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     const vid = e.currentTarget;
     if (!vid) return;
     const t = vid.currentTime;
-    const dur = vid.duration || 4.35;
-    if (t < 0.7 || t > dur - 0.25) {
+    const dur = vid.duration || 8.0;
+    if (t < 1.85 || t > dur - 0.35) {
+      setLogoAnimPhase(prev => (prev !== 'charging' ? 'charging' : prev));
+    } else if (t >= 1.85 && t < 2.45) {
       setLogoAnimPhase(prev => (prev !== 'surge' ? 'surge' : prev));
     } else {
       setLogoAnimPhase(prev => (prev !== 'energized' ? 'energized' : prev));
@@ -166,7 +168,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   return (
     <div className="flex flex-col w-full">
       {/* ================= HERO SECTION ================= */}
-      <section className="relative w-full bg-[#071120] text-white overflow-hidden py-16 lg:py-24 isolation-auto">
+      <section className="relative w-full bg-[#071120] text-white overflow-hidden py-16 lg:py-24">
         {/* Background Image & Cinematic Atmospheric Layers */}
         <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
           <picture>
@@ -360,7 +362,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   poster="/assets/aistudio/hero_logo_poster.webp"
                   onTimeUpdate={handleVideoTimeUpdate}
                   style={{ aspectRatio: '1.5 / 1.5' }}
-                  className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent mix-blend-screen [mask-image:radial-gradient(circle_at_50%_40%,black_36%,transparent_72%)] [-webkit-mask-image:radial-gradient(circle_at_50%_40%,black_36%,transparent_72%)] brightness-100 drop-shadow-[0_0_20px_rgba(56,189,248,0.5)] pointer-events-none select-none"
+                  className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent [clip-path:inset(0_0_31%_0)] brightness-90 drop-shadow-[0_0_14px_rgba(56,189,248,0.42)]"
                 >
                   <source
                     src="/assets/aistudio/Animated_electrical_logo_reveal_mobile.webm"
