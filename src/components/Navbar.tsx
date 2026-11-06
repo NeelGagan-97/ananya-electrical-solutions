@@ -281,7 +281,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             onMouseLeave={() => setServicesDropdownOpen(false)}
           >
             <button
-              onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
+              onClick={() => setServicesDropdownOpen(true)}
               className={`h-9 px-1.5 xl:px-2 2xl:px-2.5 text-[11.5px] xl:text-[12px] 2xl:text-[12.5px] font-semibold transition-all rounded-lg whitespace-nowrap cursor-pointer inline-flex items-center justify-center gap-1 leading-none ${
                 currentTab === 'services' || currentTab === 'electrical' || currentTab === 'solar-solutions'
                   ? 'bg-[#dce9ff] text-[#0b1c30] font-bold shadow-xs'
