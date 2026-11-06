@@ -643,18 +643,28 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               {mobileServicesOpen && (
                 <div className="flex flex-col bg-white divide-y divide-[#F1F5F9]">
-                  <button
-                    onClick={() => handleNavClick('home', 'electrical-services')}
+                  <a
+                    href="/#electrical-services"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      handleNavClick('home', 'electrical-services');
+                      setMobileServicesOpen(false);
+                    }}
                     className="px-5 py-2.5 text-left text-[14px] flex items-center justify-between cursor-pointer text-[#334155] hover:bg-[#f8f9ff]"
                   >
                     <div className="flex items-center gap-2">
                       <span className="material-symbols-outlined text-[16px] text-amber-500">bolt</span>
                       <span>Electrical Services</span>
                     </div>
-                  </button>
+                  </a>
 
-                  <button
-                    onClick={() => handleNavClick('electrical')}
+                  <a
+                    href="/ht-lt-electrical-works"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      handleNavClick('electrical');
+                      setMobileServicesOpen(false);
+                    }}
                     className={`px-5 py-2.5 text-left text-[14px] flex items-center justify-between cursor-pointer ${
                       currentTab === 'electrical'
                         ? 'bg-[#dce9ff] text-[#0B192C] font-bold'
@@ -668,10 +678,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                     {currentTab === 'electrical' && (
                       <span className="material-symbols-outlined text-[16px] text-[#0284C7]">check</span>
                     )}
-                  </button>
+                  </a>
 
-                  <button
-                    onClick={() => handleNavClick('solar-solutions')}
+                  <a
+                    href="/solar-power-solutions"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      handleNavClick('solar-solutions');
+                      setMobileServicesOpen(false);
+                    }}
                     className={`px-5 py-2.5 text-left text-[14px] flex items-center justify-between cursor-pointer ${
                       currentTab === 'solar-solutions'
                         ? 'bg-[#dce9ff] text-[#0B192C] font-bold'
@@ -685,10 +700,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                     {currentTab === 'solar-solutions' && (
                       <span className="material-symbols-outlined text-[16px] text-[#0284C7]">check</span>
                     )}
-                  </button>
+                  </a>
 
-                  <button
-                    onClick={() => handleNavClick('services')}
+                  <a
+                    href="/services"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      handleNavClick('services');
+                      setMobileServicesOpen(false);
+                    }}
                     className={`px-5 py-2.5 text-left text-[14px] flex items-center justify-between cursor-pointer ${
                       currentTab === 'services'
                         ? 'bg-[#dce9ff] text-[#0B192C] font-bold'
@@ -702,7 +722,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     {currentTab === 'services' && (
                       <span className="material-symbols-outlined text-[16px] text-[#0284C7]">check</span>
                     )}
-                  </button>
+                  </a>
                 </div>
               )}
             </div>
