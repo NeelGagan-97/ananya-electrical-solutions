@@ -150,7 +150,7 @@ export const IndustrialCommercialForm: React.FC<IndustrialCommercialFormProps> =
     <FormWrapper
       formId="industrial-commercial"
       title="Industrial & Commercial Electrical Enquiry"
-      badge="Form 02 · Industrial & Commercial"
+      badge="Industrial & Commercial Works"
       description="Turnkey plant electrification, MCC/PCC panels, busduct trunking, and BESCOM/CEIG statutory compliance for corporate facilities."
       onSubmit={handleSubmit}
       onCancel={onCancel}

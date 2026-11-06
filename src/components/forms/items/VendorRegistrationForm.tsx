@@ -137,7 +137,7 @@ export const VendorRegistrationForm: React.FC<VendorRegistrationFormProps> = ({
     <FormWrapper
       formId="vendor-registration"
       title="Vendor Registration & Business Partnership"
-      badge="Form 08 · Vendor & Supplier Onboarding"
+      badge="Vendor & Supplier Onboarding"
       description="Register your electrical manufacturing, cable supply, OEM distributorship, or subcontracting capabilities with Ananya Electrical Solutions procurement."
       onSubmit={handleSubmit}
       onCancel={onCancel}

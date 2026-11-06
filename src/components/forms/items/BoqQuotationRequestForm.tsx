@@ -139,7 +139,7 @@ export const BoqQuotationRequestForm: React.FC<BoqQuotationRequestFormProps> = (
     <FormWrapper
       formId="boq-quotation"
       title="BOQ Upload & Quotation Request"
-      badge="Form 10 · Tender & BOQ Costing"
+      badge="Tender & BOQ Costing"
       description="Upload your itemized Bill of Quantities (BOQ), tender schedule, or approved single line diagrams for transparent, item-by-item estimation."
       onSubmit={handleSubmit}
       onCancel={onCancel}

@@ -139,7 +139,7 @@ export const HtLtElectricalWorksForm: React.FC<HtLtElectricalWorksFormProps> = (
     <FormWrapper
       formId="ht-lt-works"
       title="HT/LT Electrical Works Enquiry"
-      badge="Form 03 · High & Low Voltage Infrastructure"
+      badge="HT/LT · High & Low Voltage Infrastructure"
       description="11kV / 33kV / 66kV substation design, CEIG approval documentation, transformer yard civil works, and VCB / ACB panel commissioning."
       onSubmit={handleSubmit}
       onCancel={onCancel}

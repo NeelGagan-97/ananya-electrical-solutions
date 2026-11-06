@@ -126,7 +126,7 @@ export const CustomerComplaintSupportForm: React.FC<CustomerComplaintSupportForm
     <FormWrapper
       formId="customer-complaint"
       title="Customer Complaint & Service Support"
-      badge="Form 15 · Client Support & Warranty"
+      badge="Client Support & Warranty"
       description="Existing customer experiencing an issue with installed panels, inverters, or wiring? Log an official service ticket for prompt technical redressal."
       onSubmit={handleSubmit}
       onCancel={onCancel}

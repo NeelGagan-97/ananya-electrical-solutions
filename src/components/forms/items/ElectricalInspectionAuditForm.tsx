@@ -137,7 +137,7 @@ export const ElectricalInspectionAuditForm: React.FC<ElectricalInspectionAuditFo
     <FormWrapper
       formId="safety-audit"
       title="Electrical Inspection & Safety Audit"
-      badge="Form 06 · Safety Audit & Compliance"
+      badge="Safety Audit & Compliance"
       description="Calibrated earth pit resistance testing, infrared thermography for hotspot detection, harmonic analysis, and CEIG statutory inspection reports."
       onSubmit={handleSubmit}
       onCancel={onCancel}

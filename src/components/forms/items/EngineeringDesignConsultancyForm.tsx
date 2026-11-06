@@ -132,7 +132,7 @@ export const EngineeringDesignConsultancyForm: React.FC<EngineeringDesignConsult
     <FormWrapper
       formId="design-consultancy"
       title="Engineering Design & Consultancy"
-      badge="Form 07 · Design & Engineering"
+      badge="Design & Engineering"
       description="Architectural electrical schematics, transformer & busbar calculations, CAD / Revit drafting, and statutory approval package preparation."
       onSubmit={handleSubmit}
       onCancel={onCancel}

@@ -163,7 +163,7 @@ export const ElectricalMaintenanceAmcForm: React.FC<ElectricalMaintenanceAmcForm
     <FormWrapper
       formId="maintenance-amc"
       title="Electrical Maintenance & AMC Request"
-      badge="Form 05 · Maintenance & AMC"
+      badge="Maintenance & AMC"
       description="Scheduled preventive servicing, BDV oil filtration, relay calibration, thermal imaging, and 24/7 breakdown dispatch agreements."
       onSubmit={handleSubmit}
       onCancel={onCancel}

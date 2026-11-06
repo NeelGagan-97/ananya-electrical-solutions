@@ -300,7 +300,7 @@ export const EnquiryModalHost: React.FC<EnquiryModalHostProps> = ({ onFormSubmit
       isOpen={Boolean(activeFormId)}
       onClose={handleClose}
       title={config.title}
-      badge={`Form ${String(config.formNumber).padStart(2, '0')} · ${config.badge}`}
+      badge={config.badge}
       description={config.description}
       icon={config.icon}
     >

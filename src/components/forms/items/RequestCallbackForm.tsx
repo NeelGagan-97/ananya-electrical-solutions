@@ -104,7 +104,7 @@ export const RequestCallbackForm: React.FC<RequestCallbackFormProps> = ({
     <FormWrapper
       formId="request-callback"
       title="Request an Engineering Callback"
-      badge="Form 12 · Quick Enquiry"
+      badge="Quick Enquiry"
       description="Short on time? Leave your number and our licensed electrical consultant will phone you back at your preferred convenience window."
       onSubmit={handleSubmit}
       onCancel={onCancel}

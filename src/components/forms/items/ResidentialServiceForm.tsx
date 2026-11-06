@@ -125,7 +125,7 @@ export const ResidentialServiceForm: React.FC<ResidentialServiceFormProps> = ({
     <FormWrapper
       formId="residential-service"
       title="Residential Electrical Service Request"
-      badge="Form 01 · Residential"
+      badge="Residential Electrical Works"
       description="Professional house wiring, distribution board upgrades, pipe earthing, and safety repairs by certified residential technicians."
       onSubmit={handleSubmit}
       onCancel={onCancel}

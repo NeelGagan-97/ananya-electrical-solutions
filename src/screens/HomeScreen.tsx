@@ -835,7 +835,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 </ul>
                 <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-between mt-auto">
                   <span className="text-[11.5px] font-mono font-bold text-[#0284C7] bg-[#e5eeff] px-2 py-0.5 rounded">
-                    Form 03 • HT/LT Works
+                    HT/LT Works
                   </span>
                   <button
                     type="button"
@@ -895,7 +895,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 </ul>
                 <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-between mt-auto">
                   <span className="text-[11.5px] font-mono font-bold text-[#D97706] bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                    Form 04 • Solar Rooftop
+                    Solar Rooftop
                   </span>
                   <button
                     type="button"
@@ -955,7 +955,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 </ul>
                 <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-between mt-auto">
                   <span className="text-[11.5px] font-mono font-bold text-[#006398] bg-[#e5eeff] px-2 py-0.5 rounded">
-                    Form 06 • Safety Audit
+                    Safety Audit
                   </span>
                   <button
                     type="button"
@@ -1064,7 +1064,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     </div>
                     <div className="flex items-center justify-between pt-2 border-t border-[#E2E8F0]">
                       <span className="text-[10px] font-mono font-bold text-[#0284C7] bg-[#e5eeff] px-1.5 py-0.5 rounded">
-                        Form {formId === 'ht-lt-works' ? '03' : formId === 'safety-audit' ? '06' : formId === 'design-consultancy' ? '07' : formId === 'maintenance-amc' ? '05' : '02'}
+                        {formId === 'ht-lt-works' ? 'HT/LT Works' : formId === 'safety-audit' ? 'Safety Audit' : formId === 'design-consultancy' ? 'Design & SLD' : formId === 'maintenance-amc' ? 'AMC' : 'Industrial & Commercial'}
                       </span>
                       <button
                         type="button"
@@ -1157,8 +1157,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                         </div>
 
                         <div className="pt-2 border-t border-slate-700/80 flex items-center justify-between">
-                          <span className="text-[10px] font-mono text-[#F59E0B]">
-                            {formId === 'ht-lt-works' ? 'Form 03' : formId === 'solar-rooftop' ? 'Form 04' : formId === 'safety-audit' ? 'Form 06' : 'Form 02'}
+                          <span className="text-[10px] font-mono text-[#F59E0B] font-semibold">
+                            {formId === 'ht-lt-works' ? 'HT/LT' : formId === 'solar-rooftop' ? 'Solar Rooftop' : formId === 'safety-audit' ? 'Safety Audit' : 'Industrial & Commercial'}
                           </span>
                           <button
                             type="button"
@@ -1371,12 +1371,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               const formId = STAGE_TO_FORM_MAP[stage.num] || 'site-visit';
               const formBadge =
                 idx === 0
-                  ? 'Form 09 • Site Visit'
+                  ? 'Site Visit'
                   : idx === 1
-                  ? 'Form 07 • Design / SLD'
+                  ? 'Design / SLD'
                   : idx === 2
-                  ? 'Form 03 • HT/LT Works'
-                  : 'Form 05 • AMC';
+                  ? 'HT/LT Works'
+                  : 'AMC';
               return (
                 <div
                   key={stage.num}

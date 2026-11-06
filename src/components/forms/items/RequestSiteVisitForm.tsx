@@ -126,7 +126,7 @@ export const RequestSiteVisitForm: React.FC<RequestSiteVisitFormProps> = ({
     <FormWrapper
       formId="site-visit"
       title="Request an On-Site Engineering Visit"
-      badge="Form 09 · Site Inspection & Survey"
+      badge="Site Inspection & Survey"
       description="Book an on-site visit by an experienced electrical supervisor to take measurements, assess load capacity, and evaluate electrical routing."
       onSubmit={handleSubmit}
       onCancel={onCancel}

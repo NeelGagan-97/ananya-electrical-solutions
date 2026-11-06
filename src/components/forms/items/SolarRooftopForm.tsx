@@ -141,7 +141,7 @@ export const SolarRooftopForm: React.FC<SolarRooftopFormProps> = ({
     <FormWrapper
       formId="solar-rooftop"
       title="Solar Rooftop Installation Enquiry"
-      badge="Form 04 · Solar Rooftop Solutions"
+      badge="Solar Rooftop Solutions"
       description="Calculate your payback period, discover PM Surya Ghar subsidy eligibility, and request rooftop solar engineering analysis."
       onSubmit={handleSubmit}
       onCancel={onCancel}

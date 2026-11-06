@@ -137,7 +137,7 @@ export const ElectricalEmergencySupportForm: React.FC<ElectricalEmergencySupport
     <FormWrapper
       formId="emergency-support"
       title="Electrical Emergency Support"
-      badge="Form 11 · Emergency Breakdown Dispatch"
+      badge="Emergency Breakdown Dispatch"
       description="Report sudden power outages, tripped main circuit breakers, transformer sparking, or electrical short circuits to our rapid breakdown crew."
       onSubmit={handleSubmit}
       onCancel={onCancel}

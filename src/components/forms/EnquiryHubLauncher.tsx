@@ -151,8 +151,8 @@ export const EnquiryHubLauncher: React.FC = () => {
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2 mb-1">
-                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
-                        Form {String(item.formNumber).padStart(2, '0')}
+                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-slate-100 text-[#0284C7] border border-slate-200">
+                        {item.badge}
                       </span>
                       <span className="text-[11px] font-medium text-[#0284C7] group-hover:underline flex items-center gap-0.5">
                         Open Modal

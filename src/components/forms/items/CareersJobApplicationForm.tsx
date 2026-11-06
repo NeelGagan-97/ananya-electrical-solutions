@@ -126,7 +126,7 @@ export const CareersJobApplicationForm: React.FC<CareersJobApplicationFormProps>
     <FormWrapper
       formId="careers-job"
       title="Careers & Engineering Opportunities"
-      badge="Form 14 · Human Resources & Talent"
+      badge="Human Resources & Talent"
       description="Join Bengaluru's leading Super Grade licensed electrical contractor. We offer competitive remuneration, technical field training, and safety equipment."
       onSubmit={handleSubmit}
       onCancel={onCancel}

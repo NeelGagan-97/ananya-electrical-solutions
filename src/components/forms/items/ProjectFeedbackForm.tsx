@@ -113,7 +113,7 @@ export const ProjectFeedbackForm: React.FC<ProjectFeedbackFormProps> = ({
     <FormWrapper
       formId="project-feedback"
       title="Project Completion Feedback"
-      badge="Form 13 · Quality Assurance & Reviews"
+      badge="Quality Assurance & Reviews"
       description="Help us maintain Super Grade quality standards. Your ratings guide our continuous improvement in engineering and site safety."
       onSubmit={handleSubmit}
       onCancel={onCancel}
