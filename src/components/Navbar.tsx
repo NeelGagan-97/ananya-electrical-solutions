@@ -299,8 +299,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             {servicesDropdownOpen && (
               <div className="absolute top-full left-0 w-88 bg-white rounded-xl shadow-xl border border-[#CBD5E1] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
                 {/* 1. Electrical Services */}
-                <button
-                  onClick={() => {
+                <a
+                  href="/#electrical-services"
+                  onClick={(event) => {
+                    event.preventDefault();
                     handleNavClick('home', 'electrical-services');
                     setServicesDropdownOpen(false);
                   }}
@@ -320,13 +322,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                       Residential, commercial &amp; industrial installations
                     </span>
                   </div>
-                </button>
+                </a>
 
                 <div className="my-1 border-t border-[#F1F5F9]" />
 
                 {/* 2. HT Substation EPC */}
-                <button
-                  onClick={() => {
+                <a
+                  href="/ht-lt-electrical-works"
+                  onClick={(event) => {
+                    event.preventDefault();
                     handleNavClick('electrical');
                     setServicesDropdownOpen(false);
                   }}
@@ -348,13 +352,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                       Transformers, VCB panels &amp; CEIG approvals
                     </span>
                   </div>
-                </button>
+                </a>
 
                 <div className="my-1 border-t border-[#F1F5F9]" />
 
                 {/* 3. Solar Solutions */}
-                <button
-                  onClick={() => {
+                <a
+                  href="/solar-power-solutions"
+                  onClick={(event) => {
+                    event.preventDefault();
                     handleNavClick('solar-solutions');
                     setServicesDropdownOpen(false);
                   }}
@@ -376,13 +382,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                       Rooftop solar, hybrid BESS &amp; net metering
                     </span>
                   </div>
-                </button>
+                </a>
 
                 <div className="my-1 border-t border-[#F1F5F9]" />
 
                 {/* 4. Complete Services Portfolio & AMC */}
-                <button
-                  onClick={() => {
+                <a
+                  href="/services"
+                  onClick={(event) => {
+                    event.preventDefault();
                     handleNavClick('services');
                     setServicesDropdownOpen(false);
                   }}
@@ -404,7 +412,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       Thermography testing, audits &amp; maintenance contracts
                     </span>
                   </div>
-                </button>
+                </a>
               </div>
             )}
           </div>
