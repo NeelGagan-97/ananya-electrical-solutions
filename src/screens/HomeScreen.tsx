@@ -358,8 +358,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   loop
                   muted
                   playsInline
-                  preload="metadata"
-                  poster="/assets/aistudio/hero_logo_poster.webp"
+                  preload="auto"
                   onTimeUpdate={handleVideoTimeUpdate}
                   style={{ aspectRatio: '1.5 / 1.5' }}
                   className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent [clip-path:inset(0_0_31%_0)] brightness-90 drop-shadow-[0_0_14px_rgba(56,189,248,0.42)]"
