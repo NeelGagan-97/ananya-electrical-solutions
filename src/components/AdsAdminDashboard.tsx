@@ -93,7 +93,7 @@ export const AdsAdminDashboard: React.FC = () => {
   };
 
   const updateField = (field: keyof AdForm, value: string) => {
-    setForm((current) => ({ ...current, [field]: value }));
+    setForm((current) => ({ ...current, [field]: value } as AdForm));
   };
 
   const saveAd = async (event: React.FormEvent) => {
