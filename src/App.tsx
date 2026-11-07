@@ -6,6 +6,7 @@ import { Footer } from './components/Footer';
 import { EnquiryModalHost, EnquiryHubLauncher, BaseEnquirySubmission } from './components/forms';
 import { LeftSideSocialDock } from './components/LeftSideSocialDock';
 import { HomeScreen } from './screens/HomeScreen';
+import { MonetizationSection } from './components/MonetizationSection';
 import {
   BUSINESS_NAP,
   SEO_ROUTE_CONFIG,
@@ -220,11 +221,14 @@ export default function App() {
         )}
 
         {currentTab === 'home' && (
-          <HomeScreen
-            onSelectTab={handleSelectTab}
-            onOpenConsultation={handleOpenConsultation}
-            onSaveInquiry={handleSaveInquiry}
-          />
+          <>
+            <HomeScreen
+              onSelectTab={handleSelectTab}
+              onOpenConsultation={handleOpenConsultation}
+              onSaveInquiry={handleSaveInquiry}
+            />
+            <MonetizationSection />
+          </>
         )}
 
         {currentTab === 'twin-3d' && (

@@ -1,7 +1,20 @@
+interface AdsStatement {
+  bind(...values: unknown[]): AdsStatement;
+  first<T = Record<string, unknown>>(): Promise<T | null>;
+  all<T = Record<string, unknown>>(): Promise<{ results: T[] }>;
+  run(): Promise<unknown>;
+}
+
+interface AdsDatabase {
+  prepare(query: string): AdsStatement;
+}
+
 interface Env {
   ASSETS: {
     fetch(request: Request): Promise<Response>;
   };
+  DB?: AdsDatabase;
+  ADMIN_TOKEN?: string;
 }
 
 const ROUTE_METADATA: Record<string, { title: string; description: string; canonical: string }> = {
@@ -72,6 +85,149 @@ const ROUTE_METADATA: Record<string, { title: string; description: string; canon
   },
 };
 
+
+function jsonResponse(data: unknown, status = 200): Response {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff",
+    },
+  });
+}
+
+function isValidHttpsUrl(value: unknown): value is string {
+  if (typeof value !== "string" || value.length > 2048) return false;
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+function adminAuthorized(request: Request, env: Env): boolean {
+  if (!env.ADMIN_TOKEN) return false;
+  const supplied = request.headers.get("Authorization") || "";
+  const expected = "Bearer " + env.ADMIN_TOKEN;
+  if (supplied.length !== expected.length) return false;
+  let mismatch = 0;
+  for (let index = 0; index < expected.length; index += 1) {
+    mismatch |= supplied.charCodeAt(index) ^ expected.charCodeAt(index);
+  }
+  return mismatch === 0;
+}
+
+async function handleAdsRequest(request: Request, env: Env, pathname: string): Promise<Response | null> {
+  const method = request.method.toUpperCase();
+
+  if (pathname === "/api/ads" && method === "GET") {
+    if (!env.DB) return jsonResponse([]);
+    const result = await env.DB.prepare(
+      "SELECT id, title, advertiser, description, image_url, kind FROM ads WHERE status = 'active' AND (starts_at IS NULL OR julianday(starts_at) <= julianday('now')) AND (ends_at IS NULL OR julianday(ends_at) >= julianday('now')) ORDER BY created_at DESC LIMIT 12"
+    ).all();
+    return jsonResponse(result.results || []);
+  }
+
+  if (pathname === "/api/admin/ads" || pathname.startsWith("/api/admin/ads/")) {
+    if (!adminAuthorized(request, env)) {
+      return jsonResponse({ error: env.ADMIN_TOKEN ? "Invalid admin token." : "Admin token is not configured on this Worker." }, 401);
+    }
+    if (!env.DB) return jsonResponse({ error: "The advertisements database is not connected yet. Create the D1 database and add the DB binding to wrangler.jsonc." }, 503);
+
+    if (pathname === "/api/admin/ads" && method === "GET") {
+      const result = await env.DB.prepare("SELECT * FROM ads ORDER BY created_at DESC").all();
+      return jsonResponse({ ads: result.results || [] });
+    }
+
+    if (pathname === "/api/admin/ads" && method === "POST") {
+      const body = await request.json().catch(() => null) as Record<string, unknown> | null;
+      if (!body) return jsonResponse({ error: "A valid JSON request body is required." }, 400);
+      const title = typeof body.title === "string" ? body.title.trim() : "";
+      const advertiser = typeof body.advertiser === "string" ? body.advertiser.trim() : "";
+      const description = typeof body.description === "string" ? body.description.trim() : "";
+      const imageUrl = body.image_url;
+      const destinationUrl = body.destination_url;
+      const kind = body.kind;
+      const status = body.status;
+      const startsAt = body.starts_at;
+      const endsAt = body.ends_at;
+      if (!title || title.length > 120 || !advertiser || advertiser.length > 100 || !description || description.length > 300) {
+        return jsonResponse({ error: "Title, advertiser and description are required and must be within their length limits." }, 400);
+      }
+      if (!isValidHttpsUrl(imageUrl) || !isValidHttpsUrl(destinationUrl)) {
+        return jsonResponse({ error: "Banner and destination URLs must be valid HTTPS URLs." }, 400);
+      }
+      if (kind !== "affiliate" && kind !== "direct") return jsonResponse({ error: "Invalid revenue type." }, 400);
+      if (status !== "active" && status !== "paused") return jsonResponse({ error: "Invalid campaign status." }, 400);
+      const dateIsValid = (value: unknown) => value === null || value === undefined || (typeof value === "string" && !Number.isNaN(Date.parse(value)));
+      if (!dateIsValid(startsAt) || !dateIsValid(endsAt)) return jsonResponse({ error: "Invalid campaign date." }, 400);
+      if (startsAt && endsAt && Date.parse(String(endsAt)) <= Date.parse(String(startsAt))) return jsonResponse({ error: "End date must be later than start date." }, 400);
+      const id = crypto.randomUUID();
+      await env.DB.prepare(
+        "INSERT INTO ads (id, title, advertiser, description, image_url, destination_url, kind, status, starts_at, ends_at, impressions, clicks, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?)"
+      ).bind(id, title, advertiser, description, imageUrl, destinationUrl, kind, status, startsAt || null, endsAt || null, new Date().toISOString()).run();
+      return jsonResponse({ id }, 201);
+    }
+
+    const id = decodeURIComponent(pathname.slice("/api/admin/ads/".length));
+    if (!id || id.length > 80) return jsonResponse({ error: "Invalid campaign ID." }, 400);
+    if (method === "DELETE") {
+      await env.DB.prepare("DELETE FROM ads WHERE id = ?").bind(id).run();
+      return jsonResponse({ success: true });
+    }
+    if (method === "PUT") {
+      const body = await request.json().catch(() => null) as Record<string, unknown> | null;
+      if (!body) return jsonResponse({ error: "A valid JSON request body is required." }, 400);
+      const title = typeof body.title === "string" ? body.title.trim() : "";
+      const advertiser = typeof body.advertiser === "string" ? body.advertiser.trim() : "";
+      const description = typeof body.description === "string" ? body.description.trim() : "";
+      const imageUrl = body.image_url;
+      const destinationUrl = body.destination_url;
+      const kind = body.kind;
+      const status = body.status;
+      const startsAt = body.starts_at ?? null;
+      const endsAt = body.ends_at ?? null;
+      if (!title || title.length > 120 || !advertiser || advertiser.length > 100 || !description || description.length > 300) return jsonResponse({ error: "Required fields are missing or exceed their length limits." }, 400);
+      if (!isValidHttpsUrl(imageUrl) || !isValidHttpsUrl(destinationUrl)) return jsonResponse({ error: "Banner and destination URLs must be valid HTTPS URLs." }, 400);
+      if (kind !== "affiliate" && kind !== "direct") return jsonResponse({ error: "Invalid revenue type." }, 400);
+      if (status !== "active" && status !== "paused") return jsonResponse({ error: "Invalid campaign status." }, 400);
+      const dateIsValid = (value: unknown) => value === null || value === undefined || (typeof value === "string" && !Number.isNaN(Date.parse(value)));
+      if (!dateIsValid(startsAt) || !dateIsValid(endsAt)) return jsonResponse({ error: "Invalid campaign date." }, 400);
+      if (startsAt && endsAt && Date.parse(String(endsAt)) <= Date.parse(String(startsAt))) return jsonResponse({ error: "End date must be later than start date." }, 400);
+      await env.DB.prepare(
+        "UPDATE ads SET title = ?, advertiser = ?, description = ?, image_url = ?, destination_url = ?, kind = ?, status = ?, starts_at = ?, ends_at = ? WHERE id = ?"
+      ).bind(title, advertiser, description, imageUrl, destinationUrl, kind, status, startsAt, endsAt, id).run();
+      return jsonResponse({ success: true });
+    }
+    return jsonResponse({ error: "Method not allowed." }, 405);
+  }
+
+  const impressionMatch = pathname.match(/^\/api\/ads\/([a-f0-9-]{36})\/impression$/i);
+  if (impressionMatch && method === "POST") {
+    if (env.DB) {
+      await env.DB.prepare(
+        "UPDATE ads SET impressions = impressions + 1 WHERE id = ? AND status = 'active' AND (starts_at IS NULL OR julianday(starts_at) <= julianday('now')) AND (ends_at IS NULL OR julianday(ends_at) >= julianday('now'))"
+      ).bind(impressionMatch[1]).run();
+    }
+    return jsonResponse({ success: true });
+  }
+
+  const clickMatch = pathname.match(/^\/go\/([a-f0-9-]{36})$/i);
+  if (clickMatch && method === "GET") {
+    if (!env.DB) return new Response("Advertisement not available", { status: 404 });
+    const ad = await env.DB.prepare(
+      "SELECT destination_url FROM ads WHERE id = ? AND status = 'active' AND (starts_at IS NULL OR julianday(starts_at) <= julianday('now')) AND (ends_at IS NULL OR julianday(ends_at) >= julianday('now'))"
+    ).bind(clickMatch[1]).first<{ destination_url: string }>();
+    if (!ad || !isValidHttpsUrl(ad.destination_url)) return new Response("Advertisement not available", { status: 404 });
+    await env.DB.prepare("UPDATE ads SET clicks = clicks + 1 WHERE id = ?").bind(clickMatch[1]).run();
+    return new Response(null, { status: 302, headers: { Location: ad.destination_url, "Cache-Control": "no-store" } });
+  }
+
+  return null;
+}
+
 function isStaticAsset(pathname: string): boolean {
   return /\.[a-zA-Z0-9]{1,8}$/.test(pathname);
 }
@@ -85,6 +241,9 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     const pathname = url.pathname.replace(/\/+$/, "") || "/";
+
+    const adsResponse = await handleAdsRequest(request, env, pathname);
+    if (adsResponse) return adsResponse;
 
     // Handle static assets with optimized Cache-Control headers
     if (isStaticAsset(pathname)) {
