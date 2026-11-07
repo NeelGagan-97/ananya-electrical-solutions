@@ -1,5 +1,4 @@
 import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
 import './index.css';
 
 const root = createRoot(document.getElementById('root')!);
@@ -10,5 +9,5 @@ if (pathname === '/admin') {
 } else if (pathname === '/privacy-policy') {
   import('./components/MonetizationSection').then(({ PrivacyPolicyPage }) => root.render(<PrivacyPolicyPage />));
 } else {
-  root.render(<App />);
+  import('./App').then(({ default: App }) => root.render(<App />));
 }
