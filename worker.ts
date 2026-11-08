@@ -23,8 +23,16 @@ function htmlResponse(title: string, message: string, status = 200): Response {
 }
 
 async function handleZohoAuthorize(env: Env): Promise<Response> {
-  if (!env.ZOHO_CLIENT_ID || !env.ZOHO_CLIENT_SECRET || !env.ZOHO_TOKEN_STORE) {
-    return htmlResponse("Zoho setup incomplete", "The Worker is missing one or more Zoho credentials or its KV binding.", 500);
+  const missing: string[] = [];
+  if (!env.ZOHO_CLIENT_ID?.trim()) missing.push("ZOHO_CLIENT_ID");
+  if (!env.ZOHO_CLIENT_SECRET?.trim()) missing.push("ZOHO_CLIENT_SECRET");
+  if (!env.ZOHO_TOKEN_STORE) missing.push("ZOHO_TOKEN_STORE");
+  if (missing.length > 0) {
+    return htmlResponse(
+      "Zoho setup incomplete",
+      `The deployed Worker cannot read these Production settings: ${missing.join(", ")}. Check the binding names and the latest deployment. Credential values are not displayed.`,
+      500
+    );
   }
   const bytes = new Uint8Array(32);
   crypto.getRandomValues(bytes);
