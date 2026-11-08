@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BaseEnquirySubmission, FormId } from './types';
 import { SubmissionService, AES_CONTACT_DETAILS } from './submissionService';
 
@@ -32,6 +32,17 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
   variant = 'modal',
   safetyNotice,
 }) => {
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleSubmissionError = (event: Event) => {
+      const customEvent = event as CustomEvent<{ message?: string }>;
+      setSubmissionError(customEvent.detail?.message || 'Your enquiry could not be sent to CRM. Please try again.');
+    };
+    window.addEventListener('aes:zoho-submission-error', handleSubmissionError);
+    return () => window.removeEventListener('aes:zoho-submission-error', handleSubmissionError);
+  }, []);
+
   // If submitted successfully, show branded Success Confirmation View matching image_9da76995.png
   if (submissionSuccess) {
     const waUrl = SubmissionService.buildWhatsAppUrl(submissionSuccess);
@@ -146,6 +157,12 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
           </div>
           <h2 className="text-[20px] md:text-[22px] font-bold text-white tracking-tight">{title}</h2>
           <p className="text-[13px] text-slate-300 mt-1 max-w-2xl leading-relaxed">{description}</p>
+        </div>
+      )}
+
+      {submissionError && (
+        <div role="alert" className="mx-6 mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          <strong>Enquiry not sent to CRM.</strong> {submissionError}
         </div>
       )}
 
