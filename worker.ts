@@ -202,10 +202,20 @@ async function handleZohoLead(request: Request, env: Env): Promise<Response> {
     }),
   });
 
-  const created = (await createResponse.json().catch(() => ({}))) as { data?: Array<{ status?: string; details?: { id?: string } }> };
+  const created = (await createResponse.json().catch(() => ({}))) as {
+    data?: Array<{ status?: string; code?: string; message?: string; details?: { id?: string; api_name?: string } }>;
+    message?: string;
+    code?: string;
+  };
   const result = created.data?.[0];
   if (!createResponse.ok || result?.status !== "success") {
-    return jsonResponse({ success: false, error: "Zoho could not create the Lead. Check required CRM fields and retry." }, 502, origin);
+    // Return only Zoho's validation code/message and field API name; never return tokens or submitted values.
+    const diagnostic = {
+      zohoCode: result?.code || created.code || "ZOHO_API_ERROR",
+      zohoMessage: (result?.message || created.message || "Zoho rejected the Lead").slice(0, 240),
+      field: result?.details?.api_name || undefined,
+    };
+    return jsonResponse({ success: false, error: "Zoho could not create the Lead.", diagnostic }, 502, origin);
   }
 
   return jsonResponse({ success: true, referenceNumber, zohoLeadId: result.details?.id }, 200, origin);
