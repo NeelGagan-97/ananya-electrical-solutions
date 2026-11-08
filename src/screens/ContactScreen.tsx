@@ -26,7 +26,7 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
   const [lastSubmittedInquiry, setLastSubmittedInquiry] = useState<EngineeringInquiry | null>(null);
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanedPhone = phone.replace(/[\s\-()]/g, '');
     if (!/^(\+91|91|0)?[6-9]\d{9}$/.test(cleanedPhone)) {
@@ -52,6 +52,37 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
       complianceConfirmed: complianceCheck,
       preferredChannel,
     };
+
+    try {
+      const zohoResponse = await fetch("/api/zoho/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          formId: "contact-us",
+          formTitle: "Website Contact / Engineering Proposal",
+          referenceNumber: newId,
+          submittedAt: new Date().toISOString(),
+          customerName: inquiry.name,
+          contactNumber: inquiry.phone,
+          email: inquiry.email,
+          location: inquiry.location,
+          data: {
+            "Required Electrical or Solar Service": inquiry.category,
+            "Connected Load or Project Scope": inquiry.loadDetails,
+            "Compliance Review Requested": inquiry.complianceConfirmed ? "Yes" : "No",
+            "Preferred Contact Channel": inquiry.preferredChannel,
+          },
+        }),
+      });
+      const zohoResult = await zohoResponse.json() as { success?: boolean; error?: string };
+      if (!zohoResponse.ok || !zohoResult.success) {
+        setFormError(zohoResult.error || "Unable to submit your request. Please try again.");
+        return;
+      }
+    } catch {
+      setFormError("Unable to submit your request right now. Please try again.");
+      return;
+    }
 
     onSaveInquiry(inquiry);
     setLastSubmittedInquiry(inquiry);
