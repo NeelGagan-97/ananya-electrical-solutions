@@ -136,7 +136,11 @@ async function handleZohoLead(request: Request, env: Env): Promise<Response> {
   if (payload.website) return jsonResponse({ success: true, referenceNumber, duplicate: false }, 200, origin);
 
   if (!env.ZOHO_TOKEN_STORE) {
-    return jsonResponse({ success: false, error: "Zoho CRM token storage is not configured." }, 503, origin);
+    return jsonResponse({
+      success: false,
+      error: "Zoho CRM token storage is not configured.",
+      diagnostic: { code: "ZOHO_KV_BINDING_MISSING" },
+    }, 503, origin);
   }
 
   const ip = request.headers.get("CF-Connecting-IP") || "unknown";
@@ -146,7 +150,13 @@ async function handleZohoLead(request: Request, env: Env): Promise<Response> {
   await env.ZOHO_TOKEN_STORE.put(rateKey, String(count + 1), { expirationTtl: 120 });
 
   const refreshToken = await env.ZOHO_TOKEN_STORE.get("zoho_refresh_token");
-  if (!refreshToken) return jsonResponse({ success: false, error: "Zoho CRM is not connected" }, 503, origin);
+  if (!refreshToken) {
+    return jsonResponse({
+      success: false,
+      error: "Zoho CRM is not connected.",
+      diagnostic: { code: "ZOHO_REFRESH_TOKEN_MISSING" },
+    }, 503, origin);
+  }
 
   const refreshResponse = await fetch("https://accounts.zoho.in/oauth/v2/token", {
     method: "POST",
