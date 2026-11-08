@@ -51,6 +51,67 @@ async function handleZohoAuthorize(env: Env): Promise<Response> {
   return Response.redirect(authorizeUrl.toString(), 302);
 }
 
+ 
+function jsonResponse(body: unknown, status = 200): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff", "Access-Control-Allow-Origin": "https://ananyaelectricalsolutions.com", "Vary": "Origin" },
+  });
+}
+function cleanText(value: unknown, maxLength = 1000): string {
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") return String(value).trim().slice(0, maxLength);
+  if (Array.isArray(value)) return value.map((item) => cleanText(item, 200)).filter(Boolean).join(", ").slice(0, maxLength);
+  return "";
+}
+async function handleZohoLead(request: Request, env: Env): Promise<Response> {
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { "Access-Control-Allow-Origin": "https://ananyaelectricalsolutions.com", "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type", "Access-Control-Max-Age": "86400" } });
+  if (request.method !== "POST") return jsonResponse({ success: false, error: "Method not allowed" }, 405);
+  if (request.headers.get("Origin") !== "https://ananyaelectricalsolutions.com") return jsonResponse({ success: false, error: "Origin not allowed" }, 403);
+  const length = Number(request.headers.get("Content-Length") || "0");
+  if (length > 48000) return jsonResponse({ success: false, error: "Submission is too large" }, 413);
+  let payload: Record<string, unknown>;
+  try { payload = await request.json() as Record<string, unknown>; } catch { return jsonResponse({ success: false, error: "Invalid JSON request" }, 400); }
+  const formId = cleanText(payload.formId, 80), formTitle = cleanText(payload.formTitle, 160);
+  const customerName = cleanText(payload.customerName, 160), contactNumber = cleanText(payload.contactNumber, 40);
+  const email = cleanText(payload.email, 160), location = cleanText(payload.location, 240);
+  const referenceNumber = cleanText(payload.referenceNumber, 80), submittedAt = cleanText(payload.submittedAt, 80);
+  const data = payload.data && typeof payload.data === "object" && !Array.isArray(payload.data) ? payload.data as Record<string, unknown> : {};
+  if (!formId || !formTitle || !customerName || !contactNumber) return jsonResponse({ success: false, error: "Form type, name and contact number are required" }, 400);
+  if (payload.website) return jsonResponse({ success: true, referenceNumber, duplicate: false });
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+  const rateKey = `lead_rate:${ip}:${Math.floor(Date.now() / 60000)}`;
+  const count = Number(await env.ZOHO_TOKEN_STORE.get(rateKey) || "0");
+  if (count >= 8) return jsonResponse({ success: false, error: "Too many submissions. Please try again shortly." }, 429);
+  await env.ZOHO_TOKEN_STORE.put(rateKey, String(count + 1), { expirationTtl: 120 });
+  const refreshToken = await env.ZOHO_TOKEN_STORE.get("zoho_refresh_token");
+  if (!refreshToken) return jsonResponse({ success: false, error: "Zoho CRM is not connected" }, 503);
+  const refreshResponse = await fetch("https://accounts.zoho.in/oauth/v2/token", {
+    method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ grant_type: "refresh_token", client_id: env.ZOHO_CLIENT_ID, client_secret: env.ZOHO_CLIENT_SECRET, refresh_token: refreshToken }),
+  });
+  const refreshed = await refreshResponse.json() as { access_token?: string; api_domain?: string };
+  if (!refreshResponse.ok || !refreshed.access_token) return jsonResponse({ success: false, error: "Zoho authentication failed. Reconnect the CRM integration." }, 502);
+  const nameParts = customerName.split(/\s+/).filter(Boolean);
+  const lastName = nameParts.length > 1 ? nameParts.pop()! : nameParts[0];
+  const firstName = nameParts.join(" ");
+  const company = cleanText(data.companyName || data.organizationName || data.companyOrCustomerName || data.nameOrOrg || data.fullNameOrOrg, 160) || "Individual Customer";
+  const description = [
+    `Website form: ${formTitle} (${formId})`, `Website reference: ${referenceNumber || "Not supplied"}`,
+    `Submitted at: ${submittedAt || new Date().toISOString()}`, location ? `Location: ${location}` : "",
+    "Submitted details:", ...Object.entries(data).map(([k,v]) => `${cleanText(k,100)}: ${cleanText(v,1000)}`)
+  ].filter(Boolean).join("\n").slice(0, 32000);
+  const apiBase = (refreshed.api_domain || "https://www.zohoapis.in").replace(/\/$/, "");
+  const createResponse = await fetch(`${apiBase}/crm/v2/Leads`, {
+    method: "POST",
+    headers: { Authorization: `Zoho-oauthtoken ${refreshed.access_token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ data: [{ First_Name: firstName || undefined, Last_Name: lastName || customerName, Company: company, Phone: contactNumber, Email: email || undefined, Lead_Source: "Website", Description: description }] }),
+  });
+  const created = await createResponse.json() as { data?: Array<{ status?: string; details?: { id?: string } }> };
+  const result = created.data?.[0];
+  if (!createResponse.ok || result?.status !== "success") return jsonResponse({ success: false, error: "Zoho could not create the Lead. Check required CRM fields and retry." }, 502);
+  return jsonResponse({ success: true, referenceNumber, zohoLeadId: result.details?.id });
+}
+
 async function handleZohoCallback(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
   if (url.searchParams.has("error")) {
@@ -175,6 +236,7 @@ export default {
     if (request.method === "GET" && pathname === "/api/zoho/callback") {
       return handleZohoCallback(request, env);
     }
+    if (pathname === "/api/zoho/leads") return handleZohoLead(request, env);
 
     // Handle static assets with optimized Cache-Control headers
     if (isStaticAsset(pathname)) {
