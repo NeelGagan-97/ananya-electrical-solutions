@@ -98,16 +98,22 @@ export class SubmissionService {
           error?: string;
           zohoLeadId?: string;
         };
-        if (zohoResponse.ok && zohoResult.success) {
-          submission.zohoLeadId = zohoResult.zohoLeadId;
-        } else {
-          console.warn('Zoho CRM Lead response:', zohoResult.error || `HTTP ${zohoResponse.status}`);
+        if (!zohoResponse.ok || !zohoResult.success) {
+          const diagnostic = (zohoResult as any).diagnostic;
+          const message = diagnostic?.zohoMessage
+            ? `Zoho rejected this enquiry (${diagnostic.zohoCode || "API error"}): ${diagnostic.zohoMessage}`
+            : (zohoResult.error || `Zoho submission failed (HTTP ${zohoResponse.status}). Please try again.`);
+          window.dispatchEvent(new CustomEvent('aes:zoho-submission-error', { detail: { message } }));
+          return { success: false, error: message };
         }
+        submission.zohoLeadId = zohoResult.zohoLeadId;
       } catch (networkErr) {
-        console.warn('Zoho CRM endpoint unreachable; continuing with local inquiry registration:', networkErr);
+        const message = 'Unable to reach the CRM service. Your enquiry was not submitted. Please try again.';
+        window.dispatchEvent(new CustomEvent('aes:zoho-submission-error', { detail: { message } }));
+        return { success: false, error: message };
       }
 
-      // Store locally so the customer enquiry and reference number are always preserved
+      // Save locally only after Zoho confirms that the Lead was created.
       this.saveSubmission(submission);
 
       // Track analytics conversion event
