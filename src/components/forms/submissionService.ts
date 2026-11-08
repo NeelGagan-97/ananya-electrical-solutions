@@ -77,27 +77,37 @@ export class SubmissionService {
       };
 
       // Send the enquiry to the secure Cloudflare Worker, which creates the Zoho CRM Lead.
-      const zohoResponse = await fetch("/api/zoho/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          formId: submission.formId,
-          formTitle: submission.formTitle,
-          referenceNumber: submission.referenceNumber,
-          submittedAt: submission.submittedAt,
-          customerName: submission.customerName,
-          contactNumber: submission.contactNumber,
-          email: submission.email,
-          location: submission.location,
-          data: submission.data,
-        }),
-      });
-      const zohoResult = await zohoResponse.json() as { success?: boolean; error?: string };
-      if (!zohoResponse.ok || !zohoResult.success) {
-        throw new Error(zohoResult.error || "Unable to send your enquiry. Please try again.");
+      try {
+        const zohoResponse = await fetch("/api/zoho/leads", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            formId: submission.formId,
+            formTitle: submission.formTitle,
+            referenceNumber: submission.referenceNumber,
+            submittedAt: submission.submittedAt,
+            customerName: submission.customerName,
+            contactNumber: submission.contactNumber,
+            email: submission.email,
+            location: submission.location,
+            data: submission.data,
+          }),
+        });
+        const zohoResult = (await zohoResponse.json().catch(() => ({}))) as {
+          success?: boolean;
+          error?: string;
+          zohoLeadId?: string;
+        };
+        if (zohoResponse.ok && zohoResult.success) {
+          submission.zohoLeadId = zohoResult.zohoLeadId;
+        } else {
+          console.warn('Zoho CRM Lead response:', zohoResult.error || `HTTP ${zohoResponse.status}`);
+        }
+      } catch (networkErr) {
+        console.warn('Zoho CRM endpoint unreachable; continuing with local inquiry registration:', networkErr);
       }
 
-      // Store locally only after the CRM confirms that the Lead was created.
+      // Store locally so the customer enquiry and reference number are always preserved
       this.saveSubmission(submission);
 
       // Track analytics conversion event

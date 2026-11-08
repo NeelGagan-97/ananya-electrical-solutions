@@ -51,6 +51,7 @@ export interface BaseEnquirySubmission {
   consentGiven: boolean;
   data: Record<string, any>;
   files: UploadedFileMeta[];
+  zohoLeadId?: string;
 }
 
 // Form 1: Residential Electrical Service Request

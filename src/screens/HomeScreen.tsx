@@ -62,6 +62,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [formNotes, setFormNotes] = useState('');
   const [preferredChannel, setPreferredChannel] = useState<'whatsapp' | 'email'>('whatsapp');
   const [formError, setFormError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [complianceCheck, setComplianceCheck] = useState(true);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [lastHomeInquiry, setLastHomeInquiry] = useState<EngineeringInquiry | null>(null);
@@ -177,7 +178,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     ? PROJECTS.slice(0, 3)
     : PROJECTS.filter(p => p.category === projectFilter).slice(0, 3);
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanedPhone = formPhone.replace(/[\s\-()]/g, '');
     if (!/^(\+91|91|0)?[6-9]\d{9}$/.test(cleanedPhone)) {
@@ -201,6 +202,38 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       complianceConfirmed: complianceCheck,
       preferredChannel,
     };
+
+    setIsSubmitting(true);
+    try {
+      const zohoResponse = await fetch('/api/zoho/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          formId: 'home-proposal',
+          formTitle: 'Home Page Engineering Proposal Request',
+          referenceNumber: newInquiry.id,
+          submittedAt: new Date().toISOString(),
+          customerName: newInquiry.name,
+          contactNumber: newInquiry.phone,
+          email: newInquiry.email,
+          location: newInquiry.location,
+          data: {
+            'Project Category': newInquiry.category,
+            'Scope & Load Details': newInquiry.loadDetails,
+            'Compliance Review Requested': newInquiry.complianceConfirmed ? 'Yes' : 'No',
+            'Preferred Channel': newInquiry.preferredChannel,
+          },
+        }),
+      });
+      const zohoResult = (await zohoResponse.json().catch(() => ({}))) as { success?: boolean; error?: string };
+      if (!zohoResponse.ok || !zohoResult.success) {
+        console.warn('Zoho CRM Lead response:', zohoResult.error || `HTTP ${zohoResponse.status}`);
+      }
+    } catch (networkErr) {
+      console.warn('Zoho CRM endpoint unreachable; continuing with inquiry registration:', networkErr);
+    }
+    setIsSubmitting(false);
+
     onSaveInquiry(newInquiry);
     setLastHomeInquiry(newInquiry);
     trackConversionEvent('quote_form_submit', `${formCategory} - ${formLocation || 'Bengaluru'}`, 'HomeScreen');
@@ -2040,11 +2073,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 )}
 
                 <button
-                  className="h-12 w-full rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[14px] font-bold shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  disabled={isSubmitting}
+                  className={`h-12 w-full rounded-lg bg-[#0B192C] hover:bg-[#006398] text-white text-[14px] font-bold shadow-lg transition-all flex items-center justify-center gap-2 ${
+                    isSubmitting ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'
+                  }`}
                   type="submit"
                 >
-                  <span className="material-symbols-outlined text-[20px]">send</span>
-                  Submit Engineering Inquiry
+                  <span className={`material-symbols-outlined text-[20px] ${isSubmitting ? 'animate-spin' : ''}`}>
+                    {isSubmitting ? 'progress_activity' : 'send'}
+                  </span>
+                  <span>{isSubmitting ? 'Submitting to Engineering Desk...' : 'Submit Engineering Inquiry'}</span>
                 </button>
 
                 {formSubmitted && lastHomeInquiry && (
