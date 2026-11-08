@@ -1,7 +1,82 @@
+interface KVNamespace {
+  get(key: string): Promise<string | null>;
+  put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void>;
+}
+
 interface Env {
   ASSETS: {
     fetch(request: Request): Promise<Response>;
   };
+  ZOHO_CLIENT_ID: string;
+  ZOHO_CLIENT_SECRET: string;
+  ZOHO_TOKEN_STORE: KVNamespace;
+}
+
+const ZOHO_REDIRECT_URI = "https://ananyaelectricalsolutions.com/api/zoho/callback";
+const ZOHO_ACCOUNTS_URL = "https://accounts.zoho.in";
+
+function htmlResponse(title: string, message: string, status = 200): Response {
+  return new Response(
+    `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title><body style="font-family:Arial,sans-serif;max-width:640px;margin:12vh auto;padding:24px;color:#0b192c"><h1>${title}</h1><p>${message}</p><p>You can close this window and return to Ananya Electrical Solutions.</p></body></html>`,
+    { status, headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" } }
+  );
+}
+
+async function handleZohoAuthorize(env: Env): Promise<Response> {
+  if (!env.ZOHO_CLIENT_ID || !env.ZOHO_CLIENT_SECRET || !env.ZOHO_TOKEN_STORE) {
+    return htmlResponse("Zoho setup incomplete", "The Worker is missing one or more Zoho credentials or its KV binding.", 500);
+  }
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  const state = Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  await env.ZOHO_TOKEN_STORE.put(`oauth_state:${state}`, "pending", { expirationTtl: 600 });
+  const authorizeUrl = new URL("/oauth/v2/auth", ZOHO_ACCOUNTS_URL);
+  authorizeUrl.search = new URLSearchParams({
+    scope: "ZohoCRM.modules.leads.CREATE,ZohoCRM.modules.leads.READ",
+    client_id: env.ZOHO_CLIENT_ID,
+    response_type: "code",
+    access_type: "offline",
+    redirect_uri: ZOHO_REDIRECT_URI,
+    state,
+    prompt: "consent",
+  }).toString();
+  return Response.redirect(authorizeUrl.toString(), 302);
+}
+
+async function handleZohoCallback(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url);
+  if (url.searchParams.has("error")) {
+    return htmlResponse("Zoho authorization not completed", "Zoho returned an authorization error. No token was saved.", 400);
+  }
+  const code = url.searchParams.get("code");
+  const state = url.searchParams.get("state");
+  if (!code || !state) {
+    return htmlResponse("Invalid Zoho callback", "The authorization response is missing its code or state. Please restart the connection.", 400);
+  }
+  const stateKey = `oauth_state:${state}`;
+  const storedState = await env.ZOHO_TOKEN_STORE.get(stateKey);
+  if (storedState !== "pending") {
+    return htmlResponse("Zoho authorization expired", "This authorization session is invalid or expired. Please start the connection again.", 400);
+  }
+  await env.ZOHO_TOKEN_STORE.put(stateKey, "used", { expirationTtl: 60 });
+
+  const tokenResponse = await fetch("https://accounts.zoho.in/oauth/v2/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "authorization_code",
+      client_id: env.ZOHO_CLIENT_ID,
+      client_secret: env.ZOHO_CLIENT_SECRET,
+      redirect_uri: ZOHO_REDIRECT_URI,
+      code,
+    }),
+  });
+  const tokenPayload = await tokenResponse.json() as { refresh_token?: string };
+  if (!tokenResponse.ok || !tokenPayload.refresh_token) {
+    return htmlResponse("Zoho token exchange failed", "Zoho did not return a refresh token. Check the application credentials and redirect URI, then retry authorization.", 502);
+  }
+  await env.ZOHO_TOKEN_STORE.put("zoho_refresh_token", tokenPayload.refresh_token);
+  return htmlResponse("Zoho connected successfully", "Your Zoho CRM authorization was saved securely in Cloudflare KV. You can close this window.");
 }
 
 const ROUTE_METADATA: Record<string, { title: string; description: string; canonical: string }> = {
@@ -85,6 +160,13 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     const pathname = url.pathname.replace(/\/+$/, "") || "/";
+
+    if (request.method === "GET" && pathname === "/api/zoho/authorize") {
+      return handleZohoAuthorize(env);
+    }
+    if (request.method === "GET" && pathname === "/api/zoho/callback") {
+      return handleZohoCallback(request, env);
+    }
 
     // Handle static assets with optimized Cache-Control headers
     if (isStaticAsset(pathname)) {
