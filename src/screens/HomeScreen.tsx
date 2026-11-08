@@ -70,6 +70,87 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const logoVideoRef = useRef<HTMLVideoElement | null>(null);
   const [logoAnimPhase, setLogoAnimPhase] = useState<'charging' | 'surge' | 'energized'>('energized');
 
+  // Robust autoplay, loop, and resume handler for mobile browsers
+  useEffect(() => {
+    const video = logoVideoRef.current;
+    if (!video) return;
+
+    // Force essential DOM properties required for mobile autoplay
+    video.muted = true;
+    video.defaultMuted = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', 'true');
+    video.setAttribute('webkit-playsinline', 'true');
+
+    const attemptPlay = () => {
+      if (video.paused) {
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // Mobile browser power/autoplay policy may require interaction
+          });
+        }
+      }
+    };
+
+    // Initial play attempt
+    attemptPlay();
+
+    // Loop fallback: if mobile browser ends playback and ignores native 'loop', immediately loop back to 0
+    const handleEnded = () => {
+      video.currentTime = 0;
+      attemptPlay();
+    };
+    video.addEventListener('ended', handleEnded);
+
+    // If video stalls, pauses, or waits on mobile, attempt recovery
+    const handleStalledOrWaiting = () => {
+      attemptPlay();
+    };
+    video.addEventListener('stalled', handleStalledOrWaiting);
+    video.addEventListener('waiting', handleStalledOrWaiting);
+    video.addEventListener('suspend', handleStalledOrWaiting);
+
+    // Mobile user touch / scroll kickstart if autoplay was deferred
+    const handleUserInteraction = () => {
+      attemptPlay();
+    };
+
+    window.addEventListener('touchstart', handleUserInteraction, { passive: true });
+    window.addEventListener('touchend', handleUserInteraction, { passive: true });
+    window.addEventListener('scroll', handleUserInteraction, { passive: true });
+    window.addEventListener('click', handleUserInteraction, { passive: true });
+
+    // Handle tab focus / app resume
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        attemptPlay();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Handle viewport resize / orientation change (e.g. toggling mobile mode in devtools or rotating phone)
+    const handleResize = () => {
+      if (video.paused) {
+        attemptPlay();
+      }
+    };
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      video.removeEventListener('ended', handleEnded);
+      video.removeEventListener('stalled', handleStalledOrWaiting);
+      video.removeEventListener('waiting', handleStalledOrWaiting);
+      video.removeEventListener('suspend', handleStalledOrWaiting);
+      window.removeEventListener('touchstart', handleUserInteraction);
+      window.removeEventListener('touchend', handleUserInteraction);
+      window.removeEventListener('scroll', handleUserInteraction);
+      window.removeEventListener('click', handleUserInteraction);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   const handleImgFallback = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const target = e.currentTarget;
     if (!target.dataset.fallbackApplied) {
@@ -360,17 +441,30 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   playsInline
                   preload="auto"
                   onTimeUpdate={handleVideoTimeUpdate}
+                  onEnded={(e) => {
+                    const vid = e.currentTarget;
+                    vid.currentTime = 0;
+                    vid.play().catch(() => {});
+                  }}
+                  onCanPlay={(e) => {
+                    if (e.currentTarget.paused) {
+                      e.currentTarget.play().catch(() => {});
+                    }
+                  }}
                   style={{ aspectRatio: '1.5 / 1.5' }}
                   className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent [clip-path:inset(0_0_31%_0)] brightness-90 drop-shadow-[0_0_14px_rgba(56,189,248,0.42)]"
                 >
                   <source
-                    src="/assets/aistudio/Animated_electrical_logo_reveal_mobile.webm"
-                    type="video/webm"
-                    media="(max-width: 768px)"
-                  />
-                  <source
                     src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm"
                     type="video/webm"
+                  />
+                  <source
+                    src="/assets/aistudio/Animated_electrical_logo_reveal_mobile.webm"
+                    type="video/webm"
+                  />
+                  <source
+                    src="/assets/aistudio/Animated_electrical_logo_reveal_1080p_20261023131504_cc86adb8.mp4"
+                    type="video/mp4"
                   />
                 </video>
                 {/* Custom Styled Brand Logo Lockup Synchronized with Video Reveal */}
