@@ -234,18 +234,16 @@ function generateRealisticBolt(
 
   const branches: BoltBranch[] = [];
 
-  // Tier 0: Main return-stroke channel
-  const mainBaseWidth = isSpider ? 2.15 : (isMobile ? 2.6 : 3.05);
-  const mainTipWidth = isSpider ? 0.45 : 0.75;
+  // Tier 0: Main return-stroke channel (Slim & refined)
+  const mainBaseWidth = isSpider ? 1.4 : (isMobile ? 1.6 : 2.0);
+  const mainTipWidth = isSpider ? 0.35 : 0.55;
   branches.push({
     tier: 0,
-    segments: buildBranchSegments(mainPoints, mainBaseWidth, mainTipWidth, 1.0, 0, 1),
+    segments: buildBranchSegments(mainPoints, mainBaseWidth, mainTipWidth, 0.9, 0, 1),
   });
 
-  // Tier 1: Primary forks
-  const numPrimaryForks = isMobile
-    ? (isSpider ? 2 : 2)
-    : (isSpider ? 4 : 4 + Math.floor(Math.random() * 2));
+  // Tier 1: Minimal subtle forks
+  const numPrimaryForks = isSpider ? 1 : 2;
 
   const mainAngle = Math.atan2(target.y - origin.y, target.x - origin.x);
 
@@ -440,12 +438,10 @@ export const RealisticLightningBackground: React.FC = () => {
     });
     resizeObserver.observe(canvas);
 
-    // Initial strike
+    // Minimal spaced-out strike scheduler
     const initialNow = performance.now();
-    activeBolts.push(generateRealisticBolt(width, height, initialNow - 30, boltCounter++, isMobile, 'right-tower'));
-
-    let nextPrimaryStrikeAt = initialNow + (isMobile ? 2200 : 980);
-    let nextCrawlerAt = initialNow + (isMobile ? 3800 : 1600);
+    let nextPrimaryStrikeAt = initialNow + (isMobile ? 5500 : 3800);
+    let nextCrawlerAt = initialNow + (isMobile ? 9000 : 7000);
     let lastSlot: 'right-tower' | 'left-horizon' | 'center-ridge' = 'right-tower';
 
     const getPalette = (hueType: ActiveBolt['hueType']) => {
@@ -519,9 +515,10 @@ export const RealisticLightningBackground: React.FC = () => {
 
       ctx.clearRect(0, 0, width, height);
 
-      const maxBolts = isMobile ? 1 : 3;
+      // Minimalist: strictly 1 bolt maximum at any time
+      const maxBolts = 1;
 
-      // 1. Strike Scheduler
+      // 1. Minimal Strike Scheduler: spaced out every 6-10s
       if (now >= nextPrimaryStrikeAt && activeBolts.length < maxBolts) {
         const slots: Array<'right-tower' | 'left-horizon' | 'center-ridge'> = [
           'right-tower',
@@ -538,20 +535,20 @@ export const RealisticLightningBackground: React.FC = () => {
         for (const cell of stormCells) {
           const dist = Math.abs(cell.xFrac * width - newBolt.origin.x);
           if (dist < width * 0.35) {
-            cell.surgeEnergy = Math.min(0.9, cell.surgeEnergy + 0.5);
+            cell.surgeEnergy = Math.min(0.4, cell.surgeEnergy + 0.2);
           }
         }
 
-        nextPrimaryStrikeAt = now + (isMobile ? 2200 + Math.random() * 1400 : 900 + Math.random() * 850);
+        nextPrimaryStrikeAt = now + (isMobile ? 7000 + Math.random() * 4500 : 6000 + Math.random() * 3500);
       }
 
-      // 2. High-Altitude Anvil Crawler Scheduler
+      // 2. High-Altitude Anvil Crawler Scheduler: spaced out every 10-15s
       if (now >= nextCrawlerAt && activeBolts.length < maxBolts) {
         activeBolts.push(generateRealisticBolt(width, height, now, boltCounter++, isMobile, 'anvil-spider'));
         if (stormCells.length > 0) {
-          stormCells[0].surgeEnergy = Math.min(0.8, stormCells[0].surgeEnergy + 0.4);
+          stormCells[0].surgeEnergy = Math.min(0.35, stormCells[0].surgeEnergy + 0.15);
         }
-        nextCrawlerAt = now + (isMobile ? 3600 + Math.random() * 2000 : 1600 + Math.random() * 1200);
+        nextCrawlerAt = now + (isMobile ? 11000 + Math.random() * 5000 : 9500 + Math.random() * 4500);
       }
 
       // 3. Render Cumulonimbus Sheet-Lightning Cells
@@ -639,7 +636,7 @@ export const RealisticLightningBackground: React.FC = () => {
           }
         }
 
-        const boltSkyAlpha = Math.min(1, trunkIntensity) * (isReturnStroke ? 0.42 : 0.22);
+        const boltSkyAlpha = Math.min(1, trunkIntensity) * (isReturnStroke ? 0.15 : 0.08);
         globalSkyFlash = Math.max(globalSkyFlash, boltSkyAlpha);
 
         // Volumetric cloud illumination
@@ -795,11 +792,11 @@ export const RealisticLightningBackground: React.FC = () => {
         ctx.restore();
       }
 
-      // 5. Whole-sky sheet-flash
-      if (globalSkyFlash > 0.3) {
+      // 5. Whole-sky sheet-flash (minimal, subtle glow)
+      if (globalSkyFlash > 0.4) {
         ctx.save();
         ctx.globalCompositeOperation = 'screen';
-        ctx.fillStyle = `rgba(186, 230, 253, ${(globalSkyFlash - 0.3) * 0.07})`;
+        ctx.fillStyle = `rgba(186, 230, 253, ${(globalSkyFlash - 0.4) * 0.025})`;
         ctx.fillRect(0, 0, width, height);
         ctx.restore();
       }
@@ -852,7 +849,7 @@ export const RealisticLightningBackground: React.FC = () => {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="absolute inset-0 w-full h-full pointer-events-none select-none mix-blend-screen opacity-40"
+      className="absolute inset-0 w-full h-full pointer-events-none select-none mix-blend-screen opacity-20"
     />
   );
 };

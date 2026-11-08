@@ -140,26 +140,51 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
         {/* Content */}
         <div className="p-6 sm:p-8 max-h-[80vh] overflow-y-auto">
           {submitted ? (
-            <div className="flex flex-col items-center text-center py-4 gap-4">
-              <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                <span className="material-symbols-outlined text-[36px]">check_circle</span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-[12px] font-mono text-[#0284C7] font-bold tracking-wider">
-                  REFERENCE NUMBER: {inquiryId}
-                </span>
-                <h4 className="font-display text-[22px] font-bold text-[#0B192C]">
-                  Technical Inquiry Registered
-                </h4>
-                <p className="text-[14px] text-[#44474c] max-w-md mt-1 leading-relaxed">
-                  Thank you, <strong className="text-[#0B192C]">{name}</strong>. Your requirements have been logged for our Super Grade engineering team in Sahakarnagar, Bengaluru. We will reach you at <strong className="text-[#0B192C]">{phone}</strong> within 4 business hours.
-                </p>
+            <div className="flex flex-col py-1 gap-4">
+              {/* Exact Success Confirmation Banner matching image_9da76995.png */}
+              <div className="p-4 rounded-xl bg-emerald-50 text-emerald-900 font-body-sm flex flex-col gap-3 border border-emerald-200 text-left">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-emerald-600">check_circle</span>
+                  <span>
+                    <strong>Inquiry Logged ({inquiryId}):</strong> Our Class 1 engineering team will contact you within 4 business hours. Click below to immediately transmit your structured enquiry to our engineering desk:
+                  </span>
+                </div>
+                {lastInquiry && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <a
+                      href={buildWhatsAppInquiryUrl(lastInquiry)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() =>
+                        trackConversionEvent('whatsapp_click', `Modal WhatsApp ${lastInquiry.id}`, 'ConsultationModal')
+                      }
+                      className="h-10 px-3 rounded-lg bg-[#25D366] hover:bg-[#20bd5a] text-white text-[12.5px] font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">chat</span>
+                      <span>Send on WhatsApp ({BUSINESS_NAP.primaryPhone})</span>
+                    </a>
+                    <a
+                      href={buildMailtoInquiryUrl(lastInquiry)}
+                      onClick={() =>
+                        trackConversionEvent('email_click', `Modal Email ${lastInquiry.id}`, 'ConsultationModal')
+                      }
+                      className="h-10 px-3 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white text-[12.5px] font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">mail</span>
+                      <span>Send via Official Email</span>
+                    </a>
+                  </div>
+                )}
               </div>
 
               <div className="w-full bg-[#f8f9ff] border border-[#E2E8F0] rounded-xl p-4 text-left text-[13px] text-[#44474c] flex flex-col gap-2">
                 <div className="flex justify-between">
                   <span className="text-slate-500">Service Category:</span>
                   <span className="font-semibold text-[#0B192C]">{category}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Client / Contact:</span>
+                  <span className="font-semibold text-[#0B192C]">{name} ({phone})</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Location in Karnataka:</span>
@@ -171,45 +196,21 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 </div>
               </div>
 
-              {/* Instant Lead Dispatch via WhatsApp & Email */}
-              {lastInquiry && (
-                <div className="w-full flex flex-col gap-2.5 pt-2">
-                  <span className="text-[12px] font-semibold text-[#0B192C]">
-                    For fastest priority response, also dispatch your inquiry directly via:
-                  </span>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <a
-                      href={buildWhatsAppInquiryUrl(lastInquiry)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() =>
-                        trackConversionEvent('whatsapp_click', `Modal Dispatch ${lastInquiry.id}`, 'ConsultationModal')
-                      }
-                      className="h-11 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-[13px] font-bold flex items-center justify-center gap-2 shadow-sm transition-colors"
-                    >
-                      <span className="material-symbols-outlined text-[18px]">chat</span>
-                      <span>Send via WhatsApp ({BUSINESS_NAP.primaryPhone})</span>
-                    </a>
-                    <a
-                      href={buildMailtoInquiryUrl(lastInquiry)}
-                      onClick={() =>
-                        trackConversionEvent('email_click', `Modal Email Dispatch ${lastInquiry.id}`, 'ConsultationModal')
-                      }
-                      className="h-11 px-4 rounded-xl bg-[#0284C7] hover:bg-[#0369a1] text-white text-[13px] font-bold flex items-center justify-center gap-2 shadow-sm transition-colors"
-                    >
-                      <span className="material-symbols-outlined text-[18px]">mail</span>
-                      <span>Send via Email</span>
-                    </a>
-                  </div>
-                </div>
-              )}
-
-              <button
-                onClick={handleReset}
-                className="mt-2 px-6 py-2.5 rounded-lg bg-[#0B192C] text-white text-[13.5px] font-semibold hover:bg-[#006398] transition-colors cursor-pointer"
-              >
-                Close &amp; Return to Website
-              </button>
+              <div className="flex items-center justify-between pt-2">
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="text-[12.5px] text-slate-500 hover:text-slate-800 underline cursor-pointer"
+                >
+                  Submit Another Consultation Request
+                </button>
+                <button
+                  onClick={onClose}
+                  className="px-5 py-2 rounded-lg bg-[#0B192C] text-white text-[13px] font-semibold hover:bg-[#006398] transition-colors cursor-pointer"
+                >
+                  Close &amp; Return
+                </button>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">

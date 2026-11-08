@@ -339,40 +339,35 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({ inquiries, onSaveI
             </div>
 
             {submitted && lastSubmittedInquiry && (
-              <div className="mb-6 p-5 rounded-xl bg-emerald-50 text-emerald-950 border border-emerald-200 flex flex-col gap-4">
-                <div className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-emerald-600 text-[24px] shrink-0">check_circle</span>
-                  <div className="flex flex-col text-[13.5px]">
-                    <strong className="font-bold">
-                      Inquiry Registered (Ref: {lastSubmittedInquiry.id})
-                    </strong>
-                    <span>
-                      Your project parameters have been logged. Click below to also send this inquiry directly to our WhatsApp or Official Email for immediate priority action:
-                    </span>
-                  </div>
+              <div className="mb-6 p-4 rounded-xl bg-emerald-50 text-emerald-900 font-body-sm flex flex-col gap-3 border border-emerald-200">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-emerald-600">check_circle</span>
+                  <span>
+                    <strong>Inquiry Logged ({lastSubmittedInquiry.id}):</strong> Our Class 1 engineering team will contact you within 4 business hours. Click below to immediately transmit your structured enquiry to our engineering desk:
+                  </span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <a
                     href={buildWhatsAppInquiryUrl(lastSubmittedInquiry)}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() =>
-                      trackConversionEvent('whatsapp_click', `Form WhatsApp ${lastSubmittedInquiry.id}`, 'ContactScreen')
+                      trackConversionEvent('whatsapp_click', `Contact Form WhatsApp ${lastSubmittedInquiry.id}`, 'ContactScreen')
                     }
-                    className="h-11 px-4 rounded-lg bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-[13px] flex items-center justify-center gap-2 shadow-xs transition-colors"
+                    className="h-10 px-3 rounded-lg bg-[#25D366] hover:bg-[#20bd5a] text-white text-[12.5px] font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
                   >
-                    <span className="material-symbols-outlined text-[18px]">chat</span>
-                    <span>Send via WhatsApp ({BUSINESS_NAP.primaryPhone})</span>
+                    <span className="material-symbols-outlined text-[16px]">chat</span>
+                    <span>Send on WhatsApp ({BUSINESS_NAP.primaryPhone})</span>
                   </a>
                   <a
                     href={buildMailtoInquiryUrl(lastSubmittedInquiry)}
                     onClick={() =>
-                      trackConversionEvent('email_click', `Form Email ${lastSubmittedInquiry.id}`, 'ContactScreen')
+                      trackConversionEvent('email_click', `Contact Form Email ${lastSubmittedInquiry.id}`, 'ContactScreen')
                     }
-                    className="h-11 px-4 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white font-bold text-[13px] flex items-center justify-center gap-2 shadow-xs transition-colors"
+                    className="h-10 px-3 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white text-[12.5px] font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
                   >
-                    <span className="material-symbols-outlined text-[18px]">mail</span>
-                    <span>Send via Email</span>
+                    <span className="material-symbols-outlined text-[16px]">mail</span>
+                    <span>Send via Official Email</span>
                   </a>
                 </div>
               </div>

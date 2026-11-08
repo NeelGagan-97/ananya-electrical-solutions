@@ -32,106 +32,93 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
   variant = 'modal',
   safetyNotice,
 }) => {
-  // If submitted successfully, show branded Success Confirmation View
+  // If submitted successfully, show branded Success Confirmation View matching image_9da76995.png
   if (submissionSuccess) {
     const waUrl = SubmissionService.buildWhatsAppUrl(submissionSuccess);
     const mailtoUrl = SubmissionService.buildMailtoUrl(submissionSuccess);
 
     return (
-      <div className="p-6 md:p-8 flex flex-col items-center text-center animate-fadeIn bg-white rounded-2xl">
-        <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4 ring-8 ring-emerald-50">
-          <span className="material-symbols-outlined text-[36px]">verified</span>
+      <div className="p-5 sm:p-6 flex flex-col gap-4 animate-fadeIn bg-white rounded-2xl text-left">
+        {/* Exact Success Confirmation Banner matching image */}
+        <div className="p-4 rounded-xl bg-emerald-50 text-emerald-900 font-body-sm flex flex-col gap-3 border border-emerald-200">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-emerald-600">check_circle</span>
+            <span>
+              <strong>Inquiry Logged ({submissionSuccess.referenceNumber}):</strong> Our Class 1 engineering team will contact you within 4 business hours. Click below to immediately transmit your structured enquiry to our engineering desk:
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="h-10 px-3 rounded-lg bg-[#25D366] hover:bg-[#20bd5a] text-white text-[12.5px] font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+            >
+              <span className="material-symbols-outlined text-[16px]">chat</span>
+              <span>Send on WhatsApp ({AES_CONTACT_DETAILS.phone})</span>
+            </a>
+            <a
+              href={mailtoUrl}
+              className="h-10 px-3 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white text-[12.5px] font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+            >
+              <span className="material-symbols-outlined text-[16px]">mail</span>
+              <span>Send via Official Email</span>
+            </a>
+          </div>
         </div>
 
-        <span className="text-[12px] uppercase tracking-widest font-mono text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 mb-2">
-          Enquiry Registered Successfully
-        </span>
-
-        <h3 className="text-[22px] md:text-[24px] font-bold text-[#0B192C]">
-          Thank You, {submissionSuccess.customerName}!
-        </h3>
-
-        <p className="text-[14px] text-slate-600 max-w-lg mt-2 leading-relaxed">
-          Your enquiry for <strong className="text-[#0B192C]">{submissionSuccess.formTitle}</strong> has been received by our senior electrical engineering team.
-        </p>
-
-        {/* Reference ID Card */}
-        <div className="w-full max-w-md my-6 p-4 rounded-xl bg-[#F8FAFC] border border-slate-200 text-left">
+        {/* Detailed Reference Summary */}
+        <div className="w-full p-4 rounded-xl bg-[#F8FAFC] border border-slate-200 text-left">
           <div className="flex items-center justify-between border-b border-slate-200 pb-2 mb-3">
             <span className="text-[12px] font-semibold text-slate-500 uppercase tracking-wider">
-              Enquiry Reference No.
+              Enquiry Summary &bull; {submissionSuccess.formTitle}
             </span>
-            <span className="text-[14px] font-mono font-bold text-[#0284C7] bg-[#0284C7]/10 px-2.5 py-0.5 rounded">
+            <span className="text-[12.5px] font-mono font-bold text-[#0284C7] bg-[#0284C7]/10 px-2.5 py-0.5 rounded">
               {submissionSuccess.referenceNumber}
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 text-[12.5px] text-slate-700">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-[12.5px] text-slate-700">
+            <div>
+              <span className="text-slate-400 block text-[11px]">Customer / Entity</span>
+              <span className="font-medium text-[#0B192C]">{submissionSuccess.customerName}</span>
+            </div>
             <div>
               <span className="text-slate-400 block text-[11px]">Primary Contact</span>
-              <span className="font-medium">{submissionSuccess.contactNumber}</span>
+              <span className="font-medium text-[#0B192C]">{submissionSuccess.contactNumber}</span>
             </div>
             {submissionSuccess.email && (
               <div>
                 <span className="text-slate-400 block text-[11px]">Email Address</span>
-                <span className="font-medium truncate block">{submissionSuccess.email}</span>
+                <span className="font-medium truncate block text-[#0B192C]">{submissionSuccess.email}</span>
               </div>
             )}
             {submissionSuccess.location && (
               <div>
                 <span className="text-slate-400 block text-[11px]">Project Location</span>
-                <span className="font-medium">{submissionSuccess.location}</span>
+                <span className="font-medium text-[#0B192C]">{submissionSuccess.location}</span>
               </div>
             )}
-            <div>
-              <span className="text-slate-400 block text-[11px]">Status</span>
-              <span className="inline-flex items-center gap-1 font-semibold text-amber-600">
-                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                {submissionSuccess.status}
-              </span>
-            </div>
           </div>
         </div>
 
-        {/* Fast Action Buttons */}
-        <div className="w-full max-w-md flex flex-col gap-2.5">
-          <a
-            href={waUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20BD5A] text-white font-semibold text-[13.5px] flex items-center justify-center gap-2 shadow-md transition-transform hover:-translate-y-0.5 cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[18px]">chat</span>
-            <span>Send Details to Engineering WhatsApp</span>
-          </a>
-
-          <div className="grid grid-cols-2 gap-2">
-            <a
-              href={`tel:${AES_CONTACT_DETAILS.phoneDial}`}
-              className="py-2.5 px-3 rounded-xl bg-[#0B192C] hover:bg-[#132A46] text-white font-semibold text-[12.5px] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-[16px] text-[#38BDF8]">call</span>
-              <span>Call +91 9632025123</span>
-            </a>
-
-            <a
-              href={mailtoUrl}
-              className="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-[12.5px] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-[16px] text-slate-600">email</span>
-              <span>Official Email</span>
-            </a>
-          </div>
-
+        <div className="flex items-center justify-between pt-1">
           {onReset && (
             <button
               type="button"
               onClick={onReset}
-              className="mt-2 text-[12.5px] text-slate-500 hover:text-slate-800 underline cursor-pointer"
+              className="text-[12.5px] text-slate-500 hover:text-slate-800 underline cursor-pointer"
             >
               Submit Another Request
             </button>
           )}
+          <a
+            href={`tel:${AES_CONTACT_DETAILS.phoneDial}`}
+            className="text-[12.5px] text-[#0284C7] font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[16px]">call</span>
+            <span>Direct Call {AES_CONTACT_DETAILS.phone}</span>
+          </a>
         </div>
       </div>
     );

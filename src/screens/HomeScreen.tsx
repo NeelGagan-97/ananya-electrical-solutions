@@ -282,23 +282,23 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#0284C7]/25 rounded-full blur-3xl" />
           <div className="absolute bottom-0 right-10 w-96 h-96 bg-[#38BDF8]/15 rounded-full blur-3xl" />
 
-          {/* Continuous Rolling Thunder-Cloud Illumination Overlays (Dimmed) */}
+          {/* Minimalized Rolling Thunder-Cloud Illumination Overlays */}
           <div
-            className="absolute inset-0 mix-blend-screen animate-thunder-flash-1 opacity-45"
+            className="absolute inset-0 mix-blend-screen animate-thunder-flash-1 opacity-15"
             style={{
               background:
-                'radial-gradient(ellipse 68% 52% at 72% 16%, rgba(186, 230, 253, 0.18) 0%, rgba(56, 189, 248, 0.09) 45%, rgba(15, 23, 42, 0) 78%)'
+                'radial-gradient(ellipse 68% 52% at 72% 16%, rgba(186, 230, 253, 0.10) 0%, rgba(56, 189, 248, 0.04) 45%, rgba(15, 23, 42, 0) 78%)'
             }}
           />
           <div
-            className="absolute inset-0 mix-blend-screen animate-thunder-flash-2 opacity-45"
+            className="absolute inset-0 mix-blend-screen animate-thunder-flash-2 opacity-15"
             style={{
               background:
-                'radial-gradient(ellipse 64% 48% at 28% 14%, rgba(224, 242, 254, 0.16) 0%, rgba(59, 130, 246, 0.08) 46%, rgba(15, 23, 42, 0) 76%)'
+                'radial-gradient(ellipse 64% 48% at 28% 14%, rgba(224, 242, 254, 0.08) 0%, rgba(59, 130, 246, 0.03) 46%, rgba(15, 23, 42, 0) 76%)'
             }}
           />
 
-          {/* Continuous Procedural High-DPI Fractal Lightning, Anvil Crawlers & Sheet-Lightning Engine */}
+          {/* Minimalized Procedural High-DPI Fractal Lightning & Sheet Engine */}
           <RealisticLightningBackground />
         </div>
 

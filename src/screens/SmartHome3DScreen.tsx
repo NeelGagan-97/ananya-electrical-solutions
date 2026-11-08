@@ -1393,22 +1393,52 @@ export const SmartHome3DScreen: React.FC<SmartHome3DScreenProps> = ({
             </div>
 
             {formSubmitted ? (
-              <div className="p-6 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-center space-y-3">
-                <span className="material-symbols-outlined text-[36px] text-emerald-400">verified</span>
-                <h4 className="text-base font-bold text-white">
-                  Smart Home Design Request Registered!
-                </h4>
-                <p className="text-xs text-slate-300 max-w-md mx-auto">
-                  Thank you, <span className="font-bold text-white">{customerName}</span>. Our Senior Automation Engineer will contact you on{' '}
-                  <span className="font-mono text-emerald-300">{phone}</span> to review your {propertyType} floor plan in {projectLocation}.
-                </p>
-                <div className="pt-2 flex justify-center gap-2">
+              <div className="space-y-4">
+                <div className="p-4 rounded-xl bg-emerald-50 text-emerald-900 font-body-sm flex flex-col gap-3 border border-emerald-200 text-left">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-emerald-600">check_circle</span>
+                    <span>
+                      <strong>Inquiry Logged (AES-3D-SMART):</strong> Our Class 1 engineering team will contact you within 4 business hours. Click below to immediately transmit your structured enquiry to our engineering desk:
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <a
+                      href={`https://wa.me/919632025123?text=${encodeURIComponent(`*Ananya Electrical Solutions - Smart Home Enquiry*\n*Customer:* ${customerName}\n*Phone:* ${phone}\n*Property:* ${propertyType}\n*Location:* ${projectLocation}\n*Features:* ${selectedFeatures.join(', ')}`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="h-10 px-3 rounded-lg bg-[#25D366] hover:bg-[#20bd5a] text-white text-[12.5px] font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">chat</span>
+                      <span>Send on WhatsApp (+91 9632025123)</span>
+                    </a>
+                    <a
+                      href={`mailto:ananyaelectricalsolutions@gmail.com?subject=${encodeURIComponent(`[Smart Home Enquiry] ${customerName} - ${propertyType}`)}&body=${encodeURIComponent(`Smart Home Automation Request:\nCustomer: ${customerName}\nPhone: ${phone}\nProperty: ${propertyType}\nLocation: ${projectLocation}\nFeatures: ${selectedFeatures.join(', ')}\nNotes: ${additionalNotes}`)}`}
+                      className="h-10 px-3 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white text-[12.5px] font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">mail</span>
+                      <span>Send via Official Email</span>
+                    </a>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 text-left text-xs text-slate-300 space-y-1.5">
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Customer:</span>
+                    <span className="text-white font-semibold">{customerName} ({phone})</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Property &amp; Location:</span>
+                    <span className="text-white font-semibold">{propertyType} &bull; {projectLocation}</span>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex justify-end">
                   <button
                     onClick={() => {
                       setFormSubmitted(false);
                       setShowDesignModal(false);
                     }}
-                    className="px-4 py-2 rounded-lg bg-emerald-500 text-slate-950 font-bold text-xs cursor-pointer"
+                    className="px-4 py-2 rounded-lg bg-slate-800 text-white hover:bg-slate-700 font-bold text-xs cursor-pointer"
                   >
                     Return to 3D Model
                   </button>
