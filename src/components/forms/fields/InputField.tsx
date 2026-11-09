@@ -54,9 +54,9 @@ export const InputField: React.FC<InputFieldProps> = ({
     ? suggestions.filter((s) => s.toLowerCase().includes(inputValue.toLowerCase())).slice(0, 8)
     : [];
 
-  const hasSuggestions = isLocationField
-    ? matchingLocations.length > 0
-    : customFilteredSuggestions.length > 0;
+  const hasSuggestions =
+    inputValue.trim().length > 0 &&
+    (isLocationField ? matchingLocations.length > 0 : customFilteredSuggestions.length > 0);
 
   // Handle outside click
   useEffect(() => {
@@ -87,8 +87,8 @@ export const InputField: React.FC<InputFieldProps> = ({
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (onKeyDown) onKeyDown(e);
 
-    if (!isOpen || !hasSuggestions) {
-      if (e.key === 'ArrowDown' && (isLocationField || suggestions)) {
+    if (!isOpen || !hasSuggestions || inputValue.trim().length === 0) {
+      if (e.key === 'ArrowDown' && (isLocationField || suggestions) && inputValue.trim().length > 0) {
         setIsOpen(true);
         setHighlightIndex(0);
         e.preventDefault();
@@ -133,11 +133,6 @@ export const InputField: React.FC<InputFieldProps> = ({
           {label}
           {required && <span className="text-red-500 font-bold">*</span>}
         </span>
-        {isLocationField && (
-          <span className="text-[11px] text-[#0284C7] font-medium hidden sm:inline-block">
-            Auto-suggests Karnataka districts &amp; hubs
-          </span>
-        )}
       </label>
 
       <div className="relative flex items-center">
@@ -153,12 +148,17 @@ export const InputField: React.FC<InputFieldProps> = ({
           value={value}
           onChange={(e) => {
             if (onChange) onChange(e);
-            if (!isOpen) setIsOpen(true);
+            const val = e.target.value;
+            if (val.trim().length > 0) {
+              setIsOpen(true);
+            } else {
+              setIsOpen(false);
+            }
             setHighlightIndex(0);
           }}
           onFocus={(e) => {
             if (onFocus) onFocus(e);
-            if (isLocationField || suggestions) {
+            if (inputValue.trim().length > 0 && (isLocationField || suggestions)) {
               setIsOpen(true);
             }
           }}
@@ -167,7 +167,6 @@ export const InputField: React.FC<InputFieldProps> = ({
           }}
           onKeyDown={handleInputKeyDown}
           autoComplete={isLocationField ? 'off' : rest.autoComplete}
-          list={isLocationField ? 'karnataka-project-locations-list' : undefined}
           className={`w-full py-2.5 px-3.5 text-[14px] text-slate-800 bg-[#F8FAFC] border rounded-lg transition-all outline-none placeholder:text-slate-400
             ${icon ? 'pl-10' : ''}
             ${
@@ -180,14 +179,10 @@ export const InputField: React.FC<InputFieldProps> = ({
         />
       </div>
 
-      {/* Interactive Autocomplete Suggestions Dropdown */}
+      {/* Interactive Autocomplete Suggestions Dropdown with Mouse Click, Tab, and Enter */}
       {isOpen && (isLocationField || suggestions) && hasSuggestions && (
-        <div className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden divide-y divide-slate-100 max-h-64 overflow-y-auto animate-in fade-in zoom-in-95 duration-150">
-          <div className="bg-slate-50 px-3 py-1.5 text-[11px] font-semibold text-slate-500 uppercase tracking-wider flex items-center justify-between">
-            <span>{isLocationField ? 'Select Project Location' : 'Suggested Values'}</span>
-            <span className="text-[10px] text-slate-400 font-normal">Press Tab / Enter or click to fill</span>
-          </div>
-
+        <div className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden divide-y divide-slate-100 max-h-72 overflow-y-auto animate-in fade-in zoom-in-95 duration-100">
+          {/* Filtered suggestions list */}
           {isLocationField
             ? matchingLocations.map((item, index) => {
                 const isHighlighted = index === highlightIndex;
@@ -200,8 +195,15 @@ export const InputField: React.FC<InputFieldProps> = ({
                     key={item.name}
                     type="button"
                     onMouseEnter={() => setHighlightIndex(index)}
-                    onClick={() => selectSuggestion(item.name)}
-                    className={`w-full px-3.5 py-2.5 text-left flex items-center justify-between transition-colors cursor-pointer ${
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      selectSuggestion(item.name);
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      selectSuggestion(item.name);
+                    }}
+                    className={`w-full px-3.5 py-2.5 text-left flex items-center justify-between transition-colors cursor-pointer select-none active:bg-sky-100 ${
                       isHighlighted ? 'bg-sky-50 text-[#0284C7]' : 'hover:bg-slate-50 text-slate-800'
                     }`}
                   >
@@ -217,27 +219,32 @@ export const InputField: React.FC<InputFieldProps> = ({
                         {matchPos >= 0 && lowerQuery ? (
                           <>
                             {item.name.slice(0, matchPos)}
-                            <strong className="text-[#0B192C] font-bold bg-amber-100/70 px-0.5 rounded">
+                            <strong className="text-[#0B192C] font-bold bg-amber-100/80 px-1 py-0.5 rounded">
                               {item.name.slice(matchPos, matchPos + lowerQuery.length)}
                             </strong>
                             {item.name.slice(matchPos + lowerQuery.length)}
                           </>
                         ) : (
-                          <span>{item.name}</span>
+                          <span className="font-medium">{item.name}</span>
                         )}
                       </div>
                     </div>
-                    <span
-                      className={`text-[10.5px] px-2 py-0.5 rounded font-medium shrink-0 ml-2 ${
-                        item.category === 'Major City'
-                          ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                          : item.category === 'Industrial Hub'
-                          ? 'bg-amber-50 text-amber-800 border border-amber-200'
-                          : 'bg-slate-100 text-slate-600'
-                      }`}
-                    >
-                      {item.category}
-                    </span>
+                    <div className="flex items-center gap-2 shrink-0 ml-2">
+                      <span
+                        className={`text-[10px] px-2 py-0.5 rounded font-medium ${
+                          item.category === 'Major City'
+                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                            : item.category === 'Industrial Hub'
+                            ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                            : 'bg-slate-100 text-slate-600'
+                        }`}
+                      >
+                        {item.category}
+                      </span>
+                      <span className="text-[11.5px] font-semibold text-[#0284C7] hidden sm:inline-block">
+                        Click to select
+                      </span>
+                    </div>
                   </button>
                 );
               })
@@ -248,28 +255,27 @@ export const InputField: React.FC<InputFieldProps> = ({
                     key={item}
                     type="button"
                     onMouseEnter={() => setHighlightIndex(index)}
-                    onClick={() => selectSuggestion(item)}
-                    className={`w-full px-3.5 py-2.5 text-left text-[13.5px] flex items-center gap-2 transition-colors cursor-pointer ${
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      selectSuggestion(item);
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      selectSuggestion(item);
+                    }}
+                    className={`w-full px-3.5 py-2.5 text-left text-[13.5px] flex items-center justify-between transition-colors cursor-pointer select-none active:bg-sky-100 ${
                       isHighlighted ? 'bg-sky-50 text-[#0284C7]' : 'hover:bg-slate-50 text-slate-800'
                     }`}
                   >
-                    <span className="material-symbols-outlined text-[16px] text-slate-400">check</span>
-                    <span>{item}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[16px] text-slate-400">check</span>
+                      <span>{item}</span>
+                    </div>
+                    <span className="text-[11.5px] font-semibold text-[#0284C7]">Click to select</span>
                   </button>
                 );
               })}
         </div>
-      )}
-
-      {/* Fallback Native HTML Datalist for universal browser autofill */}
-      {isLocationField && (
-        <datalist id="karnataka-project-locations-list">
-          {KARNATAKA_PROJECT_LOCATIONS.map((loc) => (
-            <option key={loc.name} value={loc.name}>
-              {loc.category}
-            </option>
-          ))}
-        </datalist>
       )}
 
       {error ? (

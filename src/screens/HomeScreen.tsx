@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { NavigationTab, EngineeringInquiry, ProjectItem } from '../types';
 import { ASSETS, SERVICES, PROJECTS, ESCOMS, ELECTRICAL_EQUIPMENT } from '../data/constants';
-import { KARNATAKA_PROJECT_LOCATIONS } from '../data/karnatakaLocations';
+import { LocationAutocompleteInput } from '../components/forms/LocationAutocompleteInput';
 import { ElectricalServicesSection } from '../components/ElectricalServicesSection';
 import { RealisticLightningBackground } from '../components/RealisticLightningBackground';
 import { openAesEnquiryModal, FormId } from '../components/forms';
@@ -1973,24 +1973,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     <label className="text-[14px] text-[#0B192C] font-semibold" htmlFor="location">
                       Project Location in Bengaluru / Karnataka <span className="text-red-500">*</span>
                     </label>
-                    <input
-                      className="h-11 px-4 rounded bg-[#F8FAFC] border border-[#CBD5E1] text-[#0B192C] font-body-md focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:bg-white"
+                    <LocationAutocompleteInput
                       id="location"
-                      placeholder="e.g. Bangalore / Kolar / Peenya / Devanahalli"
-                      required
-                      type="text"
-                      list="home-project-locations-list"
-                      autoComplete="off"
                       value={formLocation}
-                      onChange={(e) => setFormLocation(e.target.value)}
+                      onChange={(val) => setFormLocation(val)}
+                      placeholder="e.g. Bangalore, Kolar, Peenya, Devanahalli..."
+                      required
                     />
-                    <datalist id="home-project-locations-list">
-                      {KARNATAKA_PROJECT_LOCATIONS.map((loc) => (
-                        <option key={loc.name} value={loc.name}>
-                          {loc.category}
-                        </option>
-                      ))}
-                    </datalist>
                   </div>
                 </div>
 
