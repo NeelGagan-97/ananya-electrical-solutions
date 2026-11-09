@@ -42,32 +42,32 @@ const STORAGE_KEY = 'ananya_residential_designer_proj_v5_photoreal';
 
 const INTERIOR_REFERENCE_GALLERY = [
   {
-    src: '/assets/aistudio/image_d78ee79b.png',
+    src: '/assets/aistudio/image_d78ee79b.webp',
     title: 'Living Room & Fluted TV Unit',
     room: 'living' as CameraPreset
   },
   {
-    src: '/assets/aistudio/image_4e78be16.png',
+    src: '/assets/aistudio/image_4e78be16.webp',
     title: 'Living Lounge & Cove Ceiling',
     room: 'living' as CameraPreset
   },
   {
-    src: '/assets/aistudio/image_898a8db2.png',
+    src: '/assets/aistudio/image_898a8db2.webp',
     title: 'Master Bedroom & Study',
     room: 'master_bed' as CameraPreset
   },
   {
-    src: '/assets/aistudio/image_3461912b.png',
+    src: '/assets/aistudio/image_3461912b.webp',
     title: 'Modular Kitchen & Hob',
     room: 'kitchen' as CameraPreset
   },
   {
-    src: '/assets/aistudio/image_09d3b104.png',
+    src: '/assets/aistudio/image_09d3b104.webp',
     title: 'Terrazzo Kitchen & Glass Units',
     room: 'kitchen' as CameraPreset
   },
   {
-    src: '/assets/aistudio/image_78b8aaad.png',
+    src: '/assets/aistudio/image_78b8aaad.webp',
     title: 'Second Bedroom & Study Desk',
     room: 'bed2' as CameraPreset
   }

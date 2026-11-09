@@ -1,0 +1,26 @@
+{
+  "name": "Ananya Electrical Solutions",
+  "short_name": "Ananya Electrical",
+  "description": "Government Licensed Super Grade Electrical Contractor in Bengaluru, Karnataka",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B192C",
+  "theme_color": "#0284C7",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

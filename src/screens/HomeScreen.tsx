@@ -114,8 +114,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     video.addEventListener('suspend', handleStalledOrWaiting);
 
     // Mobile user touch / scroll kickstart if autoplay was deferred
+    const cleanupInteractionListeners = () => {
+      window.removeEventListener('touchstart', handleUserInteraction);
+      window.removeEventListener('touchend', handleUserInteraction);
+      window.removeEventListener('scroll', handleUserInteraction);
+      window.removeEventListener('click', handleUserInteraction);
+    };
+
     const handleUserInteraction = () => {
       attemptPlay();
+      cleanupInteractionListeners();
     };
 
     window.addEventListener('touchstart', handleUserInteraction, { passive: true });
@@ -132,23 +140,25 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     // Handle viewport resize / orientation change (e.g. toggling mobile mode in devtools or rotating phone)
+    let resizeTimer: number | undefined;
     const handleResize = () => {
-      if (video.paused) {
-        attemptPlay();
-      }
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        if (video.paused) {
+          attemptPlay();
+        }
+      }, 100);
     };
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize, { passive: true });
 
     return () => {
       video.removeEventListener('ended', handleEnded);
       video.removeEventListener('stalled', handleStalledOrWaiting);
       video.removeEventListener('waiting', handleStalledOrWaiting);
       video.removeEventListener('suspend', handleStalledOrWaiting);
-      window.removeEventListener('touchstart', handleUserInteraction);
-      window.removeEventListener('touchend', handleUserInteraction);
-      window.removeEventListener('scroll', handleUserInteraction);
-      window.removeEventListener('click', handleUserInteraction);
+      cleanupInteractionListeners();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (resizeTimer) clearTimeout(resizeTimer);
       window.removeEventListener('resize', handleResize);
     };
   }, []);
@@ -473,7 +483,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   loop
                   muted
                   playsInline
-                  preload="auto"
+                  preload="metadata"
+                  poster="/assets/aistudio/hero_logo_poster.webp"
                   onTimeUpdate={handleVideoTimeUpdate}
                   onEnded={(e) => {
                     const vid = e.currentTarget;
@@ -489,11 +500,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent [clip-path:inset(0_0_31%_0)] brightness-90 drop-shadow-[0_0_14px_rgba(56,189,248,0.42)]"
                 >
                   <source
-                    src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm"
+                    media="(max-width: 768px)"
+                    src="/assets/aistudio/Animated_electrical_logo_reveal_mobile.webm"
                     type="video/webm"
                   />
                   <source
-                    src="/assets/aistudio/Animated_electrical_logo_reveal_mobile.webm"
+                    src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm"
                     type="video/webm"
                   />
                   <source

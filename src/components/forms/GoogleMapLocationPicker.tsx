@@ -380,10 +380,10 @@ export const GoogleMapLocationPicker: React.FC<GoogleMapLocationPickerProps> = (
       </div>
 
       {/* Map Search Bar (Safe div without nested form to prevent parent form submission) */}
-      <div className="bg-slate-50 p-2.5 border-b border-slate-200">
+      <div className="bg-slate-50 p-2.5 sm:p-3 border-b border-slate-200">
         <div className="relative flex items-center gap-2">
           <div className="relative flex-1 flex items-center">
-            <span className="material-symbols-outlined absolute left-3 text-[18px] text-slate-400 pointer-events-none">
+            <span className="material-symbols-outlined absolute left-3.5 text-[20px] text-slate-400 pointer-events-none select-none">
               search
             </span>
             <input
@@ -410,7 +410,7 @@ export const GoogleMapLocationPicker: React.FC<GoogleMapLocationPickerProps> = (
                 }
               }}
               placeholder="Search area, landmark, industrial hub, city, or PIN code on map..."
-              className="w-full h-9.5 pl-9 pr-8 text-[13px] bg-white border border-slate-300 rounded-lg outline-none focus:border-[#0284C7] focus:ring-2 focus:ring-[#0284C7]/15 text-slate-800 placeholder:text-slate-400"
+              className="w-full h-11 sm:h-12 pl-10 pr-9 text-[14px] bg-white border border-slate-300 rounded-lg outline-none focus:border-[#0284C7] focus:ring-2 focus:ring-[#0284C7]/15 text-slate-800 placeholder:text-slate-400 shadow-2xs"
             />
             {searchQuery && (
               <button
@@ -421,16 +421,17 @@ export const GoogleMapLocationPicker: React.FC<GoogleMapLocationPickerProps> = (
                   setSearchQuery('');
                   setShowSearchSuggestions(false);
                 }}
-                className="absolute right-2.5 text-slate-400 hover:text-slate-600 p-0.5 rounded cursor-pointer"
+                className="absolute right-2.5 text-slate-400 hover:text-slate-600 p-1 rounded cursor-pointer"
                 title="Clear search"
+                aria-label="Clear search"
               >
-                <span className="material-symbols-outlined text-[15px]">close</span>
+                <span className="material-symbols-outlined text-[16px]">close</span>
               </button>
             )}
 
             {/* Quick Suggestions Dropdown */}
             {showSearchSuggestions && searchSuggestions.length > 0 && (
-              <div className="absolute left-0 right-0 top-full mt-1 bg-white rounded-lg shadow-xl border border-slate-200 z-50 max-h-48 overflow-y-auto divide-y divide-slate-100 animate-in fade-in zoom-in-95 duration-100">
+              <div className="absolute left-0 right-0 top-full mt-1.5 bg-white rounded-lg shadow-xl border border-slate-200 z-50 max-h-48 overflow-y-auto divide-y divide-slate-100 animate-in fade-in zoom-in-95 duration-100">
                 {searchSuggestions.map((item) => (
                   <button
                     key={item.name}
@@ -462,14 +463,15 @@ export const GoogleMapLocationPicker: React.FC<GoogleMapLocationPickerProps> = (
               handleSearchLocation(searchQuery);
             }}
             disabled={isSearching || !searchQuery.trim()}
-            className="h-9.5 px-3.5 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white text-[12.5px] font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shrink-0 shadow-2xs"
+            title="Search location"
+            aria-label="Search location"
+            className="w-11 sm:w-12 h-11 sm:h-12 rounded-lg bg-[#0284C7] hover:bg-[#0369a1] text-white flex items-center justify-center transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shrink-0 shadow-2xs"
           >
             {isSearching ? (
-              <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
-              <span className="material-symbols-outlined text-[16px]">search</span>
+              <span className="material-symbols-outlined text-[20px]">search</span>
             )}
-            <span>Search</span>
           </button>
         </div>
       </div>

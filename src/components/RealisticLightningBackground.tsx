@@ -418,23 +418,35 @@ export const RealisticLightningBackground: React.FC = () => {
           { xFrac: 0.32, yFrac: 0.12, rxFrac: 0.36, ryFrac: 0.24, phase: 2.1, speed: 0.0018, surgeEnergy: 0.25, hue: '96, 165, 250' },
         ];
 
-    const updateSize = () => {
-      const rect = canvas.getBoundingClientRect();
-      width = Math.max(320, rect.width);
-      height = Math.max(320, rect.height);
+    const updateSize = (explicitWidth?: number, explicitHeight?: number) => {
+      let w = explicitWidth;
+      let h = explicitHeight;
+      if (w === undefined || h === undefined) {
+        w = canvas.clientWidth || canvas.offsetWidth || 320;
+        h = canvas.clientHeight || canvas.offsetHeight || 320;
+      }
+      width = Math.max(320, w);
+      height = Math.max(320, h);
       isMobile = width < 768 || (typeof window !== 'undefined' && window.innerWidth < 768);
 
       // Mobile devices get dpr = 1 to preserve CPU/GPU fillrate; desktop capped at 1.5
       dpr = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const targetCanvasW = Math.floor(width * dpr);
+      const targetCanvasH = Math.floor(height * dpr);
+      if (canvas.width !== targetCanvasW || canvas.height !== targetCanvasH) {
+        canvas.width = targetCanvasW;
+        canvas.height = targetCanvasH;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
     };
 
     updateSize();
 
-    const resizeObserver = new ResizeObserver(() => {
-      updateSize();
+    const resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry && entry.contentRect) {
+        updateSize(entry.contentRect.width, entry.contentRect.height);
+      }
     });
     resizeObserver.observe(canvas);
 
