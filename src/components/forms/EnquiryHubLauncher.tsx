@@ -81,12 +81,6 @@ export const EnquiryHubLauncher: React.FC = () => {
                   <span className="material-symbols-outlined text-[22px]">format_list_bulleted</span>
                 </div>
                 <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#38BDF8] bg-[#38BDF8]/15 px-2 py-0.5 rounded border border-[#38BDF8]/20">
-                      Module Catalog
-                    </span>
-                    <span className="text-[11px] text-slate-400">15 Forms Ready</span>
-                  </div>
                   <h3 className="text-[18px] font-bold text-white tracking-tight">
                     AES Enquiry Forms Hub
                   </h3>
@@ -150,13 +144,9 @@ export const EnquiryHubLauncher: React.FC = () => {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1">
                       <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-slate-100 text-[#0284C7] border border-slate-200">
                         {item.badge}
-                      </span>
-                      <span className="text-[11px] font-medium text-[#0284C7] group-hover:underline flex items-center gap-0.5">
-                        Open Modal
-                        <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                       </span>
                     </div>
 

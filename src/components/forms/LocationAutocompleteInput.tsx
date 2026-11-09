@@ -187,30 +187,21 @@ export const LocationAutocompleteInput: React.FC<LocationAutocompleteInputProps>
                       isHighlighted ? 'bg-sky-50 text-[#0284C7]' : 'hover:bg-slate-50 text-slate-800'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <span
-                        className={`material-symbols-outlined text-[18px] shrink-0 ${
-                          isHighlighted ? 'text-[#0284C7]' : 'text-slate-400'
-                        }`}
-                      >
-                        location_on
-                      </span>
-                      <div className="truncate text-[13.5px]">
-                        {matchPos >= 0 && lowerQuery ? (
-                          <>
-                            {item.name.slice(0, matchPos)}
-                            <strong className="text-[#0B192C] font-bold bg-amber-100/80 px-1 py-0.5 rounded">
-                              {item.name.slice(matchPos, matchPos + lowerQuery.length)}
-                            </strong>
-                            {item.name.slice(matchPos + lowerQuery.length)}
-                          </>
-                        ) : (
-                          <span className="font-medium">{item.name}</span>
-                        )}
-                      </div>
+                    <div className="truncate text-[13.5px] min-w-0">
+                      {matchPos >= 0 && lowerQuery ? (
+                        <>
+                          {item.name.slice(0, matchPos)}
+                          <strong className="text-[#0B192C] font-bold bg-amber-100/80 px-1 py-0.5 rounded">
+                            {item.name.slice(matchPos, matchPos + lowerQuery.length)}
+                          </strong>
+                          {item.name.slice(matchPos + lowerQuery.length)}
+                        </>
+                      ) : (
+                        <span className="font-medium">{item.name}</span>
+                      )}
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0 ml-2">
+                    <div className="shrink-0 ml-2">
                       <span
                         className={`text-[10px] px-2 py-0.5 rounded font-medium ${
                           item.category === 'Major City'
@@ -221,9 +212,6 @@ export const LocationAutocompleteInput: React.FC<LocationAutocompleteInputProps>
                         }`}
                       >
                         {item.category}
-                      </span>
-                      <span className="text-[11px] font-semibold text-[#0284C7] opacity-0 group-hover:opacity-100 hover:opacity-100 flex items-center">
-                        Select
                       </span>
                     </div>
                   </button>
