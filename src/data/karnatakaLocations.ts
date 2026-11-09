@@ -9,6 +9,8 @@ export const KARNATAKA_PROJECT_LOCATIONS: KarnatakaLocationItem[] = [
   { name: 'Bangalore', category: 'Major City', popular: true },
   { name: 'Bengaluru', category: 'Major City', popular: true },
   { name: 'Kolar', category: 'Major City', popular: true },
+  { name: 'Malur', category: 'Major City', popular: true },
+  { name: 'Malur Industrial Area, Kolar', category: 'Industrial Hub', popular: true },
   { name: 'Kolar Gold Fields (KGF)', category: 'Industrial Hub' },
   { name: 'Narasapura Industrial Area, Kolar', category: 'Industrial Hub', popular: true },
   { name: 'Tumakuru (Tumkur)', category: 'Major City', popular: true },
