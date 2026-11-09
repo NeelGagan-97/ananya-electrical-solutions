@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { EngineeringInquiry } from '../types';
+import { KARNATAKA_PROJECT_LOCATIONS } from '../data/karnatakaLocations';
 import {
   BUSINESS_NAP,
   trackConversionEvent,
@@ -295,11 +296,20 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                     id="consultation-location"
                     type="text"
                     required
+                    list="consultation-project-locations-list"
+                    autoComplete="off"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    placeholder="e.g. Sahakarnagar / Peenya / Whitefield / Bommasandra"
+                    placeholder="e.g. Bangalore / Kolar / Peenya / Devanahalli"
                     className="h-11 px-3.5 rounded-lg bg-[#F8FAFC] border border-[#CBD5E1] text-[14px] text-[#0B192C] focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:bg-white"
                   />
+                  <datalist id="consultation-project-locations-list">
+                    {KARNATAKA_PROJECT_LOCATIONS.map((loc) => (
+                      <option key={loc.name} value={loc.name}>
+                        {loc.category}
+                      </option>
+                    ))}
+                  </datalist>
                 </div>
               </div>
 

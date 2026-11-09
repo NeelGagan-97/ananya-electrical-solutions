@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { NavigationTab, EngineeringInquiry, ProjectItem } from '../types';
 import { ASSETS, SERVICES, PROJECTS, ESCOMS, ELECTRICAL_EQUIPMENT } from '../data/constants';
+import { KARNATAKA_PROJECT_LOCATIONS } from '../data/karnatakaLocations';
 import { ElectricalServicesSection } from '../components/ElectricalServicesSection';
 import { RealisticLightningBackground } from '../components/RealisticLightningBackground';
 import { openAesEnquiryModal, FormId } from '../components/forms';
@@ -1975,12 +1976,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     <input
                       className="h-11 px-4 rounded bg-[#F8FAFC] border border-[#CBD5E1] text-[#0B192C] font-body-md focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:bg-white"
                       id="location"
-                      placeholder="e.g. Sahakarnagar / Peenya / Whitefield / Mysuru"
+                      placeholder="e.g. Bangalore / Kolar / Peenya / Devanahalli"
                       required
                       type="text"
+                      list="home-project-locations-list"
+                      autoComplete="off"
                       value={formLocation}
                       onChange={(e) => setFormLocation(e.target.value)}
                     />
+                    <datalist id="home-project-locations-list">
+                      {KARNATAKA_PROJECT_LOCATIONS.map((loc) => (
+                        <option key={loc.name} value={loc.name}>
+                          {loc.category}
+                        </option>
+                      ))}
+                    </datalist>
                   </div>
                 </div>
 
