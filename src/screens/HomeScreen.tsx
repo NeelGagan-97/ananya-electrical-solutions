@@ -70,8 +70,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [activeStage, setActiveStage] = useState<number | null>(null);
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const logoVideoRef = useRef<HTMLVideoElement | null>(null);
-  const [isLogoVideoReady, setIsLogoVideoReady] = useState(false);
-  const [logoAnimPhase, setLogoAnimPhase] = useState<'charging' | 'surge' | 'energized'>('charging');
+  const [logoAnimPhase, setLogoAnimPhase] = useState<'charging' | 'surge' | 'energized'>('energized');
 
   // Robust autoplay, loop, and resume handler for mobile browsers
   useEffect(() => {
@@ -96,25 +95,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       }
     };
 
-    // Skip the known white opening/reveal frames and begin at the electrical transition.
-    // Do not expose the video until playback has produced a real frame.
-    let positionedAtTransition = false;
-    const startAtElectricalTransition = () => {
-      if (positionedAtTransition || !Number.isFinite(video.duration)) return;
-      positionedAtTransition = true;
-      video.currentTime = Math.min(1.85, Math.max(0, video.duration - 0.25));
-    };
-    const handleLoadedMetadata = () => startAtElectricalTransition();
-    const handleSeeked = () => {
-      if (video.currentTime >= 1.8) attemptPlay();
-    };
-    if (video.readyState >= 1) startAtElectricalTransition();
-    video.addEventListener('loadedmetadata', handleLoadedMetadata);
-    video.addEventListener('seeked', handleSeeked);
+    // Initial play attempt
+    attemptPlay();
 
-    // Loop from the electrical transition, never from the white opening frames.
+    // Loop fallback: if mobile browser ends playback and ignores native 'loop', immediately loop back to 0
     const handleEnded = () => {
-      video.currentTime = Math.min(1.85, Math.max(0, (video.duration || 8) - 0.25));
+      video.currentTime = 0;
       attemptPlay();
     };
     video.addEventListener('ended', handleEnded);
@@ -167,8 +153,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
     return () => {
       video.removeEventListener('ended', handleEnded);
-      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      video.removeEventListener('seeked', handleSeeked);
       video.removeEventListener('stalled', handleStalledOrWaiting);
       video.removeEventListener('waiting', handleStalledOrWaiting);
       video.removeEventListener('suspend', handleStalledOrWaiting);
@@ -496,28 +480,24 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 <video
                   ref={logoVideoRef}
                   autoPlay
+                  loop
                   muted
                   playsInline
-                  preload="auto"
+                  preload="metadata"
+                  poster="/assets/aistudio/hero_logo_poster.webp"
                   onTimeUpdate={handleVideoTimeUpdate}
-                  onPlaying={(e) => {
+                  onEnded={(e) => {
                     const vid = e.currentTarget;
-                    const revealAfterFrame = () => setIsLogoVideoReady(true);
-                    if ('requestVideoFrameCallback' in vid) {
-                      vid.requestVideoFrameCallback(revealAfterFrame);
-                    } else {
-                      requestAnimationFrame(revealAfterFrame);
-                    }
+                    vid.currentTime = 0;
+                    vid.play().catch(() => {});
                   }}
                   onCanPlay={(e) => {
-                    const vid = e.currentTarget;
-                    // Never start from the browser's initial frame while the transition seek is pending.
-                    if (!vid.seeking && vid.currentTime >= 1.8 && vid.paused) {
-                      vid.play().catch(() => {});
+                    if (e.currentTarget.paused) {
+                      e.currentTarget.play().catch(() => {});
                     }
                   }}
                   style={{ aspectRatio: '1.5 / 1.5' }}
-                  className={`w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-[#071120] [clip-path:inset(0_0_31%_0)] brightness-90 drop-shadow-[0_0_14px_rgba(56,189,248,0.42)] transition-opacity duration-150 ${isLogoVideoReady ? 'opacity-100' : 'opacity-0'}`}
+                  className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent [clip-path:inset(0_0_31%_0)] brightness-90 drop-shadow-[0_0_14px_rgba(56,189,248,0.42)]"
                 >
                   <source
                     media="(max-width: 768px)"
