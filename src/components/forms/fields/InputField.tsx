@@ -137,69 +137,48 @@ export const InputField: React.FC<InputFieldProps> = ({
         </span>
       </label>
 
-      <div className="flex items-center gap-2">
-        <div className="relative flex-1 flex items-center">
-          {icon && (
-            <span className="material-symbols-outlined absolute left-3.5 text-[20px] text-slate-400 pointer-events-none select-none z-10">
-              {icon}
-            </span>
-          )}
-          <input
-            ref={inputRef}
-            id={inputId}
-            required={required}
-            value={value}
-            onChange={(e) => {
-              if (onChange) onChange(e);
-              const val = e.target.value;
-              if (val.trim().length > 0) {
-                setIsOpen(true);
-              } else {
-                setIsOpen(false);
-              }
-              setHighlightIndex(0);
-            }}
-            onFocus={(e) => {
-              if (onFocus) onFocus(e);
-              if (inputValue.trim().length > 0 && (isLocationField || suggestions)) {
-                setIsOpen(true);
-              }
-            }}
-            onBlur={(e) => {
-              if (onBlur) onBlur(e);
-            }}
-            onKeyDown={handleInputKeyDown}
-            autoComplete={isLocationField ? 'off' : rest.autoComplete}
-            className={`w-full h-12 py-3 px-4 text-[14.5px] text-slate-800 bg-[#F8FAFC] border rounded-lg transition-all outline-none placeholder:text-slate-400
-              ${icon ? 'pl-11' : ''}
-              ${
-                error
-                  ? 'border-red-400 bg-red-50/30 focus:border-red-500 focus:ring-2 focus:ring-red-100'
-                  : 'border-slate-300 hover:border-slate-400 focus:border-[#0284C7] focus:ring-2 focus:ring-[#0284C7]/15 focus:bg-white'
-              }
-              ${className}`}
-            {...rest}
-          />
-        </div>
-
-        {isLocationField && (
-          <button
-            type="button"
-            onClick={() => {
-              setShowMapPicker(!showMapPicker);
-              setIsOpen(false);
-            }}
-            title={showMapPicker ? 'Close Google Map' : 'Pin location on Google Map'}
-            aria-label="Pin location on Google Map"
-            className={`w-12 h-12 rounded-lg border flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs ${
-              showMapPicker
-                ? 'bg-[#0284C7] text-white border-[#0284C7] ring-2 ring-[#0284C7]/20 shadow-md'
-                : 'bg-white hover:bg-sky-50 text-[#0284C7] border-slate-300 hover:border-[#0284C7]'
-            }`}
-          >
-            <span className="material-symbols-outlined text-[22px]">pin_drop</span>
-          </button>
+      <div className="relative w-full flex items-center">
+        {icon && (
+          <span className="material-symbols-outlined absolute left-3.5 text-[20px] text-slate-400 pointer-events-none select-none z-10">
+            {icon}
+          </span>
         )}
+        <input
+          ref={inputRef}
+          id={inputId}
+          required={required}
+          value={value}
+          onChange={(e) => {
+            if (onChange) onChange(e);
+            const val = e.target.value;
+            if (val.trim().length > 0) {
+              setIsOpen(true);
+            } else {
+              setIsOpen(false);
+            }
+            setHighlightIndex(0);
+          }}
+          onFocus={(e) => {
+            if (onFocus) onFocus(e);
+            if (inputValue.trim().length > 0 && (isLocationField || suggestions)) {
+              setIsOpen(true);
+            }
+          }}
+          onBlur={(e) => {
+            if (onBlur) onBlur(e);
+          }}
+          onKeyDown={handleInputKeyDown}
+          autoComplete={isLocationField ? 'off' : rest.autoComplete}
+          className={`w-full h-12 py-3 px-4 text-[14.5px] text-slate-800 bg-[#F8FAFC] border rounded-lg transition-all outline-none placeholder:text-slate-400
+            ${icon ? 'pl-11' : ''}
+            ${
+              error
+                ? 'border-red-400 bg-red-50/30 focus:border-red-500 focus:ring-2 focus:ring-red-100'
+                : 'border-slate-300 hover:border-slate-400 focus:border-[#0284C7] focus:ring-2 focus:ring-[#0284C7]/15 focus:bg-white'
+            }
+            ${className}`}
+          {...rest}
+        />
       </div>
 
       {/* Interactive Google Map Location Picker */}

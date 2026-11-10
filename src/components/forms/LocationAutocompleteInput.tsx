@@ -107,76 +107,57 @@ export const LocationAutocompleteInput: React.FC<LocationAutocompleteInputProps>
 
   return (
     <div ref={containerRef} className="relative w-full">
-      <div className="flex items-center gap-2">
-        <div className="relative flex-1 flex items-center">
-          <span className="material-symbols-outlined absolute left-3 text-[18px] text-slate-400 pointer-events-none select-none z-10">
-            location_on
-          </span>
-          <input
-            ref={inputRef}
-            id={id}
-            name={name}
-            type="text"
-            value={value}
-            required={required}
-            disabled={disabled}
-            autoFocus={autoFocus}
-            autoComplete="off"
-            placeholder={placeholder}
-            onChange={(e) => {
-              const val = e.target.value;
-              onChange(val);
-              if (val.trim().length > 0) {
-                setIsOpen(true);
-              } else {
-                setIsOpen(false);
-              }
-              setHighlightIndex(0);
-            }}
-            onFocus={() => {
-              if (value.trim().length > 0) {
-                setIsOpen(true);
-              }
-            }}
-            onBlur={() => {
-              if (onBlur) onBlur();
-            }}
-            onKeyDown={handleKeyDown}
-            className={`w-full h-12 pl-11 pr-10 text-[14.5px] text-slate-800 bg-[#F8FAFC] border border-slate-300 rounded-lg outline-none transition-all hover:border-slate-400 focus:border-[#0284C7] focus:ring-2 focus:ring-[#0284C7]/15 focus:bg-white placeholder:text-slate-400 ${className}`}
-          />
-          {value && (
-            <button
-              type="button"
-              onMouseDown={(e) => {
-                e.preventDefault();
-                onChange('');
-                setIsOpen(false);
-                inputRef.current?.focus();
-              }}
-              className="absolute right-3 text-slate-400 hover:text-slate-600 cursor-pointer p-1 rounded"
-              title="Clear location"
-            >
-              <span className="material-symbols-outlined text-[16px]">close</span>
-            </button>
-          )}
-        </div>
-
-        <button
-          type="button"
-          onClick={() => {
-            setShowMapPicker(!showMapPicker);
-            setIsOpen(false);
+      <div className="relative w-full flex items-center">
+        <span className="material-symbols-outlined absolute left-3.5 text-[20px] text-slate-400 pointer-events-none select-none z-10">
+          location_on
+        </span>
+        <input
+          ref={inputRef}
+          id={id}
+          name={name}
+          type="text"
+          value={value}
+          required={required}
+          disabled={disabled}
+          autoFocus={autoFocus}
+          autoComplete="off"
+          placeholder={placeholder}
+          onChange={(e) => {
+            const val = e.target.value;
+            onChange(val);
+            if (val.trim().length > 0) {
+              setIsOpen(true);
+            } else {
+              setIsOpen(false);
+            }
+            setHighlightIndex(0);
           }}
-          title={showMapPicker ? 'Close Google Map' : 'Pin location on Google Map'}
-          aria-label="Pin location on Google Map"
-          className={`w-12 h-12 rounded-lg border flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs ${
-            showMapPicker
-              ? 'bg-[#0284C7] text-white border-[#0284C7] ring-2 ring-[#0284C7]/20 shadow-md'
-              : 'bg-white hover:bg-sky-50 text-[#0284C7] border-slate-300 hover:border-[#0284C7]'
-          }`}
-        >
-          <span className="material-symbols-outlined text-[22px]">pin_drop</span>
-        </button>
+          onFocus={() => {
+            if (value.trim().length > 0) {
+              setIsOpen(true);
+            }
+          }}
+          onBlur={() => {
+            if (onBlur) onBlur();
+          }}
+          onKeyDown={handleKeyDown}
+          className={`w-full h-12 pl-11 pr-10 text-[14.5px] text-slate-800 bg-[#F8FAFC] border border-slate-300 rounded-lg outline-none transition-all hover:border-slate-400 focus:border-[#0284C7] focus:ring-2 focus:ring-[#0284C7]/15 focus:bg-white placeholder:text-slate-400 ${className}`}
+        />
+        {value && (
+          <button
+            type="button"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              onChange('');
+              setIsOpen(false);
+              inputRef.current?.focus();
+            }}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer p-1 rounded"
+            title="Clear location"
+          >
+            <span className="material-symbols-outlined text-[16px]">close</span>
+          </button>
+        )}
       </div>
 
       {/* Interactive Google Map Location Picker */}
