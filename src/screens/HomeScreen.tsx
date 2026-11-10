@@ -506,7 +506,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   muted
                   playsInline
                   preload="metadata"
-                  poster="/assets/aistudio/hero_logo_poster.webp"
                   onTimeUpdate={handleVideoTimeUpdate}
                   onEnded={(e) => {
                     const vid = e.currentTarget;
