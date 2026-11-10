@@ -201,7 +201,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenSeoAudit }) =
                   mail
                 </span>
                 <a
-                  href={`mailto:${BUSINESS_NAP.email}`}
+                  href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(BUSINESS_NAP.email)}`} target="_blank" rel="noopener noreferrer"
                   onClick={() => trackConversionEvent('email_click', BUSINESS_NAP.email, 'Footer Email')}
                   className="hover:text-[#006398] transition-colors font-medium break-all"
                 >
