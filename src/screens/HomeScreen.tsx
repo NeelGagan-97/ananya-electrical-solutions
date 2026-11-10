@@ -510,8 +510,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     }
                   }}
                   onCanPlay={(e) => {
-                    if (e.currentTarget.paused) {
-                      e.currentTarget.play().catch(() => {});
+                    const vid = e.currentTarget;
+                    // Never start from the browser's initial frame while the transition seek is pending.
+                    if (!vid.seeking && vid.currentTime >= 1.8 && vid.paused) {
+                      vid.play().catch(() => {});
                     }
                   }}
                   style={{ aspectRatio: '1.5 / 1.5' }}
