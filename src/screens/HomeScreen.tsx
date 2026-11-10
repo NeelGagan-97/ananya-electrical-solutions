@@ -475,7 +475,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
 
             {/* Hero Visual Showcase: Video + Telemetry */}
-            <div className="lg:col-span-5 flex flex-col items-center lg:items-end justify-start gap-5 lg:-mt-20 xl:-mt-24">
+            <div className="lg:col-span-5 flex flex-col items-center lg:items-end justify-start gap-4 lg:gap-4.5 lg:-mt-32 xl:-mt-40">
               <div className="w-full flex flex-col items-center lg:items-end justify-start -mt-6 lg:-mt-10 xl:-mt-12 lg:mr-[calc(min(0px,(80rem-100vw)/2)-3rem)] bg-transparent">
                 <video
                   ref={logoVideoRef}
@@ -588,8 +588,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </div>
 
               {/* Verified Engineering Scope Cards */}
-              <div className="grid grid-cols-2 gap-3 w-full items-stretch">
-                <div className="p-4 rounded-xl bg-[#0B192C]/80 backdrop-blur-md text-white flex flex-col justify-between gap-1 border border-white/15 shadow-xl h-full">
+              <div className="grid grid-cols-2 gap-3 w-full items-stretch lg:-mt-1.5">
+                <div className="p-3.5 sm:p-4 rounded-xl bg-[#0B192C]/80 backdrop-blur-md text-white flex flex-col justify-between gap-1 border border-white/15 shadow-xl h-full transition-all">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[11px] text-slate-300 uppercase tracking-wider font-semibold">HT / EHT Grid Scope</span>
                     <span className="material-symbols-outlined text-[#38BDF8] text-[18px] leading-none shrink-0">domain</span>
@@ -597,7 +597,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   <span className="font-stat-counter text-white text-[22px] sm:text-[26px]">11KV - 400KV</span>
                   <span className="text-[12px] text-slate-300">Substations, CEIG Liasioning</span>
                 </div>
-                <div className="p-4 rounded-xl bg-[#0B192C]/80 backdrop-blur-md text-white flex flex-col justify-between gap-1 border border-white/15 shadow-xl h-full">
+                <div className="p-3.5 sm:p-4 rounded-xl bg-[#0B192C]/80 backdrop-blur-md text-white flex flex-col justify-between gap-1 border border-white/15 shadow-xl h-full transition-all">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[11px] text-slate-300 uppercase tracking-wider font-semibold">LT Panels &amp; Solar</span>
                     <span className="material-symbols-outlined text-[#F59E0B] text-[18px] leading-none shrink-0">wb_sunny</span>
