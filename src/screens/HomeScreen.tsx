@@ -475,7 +475,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
 
             {/* Hero Visual Showcase: Video + Telemetry */}
-            <div className="lg:col-span-5 flex flex-col items-center lg:items-start justify-start gap-3.5 lg:gap-4 lg:-mt-24 xl:-mt-28">
+            <div className="lg:col-span-5 flex flex-col items-center lg:items-start justify-start gap-3.5 lg:gap-4 lg:-mt-16 xl:-mt-20 lg:pl-10 xl:pl-14">
               <div className="w-full flex flex-col items-center lg:items-start justify-start -mt-6 lg:-mt-10 xl:-mt-12 bg-transparent">
                 <video
                   ref={logoVideoRef}
@@ -570,7 +570,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </div>
 
               {/* Status Below Video Aligned Directly to Centre of Div 2 and 3 */}
-              <div className="w-full flex items-center justify-center lg:justify-start">
+              <div className="w-full flex items-center justify-center lg:justify-start pt-1 lg:pt-2">
                 <div className="inline-flex flex-wrap items-center justify-center gap-4 sm:gap-5 text-center px-4 py-1.5 rounded-full bg-[#0B192C]/85 backdrop-blur-md border border-white/15 shadow-lg mx-auto lg:mx-0">
                   <span className="inline-flex items-center gap-1.5 text-[13px] sm:text-[14px] font-bold text-white tracking-wider uppercase leading-none">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
@@ -588,7 +588,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </div>
 
               {/* Verified Engineering Scope Cards */}
-              <div className="grid grid-cols-2 gap-3 w-full items-stretch lg:max-w-[460px]">
+              <div className="grid grid-cols-2 gap-3 w-full items-stretch lg:max-w-[450px] pt-1 lg:pt-1.5">
                 <div className="p-3.5 sm:p-4 rounded-xl bg-[#0B192C]/80 backdrop-blur-md text-white flex flex-col justify-between gap-1 border border-white/15 shadow-xl h-full transition-all">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[11px] text-slate-300 uppercase tracking-wider font-semibold">HT / EHT Grid Scope</span>
