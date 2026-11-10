@@ -363,7 +363,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             <div className="lg:col-span-7 flex flex-col gap-6">
               <div className="flex flex-col gap-3">
-                <h1 className="font-display-xl tracking-tight font-extrabold drop-shadow-md bg-[linear-gradient(90deg,#EA580C_0%,#F97316_24%,#F59E0B_46%,#EF4444_68%,#DC2626_86%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent [text-wrap:balance]">
+                <h1 className="font-display-xl tracking-tight font-extrabold drop-shadow-md bg-[linear-gradient(90deg,#EA580C_0%,#F97316_20%,#F59E0B_40%,#FACC15_60%,#F59E0B_80%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent [text-wrap:balance]">
                   Powering Karnataka with Reliable Electrical &amp; Solar Solutions
                 </h1>
               </div>
