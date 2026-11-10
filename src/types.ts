@@ -10,7 +10,8 @@ export type NavigationTab =
   | 'services' 
   | 'projects-gallery' 
   | 'about-us' 
-  | 'contact-us';
+  | 'contact-us'
+  | 'residential-electrical-services';
 
 export interface ServiceItem {
   id: string;

@@ -56,6 +56,7 @@ export const TAB_TO_PATH: Record<NavigationTab, string> = {
   'residential-solar-3d': '/3d-residential-solar',
   'residential-layout-3d': '/3d-layout',
   'smart-home-3d': '/3d-smart-home',
+  'residential-electrical-services': '/residential-electrical-services',
 };
 
 export const PATH_TO_TAB: Record<string, NavigationTab> = {
@@ -86,6 +87,7 @@ export const PATH_TO_TAB: Record<string, NavigationTab> = {
   '/3d-smart-home': 'smart-home-3d',
   '/3d-motors': 'smart-home-3d',
   '/smart-home-3d': 'smart-home-3d',
+  '/residential-electrical-services': 'residential-electrical-services',
 };
 
 export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
@@ -348,6 +350,22 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
       { name: '3D Engineering Models', path: '/services' },
       { name: 'Smart Home Automation', path: '/3d-smart-home' },
     ],
+  },,
+  'residential-electrical-services': {
+    tab: 'residential-electrical-services',
+    path: '/residential-electrical-services',
+    canonicalUrl: 'https://ananyaelectricalsolutions.in/residential-electrical-services',
+    title: 'Residential Electrical Services in Bengaluru | Ananya Electrical Solutions',
+    description: 'Home wiring, rewiring, electrical repairs, lighting, distribution board installation and earthing services in Bengaluru. Request a residential site visit.',
+    h1: 'Reliable Residential Electrical Services in Bengaluru',
+    primaryKeyword: 'Residential electrical services Bengaluru',
+    secondaryKeywords: ['Home wiring contractor Bengaluru', 'House rewiring Bangalore', 'Residential electrical repairs Bengaluru', 'DB installation and earthing Bengaluru'],
+    searchIntent: 'Transactional Service',
+    schemaType: 'Service + LocalBusiness + BreadcrumbList',
+    breadcrumbs: [
+      { name: 'Home', path: '/' },
+      { name: 'Residential Electrical Services', path: '/residential-electrical-services' },
+    ],
   },
 };
 
@@ -364,6 +382,7 @@ const VALID_TABS: NavigationTab[] = [
   'projects-gallery',
   'about-us',
   'contact-us',
+  'residential-electrical-services',
 ];
 
 export function resolveTabFromUrl(): NavigationTab {

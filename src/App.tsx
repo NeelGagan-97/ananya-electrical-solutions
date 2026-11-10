@@ -6,6 +6,7 @@ import { Footer } from './components/Footer';
 import { EnquiryModalHost, EnquiryHubLauncher, BaseEnquirySubmission } from './components/forms';
 import { LeftSideSocialDock } from './components/LeftSideSocialDock';
 import { HomeScreen } from './screens/HomeScreen';
+import { ResidentialElectricalServicesLanding } from './screens/ResidentialElectricalServicesLanding';
 import {
   BUSINESS_NAP,
   SEO_ROUTE_CONFIG,
@@ -243,6 +244,10 @@ export default function App() {
               </div>
             </div>
           </nav>
+        )}
+
+        {currentTab === 'residential-electrical-services' && (
+          <ResidentialElectricalServicesLanding />
         )}
 
         {currentTab === 'home' && (
