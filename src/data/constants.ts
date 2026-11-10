@@ -3,7 +3,7 @@ import { ServiceItem, ProjectItem, ElectricalEquipmentItem } from '../types';
 export const ASSETS = {
   logo: '/assets/aistudio/logo_round_transparent_96.webp',
   logoEmblem: '/assets/aistudio/Screenshot_2026-10-24_213203_08863194.png',
-  transmissionBg: '/assets/aistudio/Electrical_transmission_lines_hero.webp',
+  transmissionBg: '/assets/aistudio/Transmission_towers_in_Himalayan__7473177d_2K_922ef111.jpg',
   residentialWiring2Bhk: '/assets/aistudio/residential_2bhk_opt.webp',
   residentialInterior: '/assets/aistudio/residential_interior_opt.webp',
   residentialIsometric: '/assets/aistudio/residential_isometric_opt.webp',

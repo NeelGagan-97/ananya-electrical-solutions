@@ -298,22 +298,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
           <picture>
             <source
-              type="image/webp"
-              media="(max-width: 768px)"
-              srcSet="/assets/aistudio/Electrical_transmission_lines_hero_mobile_480.webp 480w, /assets/aistudio/Electrical_transmission_lines_hero_mobile.webp 768w"
-              sizes="100vw"
-            />
-            <source
-              type="image/webp"
-              srcSet="/assets/aistudio/Electrical_transmission_lines_hero.webp"
+              type="image/jpeg"
+              srcSet="/assets/aistudio/Transmission_towers_in_Himalayan__7473177d_2K_922ef111.jpg"
             />
             <img
-              src="/assets/aistudio/Electrical_transmission_lines_hero.webp"
-              alt="High-voltage electrical transmission lines across golden-hour hills"
+              src="/assets/aistudio/Transmission_towers_in_Himalayan__7473177d_2K_922ef111.jpg"
+              alt="High-voltage electrical transmission towers across mountainous terrain"
               fetchPriority="high"
               decoding="async"
-              width={1920}
-              height={1080}
+              width={2048}
+              height={1152}
               className="w-full h-full object-cover object-center scale-[1.03] brightness-95 contrast-110 saturate-110"
             />
           </picture>
