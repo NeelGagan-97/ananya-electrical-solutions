@@ -350,7 +350,7 @@ export const SEO_ROUTE_CONFIG: Record<NavigationTab, RouteSeoMetadata> = {
       { name: '3D Engineering Models', path: '/services' },
       { name: 'Smart Home Automation', path: '/3d-smart-home' },
     ],
-  },,
+  },
   'residential-electrical-services': {
     tab: 'residential-electrical-services',
     path: '/residential-electrical-services',
