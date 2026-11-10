@@ -360,7 +360,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-12">
           {/* Main Hero Split Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 xl:gap-10 items-start">
             <div className="lg:col-span-7 flex flex-col gap-6">
               <div className="flex flex-col gap-3">
                 <h1 className="font-display-xl tracking-tight font-extrabold drop-shadow-md bg-[linear-gradient(90deg,#EA580C_0%,#F97316_20%,#F59E0B_40%,#FACC15_60%,#F59E0B_80%,#EA580C_100%)] bg-[length:200%_auto] animate-brand-shimmer bg-clip-text text-transparent [text-wrap:balance]">
@@ -475,8 +475,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
 
             {/* Hero Visual Showcase: Video + Telemetry */}
-            <div className="lg:col-span-5 flex flex-col items-center lg:items-end justify-start gap-4 lg:gap-4.5 lg:-mt-32 xl:-mt-40">
-              <div className="w-full flex flex-col items-center lg:items-end justify-start -mt-6 lg:-mt-10 xl:-mt-12 lg:mr-[calc(min(0px,(80rem-100vw)/2)-3rem)] bg-transparent">
+            <div className="lg:col-span-5 flex flex-col items-center lg:items-start justify-start gap-3.5 lg:gap-4 lg:-mt-24 xl:-mt-28">
+              <div className="w-full flex flex-col items-center lg:items-start justify-start -mt-6 lg:-mt-10 xl:-mt-12 bg-transparent">
                 <video
                   ref={logoVideoRef}
                   autoPlay
@@ -570,8 +570,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </div>
 
               {/* Status Below Video Aligned Directly to Centre of Div 2 and 3 */}
-              <div className="w-full flex items-center justify-center self-center">
-                <div className="inline-flex flex-wrap items-center justify-center gap-4 sm:gap-5 text-center px-4 py-1.5 rounded-full bg-[#0B192C]/85 backdrop-blur-md border border-white/15 shadow-lg mx-auto">
+              <div className="w-full flex items-center justify-center lg:justify-start">
+                <div className="inline-flex flex-wrap items-center justify-center gap-4 sm:gap-5 text-center px-4 py-1.5 rounded-full bg-[#0B192C]/85 backdrop-blur-md border border-white/15 shadow-lg mx-auto lg:mx-0">
                   <span className="inline-flex items-center gap-1.5 text-[13px] sm:text-[14px] font-bold text-white tracking-wider uppercase leading-none">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
                     <span>BESCOM</span>
@@ -588,7 +588,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </div>
 
               {/* Verified Engineering Scope Cards */}
-              <div className="grid grid-cols-2 gap-3 w-full items-stretch lg:-mt-1.5">
+              <div className="grid grid-cols-2 gap-3 w-full items-stretch lg:max-w-[460px]">
                 <div className="p-3.5 sm:p-4 rounded-xl bg-[#0B192C]/80 backdrop-blur-md text-white flex flex-col justify-between gap-1 border border-white/15 shadow-xl h-full transition-all">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[11px] text-slate-300 uppercase tracking-wider font-semibold">HT / EHT Grid Scope</span>
