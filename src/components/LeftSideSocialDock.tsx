@@ -8,7 +8,6 @@ export const LeftSideSocialDock: React.FC = () => {
   const displayPhone = '+91 9632025123';
   const instagramHandle = 'ananyaelectricalsolutions';
   const instagramUrl = 'https://www.instagram.com/ananyaelectricalsolutions';
-  const emailAddress = BUSINESS_NAP.email;
 
   const quickMessages = [
     {
@@ -38,7 +37,7 @@ export const LeftSideSocialDock: React.FC = () => {
 
   return (
     <aside
-      aria-label="Quick Connect on WhatsApp, Instagram, and Gmail"
+      aria-label="Quick Connect on WhatsApp and Instagram"
       className="fixed left-3 sm:left-4 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-3 select-none"
     >
       {/* WhatsApp Button with Tooltip & Popover */}
@@ -148,49 +147,6 @@ export const LeftSideSocialDock: React.FC = () => {
         <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 hidden group-hover:flex items-center pointer-events-none transition-all duration-200">
           <div className="bg-[#0B192C] text-white text-[12px] font-semibold px-3 py-1.5 rounded-lg whitespace-nowrap shadow-xl border border-slate-700 flex items-center gap-1.5">
             <span>Instagram: @{instagramHandle}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Gmail Button with Tooltip */}
-      <div className="relative group">
-        <a
-          href={`mailto:${emailAddress}?subject=${encodeURIComponent('Inquiry: Super Grade Electrical Services')}`}
-          aria-label={`Send Email to ${emailAddress}`}
-          onClick={() => {
-            trackConversionEvent('email_click', 'Gmail Dock Click', 'LeftSideSocialDock');
-          }}
-          className="w-12 h-12 rounded-full bg-white hover:bg-slate-50 flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 cursor-pointer border-2 border-white"
-        >
-          <svg
-            className="w-6 h-6"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M1.5 6.5C1.5 5.39543 2.39543 4.5 3.5 4.5H5.5L12 9.5L18.5 4.5H20.5C21.6046 4.5 22.5 5.39543 22.5 6.5V7.5L12 15.5L1.5 7.5V6.5Z"
-              fill="#EA4335"
-            />
-            <path
-              d="M1.5 7.5V17.5C1.5 18.6046 2.39543 19.5 3.5 19.5H6V11L1.5 7.5Z"
-              fill="#4285F4"
-            />
-            <path
-              d="M22.5 7.5V17.5C22.5 18.6046 21.6046 19.5 20.5 19.5H18V11L22.5 7.5Z"
-              fill="#34A853"
-            />
-            <path
-              d="M6 19.5H18V11L12 15.5L6 11V19.5Z"
-              fill="#FBBC04"
-            />
-          </svg>
-        </a>
-
-        {/* Desktop Hover Tooltip */}
-        <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 hidden group-hover:flex items-center pointer-events-none transition-all duration-200">
-          <div className="bg-[#0B192C] text-white text-[12px] font-semibold px-3 py-1.5 rounded-lg whitespace-nowrap shadow-xl border border-slate-700 flex items-center gap-1.5">
-            <span>Gmail: {emailAddress}</span>
           </div>
         </div>
       </div>
