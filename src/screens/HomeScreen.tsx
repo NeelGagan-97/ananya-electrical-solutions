@@ -84,7 +84,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     video.setAttribute('playsinline', 'true');
     video.setAttribute('webkit-playsinline', 'true');
 
+    const VIDEO_START_OFFSET = 1.0;
+
+    const enforceStartTime = () => {
+      if (video.currentTime < VIDEO_START_OFFSET) {
+        video.currentTime = VIDEO_START_OFFSET;
+      }
+    };
+
+    video.addEventListener('loadedmetadata', enforceStartTime);
+    video.addEventListener('loadeddata', enforceStartTime);
+
     const attemptPlay = () => {
+      enforceStartTime();
       if (video.paused) {
         const playPromise = video.play();
         if (playPromise !== undefined) {
@@ -98,15 +110,24 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     // Initial play attempt
     attemptPlay();
 
-    // Loop fallback: if mobile browser ends playback and ignores native 'loop', immediately loop back to 0
+    // Loop fallback: if browser loops or ends playback, resume from 1.0s (skipping first second)
     const handleEnded = () => {
-      video.currentTime = 0;
+      video.currentTime = VIDEO_START_OFFSET;
       attemptPlay();
     };
     video.addEventListener('ended', handleEnded);
 
+    // If native loop resets currentTime back to 0, immediately forward to 1.0s
+    const handleTimeSync = () => {
+      if (video.currentTime < VIDEO_START_OFFSET && !video.seeking) {
+        video.currentTime = VIDEO_START_OFFSET;
+      }
+    };
+    video.addEventListener('timeupdate', handleTimeSync);
+
     // If video stalls, pauses, or waits on mobile, attempt recovery
     const handleStalledOrWaiting = () => {
+      enforceStartTime();
       attemptPlay();
     };
     video.addEventListener('stalled', handleStalledOrWaiting);
@@ -152,6 +173,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     window.addEventListener('resize', handleResize, { passive: true });
 
     return () => {
+      video.removeEventListener('loadedmetadata', enforceStartTime);
+      video.removeEventListener('loadeddata', enforceStartTime);
+      video.removeEventListener('timeupdate', handleTimeSync);
       video.removeEventListener('ended', handleEnded);
       video.removeEventListener('stalled', handleStalledOrWaiting);
       video.removeEventListener('waiting', handleStalledOrWaiting);
@@ -175,6 +199,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     const vid = e.currentTarget;
     if (!vid) return;
     const t = vid.currentTime;
+    if (t < 1.0) {
+      vid.currentTime = 1.0;
+      return;
+    }
     const dur = vid.duration || 8.0;
     if (t < 1.85 || t > dur - 0.35) {
       setLogoAnimPhase(prev => (prev !== 'charging' ? 'charging' : prev));
@@ -482,12 +510,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   onTimeUpdate={handleVideoTimeUpdate}
                   onEnded={(e) => {
                     const vid = e.currentTarget;
-                    vid.currentTime = 0;
+                    vid.currentTime = 1.0;
                     vid.play().catch(() => {});
                   }}
                   onCanPlay={(e) => {
+                    if (e.currentTarget.currentTime < 1.0) {
+                      e.currentTarget.currentTime = 1.0;
+                    }
                     if (e.currentTarget.paused) {
                       e.currentTarget.play().catch(() => {});
+                    }
+                  }}
+                  onLoadedMetadata={(e) => {
+                    if (e.currentTarget.currentTime < 1.0) {
+                      e.currentTarget.currentTime = 1.0;
                     }
                   }}
                   style={{ aspectRatio: '1.5 / 1.5' }}
@@ -495,15 +531,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 >
                   <source
                     media="(max-width: 768px)"
-                    src="/assets/aistudio/Animated_electrical_logo_reveal_mobile.webm"
+                    src="/assets/aistudio/Animated_electrical_logo_reveal_mobile.webm#t=1"
                     type="video/webm"
                   />
                   <source
-                    src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm"
+                    src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm#t=1"
                     type="video/webm"
                   />
                   <source
-                    src="/assets/aistudio/Animated_electrical_logo_reveal_1080p_20261023131504_cc86adb8.mp4"
+                    src="/assets/aistudio/Animated_electrical_logo_reveal_1080p_20261023131504_cc86adb8.mp4#t=1"
                     type="video/mp4"
                   />
                 </video>
