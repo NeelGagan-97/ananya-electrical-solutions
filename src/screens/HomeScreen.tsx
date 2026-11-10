@@ -475,7 +475,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
 
             {/* Hero Visual Showcase: Video + Telemetry */}
-            <div className="lg:col-span-5 flex flex-col items-center lg:items-start justify-start gap-3.5 lg:gap-4 lg:-mt-16 xl:-mt-20 lg:pl-10 xl:pl-14">
+            <div className="lg:col-span-5 flex flex-col items-center lg:items-start justify-start gap-3.5 lg:gap-4 lg:-mt-16 xl:-mt-20 lg:translate-x-[3.5cm]">
               <div className="w-full flex flex-col items-center lg:items-start justify-start -mt-6 lg:-mt-10 xl:-mt-12 bg-transparent">
                 <video
                   ref={logoVideoRef}
