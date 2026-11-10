@@ -13,17 +13,17 @@ const services = [
 ];
 
 const gallery = [
-  { src: '/assets/residential-projects/IMG_20260327_132704.jpg', alt: 'Outdoor transformer and electrical installation', title: 'Transformer installation' },
-  { src: '/assets/residential-projects/IMG_20260327_133027.jpg', alt: 'Electrical LT panel installation', title: 'LT electrical panels' },
-  { src: '/assets/residential-projects/IMG_20260327_133033.jpg', alt: 'Electrical switchgear control panels', title: 'Switchgear panels' },
-  { src: '/assets/residential-projects/IMG_20260508_150605.jpg', alt: 'Underground electrical cable trench work', title: 'Underground cable laying' },
-  { src: '/assets/residential-projects/IMG_20260508_150635.jpg', alt: 'Cable route and site installation work', title: 'Cable route installation' },
-  { src: '/assets/residential-projects/IMG_20260630_174256.jpg', alt: 'Earthing conduit installation', title: 'Conduit and earthing work' },
-  { src: '/assets/residential-projects/IMG20260223151615_BURST000_COVER.jpg', alt: 'Electrical distribution board installation', title: 'Distribution board' },
-  { src: '/assets/residential-projects/IMG20260327132719_BURST000_COVER.jpg', alt: 'Electrical transformer infrastructure', title: 'Electrical infrastructure' },
-  { src: '/assets/residential-projects/IMG_20260228_142123.jpg', alt: 'Electrical panel installation', title: 'Panel installation' },
-  { src: '/assets/residential-projects/IMG_20260327_132446.jpg', alt: 'Electrical site installation work', title: 'Site electrical works' },
-  { src: '/assets/residential-projects/IMG_20260327_132545.jpg', alt: 'Electrical installation project', title: 'Electrical project work' },
+  { src: '/assets/residential-projects/IMG_20260327_132704.webp', alt: 'Outdoor transformer and electrical installation', title: 'Transformer installation' },
+  { src: '/assets/residential-projects/IMG_20260327_133027.webp', alt: 'Electrical LT panel installation', title: 'LT electrical panels' },
+  { src: '/assets/residential-projects/IMG_20260327_133033.webp', alt: 'Electrical switchgear control panels', title: 'Switchgear panels' },
+  { src: '/assets/residential-projects/IMG_20260508_150605.webp', alt: 'Underground electrical cable trench work', title: 'Underground cable laying' },
+  { src: '/assets/residential-projects/IMG_20260508_150635.webp', alt: 'Cable route and site installation work', title: 'Cable route installation' },
+  { src: '/assets/residential-projects/IMG_20260630_174256.webp', alt: 'Earthing conduit installation', title: 'Conduit and earthing work' },
+  { src: '/assets/residential-projects/IMG20260223151615_BURST000_COVER.webp', alt: 'Electrical distribution board installation', title: 'Distribution board' },
+  { src: '/assets/residential-projects/IMG20260327132719_BURST000_COVER.webp', alt: 'Electrical transformer infrastructure', title: 'Electrical infrastructure' },
+  { src: '/assets/residential-projects/IMG_20260228_142123.webp', alt: 'Electrical panel installation', title: 'Panel installation' },
+  { src: '/assets/residential-projects/IMG_20260327_132446.webp', alt: 'Electrical site installation work', title: 'Site electrical works' },
+  { src: '/assets/residential-projects/IMG_20260327_132545.webp', alt: 'Electrical installation project', title: 'Electrical project work' },
 ];
 
 const process = [
