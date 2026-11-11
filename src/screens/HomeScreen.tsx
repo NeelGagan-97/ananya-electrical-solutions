@@ -114,19 +114,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     video.setAttribute('playsinline', 'true');
     video.setAttribute('webkit-playsinline', 'true');
 
-    const VIDEO_START_OFFSET = 1.0;
-
-    const enforceStartTime = () => {
-      if (video.currentTime < VIDEO_START_OFFSET) {
-        video.currentTime = VIDEO_START_OFFSET;
-      }
-    };
-
-    video.addEventListener('loadedmetadata', enforceStartTime);
-    video.addEventListener('loadeddata', enforceStartTime);
-
     const attemptPlay = () => {
-      enforceStartTime();
       if (video.paused) {
         const playPromise = video.play();
         if (playPromise !== undefined) {
@@ -140,24 +128,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     // Initial play attempt
     attemptPlay();
 
-    // Loop fallback: if browser loops or ends playback, resume from 1.0s (skipping first second)
+    // Loop fallback: if browser loops or ends playback, resume smoothly
     const handleEnded = () => {
-      video.currentTime = VIDEO_START_OFFSET;
+      video.currentTime = 0;
       attemptPlay();
     };
     video.addEventListener('ended', handleEnded);
 
-    // If native loop resets currentTime back to 0, immediately forward to 1.0s
-    const handleTimeSync = () => {
-      if (video.currentTime < VIDEO_START_OFFSET && !video.seeking) {
-        video.currentTime = VIDEO_START_OFFSET;
-      }
-    };
-    video.addEventListener('timeupdate', handleTimeSync);
-
     // If video stalls, pauses, or waits on mobile, attempt recovery
     const handleStalledOrWaiting = () => {
-      enforceStartTime();
       attemptPlay();
     };
     video.addEventListener('stalled', handleStalledOrWaiting);
@@ -203,9 +182,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     window.addEventListener('resize', handleResize, { passive: true });
 
     return () => {
-      video.removeEventListener('loadedmetadata', enforceStartTime);
-      video.removeEventListener('loadeddata', enforceStartTime);
-      video.removeEventListener('timeupdate', handleTimeSync);
       video.removeEventListener('ended', handleEnded);
       video.removeEventListener('stalled', handleStalledOrWaiting);
       video.removeEventListener('waiting', handleStalledOrWaiting);
@@ -229,14 +205,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     const vid = e.currentTarget;
     if (!vid) return;
     const t = vid.currentTime;
-    if (t < 1.0) {
-      vid.currentTime = 1.0;
-      return;
-    }
-    const dur = vid.duration || 8.0;
-    if (t < 1.85 || t > dur - 0.35) {
+    const dur = vid.duration || 6.7;
+    if (t < 1.4 || t > dur - 0.4) {
       setLogoAnimPhase(prev => (prev !== 'charging' ? 'charging' : prev));
-    } else if (t >= 1.85 && t < 2.45) {
+    } else if (t >= 1.4 && t < 2.5) {
       setLogoAnimPhase(prev => (prev !== 'surge' ? 'surge' : prev));
     } else {
       setLogoAnimPhase(prev => (prev !== 'energized' ? 'energized' : prev));
@@ -560,33 +532,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                           type="button"
                           onClick={() => {
                             handleDownloadVideo(
-                              '/assets/aistudio/ananya_logo_reveal_trimmed.mp4',
-                              'ananya_logo_reveal_1080p_trimmed.mp4'
+                              '/assets/aistudio/Ananya_Clean_Transparent_HD.webm',
+                              'Ananya_Desktop_Transparent_HQ_40fps.webm'
                             );
                             setDownloadMenuOpen(false);
                           }}
                           className="flex items-center justify-between px-2.5 py-2 rounded hover:bg-slate-800 text-slate-200 hover:text-white text-xs text-left transition-colors cursor-pointer group/opt"
                         >
                           <div className="flex flex-col">
-                            <span className="font-semibold text-sky-400">MP4 (1080p HD)</span>
-                            <span className="text-[10px] text-slate-400">Trimmed (1st sec removed)</span>
-                          </div>
-                          <span className="material-symbols-outlined text-sm text-sky-400 group-hover/opt:translate-y-0.5 transition-transform">download</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleDownloadVideo(
-                              '/assets/aistudio/ananya_logo_reveal_transparent_trimmed.webm',
-                              'ananya_logo_reveal_transparent.webm'
-                            );
-                            setDownloadMenuOpen(false);
-                          }}
-                          className="flex items-center justify-between px-2.5 py-2 rounded hover:bg-slate-800 text-slate-200 hover:text-white text-xs text-left transition-colors cursor-pointer group/opt"
-                        >
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-emerald-400">WebM (Transparent)</span>
-                            <span className="text-[10px] text-slate-400">Alpha transparent channel</span>
+                            <span className="font-semibold text-emerald-400">WebM (Transparent 40fps)</span>
+                            <span className="text-[10px] text-slate-400">Native alpha transparent channel</span>
                           </div>
                           <span className="material-symbols-outlined text-sm text-emerald-400 group-hover/opt:translate-y-0.5 transition-transform">download</span>
                         </button>
@@ -594,16 +549,33 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                           type="button"
                           onClick={() => {
                             handleDownloadVideo(
-                              '/assets/aistudio/Animated_electrical_logo_reveal_1080p_20261023131504_cc86adb8.mp4',
-                              'ananya_logo_reveal_original_8s.mp4'
+                              '/assets/aistudio/Ananya_Clean_HD.mp4',
+                              'Ananya_Logo_Reveal_HD.mp4'
                             );
                             setDownloadMenuOpen(false);
                           }}
                           className="flex items-center justify-between px-2.5 py-2 rounded hover:bg-slate-800 text-slate-200 hover:text-white text-xs text-left transition-colors cursor-pointer group/opt"
                         >
                           <div className="flex flex-col">
-                            <span className="font-medium text-slate-300">Original MP4 (Full 8s)</span>
-                            <span className="text-[10px] text-slate-400">Complete 8.0s reveal</span>
+                            <span className="font-semibold text-sky-400">MP4 (672p HD)</span>
+                            <span className="text-[10px] text-slate-400">Universal H.264 video</span>
+                          </div>
+                          <span className="material-symbols-outlined text-sm text-sky-400 group-hover/opt:translate-y-0.5 transition-transform">download</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleDownloadVideo(
+                              '/assets/aistudio/Ananya_Desktop_Transparent_HQ_40fps_Improved_f00d8ad5.webm',
+                              'Ananya_Original_Uploaded.webm'
+                            );
+                            setDownloadMenuOpen(false);
+                          }}
+                          className="flex items-center justify-between px-2.5 py-2 rounded hover:bg-slate-800 text-slate-200 hover:text-white text-xs text-left transition-colors cursor-pointer group/opt"
+                        >
+                          <div className="flex flex-col">
+                            <span className="font-medium text-slate-300">Original Upload (WebM)</span>
+                            <span className="text-[10px] text-slate-400">Raw source file</span>
                           </div>
                           <span className="material-symbols-outlined text-sm text-slate-400 group-hover/opt:translate-y-0.5 transition-transform">download</span>
                         </button>
@@ -621,42 +593,33 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   onTimeUpdate={handleVideoTimeUpdate}
                   onEnded={(e) => {
                     const vid = e.currentTarget;
-                    vid.currentTime = 1.0;
+                    vid.currentTime = 0;
                     vid.play().catch(() => {});
                   }}
                   onCanPlay={(e) => {
-                    if (e.currentTarget.currentTime < 1.0) {
-                      e.currentTarget.currentTime = 1.0;
-                    }
                     if (e.currentTarget.paused) {
                       e.currentTarget.play().catch(() => {});
                     }
                   }}
-                  onLoadedMetadata={(e) => {
-                    if (e.currentTarget.currentTime < 1.0) {
-                      e.currentTarget.currentTime = 1.0;
-                    }
-                  }}
-                  style={{ aspectRatio: '1.5 / 1.5' }}
-                  className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent [clip-path:inset(0_0_31%_0)] brightness-90 drop-shadow-[0_0_14px_rgba(56,189,248,0.42)]"
+                  style={{ aspectRatio: '1 / 1' }}
+                  className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-square object-contain object-center bg-transparent drop-shadow-[0_0_20px_rgba(56,189,248,0.45)]"
                 >
                   <source
-                    media="(max-width: 768px)"
-                    src="/assets/aistudio/Animated_electrical_logo_reveal_mobile.webm#t=1"
+                    src="/assets/aistudio/Ananya_Clean_Transparent_HD.webm"
                     type="video/webm"
                   />
                   <source
-                    src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm#t=1"
+                    src="/assets/aistudio/Ananya_Desktop_Transparent_HQ_40fps_Improved_f00d8ad5.webm"
                     type="video/webm"
                   />
                   <source
-                    src="/assets/aistudio/Animated_electrical_logo_reveal_1080p_20261023131504_cc86adb8.mp4#t=1"
+                    src="/assets/aistudio/Ananya_Clean_HD.mp4"
                     type="video/mp4"
                   />
                 </video>
                 {/* Custom Styled Brand Logo Lockup Synchronized with Video Reveal */}
                 <div
-                  className={`w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] flex flex-col items-center justify-center text-center -mt-24 sm:-mt-28 lg:-mt-30 xl:-mt-32 pb-2 select-none transition-all duration-500 ease-out ${
+                  className={`w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] flex flex-col items-center justify-center text-center -mt-10 sm:-mt-12 lg:-mt-14 xl:-mt-16 pb-2 select-none transition-all duration-500 ease-out ${
                     logoAnimPhase === 'charging'
                       ? 'opacity-0 translate-y-3 scale-90 blur-[5px]'
                       : 'opacity-100 translate-y-0 scale-100 blur-0'
