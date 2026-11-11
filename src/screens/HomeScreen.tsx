@@ -71,36 +71,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const logoVideoRef = useRef<HTMLVideoElement | null>(null);
   const [logoAnimPhase, setLogoAnimPhase] = useState<'charging' | 'surge' | 'energized'>('energized');
-  const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
 
-  const handleDownloadVideo = async (url: string, filename: string) => {
-    try {
-      const res = await fetch(url);
-      const blob = await res.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-    } catch {
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-  };
-
-  useEffect(() => {
-    if (!downloadMenuOpen) return;
-    const handleClickOutside = () => setDownloadMenuOpen(false);
-    window.addEventListener('click', handleClickOutside);
-    return () => window.removeEventListener('click', handleClickOutside);
-  }, [downloadMenuOpen]);
 
   // Robust autoplay, loop, and resume handler for mobile browsers
   useEffect(() => {
@@ -205,10 +176,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     const vid = e.currentTarget;
     if (!vid) return;
     const t = vid.currentTime;
-    const dur = vid.duration || 6.7;
-    if (t < 1.4 || t > dur - 0.4) {
+    const dur = vid.duration || 8.0;
+    if (t < 1.85 || t > dur - 0.35) {
       setLogoAnimPhase(prev => (prev !== 'charging' ? 'charging' : prev));
-    } else if (t >= 1.4 && t < 2.5) {
+    } else if (t >= 1.85 && t < 2.45) {
       setLogoAnimPhase(prev => (prev !== 'surge' ? 'surge' : prev));
     } else {
       setLogoAnimPhase(prev => (prev !== 'energized' ? 'energized' : prev));
@@ -341,8 +312,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               className="w-full h-full object-cover object-center scale-[1.03] brightness-95 contrast-110 saturate-110"
             />
           </picture>
-          {/* Directional Readability Gradient: Rich Navy on Left, Clearer Tower Showcase on Right */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#060f1e]/92 via-[#0B192C]/75 to-[#0B192C]/40" />
+          {/* Directional Readability Gradient: Rich Navy on Left, Clearer Mountain Showcase on Right */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#060f1e]/90 via-[#0B192C]/55 to-transparent" />
           {/* Top & Bottom Vignette for Seamless Section Framing */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#060f1e]/65 via-transparent to-[#071120]/90" />
           {/* Golden-Hour Sunburst & High-Voltage Sky Glow */}
@@ -501,88 +472,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             {/* Hero Visual Showcase: Video + Telemetry */}
             <div className="lg:col-span-5 flex flex-col items-center lg:items-start justify-start gap-3.5 lg:gap-4 lg:-mt-16 xl:-mt-20 lg:translate-x-[3.5cm]">
               <div className="w-full flex flex-col items-center lg:items-start justify-start -mt-6 lg:-mt-10 xl:-mt-12 bg-transparent relative group/videobox">
-                {/* Download Video Action Menu */}
-                <div className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] flex justify-end px-2 z-30 mb-1">
-                  <div className="relative">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setDownloadMenuOpen(prev => !prev);
-                      }}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900/80 hover:bg-slate-800 text-sky-400 hover:text-sky-300 border border-slate-700/60 backdrop-blur-md text-[11px] font-medium shadow-md transition-all cursor-pointer"
-                      title="Download Video"
-                      aria-label="Download Video"
-                      aria-expanded={downloadMenuOpen}
-                    >
-                      <span className="material-symbols-outlined text-[15px] leading-none">download</span>
-                      <span>Download Video</span>
-                      <span className={`material-symbols-outlined text-[14px] leading-none transition-transform duration-200 ${downloadMenuOpen ? 'rotate-180' : ''}`}>expand_more</span>
-                    </button>
-
-                    {downloadMenuOpen && (
-                      <div
-                        className="absolute right-0 mt-1.5 w-64 rounded-lg bg-slate-900/95 border border-slate-700/80 shadow-2xl backdrop-blur-lg p-1.5 flex flex-col gap-1 z-50 text-left"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800">
-                          Select Format to Download
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleDownloadVideo(
-                              '/assets/aistudio/Ananya_Clean_Transparent_HD.webm',
-                              'Ananya_Desktop_Transparent_HQ_40fps.webm'
-                            );
-                            setDownloadMenuOpen(false);
-                          }}
-                          className="flex items-center justify-between px-2.5 py-2 rounded hover:bg-slate-800 text-slate-200 hover:text-white text-xs text-left transition-colors cursor-pointer group/opt"
-                        >
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-emerald-400">WebM (Transparent 40fps)</span>
-                            <span className="text-[10px] text-slate-400">Native alpha transparent channel</span>
-                          </div>
-                          <span className="material-symbols-outlined text-sm text-emerald-400 group-hover/opt:translate-y-0.5 transition-transform">download</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleDownloadVideo(
-                              '/assets/aistudio/Ananya_Clean_HD.mp4',
-                              'Ananya_Logo_Reveal_HD.mp4'
-                            );
-                            setDownloadMenuOpen(false);
-                          }}
-                          className="flex items-center justify-between px-2.5 py-2 rounded hover:bg-slate-800 text-slate-200 hover:text-white text-xs text-left transition-colors cursor-pointer group/opt"
-                        >
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-sky-400">MP4 (672p HD)</span>
-                            <span className="text-[10px] text-slate-400">Universal H.264 video</span>
-                          </div>
-                          <span className="material-symbols-outlined text-sm text-sky-400 group-hover/opt:translate-y-0.5 transition-transform">download</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleDownloadVideo(
-                              '/assets/aistudio/Ananya_Desktop_Transparent_HQ_40fps_Improved_f00d8ad5.webm',
-                              'Ananya_Original_Uploaded.webm'
-                            );
-                            setDownloadMenuOpen(false);
-                          }}
-                          className="flex items-center justify-between px-2.5 py-2 rounded hover:bg-slate-800 text-slate-200 hover:text-white text-xs text-left transition-colors cursor-pointer group/opt"
-                        >
-                          <div className="flex flex-col">
-                            <span className="font-medium text-slate-300">Original Upload (WebM)</span>
-                            <span className="text-[10px] text-slate-400">Raw source file</span>
-                          </div>
-                          <span className="material-symbols-outlined text-sm text-slate-400 group-hover/opt:translate-y-0.5 transition-transform">download</span>
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
                 <video
                   ref={logoVideoRef}
                   autoPlay
@@ -601,25 +490,34 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                       e.currentTarget.play().catch(() => {});
                     }
                   }}
-                  style={{ aspectRatio: '1 / 1' }}
-                  className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-square object-contain object-center bg-transparent drop-shadow-[0_0_20px_rgba(56,189,248,0.45)]"
+                  style={{ aspectRatio: '1.5 / 1.5' }}
+                  className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent [clip-path:inset(0_0_31%_0)] brightness-90 drop-shadow-[0_0_14px_rgba(56,189,248,0.42)] mix-blend-screen"
                 >
                   <source
-                    src="/assets/aistudio/Ananya_Clean_Transparent_HD.webm"
+                    media="(max-width: 768px)"
+                    src="/assets/aistudio/ananya_logo_reveal_mobile_trimmed.webm"
                     type="video/webm"
                   />
                   <source
-                    src="/assets/aistudio/Ananya_Desktop_Transparent_HQ_40fps_Improved_f00d8ad5.webm"
+                    src="/assets/aistudio/ananya_logo_reveal_transparent_trimmed.webm"
                     type="video/webm"
                   />
                   <source
-                    src="/assets/aistudio/Ananya_Clean_HD.mp4"
+                    src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm"
+                    type="video/webm"
+                  />
+                  <source
+                    src="/assets/aistudio/ananya_logo_reveal_trimmed.mp4"
+                    type="video/mp4"
+                  />
+                  <source
+                    src="/assets/aistudio/Animated_electrical_logo_reveal_1080p_20261023131504_cc86adb8.mp4"
                     type="video/mp4"
                   />
                 </video>
                 {/* Custom Styled Brand Logo Lockup Synchronized with Video Reveal */}
                 <div
-                  className={`w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] flex flex-col items-center justify-center text-center -mt-10 sm:-mt-12 lg:-mt-14 xl:-mt-16 pb-2 select-none transition-all duration-500 ease-out ${
+                  className={`w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] flex flex-col items-center justify-center text-center -mt-24 sm:-mt-28 lg:-mt-30 xl:-mt-32 pb-2 select-none transition-all duration-500 ease-out ${
                     logoAnimPhase === 'charging'
                       ? 'opacity-0 translate-y-3 scale-90 blur-[5px]'
                       : 'opacity-100 translate-y-0 scale-100 blur-0'
