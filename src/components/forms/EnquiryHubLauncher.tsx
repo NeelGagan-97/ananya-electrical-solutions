@@ -12,6 +12,19 @@ export const EnquiryHubLauncher: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // 2nd page starts once scrolled past the hero fold (~500px or 65% of viewport height)
+      const threshold = Math.min(window.innerHeight * 0.65, 500);
+      setIsVisible(window.scrollY >= threshold);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const handleOpen = () => setDrawerOpen(true);
@@ -48,7 +61,13 @@ export const EnquiryHubLauncher: React.FC = () => {
   return (
     <>
       {/* Floating Discrete Quick Access Button */}
-      <div className="fixed bottom-6 left-6 z-40 flex items-center">
+      <div
+        className={`fixed bottom-6 left-6 z-40 flex items-center transition-all duration-300 ease-out ${
+          isVisible
+            ? 'opacity-100 translate-y-0 pointer-events-auto'
+            : 'opacity-0 translate-y-8 pointer-events-none'
+        }`}
+      >
         <button
           type="button"
           onClick={() => setDrawerOpen(true)}

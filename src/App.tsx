@@ -76,6 +76,18 @@ export default function App() {
       return [];
     }
   });
+  const [isScrolledToSecondPage, setIsScrolledToSecondPage] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const threshold = Math.min(window.innerHeight * 0.65, 500);
+      setIsScrolledToSecondPage(window.scrollY >= threshold);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Synchronize clean path & hash navigation on popstate / hashchange
   useEffect(() => {
@@ -398,7 +410,13 @@ export default function App() {
       )}
 
       {/* Floating Direct Call & 24/7 Dispatch Bar */}
-      <div className="fixed bottom-6 right-6 z-40 hidden sm:flex items-center gap-2">
+      <div
+        className={`fixed bottom-6 right-6 z-40 hidden sm:flex items-center gap-2 transition-all duration-300 ease-out ${
+          isScrolledToSecondPage
+            ? 'opacity-100 translate-y-0 pointer-events-auto'
+            : 'opacity-0 translate-y-8 pointer-events-none'
+        }`}
+      >
         <a
           href="tel:+919632025123"
           onClick={() => trackConversionEvent('phone_click', '+91 9632025123', 'Floating Primary Call CTA')}

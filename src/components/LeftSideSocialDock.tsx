@@ -1,8 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BUSINESS_NAP, trackConversionEvent } from '../utils/seo';
 
 export const LeftSideSocialDock: React.FC = () => {
   const [showWhatsAppMenu, setShowWhatsAppMenu] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // 2nd page starts once scrolled past the hero fold (~500px or 65% of viewport height)
+      const threshold = Math.min(window.innerHeight * 0.65, 500);
+      setIsVisible(window.scrollY >= threshold);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const phoneNumber = '919632025123';
   const displayPhone = '+91 9632025123';
@@ -38,7 +51,11 @@ export const LeftSideSocialDock: React.FC = () => {
   return (
     <aside
       aria-label="Quick Connect on WhatsApp and Instagram"
-      className="fixed left-3 sm:left-4 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-3 select-none"
+      className={`fixed left-3 sm:left-4 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-3 select-none transition-all duration-300 ease-out ${
+        isVisible
+          ? 'opacity-100 translate-x-0 pointer-events-auto'
+          : 'opacity-0 -translate-x-12 pointer-events-none'
+      }`}
     >
       {/* WhatsApp Button with Tooltip & Popover */}
       <div className="relative group">
