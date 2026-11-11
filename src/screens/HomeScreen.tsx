@@ -788,7 +788,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       </section>
 
       {/* ================= CREDENTIALS SPOTLIGHT & TARGET CUSTOMER SEGMENTS ================= */}
-      <section className="w-full bg-[#dce9ff] py-12">
+      <section id="page-2-section" className="w-full bg-[#dce9ff] py-12">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-8">
           <div className="rounded-2xl bg-white p-8 lg:p-10 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-8 border border-[#CBD5E1]/60">
             <div className="flex items-start gap-5">

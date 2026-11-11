@@ -79,14 +79,25 @@ export default function App() {
   const [isScrolledToSecondPage, setIsScrolledToSecondPage] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const threshold = Math.min(window.innerHeight * 0.65, 500);
-      setIsScrolledToSecondPage(window.scrollY >= threshold);
+    const checkSecondPage = () => {
+      const page2 = document.getElementById('page-2-section');
+      if (page2) {
+        const rect = page2.getBoundingClientRect();
+        // Pops up only when completely arrived at 2nd page (hero has scrolled fully out past the 80px fixed navbar)
+        setIsScrolledToSecondPage(rect.top <= 85);
+      } else {
+        const threshold = Math.max(window.innerHeight * 0.9, 700);
+        setIsScrolledToSecondPage(window.scrollY >= threshold);
+      }
     };
 
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    checkSecondPage();
+    window.addEventListener('scroll', checkSecondPage, { passive: true });
+    window.addEventListener('resize', checkSecondPage, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', checkSecondPage);
+      window.removeEventListener('resize', checkSecondPage);
+    };
   }, []);
 
   // Synchronize clean path & hash navigation on popstate / hashchange
@@ -411,10 +422,10 @@ export default function App() {
 
       {/* Floating Direct Call & 24/7 Dispatch Bar */}
       <div
-        className={`fixed bottom-6 right-6 z-40 hidden sm:flex items-center gap-2 transition-all duration-300 ease-out ${
+        className={`fixed bottom-6 right-6 z-40 hidden sm:flex items-center gap-2 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
           isScrolledToSecondPage
-            ? 'opacity-100 translate-y-0 pointer-events-auto'
-            : 'opacity-0 translate-y-8 pointer-events-none'
+            ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
+            : 'opacity-0 translate-y-10 scale-75 pointer-events-none'
         }`}
       >
         <a

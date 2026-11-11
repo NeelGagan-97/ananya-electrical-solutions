@@ -15,15 +15,25 @@ export const EnquiryHubLauncher: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      // 2nd page starts once scrolled past the hero fold (~500px or 65% of viewport height)
-      const threshold = Math.min(window.innerHeight * 0.65, 500);
-      setIsVisible(window.scrollY >= threshold);
+    const checkSecondPage = () => {
+      const page2 = document.getElementById('page-2-section');
+      if (page2) {
+        const rect = page2.getBoundingClientRect();
+        // Pops up only when completely arrived at 2nd page (hero has scrolled fully out past the 80px fixed navbar)
+        setIsVisible(rect.top <= 85);
+      } else {
+        const threshold = Math.max(window.innerHeight * 0.9, 700);
+        setIsVisible(window.scrollY >= threshold);
+      }
     };
 
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    checkSecondPage();
+    window.addEventListener('scroll', checkSecondPage, { passive: true });
+    window.addEventListener('resize', checkSecondPage, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', checkSecondPage);
+      window.removeEventListener('resize', checkSecondPage);
+    };
   }, []);
 
   useEffect(() => {
@@ -62,10 +72,10 @@ export const EnquiryHubLauncher: React.FC = () => {
     <>
       {/* Floating Discrete Quick Access Button */}
       <div
-        className={`fixed bottom-6 left-6 z-40 flex items-center transition-all duration-300 ease-out ${
+        className={`fixed bottom-6 left-6 z-40 flex items-center transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
           isVisible
-            ? 'opacity-100 translate-y-0 pointer-events-auto'
-            : 'opacity-0 translate-y-8 pointer-events-none'
+            ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
+            : 'opacity-0 translate-y-10 scale-75 pointer-events-none'
         }`}
       >
         <button
