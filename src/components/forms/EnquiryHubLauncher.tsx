@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FORMS_REGISTRY, openAesEnquiryModal, FormMetadataConfig } from './EnquiryModalHost';
 import { FormId } from './types';
+import { useSecondPageVisible } from '../../utils/useSecondPageVisible';
 
 export const openAesEnquiryHub = () => {
   if (typeof window !== 'undefined') {
@@ -12,29 +13,7 @@ export const EnquiryHubLauncher: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const checkSecondPage = () => {
-      const page2 = document.getElementById('page-2-section');
-      if (page2) {
-        const rect = page2.getBoundingClientRect();
-        // Pops up only when completely arrived at 2nd page (hero has scrolled fully out past the 80px fixed navbar)
-        setIsVisible(rect.top <= 85);
-      } else {
-        const threshold = Math.max(window.innerHeight * 0.9, 700);
-        setIsVisible(window.scrollY >= threshold);
-      }
-    };
-
-    checkSecondPage();
-    window.addEventListener('scroll', checkSecondPage, { passive: true });
-    window.addEventListener('resize', checkSecondPage, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', checkSecondPage);
-      window.removeEventListener('resize', checkSecondPage);
-    };
-  }, []);
+  const isVisible = useSecondPageVisible();
 
   useEffect(() => {
     const handleOpen = () => setDrawerOpen(true);

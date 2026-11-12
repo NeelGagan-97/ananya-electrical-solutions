@@ -60,6 +60,9 @@ export default defineConfig(() => {
             if (id.includes('node_modules/three/')) {
               return 'vendor-three';
             }
+            if (id.includes('node_modules/@vis.gl/')) {
+              return 'vendor-maps';
+            }
             if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
               return 'vendor-react';
             }

@@ -383,13 +383,16 @@ export const RealisticLightningBackground: React.FC = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // Check prefers-reduced-motion
+    // Check prefers-reduced-motion and saveData
     const prefersReducedMotion =
       typeof window !== 'undefined' &&
       window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isSaveData =
+      typeof navigator !== 'undefined' &&
+      (navigator as unknown as { connection?: { saveData?: boolean } }).connection?.saveData === true;
 
-    if (prefersReducedMotion) {
+    if (prefersReducedMotion || isSaveData) {
       return;
     }
 
@@ -846,10 +849,20 @@ export const RealisticLightningBackground: React.FC = () => {
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // Start animation loop
-    animationFrameId = requestAnimationFrame(renderFrame);
+    // Defer animation loop start until after initial paint settles
+    let startTimer: ReturnType<typeof setTimeout> | undefined;
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      (window as unknown as { requestIdleCallback: (cb: () => void) => number }).requestIdleCallback(() => {
+        animationFrameId = requestAnimationFrame(renderFrame);
+      });
+    } else {
+      startTimer = setTimeout(() => {
+        animationFrameId = requestAnimationFrame(renderFrame);
+      }, 100);
+    }
 
     return () => {
+      if (startTimer) clearTimeout(startTimer);
       cancelAnimationFrame(animationFrameId);
       resizeObserver.disconnect();
       intersectionObserver.disconnect();

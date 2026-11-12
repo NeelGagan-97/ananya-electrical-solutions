@@ -1,10 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, Suspense, lazy } from 'react';
 import {
   KARNATAKA_PROJECT_LOCATIONS,
   getMatchingKarnatakaLocations,
   KarnatakaLocationItem,
 } from '../../data/karnatakaLocations';
-import { GoogleMapLocationPicker } from './GoogleMapLocationPicker';
+
+// Code-split heavy Google Maps Platform dependencies so they are never in the initial critical path
+const GoogleMapLocationPicker = lazy(() =>
+  import('./GoogleMapLocationPicker').then((m) => ({ default: m.GoogleMapLocationPicker }))
+);
 
 export interface LocationAutocompleteInputProps {
   id?: string;
@@ -160,15 +164,17 @@ export const LocationAutocompleteInput: React.FC<LocationAutocompleteInputProps>
         )}
       </div>
 
-      {/* Interactive Google Map Location Picker */}
+      {/* Interactive Google Map Location Picker (Code-split on demand) */}
       {showMapPicker && (
-        <GoogleMapLocationPicker
-          currentLocation={value}
-          onSelectLocation={(loc) => {
-            handleSelect(loc);
-          }}
-          onClose={() => setShowMapPicker(false)}
-        />
+        <Suspense fallback={null}>
+          <GoogleMapLocationPicker
+            currentLocation={value}
+            onSelectLocation={(loc) => {
+              handleSelect(loc);
+            }}
+            onClose={() => setShowMapPicker(false)}
+          />
+        </Suspense>
       )}
 
       {/* Autocomplete Dropdown with instant mouse click, keyboard enter/tab */}

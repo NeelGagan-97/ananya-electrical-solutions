@@ -1,10 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, Suspense, lazy } from 'react';
 import {
   KARNATAKA_PROJECT_LOCATIONS,
   getMatchingKarnatakaLocations,
   KarnatakaLocationItem,
 } from '../../../data/karnatakaLocations';
-import { GoogleMapLocationPicker } from '../GoogleMapLocationPicker';
+
+const GoogleMapLocationPicker = lazy(() =>
+  import('../GoogleMapLocationPicker').then((m) => ({ default: m.GoogleMapLocationPicker }))
+);
 
 interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -181,15 +184,17 @@ export const InputField: React.FC<InputFieldProps> = ({
         />
       </div>
 
-      {/* Interactive Google Map Location Picker */}
+      {/* Interactive Google Map Location Picker (Code-split on demand) */}
       {isLocationField && showMapPicker && (
-        <GoogleMapLocationPicker
-          currentLocation={inputValue}
-          onSelectLocation={(loc) => {
-            selectSuggestion(loc);
-          }}
-          onClose={() => setShowMapPicker(false)}
-        />
+        <Suspense fallback={null}>
+          <GoogleMapLocationPicker
+            currentLocation={inputValue}
+            onSelectLocation={(loc) => {
+              selectSuggestion(loc);
+            }}
+            onClose={() => setShowMapPicker(false)}
+          />
+        </Suspense>
       )}
 
       {/* Interactive Autocomplete Suggestions Dropdown with Mouse Click, Tab, and Enter */}

@@ -1,31 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BUSINESS_NAP, trackConversionEvent } from '../utils/seo';
+import { useSecondPageVisible } from '../utils/useSecondPageVisible';
 
 export const LeftSideSocialDock: React.FC = () => {
   const [showWhatsAppMenu, setShowWhatsAppMenu] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const checkSecondPage = () => {
-      const page2 = document.getElementById('page-2-section');
-      if (page2) {
-        const rect = page2.getBoundingClientRect();
-        // Pops up only when completely arrived at 2nd page (hero has scrolled fully out past the 80px fixed navbar)
-        setIsVisible(rect.top <= 85);
-      } else {
-        const threshold = Math.max(window.innerHeight * 0.9, 700);
-        setIsVisible(window.scrollY >= threshold);
-      }
-    };
-
-    checkSecondPage();
-    window.addEventListener('scroll', checkSecondPage, { passive: true });
-    window.addEventListener('resize', checkSecondPage, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', checkSecondPage);
-      window.removeEventListener('resize', checkSecondPage);
-    };
-  }, []);
+  const isVisible = useSecondPageVisible();
 
   const phoneNumber = '919632025123';
   const displayPhone = '+91 9632025123';

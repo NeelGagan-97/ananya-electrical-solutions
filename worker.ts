@@ -339,9 +339,19 @@ function isStaticAsset(pathname: string): boolean {
   return /\.[a-zA-Z0-9]{1,8}$/.test(pathname);
 }
 
-function isContentHashedAsset(pathname: string): boolean {
-  // Vite build emits assets under /assets/ with 8+ char hashes (e.g., index-Bc2VxBhO.js, index-C1234567.css)
-  return pathname.startsWith("/assets/") && /[-.][a-zA-Z0-9_-]{8,}\.(?:js|css|webp|png|jpg|svg|woff2)$/.test(pathname);
+function isFingerprintedViteAsset(pathname: string): boolean {
+  // Vite build emits hashed assets under /assets/ with 8+ char hashes (e.g., index-Bc2VxBhO.js, index-BdQj3jCh.css)
+  return pathname.startsWith("/assets/") && /[-.][a-zA-Z0-9_-]{8,}\.(?:js|css|webp|png|jpg|jpeg|svg|woff2|avif)$/.test(pathname);
+}
+
+function isStaticMediaAsset(pathname: string): boolean {
+  // Production media assets (videos, hero images, diagrams, fonts, icons) under /assets/ or /assets/aistudio/
+  return /\.(?:webm|mp4|webp|avif|jpg|jpeg|png|svg|woff2|woff|ttf|gif|ico)$/i.test(pathname);
+}
+
+function isVersionedMediaAsset(pathname: string): boolean {
+  // Media with version timestamps or content hash suffixes (e.g., _922ef111, _cc86adb8, _20261023131504)
+  return /[-_][a-zA-Z0-9]{8,}\.(?:webm|mp4|webp|avif|jpg|jpeg|png|svg)$/i.test(pathname);
 }
 
 export default {
@@ -365,12 +375,16 @@ export default {
       }
 
       const headers = new Headers(assetResponse.headers);
-      if (isContentHashedAsset(pathname)) {
-        // Immutable cache for fingerprinted Vite production bundles
+      if (isFingerprintedViteAsset(pathname) || isVersionedMediaAsset(pathname)) {
+        // Immutable cache for fingerprinted Vite production bundles and versioned media
         headers.set("Cache-Control", "public, max-age=31536000, immutable");
+      } else if (isStaticMediaAsset(pathname)) {
+        // Long-lived cache for production media (videos, hero images, webp, woff2) with stale-while-revalidate
+        // Eliminates Lighthouse "Serve static assets with an efficient cache policy" warning while allowing safe revalidation
+        headers.set("Cache-Control", "public, max-age=31536000, stale-while-revalidate=604800");
       } else {
-        // Standard caching with revalidation for non-hashed public assets (icons, robots.txt, manifests)
-        headers.set("Cache-Control", "public, max-age=3600, stale-while-revalidate=86400");
+        // Standard caching with revalidation for mutable root public assets (robots.txt, manifests, json)
+        headers.set("Cache-Control", "public, max-age=86400, stale-while-revalidate=604800");
       }
       headers.set("X-Content-Type-Options", "nosniff");
       return new Response(assetResponse.body, {

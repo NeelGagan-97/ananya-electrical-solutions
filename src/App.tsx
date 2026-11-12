@@ -15,6 +15,7 @@ import {
   applyRouteSeo,
   trackConversionEvent,
 } from './utils/seo';
+import { useSecondPageVisible } from './utils/useSecondPageVisible';
 
 // Code-split secondary screens to keep initial landing bundle ultralight
 const ElectricalScreen = React.lazy(() =>
@@ -76,29 +77,7 @@ export default function App() {
       return [];
     }
   });
-  const [isScrolledToSecondPage, setIsScrolledToSecondPage] = useState(false);
-
-  useEffect(() => {
-    const checkSecondPage = () => {
-      const page2 = document.getElementById('page-2-section');
-      if (page2) {
-        const rect = page2.getBoundingClientRect();
-        // Pops up only when completely arrived at 2nd page (hero has scrolled fully out past the 80px fixed navbar)
-        setIsScrolledToSecondPage(rect.top <= 85);
-      } else {
-        const threshold = Math.max(window.innerHeight * 0.9, 700);
-        setIsScrolledToSecondPage(window.scrollY >= threshold);
-      }
-    };
-
-    checkSecondPage();
-    window.addEventListener('scroll', checkSecondPage, { passive: true });
-    window.addEventListener('resize', checkSecondPage, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', checkSecondPage);
-      window.removeEventListener('resize', checkSecondPage);
-    };
-  }, []);
+  const isScrolledToSecondPage = useSecondPageVisible(currentTab);
 
   // Synchronize clean path & hash navigation on popstate / hashchange
   useEffect(() => {

@@ -71,10 +71,30 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const logoVideoRef = useRef<HTMLVideoElement | null>(null);
   const [logoAnimPhase, setLogoAnimPhase] = useState<'charging' | 'surge' | 'energized'>('energized');
+  const [videoPlaybackError, setVideoPlaybackError] = useState(false);
+  const [isClientMobile, setIsClientMobile] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth <= 768;
+  });
+  const [shouldPlayVideo, setShouldPlayVideo] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isSaveData = (navigator as unknown as { connection?: { saveData?: boolean } }).connection?.saveData === true;
+    return !prefersReducedMotion && !isSaveData;
+  });
 
+  // Track viewport width for responsive video source selection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsClientMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener('resize', checkMobile, { passive: true });
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Robust autoplay, loop, and resume handler for mobile browsers
   useEffect(() => {
+    if (!shouldPlayVideo || videoPlaybackError) return;
     const video = logoVideoRef.current;
     if (!video) return;
 
@@ -299,16 +319,32 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
           <picture>
             <source
-              type="image/jpeg"
-              srcSet="/assets/aistudio/Transmission_towers_in_Himalayan__7473177d_2K_922ef111.jpg"
+              type="image/webp"
+              media="(max-width: 768px)"
+              srcSet="/assets/aistudio/Transmission_towers_in_Himalayan_mobile.webp"
+              width={768}
+              height={429}
+            />
+            <source
+              type="image/webp"
+              media="(max-width: 1200px)"
+              srcSet="/assets/aistudio/Transmission_towers_in_Himalayan_1200.webp"
+              width={1200}
+              height={670}
+            />
+            <source
+              type="image/webp"
+              srcSet="/assets/aistudio/Transmission_towers_in_Himalayan_1920.webp"
+              width={1920}
+              height={1072}
             />
             <img
               src="/assets/aistudio/Transmission_towers_in_Himalayan__7473177d_2K_922ef111.jpg"
               alt="High-voltage electrical transmission towers across mountainous terrain"
               fetchPriority="high"
               decoding="async"
-              width={2048}
-              height={1152}
+              width={1920}
+              height={1072}
               className="w-full h-full object-cover object-center scale-[1.03] brightness-95 contrast-110 saturate-110"
             />
           </picture>
@@ -472,64 +508,85 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             {/* Hero Visual Showcase: Video + Telemetry */}
             <div className="lg:col-span-5 flex flex-col items-center lg:items-start justify-start gap-3.5 lg:gap-4 lg:-mt-16 xl:-mt-20 lg:translate-x-[3.5cm]">
               <div className="w-full flex flex-col items-center lg:items-start justify-start -mt-6 lg:-mt-10 xl:-mt-12 bg-transparent relative group/videobox">
-                <video
-                  ref={logoVideoRef}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="metadata"
-                  onTimeUpdate={handleVideoTimeUpdate}
-                  onEnded={(e) => {
-                    const vid = e.currentTarget;
-                    vid.currentTime = 0;
-                    vid.play().catch(() => {});
-                  }}
-                  onCanPlay={(e) => {
-                    if (e.currentTarget.paused) {
-                      e.currentTarget.play().catch(() => {});
-                    }
-                  }}
-                  style={{ aspectRatio: '1.5 / 1.5' }}
-                  className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent [clip-path:inset(0_0_31%_0)] brightness-90 drop-shadow-[0_0_14px_rgba(56,189,248,0.42)] mix-blend-screen"
-                >
-                  <source
-                    media="(max-width: 768px)"
-                    src="/assets/aistudio/ananya_logo_reveal_mobile_trimmed.webm"
-                    type="video/webm"
-                  />
-                  <source
-                    src="/assets/aistudio/ananya_logo_reveal_transparent_trimmed.webm"
-                    type="video/webm"
-                  />
-                  <source
-                    src="/assets/aistudio/Animated_electrical_logo_reveal_transparent.webm"
-                    type="video/webm"
-                  />
-                  <source
-                    src="/assets/aistudio/ananya_logo_reveal_trimmed.mp4"
-                    type="video/mp4"
-                  />
-                  <source
-                    src="/assets/aistudio/Animated_electrical_logo_reveal_1080p_20261023131504_cc86adb8.mp4"
-                    type="video/mp4"
-                  />
-                </video>
+                {shouldPlayVideo && !videoPlaybackError ? (
+                  <video
+                    ref={logoVideoRef}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="metadata"
+                    poster="/assets/aistudio/hero_logo_poster.webp"
+                    onTimeUpdate={handleVideoTimeUpdate}
+                    onError={() => setVideoPlaybackError(true)}
+                    onEnded={(e) => {
+                      const vid = e.currentTarget;
+                      vid.currentTime = 0;
+                      vid.play().catch(() => {});
+                    }}
+                    onCanPlay={(e) => {
+                      if (e.currentTarget.paused) {
+                        e.currentTarget.play().catch(() => {});
+                      }
+                    }}
+                    style={{ aspectRatio: '1.5 / 1.5' }}
+                    className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] object-cover object-center bg-transparent [clip-path:inset(0_0_31%_0)] brightness-90 drop-shadow-[0_0_14px_rgba(56,189,248,0.42)] mix-blend-screen"
+                  >
+                    {isClientMobile ? (
+                      <>
+                        <source
+                          src="/assets/aistudio/ananya_logo_reveal_mobile_trimmed.webm"
+                          type="video/webm"
+                        />
+                        <source
+                          src="/assets/aistudio/ananya_logo_reveal_trimmed.mp4"
+                          type="video/mp4"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <source
+                          src="/assets/aistudio/ananya_logo_reveal_transparent_trimmed.webm"
+                          type="video/webm"
+                        />
+                        <source
+                          src="/assets/aistudio/ananya_logo_reveal_trimmed.mp4"
+                          type="video/mp4"
+                        />
+                      </>
+                    )}
+                  </video>
+                ) : (
+                  <div
+                    style={{ aspectRatio: '1.5 / 1.5' }}
+                    className="w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] aspect-[1.5/1.5] flex items-center justify-center bg-transparent [clip-path:inset(0_0_31%_0)] select-none"
+                  >
+                    <img
+                      src="/assets/aistudio/logo_round_transparent_144.webp"
+                      alt="Ananya Electrical Solutions Emblem"
+                      width={220}
+                      height={220}
+                      loading="eager"
+                      decoding="async"
+                      className="w-44 h-44 sm:w-52 sm:h-52 object-contain brightness-95 contrast-110 drop-shadow-[0_0_14px_rgba(56,189,248,0.42)]"
+                    />
+                  </div>
+                )}
                 {/* Custom Styled Brand Logo Lockup Synchronized with Video Reveal */}
                 <div
-                  className={`w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] flex flex-col items-center justify-center text-center -mt-24 sm:-mt-28 lg:-mt-30 xl:-mt-32 pb-2 select-none transition-all duration-500 ease-out ${
+                  className={`w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[450px] xl:max-w-[480px] flex flex-col items-center justify-center text-center -mt-24 sm:-mt-28 lg:-mt-30 xl:-mt-32 pb-2 select-none transition-all duration-500 ease-out will-change-transform ${
                     logoAnimPhase === 'charging'
                       ? 'opacity-0 translate-y-3 scale-90 blur-[5px]'
                       : 'opacity-100 translate-y-0 scale-100 blur-0'
                   }`}
                 >
                   <span
-                    className={`font-['Cinzel',serif] text-[30px] sm:text-[36px] lg:text-[40px] font-black uppercase leading-none bg-[linear-gradient(90deg,#FB923C_0%,#F97316_24%,#F59E0B_44%,#EF4444_64%,#38BDF8_82%,#F97316_100%)] bg-clip-text text-transparent transition-all duration-500 ${
+                    className={`font-['Cinzel',serif] text-[30px] sm:text-[36px] lg:text-[40px] font-black uppercase leading-none bg-[linear-gradient(90deg,#FB923C_0%,#F97316_24%,#F59E0B_44%,#EF4444_64%,#38BDF8_82%,#F97316_100%)] bg-clip-text text-transparent tracking-[0.22em] transition-transform duration-500 will-change-transform ${
                       logoAnimPhase === 'charging'
-                        ? 'tracking-[0.34em] scale-95'
+                        ? 'scale-95'
                         : logoAnimPhase === 'surge'
-                        ? 'tracking-[0.22em] scale-[1.04] animate-brand-surge'
-                        : 'tracking-[0.20em] scale-100 animate-brand-shimmer'
+                        ? 'scale-[1.04] animate-brand-surge'
+                        : 'scale-100 animate-brand-shimmer'
                     }`}
                   >
                     ANANYA

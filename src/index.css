@@ -194,64 +194,65 @@
 }
 
 @keyframes brandVoltageShimmer {
-  0% {
-    background-position: 0% 50%;
-    filter: drop-shadow(0 2px 12px rgba(249, 115, 22, 0.55))
-      drop-shadow(0 0 18px rgba(239, 68, 68, 0.35));
+  0%, 100% {
+    opacity: 0.94;
+    transform: scale(1) translateZ(0);
   }
 
   50% {
-    background-position: 100% 50%;
-    filter: drop-shadow(0 2px 16px rgba(245, 158, 11, 0.65))
-      drop-shadow(0 0 22px rgba(56, 189, 248, 0.45));
-  }
-
-  100% {
-    background-position: 0% 50%;
-    filter: drop-shadow(0 2px 12px rgba(249, 115, 22, 0.55))
-      drop-shadow(0 0 18px rgba(239, 68, 68, 0.35));
+    opacity: 1;
+    transform: scale(1.018) translateZ(0);
   }
 }
 
 @keyframes brandArcSurge {
   0% {
-    filter: brightness(1.9)
-      drop-shadow(0 0 26px rgba(249, 115, 22, 0.9))
-      drop-shadow(0 0 16px rgba(56, 189, 248, 0.6));
+    opacity: 0.75;
+    transform: scale(1.05) translateZ(0);
   }
 
   100% {
-    filter: brightness(1)
-      drop-shadow(0 2px 12px rgba(249, 115, 22, 0.55));
+    opacity: 1;
+    transform: scale(1) translateZ(0);
   }
 }
 
 @keyframes subCircuitPulse {
   0%, 100% {
-    filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.55))
-      drop-shadow(0 0 14px rgba(239, 68, 68, 0.3));
+    opacity: 0.88;
+    transform: scale(1) translateZ(0);
   }
 
   50% {
-    filter: drop-shadow(0 0 12px rgba(251, 146, 60, 0.8))
-      drop-shadow(0 0 18px rgba(56, 189, 248, 0.45));
+    opacity: 1;
+    transform: scale(1.025) translateZ(0);
   }
 }
 
 .animate-brand-shimmer {
-  background-size: 220% auto;
+  filter: drop-shadow(0 2px 14px rgba(249, 115, 22, 0.6))
+    drop-shadow(0 0 20px rgba(56, 189, 248, 0.45));
   animation: brandVoltageShimmer 2.8s ease-in-out infinite;
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 
 .animate-brand-surge {
-  background-size: 220% auto;
+  filter: drop-shadow(0 2px 18px rgba(249, 115, 22, 0.75))
+    drop-shadow(0 0 24px rgba(56, 189, 248, 0.55));
   animation:
     brandArcSurge 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards,
     brandVoltageShimmer 2.8s ease-in-out 0.55s infinite;
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 
 .animate-sub-pulse {
+  filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.6))
+    drop-shadow(0 0 16px rgba(56, 189, 248, 0.35));
   animation: subCircuitPulse 2.4s ease-in-out infinite;
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 
 @keyframes sectorPoliceLights {
@@ -474,18 +475,20 @@
 
 @keyframes neonPulseGlow {
   0%, 100% {
-    filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.5)) drop-shadow(0 0 28px rgba(239, 68, 68, 0.4));
-    transform: scale(1);
+    opacity: 0.88;
+    transform: scale(1) translateZ(0);
   }
   50% {
-    filter: drop-shadow(0 0 28px rgba(56, 189, 248, 0.85)) drop-shadow(0 0 52px rgba(239, 68, 68, 0.7));
-    transform: scale(1.028);
+    opacity: 1;
+    transform: scale(1.028) translateZ(0);
   }
 }
 
 .animate-neon-pulse {
+  filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.7)) drop-shadow(0 0 40px rgba(239, 68, 68, 0.55));
   animation: neonPulseGlow 3.6s ease-in-out infinite;
-  will-change: transform, filter;
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
