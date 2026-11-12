@@ -241,11 +241,24 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <!-- 1. Consolidated Critical Typography (Cinzel 800, Inter 400/600/700, Montserrat 800, Plus Jakarta Sans 700/800) -->
+    <!-- 1. Non-blocking typography: preload stylesheet, then apply after download -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@800&family=Inter:wght@400;600;700&family=Montserrat:wght@800&family=Plus+Jakarta+Sans:wght@700;800&display=swap"
+    />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@800&family=Inter:wght@400;600;700&family=Montserrat:wght@800&family=Plus+Jakarta+Sans:wght@700;800&display=swap"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@800&family=Inter:wght@400;600;700&family=Montserrat:wght@800&family=Plus+Jakarta+Sans:wght@700;800&display=swap"
+      />
+    </noscript>
 
     <!-- 2. Non-blocking Asynchronous Material Symbols Outlined (display=swap avoids FCP render-blocking) -->
     <link
