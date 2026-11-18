@@ -18,7 +18,7 @@ export { FormWrapper } from './FormWrapper';
 export { FormModal } from './FormModal';
 export {
   EnquiryModalHost,
-  openAesEnquiryModal,
   FORMS_REGISTRY,
 } from './EnquiryModalHost';
-export { EnquiryHubLauncher, openAesEnquiryHub } from './EnquiryHubLauncher';
+export { EnquiryHubLauncher } from './EnquiryHubLauncher';
+export { openAesEnquiryModal, openAesEnquiryHub } from './events';

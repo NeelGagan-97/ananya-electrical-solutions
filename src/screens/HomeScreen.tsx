@@ -1,16 +1,25 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, Suspense } from 'react';
 import { NavigationTab, EngineeringInquiry, ProjectItem } from '../types';
 import { ASSETS, SERVICES, PROJECTS, ESCOMS, ELECTRICAL_EQUIPMENT } from '../data/constants';
-import { LocationAutocompleteInput } from '../components/forms/LocationAutocompleteInput';
-import { ElectricalServicesSection } from '../components/ElectricalServicesSection';
-import { RealisticLightningBackground } from '../components/RealisticLightningBackground';
-import { openAesEnquiryModal, FormId } from '../components/forms';
+import { openAesEnquiryModal } from '../components/forms/events';
+import { FormId } from '../components/forms/types';
 import {
   BUSINESS_NAP,
   trackConversionEvent,
   buildWhatsAppInquiryUrl,
   buildMailtoInquiryUrl,
 } from '../utils/seo';
+
+// Lazy-load below-the-fold sections and canvas background to eliminate initial blocking JS
+const LocationAutocompleteInput = React.lazy(() =>
+  import('../components/forms/LocationAutocompleteInput').then((m) => ({ default: m.LocationAutocompleteInput }))
+);
+const ElectricalServicesSection = React.lazy(() =>
+  import('../components/ElectricalServicesSection').then((m) => ({ default: m.ElectricalServicesSection }))
+);
+const RealisticLightningBackground = React.lazy(() =>
+  import('../components/RealisticLightningBackground').then((m) => ({ default: m.RealisticLightningBackground }))
+);
 
 const SERVICE_TO_FORM_MAP: Record<string, FormId> = {
   'industrial-automation': 'industrial-commercial',
@@ -74,7 +83,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [videoPlaybackError, setVideoPlaybackError] = useState(false);
   const [isClientMobile, setIsClientMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
-    return window.innerWidth <= 768;
+    return window.matchMedia ? window.matchMedia('(max-width: 768px)').matches : false;
   });
   const [shouldPlayVideo, setShouldPlayVideo] = useState(() => {
     if (typeof window === 'undefined') return true;
@@ -83,14 +92,52 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     return !prefersReducedMotion && !isSaveData;
   });
 
-  // Track viewport width for responsive video source selection
+  // Track viewport width for responsive video source selection via non-reflow media query
   useEffect(() => {
-    const checkMobile = () => {
-      setIsClientMobile(window.innerWidth <= 768);
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(max-width: 768px)');
+    const updateMatches = (e: MediaQueryListEvent | MediaQueryList) => {
+      setIsClientMobile(e.matches);
     };
-    window.addEventListener('resize', checkMobile, { passive: true });
-    return () => window.removeEventListener('resize', checkMobile);
+    if (mq.addEventListener) {
+      mq.addEventListener('change', updateMatches);
+      return () => mq.removeEventListener('change', updateMatches);
+    } else {
+      mq.addListener(updateMatches);
+      return () => mq.removeListener(updateMatches);
+    }
   }, []);
+
+  const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
+
+  const handleDownloadVideo = async (url: string, filename: string) => {
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+    } catch {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  };
+
+  useEffect(() => {
+    if (!downloadMenuOpen) return;
+    const handleClickOutside = () => setDownloadMenuOpen(false);
+    window.addEventListener('click', handleClickOutside);
+    return () => window.removeEventListener('click', handleClickOutside);
+  }, [downloadMenuOpen]);
 
   // Robust autoplay, loop, and resume handler for mobile browsers
   useEffect(() => {
@@ -320,10 +367,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <picture>
             <source
               type="image/webp"
+              media="(max-width: 480px)"
+              srcSet="/assets/aistudio/Transmission_towers_in_Himalayan_mobile_480.webp"
+              width={480}
+              height={268}
+            />
+            <source
+              type="image/webp"
               media="(max-width: 768px)"
-              srcSet="/assets/aistudio/Transmission_towers_in_Himalayan_mobile.webp"
-              width={768}
-              height={429}
+              srcSet="/assets/aistudio/Transmission_towers_in_Himalayan_mobile_640.webp"
+              width={640}
+              height={357}
             />
             <source
               type="image/webp"
@@ -345,17 +399,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               decoding="sync"
               width={1920}
               height={1072}
-              className="w-full h-full object-cover object-center scale-[1.03] brightness-95 contrast-110 saturate-110"
+              className="w-full h-full object-cover object-center"
             />
           </picture>
           {/* Directional Readability Gradient: Rich Navy on Left, Clearer Mountain Showcase on Right */}
           <div className="absolute inset-0 bg-gradient-to-r from-[#060f1e]/90 via-[#0B192C]/55 to-transparent" />
           {/* Top & Bottom Vignette for Seamless Section Framing */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#060f1e]/65 via-transparent to-[#071120]/90" />
-          {/* Golden-Hour Sunburst & High-Voltage Sky Glow */}
-          <div className="absolute -top-24 left-1/4 w-[32rem] h-[32rem] bg-[#F59E0B]/15 rounded-full blur-3xl mix-blend-screen" />
-          <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#0284C7]/25 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-10 w-96 h-96 bg-[#38BDF8]/15 rounded-full blur-3xl" />
+          {/* Golden-Hour Sunburst & High-Voltage Sky Glow (Analytical radial gradients for 0ms paint stall) */}
+          <div className="absolute -top-24 left-1/4 w-[32rem] h-[32rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.15)_0%,transparent_70%)] mix-blend-screen pointer-events-none" />
+          <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[radial-gradient(circle_at_center,rgba(2,132,199,0.22)_0%,transparent_70%)] pointer-events-none" />
+          <div className="absolute bottom-0 right-10 w-96 h-96 rounded-full bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.15)_0%,transparent_70%)] pointer-events-none" />
 
           {/* Minimalized Rolling Thunder-Cloud Illumination Overlays */}
           <div
@@ -373,8 +427,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             }}
           />
 
-          {/* Minimalized Procedural High-DPI Fractal Lightning & Sheet Engine */}
-          <RealisticLightningBackground />
+          {/* Minimalized Procedural High-DPI Fractal Lightning & Sheet Engine (Deferred) */}
+          <Suspense fallback={null}>
+            <RealisticLightningBackground />
+          </Suspense>
         </div>
 
         {/* Ambient Technical Grid Pattern */}
@@ -403,8 +459,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 Welcome to <strong className="text-white">Ananya Electrical Solutions</strong> — Government of Karnataka Licensed Super Grade Electrical Contractors headquartered in Sahakarnagar, Bengaluru. We deliver turnkey 11kV–110kV Substations, HT/LT power transformers and switchgear panels, BESCOM &amp; CEIG statutory approvals, industrial plant wiring, and high-efficiency rooftop solar installations across Karnataka.
               </p>
 
-              {/* Primary Lead Conversion CTAs: Get a Quote, Call Now, WhatsApp */}
-              <div className="flex flex-col gap-3 pt-2 max-w-2xl w-full min-w-0 min-h-[148px] sm:min-h-[152px]">
+              {/* Primary Lead Conversion CTAs: Get a Quote, Call Now, WhatsApp (Reserved height prevents CLS) */}
+              <div className="flex flex-col gap-3 pt-2 max-w-2xl w-full min-w-0 min-h-[312px] sm:min-h-[152px]">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 w-full min-w-0">
                   <button
                     onClick={() => {
@@ -508,6 +564,89 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             {/* Hero Visual Showcase: Video + Telemetry */}
             <div className="lg:col-span-5 flex flex-col items-center lg:items-start justify-start gap-3.5 lg:gap-4 lg:-mt-16 xl:-mt-20 lg:translate-x-[3.5cm]">
               <div className="w-full flex flex-col items-center lg:items-start justify-start -mt-6 lg:-mt-10 xl:-mt-12 bg-transparent relative group/videobox">
+                {/* Floating Download Video Button */}
+                <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-30">
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDownloadMenuOpen((prev) => !prev);
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/85 hover:bg-slate-800 text-sky-400 hover:text-sky-300 border border-sky-500/30 backdrop-blur-md text-[11px] font-semibold shadow-lg hover:shadow-sky-500/20 transition-all cursor-pointer"
+                      title="Download Video"
+                      aria-label="Download Video"
+                      aria-expanded={downloadMenuOpen}
+                    >
+                      <span className="material-symbols-outlined text-[15px] leading-none">download</span>
+                      <span>Download Video</span>
+                      <span className={`material-symbols-outlined text-[14px] leading-none transition-transform duration-200 ${downloadMenuOpen ? 'rotate-180' : ''}`}>expand_more</span>
+                    </button>
+
+                    {downloadMenuOpen && (
+                      <div
+                        className="absolute right-0 mt-2 w-64 rounded-xl bg-slate-900/95 border border-slate-700/80 shadow-2xl backdrop-blur-lg p-2 flex flex-col gap-1 z-50 text-left animate-in fade-in zoom-in-95 duration-150"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800">
+                          Select Format to Download
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleDownloadVideo(
+                              '/assets/aistudio/ananya_logo_reveal_transparent_trimmed.webm',
+                              'ananya_logo_reveal_transparent.webm'
+                            );
+                            setDownloadMenuOpen(false);
+                          }}
+                          className="flex items-center justify-between px-2.5 py-2 rounded-lg hover:bg-slate-800 text-slate-200 hover:text-white text-xs text-left transition-colors cursor-pointer group/opt"
+                        >
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-emerald-400">WebM (Transparent Alpha)</span>
+                            <span className="text-[10px] text-slate-400">VP9 Alpha Channel · 2.5 MB</span>
+                          </div>
+                          <span className="material-symbols-outlined text-sm text-emerald-400 group-hover/opt:translate-y-0.5 transition-transform">download</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleDownloadVideo(
+                              '/assets/aistudio/ananya_logo_reveal_trimmed.mp4',
+                              'ananya_logo_reveal_1080p.mp4'
+                            );
+                            setDownloadMenuOpen(false);
+                          }}
+                          className="flex items-center justify-between px-2.5 py-2 rounded-lg hover:bg-slate-800 text-slate-200 hover:text-white text-xs text-left transition-colors cursor-pointer group/opt"
+                        >
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-sky-400">MP4 (1080p Full HD)</span>
+                            <span className="text-[10px] text-slate-400">Universal H.264 · 1.6 MB</span>
+                          </div>
+                          <span className="material-symbols-outlined text-sm text-sky-400 group-hover/opt:translate-y-0.5 transition-transform">download</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleDownloadVideo(
+                              '/assets/aistudio/ananya_logo_reveal_mobile_trimmed.webm',
+                              'ananya_logo_reveal_mobile.webm'
+                            );
+                            setDownloadMenuOpen(false);
+                          }}
+                          className="flex items-center justify-between px-2.5 py-2 rounded-lg hover:bg-slate-800 text-slate-200 hover:text-white text-xs text-left transition-colors cursor-pointer group/opt"
+                        >
+                          <div className="flex flex-col">
+                            <span className="font-medium text-amber-400">Mobile WebM (Compact)</span>
+                            <span className="text-[10px] text-slate-400">Lightweight · 200 KB</span>
+                          </div>
+                          <span className="material-symbols-outlined text-sm text-amber-400 group-hover/opt:translate-y-0.5 transition-transform">download</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 {shouldPlayVideo && !videoPlaybackError ? (
                   <video
                     ref={logoVideoRef}
@@ -515,8 +654,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     loop
                     muted
                     playsInline
-                    preload="metadata"
-                    poster="/assets/aistudio/hero_logo_poster.webp"
+                    preload="auto"
                     onTimeUpdate={handleVideoTimeUpdate}
                     onError={() => setVideoPlaybackError(true)}
                     onEnded={(e) => {
@@ -1381,8 +1519,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </section>
 
-      {/* ================= OUR ELECTRICAL SERVICES (NEW SECTION) ================= */}
-      <ElectricalServicesSection onEnquire={(service) => onOpenConsultation(service)} />
+      {/* ================= OUR ELECTRICAL SERVICES (NEW SECTION) (Deferred) ================= */}
+      <Suspense fallback={<div className="w-full py-12 text-center text-slate-400">Loading services...</div>}>
+        <ElectricalServicesSection onEnquire={(service) => onOpenConsultation(service)} />
+      </Suspense>
 
       {/* ================= ABOUT ANANYA & TECHNICAL METRICS ================= */}
       <section className="w-full bg-white py-20" id="about-us">
@@ -2044,13 +2184,27 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     <label className="text-[14px] text-[#0B192C] font-semibold" htmlFor="location">
                       Project Location in Bengaluru / Karnataka <span className="text-red-500">*</span>
                     </label>
-                    <LocationAutocompleteInput
-                      id="location"
-                      value={formLocation}
-                      onChange={(val) => setFormLocation(val)}
-                      placeholder="e.g. Bangalore, Kolar, Peenya, Devanahalli..."
-                      required
-                    />
+                    <Suspense
+                      fallback={
+                        <input
+                          id="location"
+                          type="text"
+                          value={formLocation}
+                          onChange={(e) => setFormLocation(e.target.value)}
+                          placeholder="e.g. Bangalore, Kolar, Peenya, Devanahalli..."
+                          required
+                          className="w-full h-11 px-3.5 rounded-lg border border-slate-300 bg-white text-sm"
+                        />
+                      }
+                    >
+                      <LocationAutocompleteInput
+                        id="location"
+                        value={formLocation}
+                        onChange={(val) => setFormLocation(val)}
+                        placeholder="e.g. Bangalore, Kolar, Peenya, Devanahalli..."
+                        required
+                      />
+                    </Suspense>
                   </div>
                 </div>
 

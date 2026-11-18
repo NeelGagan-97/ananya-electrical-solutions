@@ -212,18 +212,18 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenSeoAudit }) =
           </div>
         </div>
 
-        {/* Bottom Bar with Compliance Notice & Copyright in 2 Lines */}
-        <div className="mt-5 bg-[#eff4ff] rounded-lg p-4 sm:p-5 flex flex-col gap-2.5 text-[12.5px] text-[#44474c] border border-[#dbeafe]">
-          {/* Line 1: Statutory Compliance Spans */}
-          <div className="flex flex-wrap items-center gap-2">
+        {/* Bottom Bar with Compliance Notice & Copyright */}
+        <div className="mt-5 bg-[#eff4ff] rounded-lg px-4 py-3.5 sm:px-6 sm:py-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2.5 lg:gap-6 text-[12.5px] text-[#44474c] border border-[#dbeafe]">
+          {/* Statutory Compliance Spans */}
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 leading-relaxed">
             <span className="font-semibold text-[#0B192C]">Statutory Compliance:</span>
             <span>Class 1 Electrical Contractor (Karnataka Electrical Inspectorate)</span>
             <span className="text-[#94A3B8]" aria-hidden="true">·</span>
             <span>Class-1 PWD Registered</span>
           </div>
 
-          {/* Line 2: Copyright Notice */}
-          <div className="text-left text-[#555a64] text-[12px]">
+          {/* Copyright Notice */}
+          <div className="text-left lg:text-right text-[#555a64] text-[12px] leading-relaxed lg:shrink-0">
             © {new Date().getFullYear()} Ananya Electrical Solutions, Bengaluru. All rights reserved.
           </div>
         </div>

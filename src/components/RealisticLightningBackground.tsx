@@ -425,11 +425,12 @@ export const RealisticLightningBackground: React.FC = () => {
       let w = explicitWidth;
       let h = explicitHeight;
       if (w === undefined || h === undefined) {
-        w = canvas.clientWidth || canvas.offsetWidth || 320;
-        h = canvas.clientHeight || canvas.offsetHeight || 320;
+        // Fast non-reflow viewport bounds without querying DOM layout properties
+        w = typeof window !== 'undefined' ? window.innerWidth : 320;
+        h = typeof window !== 'undefined' ? Math.min(window.innerHeight, 720) : 480;
       }
-      width = Math.max(320, w);
-      height = Math.max(320, h);
+      width = Math.max(320, Math.floor(w));
+      height = Math.max(320, Math.floor(h));
       isMobile = width < 768 || (typeof window !== 'undefined' && window.innerWidth < 768);
 
       // Mobile devices get dpr = 1 to preserve CPU/GPU fillrate; desktop capped at 1.5

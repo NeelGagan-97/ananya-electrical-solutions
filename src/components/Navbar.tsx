@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavigationTab } from '../types';
 import { BUSINESS_NAP, trackConversionEvent } from '../utils/seo';
-import { openAesEnquiryHub } from './forms';
+import { openAesEnquiryHub } from './forms/events';
 
 interface NavbarProps {
   currentTab: NavigationTab;

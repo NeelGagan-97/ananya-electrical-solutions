@@ -1,6 +1,7 @@
 import React from 'react';
 import { ASSETS } from '../data/constants';
-import { openAesEnquiryModal, FormId } from './forms';
+import { openAesEnquiryModal } from './forms/events';
+import { FormId } from './forms/types';
 
 const CARD_TO_FORM_MAP: Record<string, FormId> = {
   'home-wiring': 'residential-service',

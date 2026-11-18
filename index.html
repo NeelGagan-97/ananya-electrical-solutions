@@ -230,18 +230,19 @@
       }
     </script>
 
-    <!-- Preload Critical LCP Hero Background Image (Mobile & Desktop) -->
-    <link rel="preload" as="image" href="/assets/aistudio/Transmission_towers_in_Himalayan_mobile.webp" type="image/webp" media="(max-width: 768px)" fetchpriority="high" />
+    <!-- Preload Critical LCP Hero Background Image (Mobile & Desktop matching responsive <picture>) -->
+    <link rel="preload" as="image" href="/assets/aistudio/Transmission_towers_in_Himalayan_mobile_480.webp" type="image/webp" media="(max-width: 480px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/aistudio/Transmission_towers_in_Himalayan_mobile_640.webp" type="image/webp" media="(min-width: 481px) and (max-width: 768px)" fetchpriority="high" />
     <link rel="preload" as="image" href="/assets/aistudio/Transmission_towers_in_Himalayan_1920.webp" type="image/webp" media="(min-width: 769px)" fetchpriority="high" />
 
     <!-- Cloudflare Web Analytics DNS Prefetch -->
     <link rel="dns-prefetch" href="https://static.cloudflareinsights.com" />
 
-    <!-- Google Fonts Optimization: Preconnect + Consolidated Single Request with display=swap -->
+    <!-- Google Fonts Optimization: Preconnect + Non-blocking Asynchronous Stylesheets with display=swap -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <!-- 1. Non-blocking typography: preload stylesheet, then apply after download -->
+    <!-- 1. Non-blocking Critical Typography (Cinzel 800, Inter 400/600/700, Montserrat 800, Plus Jakarta Sans 700/800) -->
     <link
       rel="preload"
       as="style"
@@ -280,7 +281,71 @@
     </noscript>
   </head>
   <body class="bg-[#f8f9ff] text-[#0b1c30] antialiased selection:bg-[#cce5ff] selection:text-[#001d31]">
-    <div id="root"></div>
+    <div id="root">
+      <div class="flex flex-col w-full">
+        <section class="relative w-full bg-[#071120] text-white overflow-hidden py-16 lg:py-24">
+          <div class="absolute inset-0 pointer-events-none select-none overflow-hidden">
+            <picture>
+              <source
+                type="image/webp"
+                media="(max-width: 480px)"
+                srcset="/assets/aistudio/Transmission_towers_in_Himalayan_mobile_480.webp"
+                width="480"
+                height="268"
+              />
+              <source
+                type="image/webp"
+                media="(max-width: 768px)"
+                srcset="/assets/aistudio/Transmission_towers_in_Himalayan_mobile_640.webp"
+                width="640"
+                height="357"
+              />
+              <source
+                type="image/webp"
+                media="(max-width: 1200px)"
+                srcset="/assets/aistudio/Transmission_towers_in_Himalayan_1200.webp"
+                width="1200"
+                height="670"
+              />
+              <source
+                type="image/webp"
+                srcset="/assets/aistudio/Transmission_towers_in_Himalayan_1920.webp"
+                width="1920"
+                height="1072"
+              />
+              <img
+                src="/assets/aistudio/Transmission_towers_in_Himalayan__7473177d_2K_922ef111.jpg"
+                alt="High-voltage electrical transmission towers across mountainous terrain"
+                fetchpriority="high"
+                decoding="async"
+                width="1920"
+                height="1072"
+                class="w-full h-full object-cover object-center"
+              />
+            </picture>
+            <div class="absolute inset-0 bg-gradient-to-r from-[#060f1e]/90 via-[#0B192C]/55 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-[#060f1e]/65 via-transparent to-[#071120]/90"></div>
+            <div class="absolute -top-24 left-1/4 w-[32rem] h-[32rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.15)_0%,transparent_70%)] mix-blend-screen pointer-events-none"></div>
+            <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[radial-gradient(circle_at_center,rgba(2,132,199,0.22)_0%,transparent_70%)] pointer-events-none"></div>
+            <div class="absolute bottom-0 right-10 w-96 h-96 rounded-full bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.15)_0%,transparent_70%)] pointer-events-none"></div>
+          </div>
+          <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 xl:gap-10 items-start">
+              <div class="lg:col-span-7 flex flex-col gap-6">
+                <div class="flex flex-col gap-3">
+                  <h1 class="font-display-xl tracking-tight font-extrabold drop-shadow-md bg-[linear-gradient(90deg,#EA580C_0%,#F97316_20%,#F59E0B_40%,#FACC15_60%,#F59E0B_80%,#EA580C_100%)] bg-[length:200%_auto] bg-clip-text text-transparent [text-wrap:balance]">
+                    Powering Karnataka with Reliable Electrical &amp; Solar Solutions
+                  </h1>
+                </div>
+                <p class="font-body-lg text-slate-200 max-w-2xl drop-shadow-sm [text-wrap:pretty]">
+                  Welcome to <strong class="text-white">Ananya Electrical Solutions</strong> — Government of Karnataka Licensed Super Grade Electrical Contractors headquartered in Sahakarnagar, Bengaluru. We deliver turnkey 11kV–110kV Substations, HT/LT power transformers and switchgear panels, BESCOM &amp; CEIG statutory approvals, industrial plant wiring, and high-efficiency rooftop solar installations across Karnataka.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

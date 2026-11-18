@@ -1,10 +1,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { Phone } from 'lucide-react';
 import { NavigationTab, EngineeringInquiry } from './types';
+import type { BaseEnquirySubmission } from './components/forms/types';
 import { Navbar } from './components/Navbar';
-import { Footer } from './components/Footer';
-import { EnquiryModalHost, EnquiryHubLauncher, BaseEnquirySubmission } from './components/forms';
-import { LeftSideSocialDock } from './components/LeftSideSocialDock';
 import { HomeScreen } from './screens/HomeScreen';
 import {
   BUSINESS_NAP,
@@ -16,6 +13,20 @@ import {
   trackConversionEvent,
 } from './utils/seo';
 import { useSecondPageVisible } from './utils/useSecondPageVisible';
+
+// Code-split auxiliary components to eliminate unused JS from initial critical path
+const Footer = React.lazy(() =>
+  import('./components/Footer').then((m) => ({ default: m.Footer }))
+);
+const LeftSideSocialDock = React.lazy(() =>
+  import('./components/LeftSideSocialDock').then((m) => ({ default: m.LeftSideSocialDock }))
+);
+const EnquiryModalHost = React.lazy(() =>
+  import('./components/forms').then((m) => ({ default: m.EnquiryModalHost }))
+);
+const EnquiryHubLauncher = React.lazy(() =>
+  import('./components/forms').then((m) => ({ default: m.EnquiryHubLauncher }))
+);
 
 // Code-split secondary screens to keep initial landing bundle ultralight
 const ElectricalScreen = React.lazy(() =>
@@ -197,8 +208,10 @@ export default function App() {
         inquiryCount={inquiries.length}
       />
 
-      {/* Floating Left Side Social Dock: WhatsApp & Instagram */}
-      <LeftSideSocialDock />
+      {/* Floating Left Side Social Dock: WhatsApp & Instagram (Deferred) */}
+      <Suspense fallback={null}>
+        <LeftSideSocialDock />
+      </Suspense>
 
       {/* Main Screen Content with pt-20 to clear fixed header */}
       <main id="main-content" className="flex-1 w-full pt-20">
@@ -363,10 +376,12 @@ export default function App() {
         currentTab !== 'residential-solar-3d' &&
         currentTab !== 'residential-3d' &&
         currentTab !== 'smart-home-3d' && (
-          <Footer
-            onSelectTab={handleSelectTab}
-            onOpenSeoAudit={() => setSeoAuditModalOpen(true)}
-          />
+          <Suspense fallback={null}>
+            <Footer
+              onSelectTab={handleSelectTab}
+              onOpenSeoAudit={() => setSeoAuditModalOpen(true)}
+            />
+          </Suspense>
         )}
 
       {/* Global Consultation / Proposal Modal (Deferred / Code-split) */}
@@ -381,11 +396,15 @@ export default function App() {
         </Suspense>
       )}
 
-      {/* Complete AES Enquiry Forms Module (15 Forms) Modal Host */}
-      <EnquiryModalHost onFormSubmitted={handleFormSubmitted} />
+      {/* Complete AES Enquiry Forms Module (15 Forms) Modal Host (Deferred) */}
+      <Suspense fallback={null}>
+        <EnquiryModalHost onFormSubmitted={handleFormSubmitted} />
+      </Suspense>
 
-      {/* Floating AES Enquiry Forms Hub (15 Forms Catalog) */}
-      <EnquiryHubLauncher />
+      {/* Floating AES Enquiry Forms Hub (15 Forms Catalog) (Deferred) */}
+      <Suspense fallback={null}>
+        <EnquiryHubLauncher />
+      </Suspense>
 
       {/* Technical SEO, Keyword Map, GBP & Conversion Audit Modal */}
       {seoAuditModalOpen && (
@@ -412,7 +431,7 @@ export default function App() {
           onClick={() => trackConversionEvent('phone_click', '+91 9632025123', 'Floating Primary Call CTA')}
           className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#0B192C] text-white text-[13px] font-bold shadow-xl hover:bg-[#006398] transition-all hover:scale-105 border border-slate-700"
         >
-          <Phone className="w-4.5 h-4.5 text-[#F59E0B]" />
+          <span className="material-symbols-outlined text-[18px] text-[#F59E0B]">call</span>
           <span>Call +91 9632025123</span>
         </a>
       </div>
