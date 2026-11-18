@@ -108,36 +108,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     }
   }, []);
 
-  const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
-
-  const handleDownloadVideo = async (url: string, filename: string) => {
-    try {
-      const res = await fetch(url);
-      const blob = await res.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
-    } catch {
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-  };
-
-  useEffect(() => {
-    if (!downloadMenuOpen) return;
-    const handleClickOutside = () => setDownloadMenuOpen(false);
-    window.addEventListener('click', handleClickOutside);
-    return () => window.removeEventListener('click', handleClickOutside);
-  }, [downloadMenuOpen]);
 
   // Robust autoplay, loop, and resume handler for mobile browsers
   useEffect(() => {
@@ -433,18 +403,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </Suspense>
         </div>
 
-        {/* Ambient Technical Grid Pattern */}
-        <div className="absolute inset-0 opacity-[0.08] mix-blend-screen pointer-events-none">
-          <svg className="w-full h-full" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern height="48" id="hero-grid" patternUnits="userSpaceOnUse" width="48">
-                <path className="text-[#38BDF8]" d="M 48 0 L 0 0 0 48" fill="none" stroke="currentColor" strokeWidth="1" />
-              </pattern>
-            </defs>
-            <rect fill="url(#hero-grid)" height="100%" width="100%" />
-          </svg>
-        </div>
-
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 flex flex-col gap-12">
           {/* Main Hero Split Content */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 xl:gap-10 items-start">
@@ -564,88 +522,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             {/* Hero Visual Showcase: Video + Telemetry */}
             <div className="lg:col-span-5 flex flex-col items-center lg:items-start justify-start gap-3.5 lg:gap-4 lg:-mt-16 xl:-mt-20 lg:translate-x-[3.5cm]">
               <div className="w-full flex flex-col items-center lg:items-start justify-start -mt-6 lg:-mt-10 xl:-mt-12 bg-transparent relative group/videobox">
-                {/* Floating Download Video Button */}
-                <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-30">
-                  <div className="relative">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setDownloadMenuOpen((prev) => !prev);
-                      }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/85 hover:bg-slate-800 text-sky-400 hover:text-sky-300 border border-sky-500/30 backdrop-blur-md text-[11px] font-semibold shadow-lg hover:shadow-sky-500/20 transition-all cursor-pointer"
-                      title="Download Video"
-                      aria-label="Download Video"
-                      aria-expanded={downloadMenuOpen}
-                    >
-                      <span className="material-symbols-outlined text-[15px] leading-none">download</span>
-                      <span>Download Video</span>
-                      <span className={`material-symbols-outlined text-[14px] leading-none transition-transform duration-200 ${downloadMenuOpen ? 'rotate-180' : ''}`}>expand_more</span>
-                    </button>
-
-                    {downloadMenuOpen && (
-                      <div
-                        className="absolute right-0 mt-2 w-64 rounded-xl bg-slate-900/95 border border-slate-700/80 shadow-2xl backdrop-blur-lg p-2 flex flex-col gap-1 z-50 text-left animate-in fade-in zoom-in-95 duration-150"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800">
-                          Select Format to Download
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleDownloadVideo(
-                              '/assets/aistudio/ananya_logo_reveal_transparent_trimmed.webm',
-                              'ananya_logo_reveal_transparent.webm'
-                            );
-                            setDownloadMenuOpen(false);
-                          }}
-                          className="flex items-center justify-between px-2.5 py-2 rounded-lg hover:bg-slate-800 text-slate-200 hover:text-white text-xs text-left transition-colors cursor-pointer group/opt"
-                        >
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-emerald-400">WebM (Transparent Alpha)</span>
-                            <span className="text-[10px] text-slate-400">VP9 Alpha Channel · 2.5 MB</span>
-                          </div>
-                          <span className="material-symbols-outlined text-sm text-emerald-400 group-hover/opt:translate-y-0.5 transition-transform">download</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleDownloadVideo(
-                              '/assets/aistudio/ananya_logo_reveal_trimmed.mp4',
-                              'ananya_logo_reveal_1080p.mp4'
-                            );
-                            setDownloadMenuOpen(false);
-                          }}
-                          className="flex items-center justify-between px-2.5 py-2 rounded-lg hover:bg-slate-800 text-slate-200 hover:text-white text-xs text-left transition-colors cursor-pointer group/opt"
-                        >
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-sky-400">MP4 (1080p Full HD)</span>
-                            <span className="text-[10px] text-slate-400">Universal H.264 · 1.6 MB</span>
-                          </div>
-                          <span className="material-symbols-outlined text-sm text-sky-400 group-hover/opt:translate-y-0.5 transition-transform">download</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleDownloadVideo(
-                              '/assets/aistudio/ananya_logo_reveal_mobile_trimmed.webm',
-                              'ananya_logo_reveal_mobile.webm'
-                            );
-                            setDownloadMenuOpen(false);
-                          }}
-                          className="flex items-center justify-between px-2.5 py-2 rounded-lg hover:bg-slate-800 text-slate-200 hover:text-white text-xs text-left transition-colors cursor-pointer group/opt"
-                        >
-                          <div className="flex flex-col">
-                            <span className="font-medium text-amber-400">Mobile WebM (Compact)</span>
-                            <span className="text-[10px] text-slate-400">Lightweight · 200 KB</span>
-                          </div>
-                          <span className="material-symbols-outlined text-sm text-amber-400 group-hover/opt:translate-y-0.5 transition-transform">download</span>
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
 
                 {shouldPlayVideo && !videoPlaybackError ? (
                   <video
