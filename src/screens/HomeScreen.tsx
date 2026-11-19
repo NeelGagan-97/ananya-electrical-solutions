@@ -595,13 +595,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   }`}
                 >
                   <span
-                    className={`font-['Cinzel',serif] text-[30px] sm:text-[36px] lg:text-[40px] font-black uppercase leading-none bg-[linear-gradient(90deg,#FB923C_0%,#F97316_24%,#F59E0B_44%,#EF4444_64%,#38BDF8_82%,#F97316_100%)] bg-clip-text text-transparent tracking-[0.22em] transition-transform duration-500 will-change-transform ${
+                    className={`font-['Cinzel',serif] text-[30px] sm:text-[36px] lg:text-[40px] font-black uppercase leading-none bg-[linear-gradient(90deg,#FF5500_0%,#FF7A00_22%,#FFA800_44%,#FFD60A_60%,#FF9500_80%,#FF5500_100%)] bg-clip-text text-transparent tracking-[0.22em] transition-transform duration-500 will-change-transform ${
                       logoAnimPhase === 'charging'
                         ? 'scale-95'
                         : logoAnimPhase === 'surge'
                         ? 'scale-[1.04] animate-brand-surge'
                         : 'scale-100 animate-brand-shimmer'
-                    }`}
+                    } [filter:brightness(1.14)_saturate(1.35)_drop-shadow(1.2px_0_0_#000)_drop-shadow(-1.2px_0_0_#000)_drop-shadow(0_1.2px_0_#000)_drop-shadow(0_-1.2px_0_#000)_drop-shadow(0_2px_6px_rgba(0,0,0,0.9))]!`}
                   >
                     ANANYA
                   </span>
@@ -619,7 +619,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                         logoAnimPhase === 'energized' ? 'w-7 opacity-100' : 'w-1 opacity-0'
                       }`}
                     />
-                    <span className="font-['Montserrat','Montserrat_Fallback',sans-serif] text-[11px] sm:text-[12.5px] lg:text-[13.5px] font-extrabold uppercase tracking-[0.28em] bg-[linear-gradient(90deg,#FDBA74_0%,#FB923C_34%,#F97316_56%,#F87171_78%,#38BDF8_100%)] bg-clip-text text-transparent animate-sub-pulse whitespace-nowrap">
+                    <span className="font-['Montserrat','Montserrat_Fallback',sans-serif] text-[11px] sm:text-[12.5px] lg:text-[13.5px] font-extrabold uppercase tracking-[0.28em] bg-[linear-gradient(90deg,#FF6B00_0%,#FF8C00_25%,#FFB703_50%,#FFD60A_70%,#FF7A00_100%)] bg-clip-text text-transparent animate-sub-pulse [filter:brightness(1.14)_saturate(1.35)_drop-shadow(0.9px_0_0_#000)_drop-shadow(-0.9px_0_0_#000)_drop-shadow(0_0.9px_0_#000)_drop-shadow(0_-0.9px_0_#000)_drop-shadow(0_1.5px_4px_rgba(0,0,0,0.9))]! whitespace-nowrap">
                       ELECTRICAL SOLUTIONS
                     </span>
                     <span
@@ -629,13 +629,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     />
                   </div>
                   <span
-                    className={`mt-1.5 font-['Montserrat','Montserrat_Fallback',sans-serif] text-[10.5px] sm:text-[12px] lg:text-[13px] font-bold italic tracking-[0.16em] bg-[linear-gradient(90deg,#FB923C_0%,#F97316_24%,#F59E0B_44%,#EF4444_64%,#38BDF8_82%,#F97316_100%)] bg-clip-text text-transparent transition-all duration-500 ${
+                    className={`mt-1.5 font-['Montserrat','Montserrat_Fallback',sans-serif] text-[10.5px] sm:text-[12px] lg:text-[13px] font-bold italic tracking-[0.16em] bg-[linear-gradient(90deg,#FF6B00_0%,#FF8C00_25%,#FFB703_50%,#FFD60A_70%,#FF7A00_100%)] bg-clip-text text-transparent transition-all duration-500 ${
                       logoAnimPhase === 'charging'
                         ? 'opacity-0 translate-y-2 scale-90'
                         : logoAnimPhase === 'surge'
                         ? 'opacity-85 translate-y-0.5 scale-[1.03] animate-brand-surge'
                         : 'opacity-100 translate-y-0 scale-100 animate-brand-shimmer animate-sub-pulse'
-                    }`}
+                    } [filter:brightness(1.14)_saturate(1.35)_drop-shadow(0.9px_0_0_#000)_drop-shadow(-0.9px_0_0_#000)_drop-shadow(0_0.9px_0_#000)_drop-shadow(0_-0.9px_0_#000)_drop-shadow(0_1.5px_4px_rgba(0,0,0,0.9))]!`}
                   >
                     &ldquo;Powering Brighter Tomorrow&rdquo;
                   </span>

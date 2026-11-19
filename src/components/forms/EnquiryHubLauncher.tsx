@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { FORMS_REGISTRY, openAesEnquiryModal, FormMetadataConfig } from './EnquiryModalHost';
+import { FORMS_REGISTRY, FormMetadataConfig } from './EnquiryModalHost';
+import {
+  AES_OPEN_ENQUIRY_HUB_EVENT,
+  openAesEnquiryHub,
+  openAesEnquiryModal,
+  setEnquiryHubMounted,
+  consumePendingEnquiryHubOpen,
+} from './events';
 import { FormId } from './types';
 import { useSecondPageVisible } from '../../utils/useSecondPageVisible';
 
-export const openAesEnquiryHub = () => {
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('aes-open-enquiry-hub'));
-  }
-};
+export { openAesEnquiryHub };
 
 export const EnquiryHubLauncher: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -17,8 +20,17 @@ export const EnquiryHubLauncher: React.FC = () => {
 
   useEffect(() => {
     const handleOpen = () => setDrawerOpen(true);
-    window.addEventListener('aes-open-enquiry-hub', handleOpen);
-    return () => window.removeEventListener('aes-open-enquiry-hub', handleOpen);
+    window.addEventListener(AES_OPEN_ENQUIRY_HUB_EVENT, handleOpen);
+    setEnquiryHubMounted(true);
+
+    if (consumePendingEnquiryHubOpen()) {
+      setDrawerOpen(true);
+    }
+
+    return () => {
+      setEnquiryHubMounted(false);
+      window.removeEventListener(AES_OPEN_ENQUIRY_HUB_EVENT, handleOpen);
+    };
   }, []);
 
   const formsList: FormMetadataConfig[] = Object.values(FORMS_REGISTRY);

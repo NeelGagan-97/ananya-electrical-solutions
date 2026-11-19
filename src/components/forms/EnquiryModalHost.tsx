@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { FormId, BaseEnquirySubmission } from './types';
 import { FormModal } from './FormModal';
-
-import { Suspense } from 'react';
+import {
+  AES_OPEN_FORM_MODAL_EVENT,
+  openAesEnquiryModal,
+  setEnquiryModalMounted,
+  consumePendingEnquiryModalId,
+} from './events';
 
 // Code-split form item components so none of the 15 heavy forms are in the initial bundle
 const ResidentialServiceForm = React.lazy(() =>
@@ -218,15 +222,7 @@ export const FORMS_REGISTRY: Record<FormId, FormMetadataConfig> = {
 /**
  * Global helper to trigger any AES form modal from anywhere in the app
  */
-export const openAesEnquiryModal = (formId: FormId) => {
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(
-      new CustomEvent('aes:open-form-modal', {
-        detail: { formId },
-      })
-    );
-  }
-};
+export { openAesEnquiryModal };
 
 interface EnquiryModalHostProps {
   onFormSubmitted?: (submission: BaseEnquirySubmission) => void;
@@ -243,8 +239,18 @@ export const EnquiryModalHost: React.FC<EnquiryModalHostProps> = ({ onFormSubmit
       }
     };
 
-    window.addEventListener('aes:open-form-modal', handleOpenEvent);
-    return () => window.removeEventListener('aes:open-form-modal', handleOpenEvent);
+    window.addEventListener(AES_OPEN_FORM_MODAL_EVENT, handleOpenEvent);
+    setEnquiryModalMounted(true);
+
+    const pendingId = consumePendingEnquiryModalId();
+    if (pendingId && FORMS_REGISTRY[pendingId]) {
+      setActiveFormId(pendingId);
+    }
+
+    return () => {
+      setEnquiryModalMounted(false);
+      window.removeEventListener(AES_OPEN_FORM_MODAL_EVENT, handleOpenEvent);
+    };
   }, []);
 
   if (!activeFormId) return null;
