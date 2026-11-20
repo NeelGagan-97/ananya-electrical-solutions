@@ -97,15 +97,15 @@ export const EnquiryHubLauncher: React.FC = () => {
             if (e.target === e.currentTarget) setDrawerOpen(false);
           }}
         >
-          <div className="w-full max-w-xl h-full bg-[#F8FAFC] shadow-2xl flex flex-col border-l border-slate-300 animate-slideLeft">
+          <div className="w-full max-w-3xl h-full bg-[#F8FAFC] shadow-2xl flex flex-col border-l border-slate-300 animate-slideLeft">
             {/* Header */}
-            <div className="bg-[#0B192C] px-6 py-5 text-white flex items-center justify-between border-b border-slate-800 shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#0284C7]/20 border border-[#38BDF8]/30 flex items-center justify-center text-[#38BDF8]">
-                  <span className="material-symbols-outlined text-[22px]">format_list_bulleted</span>
+            <div className="bg-[#0B192C] px-6 sm:px-8 py-5 sm:py-6 text-white flex items-center justify-between border-b border-slate-800 shrink-0">
+              <div className="flex items-center gap-3.5">
+                <div className="w-11 h-11 rounded-xl bg-[#0284C7]/20 border border-[#38BDF8]/30 flex items-center justify-center text-[#38BDF8]">
+                  <span className="material-symbols-outlined text-[24px]">format_list_bulleted</span>
                 </div>
                 <div>
-                  <h3 className="text-[18px] font-bold text-white tracking-tight">
+                  <h3 className="text-[20px] sm:text-[22px] font-bold text-white tracking-tight">
                     AES Enquiry Forms Hub
                   </h3>
                 </div>
@@ -115,16 +115,16 @@ export const EnquiryHubLauncher: React.FC = () => {
                 type="button"
                 onClick={() => setDrawerOpen(false)}
                 aria-label="Close Enquiry Forms drawer"
-                className="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                className="w-9 h-9 rounded-lg bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer border border-slate-700"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
 
             {/* Search & Category Tabs */}
-            <div className="p-4 bg-white border-b border-slate-200 shrink-0 space-y-3">
+            <div className="px-6 sm:px-8 py-5 bg-white border-b border-slate-200 shrink-0 space-y-3.5">
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-slate-400">
+                <span className="material-symbols-outlined absolute left-3.5 top-3 text-[20px] text-slate-400">
                   search
                 </span>
                 <input
@@ -134,16 +134,16 @@ export const EnquiryHubLauncher: React.FC = () => {
                   placeholder="Search form by name or scope (e.g. Solar, HT, Safety, AMC)..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full py-2 pl-9 pr-3 text-[13px] rounded-lg bg-[#F8FAFC] border border-slate-200 focus:border-[#0284C7] outline-none"
+                  className="w-full py-2.5 pl-11 pr-4 text-[14px] rounded-xl bg-[#F8FAFC] border border-slate-200 focus:border-[#0284C7] outline-none"
                 />
               </div>
 
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
                 {categories.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
-                    className={`px-2.5 py-1 rounded-full text-[11.5px] font-medium whitespace-nowrap transition-colors cursor-pointer ${
+                    className={`px-3.5 py-1.5 rounded-full text-[12.5px] font-medium whitespace-nowrap transition-colors cursor-pointer ${
                       selectedCategory === cat
                         ? 'bg-[#0B192C] text-white shadow-xs'
                         : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -156,29 +156,29 @@ export const EnquiryHubLauncher: React.FC = () => {
             </div>
 
             {/* Scrollable Form Cards List */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-2.5">
+            <div className="flex-1 overflow-y-auto px-6 sm:px-8 py-5 space-y-3.5">
               {filteredForms.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleOpenForm(item.id)}
-                  className="p-3.5 bg-white rounded-xl border border-slate-200 hover:border-[#0284C7] shadow-xs hover:shadow-md transition-all cursor-pointer group flex items-start gap-3.5"
+                  className="p-4 sm:p-5 bg-white rounded-xl border border-slate-200 hover:border-[#0284C7] shadow-xs hover:shadow-md transition-all cursor-pointer group flex items-start gap-4"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-[#0284C7]/10 group-hover:bg-[#0284C7] text-[#0284C7] group-hover:text-white flex items-center justify-center shrink-0 transition-colors mt-0.5">
-                    <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
+                  <div className="w-12 h-12 rounded-xl bg-[#0284C7]/10 group-hover:bg-[#0284C7] text-[#0284C7] group-hover:text-white flex items-center justify-center shrink-0 transition-colors mt-0.5">
+                    <span className="material-symbols-outlined text-[22px]">{item.icon}</span>
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-slate-100 text-[#0284C7] border border-slate-200">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded bg-slate-100 text-[#0284C7] border border-slate-200">
                         {item.badge}
                       </span>
                     </div>
 
-                    <h4 className="text-[14px] font-bold text-[#0B192C] group-hover:text-[#0284C7] transition-colors leading-snug">
+                    <h4 className="text-[15.5px] sm:text-[16px] font-bold text-[#0B192C] group-hover:text-[#0284C7] transition-colors leading-snug">
                       {item.title}
                     </h4>
 
-                    <p className="text-[12px] text-slate-500 mt-1 line-clamp-2 leading-relaxed">
+                    <p className="text-[13px] text-slate-500 mt-1.5 line-clamp-2 leading-relaxed">
                       {item.description}
                     </p>
                   </div>
@@ -186,19 +186,19 @@ export const EnquiryHubLauncher: React.FC = () => {
               ))}
 
               {filteredForms.length === 0 && (
-                <div className="py-12 text-center text-slate-400">
-                  <span className="material-symbols-outlined text-[36px] text-slate-300">search_off</span>
-                  <p className="text-[13px] mt-2">No forms match "{searchQuery}" in {selectedCategory}</p>
+                <div className="py-14 text-center text-slate-400">
+                  <span className="material-symbols-outlined text-[40px] text-slate-300">search_off</span>
+                  <p className="text-[14px] mt-2">No forms match "{searchQuery}" in {selectedCategory}</p>
                 </div>
               )}
             </div>
 
             {/* Drawer Footer Contact Bar */}
-            <div className="p-4 bg-white border-t border-slate-200 text-center text-[12px] text-slate-600 flex items-center justify-between shrink-0">
-              <span className="font-mono text-[11px] text-slate-500">
+            <div className="px-6 sm:px-8 py-4 bg-white border-t border-slate-200 text-center text-[13px] text-slate-600 flex items-center justify-between shrink-0">
+              <span className="font-mono text-[12.5px] text-slate-500">
                 Official Helpline: +91 9632025123
               </span>
-              <span className="text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-medium border border-emerald-200">
+              <span className="text-[12px] text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded font-medium border border-emerald-200">
                 Super Grade Licensed
               </span>
             </div>
