@@ -9,17 +9,11 @@ import {
 } from './events';
 
 // Code-split form item components so none of the 15 heavy forms are in the initial bundle
-const ResidentialServiceForm = React.lazy(() =>
-  import('./items/ResidentialServiceForm').then((m) => ({ default: m.ResidentialServiceForm }))
+const ResidentialSolarCombinedForm = React.lazy(() =>
+  import('./items/ResidentialSolarCombinedForm').then((m) => ({ default: m.ResidentialSolarCombinedForm }))
 );
-const IndustrialCommercialForm = React.lazy(() =>
-  import('./items/IndustrialCommercialForm').then((m) => ({ default: m.IndustrialCommercialForm }))
-);
-const HtLtElectricalWorksForm = React.lazy(() =>
-  import('./items/HtLtElectricalWorksForm').then((m) => ({ default: m.HtLtElectricalWorksForm }))
-);
-const SolarRooftopForm = React.lazy(() =>
-  import('./items/SolarRooftopForm').then((m) => ({ default: m.SolarRooftopForm }))
+const HtLtIndustrialCommercialForm = React.lazy(() =>
+  import('./items/HtLtIndustrialCommercialForm').then((m) => ({ default: m.HtLtIndustrialCommercialForm }))
 );
 const ElectricalMaintenanceAmcForm = React.lazy(() =>
   import('./items/ElectricalMaintenanceAmcForm').then((m) => ({ default: m.ElectricalMaintenanceAmcForm }))
@@ -29,9 +23,6 @@ const ElectricalInspectionAuditForm = React.lazy(() =>
 );
 const EngineeringDesignConsultancyForm = React.lazy(() =>
   import('./items/EngineeringDesignConsultancyForm').then((m) => ({ default: m.EngineeringDesignConsultancyForm }))
-);
-const VendorRegistrationForm = React.lazy(() =>
-  import('./items/VendorRegistrationForm').then((m) => ({ default: m.VendorRegistrationForm }))
 );
 const RequestSiteVisitForm = React.lazy(() =>
   import('./items/RequestSiteVisitForm').then((m) => ({ default: m.RequestSiteVisitForm }))
@@ -45,12 +36,6 @@ const ElectricalEmergencySupportForm = React.lazy(() =>
 const RequestCallbackForm = React.lazy(() =>
   import('./items/RequestCallbackForm').then((m) => ({ default: m.RequestCallbackForm }))
 );
-const ProjectFeedbackForm = React.lazy(() =>
-  import('./items/ProjectFeedbackForm').then((m) => ({ default: m.ProjectFeedbackForm }))
-);
-const CareersJobApplicationForm = React.lazy(() =>
-  import('./items/CareersJobApplicationForm').then((m) => ({ default: m.CareersJobApplicationForm }))
-);
 const CustomerComplaintSupportForm = React.lazy(() =>
   import('./items/CustomerComplaintSupportForm').then((m) => ({ default: m.CustomerComplaintSupportForm }))
 );
@@ -62,50 +47,76 @@ export interface FormMetadataConfig {
   shortTitle: string;
   badge: string;
   category: 'Residential' | 'Commercial & Industrial' | 'Engineering & Audits' | 'Emergency & Support' | 'Corporate';
+  secondaryCategories?: ('Residential' | 'Commercial & Industrial' | 'Engineering & Audits' | 'Emergency & Support' | 'Corporate')[];
+  hiddenInHub?: boolean;
   description: string;
   icon: string;
 }
 
 export const FORMS_REGISTRY: Record<FormId, FormMetadataConfig> = {
+  'residential-solar': {
+    id: 'residential-solar',
+    formNumber: 1,
+    title: 'Residential Electrical Services & Solar Rooftop Enquiry',
+    shortTitle: 'Residential & Solar',
+    badge: 'Home Electrical & Solar EPC',
+    category: 'Residential',
+    description: 'House wiring, rewiring, DB installation, earthing, repairs, and on-grid/off-grid/hybrid rooftop solar with BESCOM net metering.',
+    icon: 'home',
+  },
+  'ht-lt-industrial-commercial': {
+    id: 'ht-lt-industrial-commercial',
+    formNumber: 2,
+    title: 'HT/LT, Industrial & Commercial Electrical Enquiry',
+    shortTitle: 'HT/LT & Industrial',
+    badge: 'HT/LT Substations & Turnkey EPC',
+    category: 'Commercial & Industrial',
+    description: '11kV–66kV substations, transformers, VCB/MCC/PCC panels, plant electrification, cable laying, and CEIG statutory liaisoning.',
+    icon: 'factory',
+  },
   'residential-service': {
     id: 'residential-service',
     formNumber: 1,
-    title: 'Residential Electrical Service Request',
+    title: 'Residential Electrical Services & Solar Rooftop Enquiry',
     shortTitle: 'Residential Service',
     badge: 'Home Electrical',
     category: 'Residential',
+    hiddenInHub: true,
     description: 'Wiring, rewiring, DB installation, earthing, lighting and repair for houses, apartments & villas.',
     icon: 'home',
+  },
+  'solar-rooftop': {
+    id: 'solar-rooftop',
+    formNumber: 1,
+    title: 'Residential Electrical Services & Solar Rooftop Enquiry',
+    shortTitle: 'Solar Rooftop',
+    badge: 'Solar EPC Solutions',
+    category: 'Residential',
+    hiddenInHub: true,
+    description: 'On-grid, off-grid and hybrid rooftop solar with BESCOM net metering and subsidy assistance.',
+    icon: 'solar_power',
   },
   'industrial-commercial': {
     id: 'industrial-commercial',
     formNumber: 2,
-    title: 'Industrial & Commercial Electrical Enquiry',
+    title: 'HT/LT, Industrial & Commercial Electrical Enquiry',
     shortTitle: 'Industrial & Commercial',
     badge: 'Turnkey Electrification',
     category: 'Commercial & Industrial',
+    hiddenInHub: true,
     description: 'Plant electrification, power distribution, panels, cable laying and statutory liaisoning.',
     icon: 'factory',
   },
   'ht-lt-works': {
     id: 'ht-lt-works',
-    formNumber: 3,
-    title: 'HT/LT Electrical Works Enquiry',
+    formNumber: 2,
+    title: 'HT/LT, Industrial & Commercial Electrical Enquiry',
     shortTitle: 'HT/LT Infrastructure',
     badge: '11kV–66kV Substations',
     category: 'Commercial & Industrial',
+    hiddenInHub: true,
     description: 'High-voltage substations, transformer commissioning, VCB panels, and CEIG approvals.',
     icon: 'bolt',
-  },
-  'solar-rooftop': {
-    id: 'solar-rooftop',
-    formNumber: 4,
-    title: 'Solar Rooftop Installation Enquiry',
-    shortTitle: 'Solar Rooftop',
-    badge: 'Solar EPC Solutions',
-    category: 'Residential',
-    description: 'On-grid, off-grid and hybrid rooftop solar with BESCOM net metering and subsidy assistance.',
-    icon: 'solar_power',
   },
   'maintenance-amc': {
     id: 'maintenance-amc',
@@ -137,16 +148,6 @@ export const FORMS_REGISTRY: Record<FormId, FormMetadataConfig> = {
     description: 'Electrical load calculations, single line diagrams (SLD), cable sizing, and panel design drawings.',
     icon: 'architecture',
   },
-  'vendor-registration': {
-    id: 'vendor-registration',
-    formNumber: 8,
-    title: 'Vendor Registration & Business Partnership',
-    shortTitle: 'Vendor Registration',
-    badge: 'Supply Chain Partner',
-    category: 'Corporate',
-    description: 'Suppliers, OEMs, transformer manufacturers, cable distributors and electrical subcontractors.',
-    icon: 'handshake',
-  },
   'site-visit': {
     id: 'site-visit',
     formNumber: 9,
@@ -164,6 +165,7 @@ export const FORMS_REGISTRY: Record<FormId, FormMetadataConfig> = {
     shortTitle: 'BOQ Quotation',
     badge: 'Tender Costing',
     category: 'Commercial & Industrial',
+    hiddenInHub: true,
     description: 'Upload your bill of quantities (Excel / PDF) or technical specifications for itemized pricing.',
     icon: 'table_view',
   },
@@ -186,26 +188,6 @@ export const FORMS_REGISTRY: Record<FormId, FormMetadataConfig> = {
     category: 'Residential',
     description: 'Quick telephone consultation with our senior electrical engineers at your convenient time window.',
     icon: 'phone_callback',
-  },
-  'project-feedback': {
-    id: 'project-feedback',
-    formNumber: 13,
-    title: 'Project Completion Feedback',
-    shortTitle: 'Client Feedback',
-    badge: 'Quality Assurance',
-    category: 'Corporate',
-    description: 'Rate our workmanship, timeliness, and safety compliance on recently completed electrical projects.',
-    icon: 'grade',
-  },
-  'careers-job': {
-    id: 'careers-job',
-    formNumber: 14,
-    title: 'Careers & Job Application',
-    shortTitle: 'Careers at AES',
-    badge: 'Join Our Team',
-    category: 'Corporate',
-    description: 'Opportunities for electrical site engineers, supervisors, technicians, and project managers in Bengaluru.',
-    icon: 'badge',
   },
   'customer-complaint': {
     id: 'customer-complaint',
@@ -266,22 +248,24 @@ export const EnquiryModalHost: React.FC<EnquiryModalHostProps> = ({ onFormSubmit
 
   const renderActiveForm = () => {
     switch (activeFormId) {
+      case 'residential-solar':
+        return <ResidentialSolarCombinedForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="both" />;
       case 'residential-service':
-        return <ResidentialServiceForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" />;
-      case 'industrial-commercial':
-        return <IndustrialCommercialForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" />;
-      case 'ht-lt-works':
-        return <HtLtElectricalWorksForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" />;
+        return <ResidentialSolarCombinedForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="residential" />;
       case 'solar-rooftop':
-        return <SolarRooftopForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" />;
+        return <ResidentialSolarCombinedForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="solar" />;
+      case 'ht-lt-industrial-commercial':
+        return <HtLtIndustrialCommercialForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="both" />;
+      case 'industrial-commercial':
+        return <HtLtIndustrialCommercialForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="industrial-commercial" />;
+      case 'ht-lt-works':
+        return <HtLtIndustrialCommercialForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="ht-lt" />;
       case 'maintenance-amc':
         return <ElectricalMaintenanceAmcForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" />;
       case 'safety-audit':
         return <ElectricalInspectionAuditForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" />;
       case 'design-consultancy':
         return <EngineeringDesignConsultancyForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" />;
-      case 'vendor-registration':
-        return <VendorRegistrationForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" />;
       case 'site-visit':
         return <RequestSiteVisitForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" />;
       case 'boq-quotation':
@@ -290,10 +274,6 @@ export const EnquiryModalHost: React.FC<EnquiryModalHostProps> = ({ onFormSubmit
         return <ElectricalEmergencySupportForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" />;
       case 'request-callback':
         return <RequestCallbackForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" />;
-      case 'project-feedback':
-        return <ProjectFeedbackForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" />;
-      case 'careers-job':
-        return <CareersJobApplicationForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" />;
       case 'customer-complaint':
         return <CustomerComplaintSupportForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" />;
       default:

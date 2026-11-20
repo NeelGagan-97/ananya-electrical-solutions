@@ -18,6 +18,8 @@ export class SubmissionService {
    */
   static generateReferenceNumber(formId: FormId): string {
     const prefixMap: Record<FormId, string> = {
+      'residential-solar': 'RESSOL',
+      'ht-lt-industrial-commercial': 'HTIND',
       'residential-service': 'RES',
       'industrial-commercial': 'IND',
       'ht-lt-works': 'HTLT',
@@ -25,13 +27,10 @@ export class SubmissionService {
       'maintenance-amc': 'AMC',
       'safety-audit': 'AUDIT',
       'design-consultancy': 'ENG',
-      'vendor-registration': 'VEND',
       'site-visit': 'VISIT',
       'boq-quotation': 'BOQ',
       'emergency-support': 'EMERG',
       'request-callback': 'CALL',
-      'project-feedback': 'FDBK',
-      'careers-job': 'CAREER',
       'customer-complaint': 'SRVC',
     };
 

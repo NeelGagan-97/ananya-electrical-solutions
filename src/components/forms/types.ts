@@ -12,6 +12,8 @@ export type EnquiryStatus =
   | 'Rejected';
 
 export type FormId =
+  | 'residential-solar'
+  | 'ht-lt-industrial-commercial'
   | 'residential-service'
   | 'industrial-commercial'
   | 'ht-lt-works'
@@ -19,13 +21,10 @@ export type FormId =
   | 'maintenance-amc'
   | 'safety-audit'
   | 'design-consultancy'
-  | 'vendor-registration'
   | 'site-visit'
   | 'boq-quotation'
   | 'emergency-support'
   | 'request-callback'
-  | 'project-feedback'
-  | 'careers-job'
   | 'customer-complaint';
 
 export interface UploadedFileMeta {
@@ -212,32 +211,6 @@ export interface EngineeringDesignConsultancyData {
   consent: boolean;
 }
 
-// Form 8: Vendor Registration & Business Partnership
-export interface VendorRegistrationData {
-  companyName: string;
-  contactPerson: string;
-  phoneNumber: string;
-  officialEmail: string;
-  gstNumber?: string;
-  companyAddress: string;
-  businessCategory:
-    | 'Electrical Equipment Supplier'
-    | 'Cable Supplier'
-    | 'Transformer Supplier'
-    | 'Electrical Panel Manufacturer'
-    | 'Solar Equipment Supplier'
-    | 'Electrical Contractor'
-    | 'Subcontractor'
-    | 'Engineering Consultant'
-    | 'Other';
-  productsOffered?: string;
-  yearsOfExperience?: string;
-  serviceLocations?: string;
-  websiteUrl?: string;
-  additionalInformation?: string;
-  consent: boolean;
-}
-
 // Form 9: Request a Site Visit
 export interface RequestSiteVisitData {
   name: string;
@@ -309,45 +282,6 @@ export interface RequestCallbackData {
     | 'Other';
   preferredCallbackTime: 'Morning' | 'Afternoon' | 'Evening';
   briefRequirement?: string;
-  consent: boolean;
-}
-
-// Form 13: Project Completion Feedback
-export interface ProjectFeedbackData {
-  customerName: string;
-  contactNumber?: string;
-  projectCategory?: string;
-  projectLocation?: string;
-  overallRating: number;
-  workQualityRating: number;
-  timelinessRating: number;
-  communicationRating: number;
-  whatDidYouAppreciate?: string;
-  suggestionsForImprovement?: string;
-  permissionToPublish: boolean;
-}
-
-// Form 14: Careers & Job Application
-export interface CareersJobApplicationData {
-  fullName: string;
-  phoneNumber: string;
-  email: string;
-  currentLocation?: string;
-  positionApplyingFor:
-    | 'Electrical Engineer'
-    | 'Site Engineer'
-    | 'Electrical Supervisor'
-    | 'Electrical Technician'
-    | 'Solar Technician'
-    | 'Project Manager'
-    | 'Safety Engineer'
-    | 'Other';
-  experience: 'Fresher' | '1–2 Years' | '3–5 Years' | '5–10 Years' | '10+ Years';
-  educationalQualification?: string;
-  technicalSkills?: string;
-  expectedSalary?: string;
-  noticePeriod?: string;
-  additionalInformation?: string;
   consent: boolean;
 }
 

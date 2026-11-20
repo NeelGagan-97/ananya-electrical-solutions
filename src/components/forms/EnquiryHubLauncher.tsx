@@ -33,7 +33,9 @@ export const EnquiryHubLauncher: React.FC = () => {
     };
   }, []);
 
-  const formsList: FormMetadataConfig[] = Object.values(FORMS_REGISTRY);
+  const formsList: FormMetadataConfig[] = Object.values(FORMS_REGISTRY).filter(
+    (item) => !item.hiddenInHub
+  );
 
   const categories = [
     'All',
@@ -41,11 +43,13 @@ export const EnquiryHubLauncher: React.FC = () => {
     'Commercial & Industrial',
     'Engineering & Audits',
     'Emergency & Support',
-    'Corporate',
   ];
 
   const filteredForms = formsList.filter((item) => {
-    const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
+    const matchesCategory =
+      selectedCategory === 'All' ||
+      item.category === selectedCategory ||
+      Boolean(item.secondaryCategories?.includes(selectedCategory as FormMetadataConfig['category']));
     const matchesSearch =
       !searchQuery.trim() ||
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -127,7 +131,7 @@ export const EnquiryHubLauncher: React.FC = () => {
                   type="text"
                   id="enquiry-search-input"
                   aria-label="Search enquiry forms by name or scope"
-                  placeholder="Search form by name or scope (e.g. Solar, HT, BOQ, Safety, AMC)..."
+                  placeholder="Search form by name or scope (e.g. Solar, HT, Safety, AMC)..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full py-2 pl-9 pr-3 text-[13px] rounded-lg bg-[#F8FAFC] border border-slate-200 focus:border-[#0284C7] outline-none"
