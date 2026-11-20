@@ -18,8 +18,8 @@ export class SubmissionService {
    */
   static generateReferenceNumber(formId: FormId): string {
     const prefixMap: Record<FormId, string> = {
-      'residential-solar': 'RESSOL',
-      'ht-lt-industrial-commercial': 'HTIND',
+      'residential-industrial-commercial': 'RIC',
+      'ht-lt-solar': 'HTSOL',
       'residential-service': 'RES',
       'industrial-commercial': 'IND',
       'ht-lt-works': 'HTLT',

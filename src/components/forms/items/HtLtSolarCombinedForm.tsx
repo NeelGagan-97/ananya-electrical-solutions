@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { FormWrapper } from '../FormWrapper';
 import { InputField } from '../fields/InputField';
 import { SelectField } from '../fields/SelectField';
-import { MultiSelectField } from '../fields/MultiSelectField';
 import { TextAreaField } from '../fields/TextAreaField';
 import { FileUploadField } from '../fields/FileUploadField';
 import { ConsentCheckbox } from '../fields/ConsentCheckbox';
@@ -10,27 +9,28 @@ import { validateIndianMobile, validateEmail, validateRequired } from '../valida
 import { SubmissionService } from '../submissionService';
 import { BaseEnquirySubmission, FormId, UploadedFileMeta } from '../types';
 
-export type ResidentialSolarScope = 'both' | 'residential' | 'solar';
+export type HtLtSolarScope = 'both' | 'ht-lt' | 'solar';
 
-interface ResidentialSolarCombinedFormProps {
+interface HtLtSolarCombinedFormProps {
   onCancel?: () => void;
   onSuccess?: (submission: BaseEnquirySubmission) => void;
   variant?: 'modal' | 'section' | 'inline';
-  initialScope?: ResidentialSolarScope;
+  initialScope?: HtLtSolarScope;
 }
 
-const PROPERTY_TYPES = ['Independent House', 'Apartment', 'Villa', 'Residential Complex', 'Other'];
-const PROPERTY_SIZES = ['Below 1,000 sq. ft.', '1,000–2,000 sq. ft.', '2,000–3,000 sq. ft.', 'Above 3,000 sq. ft.'];
-const RESIDENTIAL_SERVICES = [
-  'New Electrical Wiring',
-  'Rewiring',
-  'Electrical Repairs',
-  'Lighting Installation',
-  'Distribution Board Installation',
-  'Earthing Installation',
-  'Electrical Panel Upgrade',
+const PROJECT_CATEGORIES = [
+  'HT Electrical Works',
+  'LT Electrical Works',
+  'HT/LT Substation',
+  'Transformer Installation',
+  'Electrical Distribution Network',
+  'HT/LT Panel Installation',
+  'Cable Laying',
   'Other',
 ];
+
+const VOLTAGE_LEVELS = ['11 kV', '22 kV', '33 kV', '415 V', 'Other'];
+const TRANSFORMER_CAPACITIES = ['100 kVA', '250 kVA', '500 kVA', '750 kVA', '1000 kVA', 'Other'];
 
 const INSTALLATION_TYPES = ['Residential', 'Commercial', 'Industrial'];
 const CONNECTION_TYPES = ['Single Phase', 'Three Phase', 'Not Sure'];
@@ -48,35 +48,40 @@ const SOLAR_CAPACITIES = [
 const SYSTEM_TYPES = ['On-Grid', 'Off-Grid', 'Hybrid', 'Need Consultation'];
 const YES_NO_OPTIONS = ['Yes', 'No'];
 
-export const ResidentialSolarCombinedForm: React.FC<ResidentialSolarCombinedFormProps> = ({
+export const HtLtSolarCombinedForm: React.FC<HtLtSolarCombinedFormProps> = ({
   onCancel,
   onSuccess,
   variant = 'modal',
   initialScope = 'both',
 }) => {
-  const [enquiryScope, setEnquiryScope] = useState<ResidentialSolarScope>(initialScope);
+  const [enquiryScope, setEnquiryScope] = useState<HtLtSolarScope>(initialScope);
 
   useEffect(() => {
     setEnquiryScope(initialScope);
   }, [initialScope]);
 
-  const includeResidential = enquiryScope === 'residential' || enquiryScope === 'both';
+  const includeHtLt = enquiryScope === 'ht-lt' || enquiryScope === 'both';
   const includeSolar = enquiryScope === 'solar' || enquiryScope === 'both';
 
-  // Shared Contact & Property Location Fields
-  const [fullName, setFullName] = useState('');
-  const [contactNumber, setContactNumber] = useState('');
+  // Shared Contact & Location Fields
+  const [organizationOrName, setOrganizationOrName] = useState('');
+  const [contactPerson, setContactPerson] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
-  const [propertyLocation, setPropertyLocation] = useState('');
+  const [projectLocation, setProjectLocation] = useState('');
 
-  // Residential Electrical Service Fields
-  const [propertyType, setPropertyType] = useState('Independent House');
-  const [propertySize, setPropertySize] = useState('1,000–2,000 sq. ft.');
-  const [requiredServices, setRequiredServices] = useState<string[]>(['New Electrical Wiring']);
-  const [preferredSiteVisitDate, setPreferredSiteVisitDate] = useState('');
-  const [residentialFiles, setResidentialFiles] = useState<UploadedFileMeta[]>([]);
+  // HT/LT Technical Fields
+  const [projectCategory, setProjectCategory] = useState('HT/LT Substation');
+  const [voltageLevel, setVoltageLevel] = useState('11 kV');
+  const [transformerCapacity, setTransformerCapacity] = useState('500 kVA');
+  const [customTransformerCapacity, setCustomTransformerCapacity] = useState('');
+  const [connectedLoad, setConnectedLoad] = useState('');
+  const [numberOfTransformers, setNumberOfTransformers] = useState('1');
+  const [expectedCompletionDate, setExpectedCompletionDate] = useState('');
+  const [sldFiles, setSldFiles] = useState<UploadedFileMeta[]>([]);
+  const [boqFiles, setBoqFiles] = useState<UploadedFileMeta[]>([]);
 
-  // Solar Rooftop Installation Fields
+  // Solar Rooftop Technical Fields
   const [installationType, setInstallationType] = useState('Residential');
   const [connectionType, setConnectionType] = useState('Three Phase');
   const [avgMonthlyBill, setAvgMonthlyBill] = useState('');
@@ -89,8 +94,8 @@ export const ResidentialSolarCombinedForm: React.FC<ResidentialSolarCombinedForm
   const [billFiles, setBillFiles] = useState<UploadedFileMeta[]>([]);
   const [rooftopFiles, setRooftopFiles] = useState<UploadedFileMeta[]>([]);
 
-  // Shared Description & Consent
-  const [projectDescription, setProjectDescription] = useState('');
+  // Shared Notes & Consent
+  const [projectNotes, setProjectNotes] = useState('');
   const [consent, setConsent] = useState(true);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -100,23 +105,28 @@ export const ResidentialSolarCombinedForm: React.FC<ResidentialSolarCombinedForm
   const validate = () => {
     const newErrors: Record<string, string> = {};
 
-    const nameCheck = validateRequired(fullName, includeSolar && !includeResidential ? 'Full Name / Organization' : 'Full Name');
-    if (!nameCheck.isValid) newErrors.fullName = nameCheck.error!;
+    const nameLabel = includeHtLt ? 'Organization / Full Name' : 'Full Name / Organization';
+    const nameCheck = validateRequired(organizationOrName, nameLabel);
+    if (!nameCheck.isValid) newErrors.organizationOrName = nameCheck.error!;
 
-    const phoneCheck = validateIndianMobile(contactNumber);
-    if (!phoneCheck.isValid) newErrors.contactNumber = phoneCheck.error!;
+    if (includeHtLt) {
+      const personCheck = validateRequired(contactPerson, 'Contact Person');
+      if (!personCheck.isValid) newErrors.contactPerson = personCheck.error!;
+    }
 
-    if (email) {
+    const phoneCheck = validateIndianMobile(phoneNumber);
+    if (!phoneCheck.isValid) newErrors.phoneNumber = phoneCheck.error!;
+
+    if (includeHtLt) {
+      const emailCheck = validateEmail(email, true);
+      if (!emailCheck.isValid) newErrors.email = emailCheck.error!;
+    } else if (email) {
       const emailCheck = validateEmail(email);
       if (!emailCheck.isValid) newErrors.email = emailCheck.error!;
     }
 
-    const locCheck = validateRequired(propertyLocation, 'Property Location');
-    if (!locCheck.isValid) newErrors.propertyLocation = locCheck.error!;
-
-    if (includeResidential && requiredServices.length === 0) {
-      newErrors.requiredServices = 'Please select at least one electrical service.';
-    }
+    const locCheck = validateRequired(projectLocation, 'Project Location');
+    if (!locCheck.isValid) newErrors.projectLocation = locCheck.error!;
 
     if (includeSolar) {
       const billCheck = validateRequired(avgMonthlyBill, 'Average Monthly Electricity Bill');
@@ -138,38 +148,45 @@ export const ResidentialSolarCombinedForm: React.FC<ResidentialSolarCombinedForm
     setIsSubmitting(true);
 
     const resolvedFormId: FormId =
-      enquiryScope === 'residential'
-        ? 'residential-service'
+      enquiryScope === 'ht-lt'
+        ? 'ht-lt-works'
         : enquiryScope === 'solar'
         ? 'solar-rooftop'
-        : 'residential-solar';
+        : 'ht-lt-solar';
 
     const resolvedTitle =
-      enquiryScope === 'residential'
-        ? 'Residential Electrical Service Request'
+      enquiryScope === 'ht-lt'
+        ? 'HT/LT Electrical Works Enquiry'
         : enquiryScope === 'solar'
         ? 'Solar Rooftop Installation Enquiry'
-        : 'Residential Electrical Services & Solar Rooftop Enquiry';
+        : 'HT/LT & Solar Enquiry';
 
     const scopeLabel =
-      enquiryScope === 'residential'
-        ? 'Residential Electrical Services'
+      enquiryScope === 'ht-lt'
+        ? 'HT/LT Electrical Works'
         : enquiryScope === 'solar'
         ? 'Solar Rooftop Installation'
-        : 'Combined Residential Electrical Services & Solar Rooftop';
+        : 'Combined HT/LT & Solar Enquiry';
 
-    const data: Record<string, any> = {
+    const data: Record<string, string> = {
       'Enquiry Scope': scopeLabel,
     };
 
     const allFiles: UploadedFileMeta[] = [];
 
-    if (includeResidential) {
-      data['Property Type'] = propertyType;
-      data['Property Size'] = propertySize;
-      data['Required Services'] = requiredServices;
-      data['Preferred Site Visit Date'] = preferredSiteVisitDate || 'Flexible';
-      allFiles.push(...residentialFiles);
+    if (includeHtLt) {
+      const resolvedCapacity =
+        transformerCapacity === 'Other' && customTransformerCapacity
+          ? customTransformerCapacity
+          : transformerCapacity;
+      data['Organization Name'] = organizationOrName;
+      data['Project Category'] = projectCategory;
+      data['Voltage Level'] = voltageLevel;
+      data['Transformer Capacity'] = resolvedCapacity;
+      data['Number of Transformers'] = numberOfTransformers;
+      data['Connected Load'] = connectedLoad || 'To be calculated';
+      data['Expected Completion Date'] = expectedCompletionDate || 'Per project schedule';
+      allFiles.push(...sldFiles, ...boqFiles);
     }
 
     if (includeSolar) {
@@ -189,15 +206,15 @@ export const ResidentialSolarCombinedForm: React.FC<ResidentialSolarCombinedForm
       allFiles.push(...billFiles, ...rooftopFiles);
     }
 
-    data['Project Description'] = projectDescription;
+    data['Project Scope & Technical Requirements'] = projectNotes;
 
     const result = await SubmissionService.submitEnquiry({
       formId: resolvedFormId,
       formTitle: resolvedTitle,
-      customerName: fullName,
-      contactNumber,
+      customerName: contactPerson.trim() || organizationOrName.trim(),
+      contactNumber: phoneNumber,
       email,
-      location: propertyLocation,
+      location: projectLocation,
       consentGiven: consent,
       data,
       files: allFiles,
@@ -211,44 +228,46 @@ export const ResidentialSolarCombinedForm: React.FC<ResidentialSolarCombinedForm
   };
 
   const handleReset = () => {
-    setFullName('');
-    setContactNumber('');
+    setOrganizationOrName('');
+    setContactPerson('');
+    setPhoneNumber('');
     setEmail('');
-    setPropertyLocation('');
-    setRequiredServices(['New Electrical Wiring']);
-    setPreferredSiteVisitDate('');
+    setProjectLocation('');
+    setConnectedLoad('');
+    setCustomTransformerCapacity('');
     setAvgMonthlyBill('');
     setMonthlyConsumptionKwh('');
     setAvailableRooftopArea('');
-    setProjectDescription('');
-    setResidentialFiles([]);
+    setProjectNotes('');
+    setSldFiles([]);
+    setBoqFiles([]);
     setBillFiles([]);
     setRooftopFiles([]);
     setErrors({});
     setSubmissionSuccess(null);
   };
 
-  const scopeOptions: { id: ResidentialSolarScope; label: string; icon: string }[] = [
-    { id: 'both', label: 'Both Residential & Solar', icon: 'hub' },
-    { id: 'residential', label: 'Residential Electrical', icon: 'home' },
+  const scopeOptions: { id: HtLtSolarScope; label: string; icon: string }[] = [
+    { id: 'both', label: 'Both HT/LT & Solar', icon: 'hub' },
+    { id: 'ht-lt', label: 'HT/LT Electrical Works', icon: 'bolt' },
     { id: 'solar', label: 'Solar Rooftop EPC', icon: 'solar_power' },
   ];
 
   return (
     <FormWrapper
-      formId="residential-solar"
-      title="Residential Electrical Services & Solar Rooftop Enquiry"
-      badge="Home Electrical & Solar EPC"
-      description="Complete house wiring, distribution boards, earthing, safety repairs, and on-grid/off-grid/hybrid rooftop solar installations with BESCOM net metering."
+      formId="ht-lt-solar"
+      title="HT/LT & Solar Enquiry"
+      badge="HT/LT Substations & Solar EPC"
+      description="Unified enquiry for 11kV–66kV substations, transformers, CEIG approvals, and on-grid/off-grid/hybrid rooftop solar with BESCOM net metering."
       onSubmit={handleSubmit}
       onCancel={onCancel}
       isSubmitting={isSubmitting}
       submitButtonText={
-        enquiryScope === 'residential'
-          ? 'REQUEST ELECTRICAL SERVICE'
+        enquiryScope === 'ht-lt'
+          ? 'REQUEST HT/LT PROPOSAL'
           : enquiryScope === 'solar'
           ? 'REQUEST SOLAR CONSULTATION'
-          : 'SUBMIT RESIDENTIAL & SOLAR ENQUIRY'
+          : 'REQUEST HT/LT & SOLAR PROPOSAL'
       }
       submissionSuccess={submissionSuccess}
       onReset={handleReset}
@@ -287,114 +306,157 @@ export const ResidentialSolarCombinedForm: React.FC<ResidentialSolarCombinedForm
       {/* Shared Contact & Location Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <InputField
-          label={includeSolar && !includeResidential ? 'Full Name / Organization' : 'Full Name'}
+          label={includeHtLt ? 'Organization / Full Name' : 'Full Name / Organization'}
           required
-          icon="person"
-          placeholder="e.g. Ramesh Kumar"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          error={errors.fullName}
+          icon={includeHtLt ? 'corporate_fare' : 'solar_power'}
+          placeholder={
+            includeHtLt
+              ? 'e.g. Karnataka Infrastructure Development Corp'
+              : 'e.g. Dr. Rajeshwari / Sterling Tech Park'
+          }
+          value={organizationOrName}
+          onChange={(e) => setOrganizationOrName(e.target.value)}
+          error={errors.organizationOrName}
         />
 
         <InputField
-          label="Contact Number"
+          label={includeHtLt ? 'Contact Person' : 'Contact Person (Optional)'}
+          required={includeHtLt}
+          icon="person"
+          placeholder="e.g. S. Narayana Swamy"
+          value={contactPerson}
+          onChange={(e) => setContactPerson(e.target.value)}
+          error={errors.contactPerson}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <InputField
+          label="Phone Number"
           required
           type="tel"
           icon="phone"
           placeholder="e.g. +91 9632025123"
-          value={contactNumber}
-          onChange={(e) => setContactNumber(e.target.value)}
-          error={errors.contactNumber}
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+          error={errors.phoneNumber}
         />
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <InputField
-          label="Email Address"
+          label={includeHtLt ? 'Official Email' : 'Email Address'}
+          required={includeHtLt}
           type="email"
           icon="mail"
-          placeholder="e.g. ramesh@example.com (Optional)"
+          placeholder="e.g. electrical@org.in"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           error={errors.email}
-          helperText="Optional – for quotation and digital receipt"
         />
 
         <InputField
-          label="Property Location"
+          label="Project / Property Location"
           required
           icon="location_on"
-          placeholder="e.g. Sahakarnagar / Hebbal, Bengaluru"
-          value={propertyLocation}
-          onChange={(e) => setPropertyLocation(e.target.value)}
-          error={errors.propertyLocation}
+          placeholder="e.g. Devanahalli KIADB / Sahakarnagar"
+          value={projectLocation}
+          onChange={(e) => setProjectLocation(e.target.value)}
+          error={errors.projectLocation}
         />
       </div>
 
-      {/* Residential Electrical Services Section */}
-      {includeResidential && (
+      {/* HT/LT Electrical Works Section */}
+      {includeHtLt && (
         <div className="space-y-4 pt-3 border-t border-slate-200">
           <div className="flex items-center gap-2 text-[#0B192C]">
-            <span className="material-symbols-outlined text-[18px] text-[#0284C7]">home</span>
+            <span className="material-symbols-outlined text-[18px] text-[#0284C7]">bolt</span>
             <h4 className="text-[13.5px] font-bold uppercase tracking-wider">
-              Residential Electrical Specifications
+              HT/LT Infrastructure Specifications
             </h4>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <SelectField
-              label="Property Type"
+              label="Project Category"
               required
-              options={PROPERTY_TYPES}
-              value={propertyType}
-              onChange={(e) => setPropertyType(e.target.value)}
-              icon="home"
+              options={PROJECT_CATEGORIES}
+              value={projectCategory}
+              onChange={(e) => setProjectCategory(e.target.value)}
+              icon="category"
             />
 
             <SelectField
-              label="Property Size"
+              label="Voltage Level"
               required
-              options={PROPERTY_SIZES}
-              value={propertySize}
-              onChange={(e) => setPropertySize(e.target.value)}
-              icon="square_foot"
+              options={VOLTAGE_LEVELS}
+              value={voltageLevel}
+              onChange={(e) => setVoltageLevel(e.target.value)}
+              icon="offline_bolt"
+            />
+
+            <SelectField
+              label="Transformer Capacity"
+              options={TRANSFORMER_CAPACITIES}
+              value={transformerCapacity}
+              onChange={(e) => setTransformerCapacity(e.target.value)}
+              icon="memory"
             />
           </div>
 
-          <MultiSelectField
-            label="Required Electrical Services"
-            required
-            options={RESIDENTIAL_SERVICES}
-            selectedValues={requiredServices}
-            onChange={setRequiredServices}
-            error={errors.requiredServices}
-            helperText="Select one or more services needed for your home."
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {transformerCapacity === 'Other' && (
             <InputField
-              label="Preferred Site Visit Date"
-              type="date"
-              icon="calendar_today"
-              value={preferredSiteVisitDate}
-              onChange={(e) => setPreferredSiteVisitDate(e.target.value)}
-              helperText="Convenient date for our supervisor to inspect"
+              label="Specify Transformer Rating (kVA / MVA)"
+              icon="tune"
+              placeholder="e.g. 1250 kVA or 2.5 MVA"
+              value={customTransformerCapacity}
+              onChange={(e) => setCustomTransformerCapacity(e.target.value)}
+            />
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <InputField
+              label="Connected Load"
+              icon="speed"
+              placeholder="e.g. 750 kVA / 600 kW"
+              value={connectedLoad}
+              onChange={(e) => setConnectedLoad(e.target.value)}
             />
 
-            <div className="flex flex-col justify-end">
-              <p className="text-[12px] text-slate-500 bg-slate-50 p-3 rounded-lg border border-slate-200">
-                <strong className="text-[#0B192C]">Standard Visit:</strong> Monday to Saturday between 8:30 AM and 7:30 PM across Bengaluru.
-              </p>
-            </div>
+            <InputField
+              label="Number of Transformers"
+              type="number"
+              min="1"
+              icon="counter_1"
+              placeholder="e.g. 1"
+              value={numberOfTransformers}
+              onChange={(e) => setNumberOfTransformers(e.target.value)}
+            />
+
+            <InputField
+              label="Expected Completion Date"
+              type="date"
+              icon="event"
+              value={expectedCompletionDate}
+              onChange={(e) => setExpectedCompletionDate(e.target.value)}
+            />
           </div>
 
-          <FileUploadField
-            label="Upload Layout Plan or Electrical Photos"
-            preset="general"
-            files={residentialFiles}
-            onChange={setResidentialFiles}
-            helperText="Attach layout plan, existing DB photo, or room pictures (Optional, Max 10 MB)"
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FileUploadField
+              label="Upload Single Line Diagram (SLD)"
+              preset="technicalDrawings"
+              files={sldFiles}
+              onChange={setSldFiles}
+              helperText="Upload existing or proposed electrical SLD (PDF, DWG, PNG)"
+            />
+
+            <FileUploadField
+              label="Upload BOQ / Technical Specifications"
+              preset="boq"
+              files={boqFiles}
+              onChange={setBoqFiles}
+              helperText="Upload tender bill of quantities or equipment schedule"
+            />
+          </div>
         </div>
       )}
 
@@ -518,12 +580,12 @@ export const ResidentialSolarCombinedForm: React.FC<ResidentialSolarCombinedForm
         </div>
       )}
 
-      {/* Shared Notes & Consent */}
+      {/* Shared Technical Requirements & Consent */}
       <TextAreaField
-        label="Project Description & Additional Requirements"
-        placeholder="Briefly describe your wiring points, DB upgrades, rooftop shadow/tilt constraints, or BESCOM net metering requirements..."
-        value={projectDescription}
-        onChange={(e) => setProjectDescription(e.target.value)}
+        label="Project Scope & Additional Technical Requirements"
+        placeholder="Provide details on BESCOM/CEIG statutory approvals, cable runs, breaker specifications, rooftop shadow/tilt preferences, or preferred Tier-1 brands..."
+        value={projectNotes}
+        onChange={(e) => setProjectNotes(e.target.value)}
       />
 
       <ConsentCheckbox

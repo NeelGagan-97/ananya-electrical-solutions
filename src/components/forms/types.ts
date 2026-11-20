@@ -12,8 +12,8 @@ export type EnquiryStatus =
   | 'Rejected';
 
 export type FormId =
-  | 'residential-solar'
-  | 'ht-lt-industrial-commercial'
+  | 'residential-industrial-commercial'
+  | 'ht-lt-solar'
   | 'residential-service'
   | 'industrial-commercial'
   | 'ht-lt-works'

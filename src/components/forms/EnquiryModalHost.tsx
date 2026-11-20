@@ -9,11 +9,13 @@ import {
 } from './events';
 
 // Code-split form item components so none of the 15 heavy forms are in the initial bundle
-const ResidentialSolarCombinedForm = React.lazy(() =>
-  import('./items/ResidentialSolarCombinedForm').then((m) => ({ default: m.ResidentialSolarCombinedForm }))
+const ResidentialIndustrialCommercialForm = React.lazy(() =>
+  import('./items/ResidentialIndustrialCommercialForm').then((m) => ({
+    default: m.ResidentialIndustrialCommercialForm,
+  }))
 );
-const HtLtIndustrialCommercialForm = React.lazy(() =>
-  import('./items/HtLtIndustrialCommercialForm').then((m) => ({ default: m.HtLtIndustrialCommercialForm }))
+const HtLtSolarCombinedForm = React.lazy(() =>
+  import('./items/HtLtSolarCombinedForm').then((m) => ({ default: m.HtLtSolarCombinedForm }))
 );
 const ElectricalMaintenanceAmcForm = React.lazy(() =>
   import('./items/ElectricalMaintenanceAmcForm').then((m) => ({ default: m.ElectricalMaintenanceAmcForm }))
@@ -54,30 +56,32 @@ export interface FormMetadataConfig {
 }
 
 export const FORMS_REGISTRY: Record<FormId, FormMetadataConfig> = {
-  'residential-solar': {
-    id: 'residential-solar',
+  'residential-industrial-commercial': {
+    id: 'residential-industrial-commercial',
     formNumber: 1,
-    title: 'Residential Electrical Services & Solar Rooftop Enquiry',
-    shortTitle: 'Residential & Solar',
-    badge: 'Home Electrical & Solar EPC',
+    title: 'Residential, Industrial and Commercial Electrical Enquiry',
+    shortTitle: 'Residential, Industrial & Commercial',
+    badge: 'Home, Industrial & Commercial',
     category: 'Residential',
-    description: 'House wiring, rewiring, DB installation, earthing, repairs, and on-grid/off-grid/hybrid rooftop solar with BESCOM net metering.',
+    secondaryCategories: ['Commercial & Industrial'],
+    description: 'House wiring, DB installation, earthing, repairs, plant electrification, MCC/PCC panels, power distribution, and cable laying.',
     icon: 'home',
   },
-  'ht-lt-industrial-commercial': {
-    id: 'ht-lt-industrial-commercial',
+  'ht-lt-solar': {
+    id: 'ht-lt-solar',
     formNumber: 2,
-    title: 'HT/LT, Industrial & Commercial Electrical Enquiry',
-    shortTitle: 'HT/LT & Industrial',
-    badge: 'HT/LT Substations & Turnkey EPC',
+    title: 'HT/LT & Solar Enquiry',
+    shortTitle: 'HT/LT & Solar',
+    badge: 'HT/LT Substations & Solar EPC',
     category: 'Commercial & Industrial',
-    description: '11kV–66kV substations, transformers, VCB/MCC/PCC panels, plant electrification, cable laying, and CEIG statutory liaisoning.',
-    icon: 'factory',
+    secondaryCategories: ['Residential'],
+    description: 'High-voltage 11kV–66kV substations, transformers, VCB panels, CEIG approvals, and on-grid/off-grid/hybrid rooftop solar with BESCOM net metering.',
+    icon: 'bolt',
   },
   'residential-service': {
     id: 'residential-service',
     formNumber: 1,
-    title: 'Residential Electrical Services & Solar Rooftop Enquiry',
+    title: 'Residential, Industrial and Commercial Electrical Enquiry',
     shortTitle: 'Residential Service',
     badge: 'Home Electrical',
     category: 'Residential',
@@ -85,21 +89,10 @@ export const FORMS_REGISTRY: Record<FormId, FormMetadataConfig> = {
     description: 'Wiring, rewiring, DB installation, earthing, lighting and repair for houses, apartments & villas.',
     icon: 'home',
   },
-  'solar-rooftop': {
-    id: 'solar-rooftop',
-    formNumber: 1,
-    title: 'Residential Electrical Services & Solar Rooftop Enquiry',
-    shortTitle: 'Solar Rooftop',
-    badge: 'Solar EPC Solutions',
-    category: 'Residential',
-    hiddenInHub: true,
-    description: 'On-grid, off-grid and hybrid rooftop solar with BESCOM net metering and subsidy assistance.',
-    icon: 'solar_power',
-  },
   'industrial-commercial': {
     id: 'industrial-commercial',
-    formNumber: 2,
-    title: 'HT/LT, Industrial & Commercial Electrical Enquiry',
+    formNumber: 1,
+    title: 'Residential, Industrial and Commercial Electrical Enquiry',
     shortTitle: 'Industrial & Commercial',
     badge: 'Turnkey Electrification',
     category: 'Commercial & Industrial',
@@ -110,13 +103,24 @@ export const FORMS_REGISTRY: Record<FormId, FormMetadataConfig> = {
   'ht-lt-works': {
     id: 'ht-lt-works',
     formNumber: 2,
-    title: 'HT/LT, Industrial & Commercial Electrical Enquiry',
+    title: 'HT/LT & Solar Enquiry',
     shortTitle: 'HT/LT Infrastructure',
     badge: '11kV–66kV Substations',
     category: 'Commercial & Industrial',
     hiddenInHub: true,
     description: 'High-voltage substations, transformer commissioning, VCB panels, and CEIG approvals.',
     icon: 'bolt',
+  },
+  'solar-rooftop': {
+    id: 'solar-rooftop',
+    formNumber: 2,
+    title: 'HT/LT & Solar Enquiry',
+    shortTitle: 'Solar Rooftop',
+    badge: 'Solar EPC Solutions',
+    category: 'Residential',
+    hiddenInHub: true,
+    description: 'On-grid, off-grid and hybrid rooftop solar with BESCOM net metering and subsidy assistance.',
+    icon: 'solar_power',
   },
   'maintenance-amc': {
     id: 'maintenance-amc',
@@ -248,18 +252,18 @@ export const EnquiryModalHost: React.FC<EnquiryModalHostProps> = ({ onFormSubmit
 
   const renderActiveForm = () => {
     switch (activeFormId) {
-      case 'residential-solar':
-        return <ResidentialSolarCombinedForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="both" />;
+      case 'residential-industrial-commercial':
+        return <ResidentialIndustrialCommercialForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="both" />;
       case 'residential-service':
-        return <ResidentialSolarCombinedForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="residential" />;
-      case 'solar-rooftop':
-        return <ResidentialSolarCombinedForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="solar" />;
-      case 'ht-lt-industrial-commercial':
-        return <HtLtIndustrialCommercialForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="both" />;
+        return <ResidentialIndustrialCommercialForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="residential" />;
       case 'industrial-commercial':
-        return <HtLtIndustrialCommercialForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="industrial-commercial" />;
+        return <ResidentialIndustrialCommercialForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="industrial-commercial" />;
+      case 'ht-lt-solar':
+        return <HtLtSolarCombinedForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="both" />;
       case 'ht-lt-works':
-        return <HtLtIndustrialCommercialForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="ht-lt" />;
+        return <HtLtSolarCombinedForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="ht-lt" />;
+      case 'solar-rooftop':
+        return <HtLtSolarCombinedForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" initialScope="solar" />;
       case 'maintenance-amc':
         return <ElectricalMaintenanceAmcForm onCancel={handleClose} onSuccess={handleSuccess} variant="modal" />;
       case 'safety-audit':
